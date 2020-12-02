@@ -1,10 +1,9 @@
-defmodule Excyte.Insights.Templates do
+defmodule Excyte.Insights.Template do
   use Ecto.Schema
   import Ecto.Changeset
   alias Excyte.{
-    Accounts.Account,
-    Accounts.User,
-    Repo
+    Brokerages.Brokerage,
+    Accounts.User
   }
 
   schema "templates" do
@@ -12,7 +11,7 @@ defmodule Excyte.Insights.Templates do
     field :description, :string
     field :schema, {:array, :map}
     field :default, :boolean
-    belongs_to(:brokerage, Account)
+    belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
     timestamps()
   end

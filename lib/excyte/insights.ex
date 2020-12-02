@@ -1,7 +1,7 @@
 defmodule Excyte.Insights do
   import Ecto.Query, warn: false
   alias Excyte.Repo
-  alias Excyte.Insights.{Templates}
+  alias Excyte.Insights.{Template}
 
   def get_templates(agent_id, brokerage_id) do
     query =
@@ -10,7 +10,7 @@ defmodule Excyte.Insights do
       or_where: t.brokerage_id == ^brokerage_id
 
     case Repo.all(query) do
-      [] -> Templates.default_cma()
+      [] -> Template.default_cma()
       [_ | _] = templates -> templates
     end
   end

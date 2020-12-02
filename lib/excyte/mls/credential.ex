@@ -1,0 +1,43 @@
+defmodule Excyte.Mls.Credential do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  alias Excyte.Accounts.{User}
+
+  schema "mls_credentials" do
+    field :sub, :string
+    field :agent_name, :string
+    field :mls_name, :string
+    field :email, :string
+    field :mls_id, :string
+    field :dataset_id, :string
+    field :zone_info, :string
+    field :username, :string
+    field :id_token, :string
+    field :refresh_token, :string
+    field :access_token, :string
+    field :expires_in, :integer
+    belongs_to(:user, User)
+    timestamps()
+  end
+
+  def authorization_changeset(credential, attrs) do
+    credential
+    |> cast(attrs, [
+      :user_id,
+      :sub,
+      :agent_name,
+      :mls_name,
+      :email,
+      :mls_id,
+      :dataset_id,
+      :zone_info,
+      :username,
+      :id_token,
+      :refresh_token,
+      :access_token,
+      :expires_in
+    ])
+    |> validate_required([:user_id, :mls_id, :id_token, :refresh_token, :access_token])
+  end
+end

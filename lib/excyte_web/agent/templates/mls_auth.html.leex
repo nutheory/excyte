@@ -1,0 +1,45 @@
+<div>
+  <div class="mb-4 bg-green-200 rounded-md p-4">
+    <h3 class="text-lg leading-none font-extrabold text-gray-900">
+      MLS authorization
+    </h3>
+    <p class="text-xs text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
+    <div class="mt-2">
+      <form phx-submit="authorize" phx-target="<%= @myself %>">
+        <input type="hidden" name="page" value="<%= @return_to %>">
+        <div class="dropdown">
+          <select name="mls" id="mls_selector" class="dropdown-inner">
+            <option value="" id="no_mls_selection">Choose your MLS</option>
+            <%= for opt <- @mls_opts do %>
+              <option value="<%= opt.val %>"><%= opt.name %></option>
+            <% end %>
+          </select>
+        </div>
+        <div id="manage_instrctions">
+        </div>
+        <div class="mt-4">
+          <button type="submit" class="submit w-full block">Authorize</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <%= if length(@current_user.mls_credentials) > 0 do %>
+    <h3 class="text-lg leading-none font-bold text-green-500 px-2 py-1">Currently connected</h3>
+    <ul class="border-t border-gray-400">
+      <%= for cred <- @current_user.mls_credentials do %>
+        <li class="mls-list-item">
+          <h4><%= cred.mls_name %> <span><%= cred.username %></span></h4>
+          <div class="flex">
+            <div class="flex-1">
+              <label>MLS ID</label>
+              <p><%= cred.mls_id %></p>
+            </div>
+            <button class="text-red-400 pt-1 mt-1 cursor-pointer" phx-click="disconnect" value="<%= cred.id %>">
+              <i class="material-icons">link_off</i> <span class="icon-align">disconnect</span>
+            </button>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

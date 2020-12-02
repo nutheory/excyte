@@ -1,0 +1,19 @@
+<nav class="flex w-full absolute top-0 p-3">
+  <div class="hidden md:block md:ml-10 md:pr-4 flex-1 items-center">
+    <a href="#" class="link">Product</a>
+    <a href="#" class="link">Features</a>
+    <a href="#" class="link">Marketplace</a>
+    <a href="#" class="link">Company</a>
+    <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+      <%= link "Live Dashboard", to: Routes.live_dashboard_path(@socket, :home), class: "link" %>
+    <% end %>
+  </div>
+  <div class="">
+    <span class="ml-3 shadow-sm rounded-md">
+      <%= link "Log in", to: Routes.user_session_path(@socket, :new), class: "inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:text-gray-800 active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out" %>
+    </span>
+    <span class="mx-3 shadow-sm rounded-md">
+      <%= link "Sign up", to: Routes.live_path(@socket, ExcyteWeb.RegistrationLive), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out" %>
+    </span>
+  </div>
+</nav>

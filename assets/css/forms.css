@@ -1,0 +1,162 @@
+.dropdown {
+  @apply flex-1 rounded-md border border-gray-300 px-2 py-2 bg-white leading-6 text-sm font-medium text-gray-700;
+
+  & .dropdown-inner {
+    @apply inline-flex justify-center w-full transition ease-in-out duration-150;
+  }
+
+  & .dropdown-inner:hover {
+    @apply text-gray-500
+  }
+
+  & .dropdown-inner:focus {
+    @apply outline-none;
+  }
+
+  & .dropdown-inner:active {
+    @apply bg-gray-100 text-gray-800;
+  }
+}
+
+form, .form {
+  @apply text-gray-700 text-sm;
+
+  & h1 {
+    @apply text-xl leading-none font-extrabold text-gray-700;
+  }
+
+  & h2 {
+    @apply leading-none font-bold text-gray-700;
+  }
+
+  & h3 {
+    @apply leading-none font-bold;
+  }
+
+  & label {
+    @apply block text-sm font-bold mb-1;
+  }
+
+  & .sub-form {
+    @apply mt-4 bg-blue-200 rounded-md p-4;
+
+    & h2 {
+      @apply text-lg leading-none font-bold text-blue-700;
+    }
+  } 
+
+  input[type=range]::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 24px;
+    height: 24px;
+    -webkit-appearance: none;
+    /* @apply w-6 h-6 appearance-none pointer-events-auto; */
+  }
+
+  & input.text-field{
+    @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-400 rounded py-2 px-4 block w-full appearance-none;
+  }
+
+  & input.text-field:focus{
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  }
+
+  & textarea.textarea {
+    @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full appearance-none;
+  }
+
+  & textarea.textarea:focus{
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  }
+
+  & button.submit{
+    @apply text-white font-bold py-2 px-4 rounded bg-indigo-600 transition duration-150 ease-in-out;
+  }
+  & button.submit:hover{
+    @apply bg-indigo-500;
+  }
+
+  & button.submit:disabled {
+    @apply cursor-wait;
+  }
+
+  & .action{
+    @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-green-600 block transition duration-150 ease-in-out;
+  }
+
+  & .outline-small{
+    @apply flex flex-1 items-center rounded border border-gray-400 px-2 cursor-pointer;
+  }
+
+  & button.submit:focus{
+    @apply border-indigo-700;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  & button.submit:active{
+    @apply bg-indigo-700;
+  }
+
+  @media (min-width: 768px) {
+    & h2 {
+      @apply text-lg leading-none font-bold text-gray-700;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    & h1 {
+      @apply text-2xl leading-none font-extrabold text-gray-700;
+    }
+
+    & h2 {
+      @apply text-xl leading-none font-bold text-gray-700;
+    }
+
+    & h3 {
+      @apply text-lg leading-none font-bold;
+    }
+  }
+}
+
+.subtle-button{
+  @apply inline-block text-gray-600 text-xs py-2 px-4 rounded bg-white shadow transition duration-150 ease-in-out;
+}
+.subtle-button:hover{
+  @apply bg-white cursor-pointer;
+}
+
+.delete-button{
+  @apply inline-block text-red-700 py-2 px-2 rounded bg-red-200 shadow transition duration-150 ease-in-out;
+}
+.delete-button:hover{
+  @apply bg-red-600 text-white cursor-pointer;
+}
+
+button.action-button{
+  @apply text-white font-bold py-2 px-4 rounded bg-green-600 transition duration-150 ease-in-out;
+}
+button.action-button:hover{
+  @apply bg-green-500 cursor-pointer;
+}
+
+button.edit-button, div.edit-button{
+  @apply text-white font-bold py-2 px-4 rounded bg-pink-600 transition duration-150 ease-in-out whitespace-nowrap;
+}
+button.edit-button:hover, div.edit-button:hover{
+  @apply bg-pink-500 cursor-pointer;
+}
+
+.fake-text-field{
+  @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-400 rounded py-2 px-4 block w-full;
+}
+
+.fake-text-field:focus{
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}

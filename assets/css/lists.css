@@ -1,0 +1,67 @@
+.listing-item {
+  @apply rounded shadow bg-white;
+
+  & .main-photo {
+    @apply rounded-l w-28;
+  }
+
+  & .body{
+    @apply flex-1;
+  }
+
+  & label {
+    display: inline;
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  & h2 {
+    @apply leading-none font-bold;
+  }
+
+  & h3 {
+    @apply leading-none;
+  }
+
+  & .status {
+    @apply text-white rounded-sm p-1;
+  }
+
+  @media (min-width: 768px) {
+    & label {
+      display: inline;
+      font-size: 0.6rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    & h2 {
+      @apply text-lg leading-none font-bold;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    & label {
+      display: inline;
+      font-size: 0.6rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    & h2 {
+      @apply text-xl leading-none font-bold;
+    }
+  }
+}
+
+.slider {
+  background-color: #eee;
+  transform: scaleY(0);    
+  transform-origin: top;
+  transition: transform 0.26s ease;
+}
+
+.slider.open {
+  transform: scaleY(1);
+}

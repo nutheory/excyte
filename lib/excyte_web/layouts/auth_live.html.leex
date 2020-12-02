@@ -1,0 +1,8 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-200 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl w-full">
+    <p class="alert alert-info" role="alert"><%= live_flash(@flash, :info) %></p>
+    <p class="alert alert-danger" role="alert"><%= live_flash(@flash, :error) %></p>
+    <%= @inner_content %>
+  </div>
+  <script defer phx-track-static type="text/javascript" src="/js/app.js"></script>
+</div>

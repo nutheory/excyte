@@ -1,0 +1,13 @@
+<%= live_component(@socket, ExcyteWeb.ProtectedHeader, id: "header", current_user: @current_user) %>
+<p class="alert alert-info" role="alert"
+  phx-click="lv:clear-flash"
+  phx-value-key="info"><%= live_flash(@flash, :info) %></p>
+<p class="alert alert-danger" role="alert"
+  phx-click="lv:clear-flash"
+  phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+<div class="bg-gray-200 py-2 lg:py-8 px-4 relative lg:container lg:mx-auto">
+  <div role="main" class="">
+    <%= @inner_content %>
+  </div>
+</div>
+<script defer phx-track-static type="text/javascript" src="/js/app.js"></script>

@@ -1,0 +1,51 @@
+<nav class="protected-header">
+  <div class="mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="relative flex h:12 lg:h-16">
+      <div class="flex items-center">
+        <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), replace: false do %>
+          <div class="flex items-center mr-8 text-blue-500">
+            <div class="material-icons text-5xl">emoji_objects</div>
+            <div class="hidden lg:block lg:ml-2">
+              <h3 class="text-lg font-bold">Dash</h3>
+              <p class="text-xs">Overview</p>
+            </div>
+          </div>
+        <% end %>
+        <div class="flex items-center mr-8 text-green-500">
+          <div class="material-icons text-5xl">insights</div>
+          <div class="hidden lg:block lg:ml-2">
+            <h3 class="text-lg font-bold">Insights</h3>
+            <p class="text-xs">CMA's etc.</p>
+          </div>
+        </div>
+        <div class="flex items-center mr-8 text-pink-500">
+          <div class="material-icons text-5xl">groups</div>
+          <div class="hidden lg:block lg:ml-2">
+            <h3 class="text-lg font-bold">Clients</h3>
+            <p class="text-xs">Leads etc.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1"></div>
+      <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
+        <div class="avatar" @click="open = !open">
+          <%= String.first(@current_user.full_name) %>
+        </div>
+        <div
+          x-show="open"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="transform opacity-0 scale-95"
+          x-transition:enter-end="transform opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-300"
+          x-transition:leave-start="transform opacity-100 scale-100"
+          x-transition:leave-end="transform opacity-0 scale-95"
+          class="origin-top-right menu"
+        >
+          <ul>
+          <li class="dd-nav-item"><%= live_redirect "Settings", to: Routes.live_path(@socket, ExcyteWeb.Settings.DashboardLive) %></li>
+          <li class="dd-nav-item"><%= link "Log out", to: "/log_out", method: :delete %></li>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

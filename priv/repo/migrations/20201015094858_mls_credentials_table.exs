@@ -1,0 +1,25 @@
+defmodule Excyte.Repo.Migrations.MlsCredentialsTable do
+  use Ecto.Migration
+
+  def change do
+    create table(:mls_credentials) do
+      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :sub, :string
+      add :agent_name, :string
+      add :mls_name, :string
+      add :email, :citext
+      add :mls_id, :string, null: false
+      add :zone_info, :string
+      add :username, :string
+      add :dataset_id, :string
+      add :id_token, :text
+      add :refresh_token, :text
+      add :access_token, :text
+      add :browser_token, :text
+      add :client_id, :text
+      add :client_secret, :text
+      add :expires_in, :integer
+      timestamps()
+    end
+  end
+end

@@ -1,0 +1,21 @@
+<div class="gallery">
+  <div class="relative h-full">
+    <img class="h-full mx-auto" src="<%= @current_item["MediaURL"] %>">
+    <div class="prev" phx-click="prev" phx-target="<%= @myself %>">
+      <span class="material-icons inline-block">arrow_back_ios</span>
+    </div>
+    <div class="next" phx-click="next" phx-target="<%= @myself %>">
+      <span class="material-icons inline-block">arrow_forward_ios</span>
+    </div>
+  </div>
+  <div class="footer">
+    <%= if @show_preview do %>
+      <ul>
+        <%= for {preview, idx} <- Enum.with_index(@media) do %>
+          <li class="" phx-click="select" phx-value-idx="<%= idx %>" phx-target="<%= @myself %>">
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>

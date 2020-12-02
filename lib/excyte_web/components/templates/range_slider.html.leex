@@ -1,0 +1,46 @@
+<div>
+  <%= f = form_for :slider, "#", [phx_change: "slider-update", phx_target: @myself] %>
+    <div class="h-24 mt-6 flex justify-center items-center">
+      <div class="relative max-w-xl w-full">
+        <div>
+          <%= range_input f, :low_slide, [
+            step: @opts.interval,
+            min: @opts.min,
+            max: @opts.max,
+            value: @opts.low,
+            class: "absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          ] %>
+          <%= range_input f, :high_slide, [
+            step: @opts.interval,
+            min: @opts.min,
+            max: @opts.max,
+            value: @opts.high,
+            class: "absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          ] %>
+          <div class="relative z-10 h-2">
+            <div class="absolute z-10 left-0 right-0 bottom-0 top-0 rounded-md bg-gray-300"></div>
+            <div
+              class="absolute z-20 top-0 bottom-0 rounded-md bg-green-300"
+              style="right: <%= 100 - (((@opts.high - @opts.min) / (@opts.max - @opts.min)) * 100) %>%;
+              left: <%= ((@opts.low - @opts.min) / (@opts.max - @opts.min)) * 100 %>%"></div>
+            <div
+              class="absolute z-30 w-6 h-6 top-0 left-0 bg-green-300 rounded-full -mt-2 -ml-1"
+              style="left: <%= ((@opts.low - @opts.min) / (@opts.max - @opts.min)) * 100 %>%"></div>
+            <div
+              class="absolute z-30 w-6 h-6 top-0 right-0 bg-green-300 rounded-full -mt-2 -mr-3"
+              style="right: <%= 100 - (((@opts.high - @opts.min) / (@opts.max - @opts.min)) * 100) %>%"></div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center py-5">
+          <div>
+            <%= number_to_currency(@opts.low, precision: 0) %>
+          </div>
+          <div class=""><h3>List Price Range</h3></div>
+          <div>
+            <%= number_to_currency(@opts.high, precision: 0) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

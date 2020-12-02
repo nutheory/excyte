@@ -1,0 +1,80 @@
+defmodule Excyte.Insights.Templates do
+  use Ecto.Schema
+  import Ecto.Changeset
+  alias Excyte.{
+    Accounts.Account,
+    Accounts.User,
+    Repo
+  }
+
+  schema "templates" do
+    field :name, :string
+    field :description, :string
+    field :schema, {:array, :map}
+    field :default, :boolean
+    belongs_to(:brokerage, Account)
+    belongs_to(:created_by, User)
+    timestamps()
+  end
+
+  def changeset(template, attrs) do
+    template
+    |> cast(attrs, [
+      :name,
+      :description,
+      :schema,
+      :default,
+      :brokerage_id,
+      :created_by_id
+    ])
+  end
+
+
+  def default_cma() do
+    [
+      %{
+        position: 1,
+        enabled: true,
+        func: :intro,
+        title: "Intro"
+      }, %{
+        position: 2,
+        enabled: true,
+        func: :agent_profile,
+        title: "Agent Profile"
+      }, %{
+        position: 3,
+        enabled: true,
+        func: :subject_property,
+        title: "Subject Property"
+      }, %{
+        position: 4,
+        enabled: true,
+        func: :comparables,
+        title: "Comparables"
+      }, %{
+        position: 5,
+        enabled: true,
+        func: :market_trends,
+        title: "Market Trends"
+      }
+    ]
+  end
+
+  def subject_property(subject) do
+    # Add Previous sale/listing info (sold and unsold)
+  end
+
+  def comparables(listings) do
+    ["this", "is", "a", "test"]
+  end
+
+  def agent_profile(profile) do
+    "gdhgdjhgdjdjdj"
+  end
+
+  def market_trends() do
+    "gfghkhgfkfk"
+  end
+
+end

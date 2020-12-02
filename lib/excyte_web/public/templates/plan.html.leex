@@ -1,0 +1,11 @@
+<div class="col-span-3 lg:col-span-1">
+  <div class="bg-white shadow rounded-lg p-4">
+    <h2><%= @plan.name %></h2>
+    <p><%= @plan.description %></p>
+    <%= if @current_user do %>
+      <button class="action-button block w-full" value="<%= @plan.plan_id %>" phx-click="choose-plan" phx-target="<%= @myself %>">Choose plan</button>
+    <% else %>
+      <%= live_redirect "Sign up", to: Routes.live_path(@socket, ExcyteWeb.RegistrationLive, plan: @plan.friendly_name) %>
+    <% end %>
+  </div>
+</div>

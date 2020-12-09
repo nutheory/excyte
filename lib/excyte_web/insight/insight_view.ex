@@ -3,5 +3,5 @@ defmodule ExcyteWeb.InsightView do
   import Number.{Delimit}
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Insight.{CmaLive, CmaBuilderLive, ListingLive}
-  alias ExcyteWeb.Components.{AddressAutocompleteLive, RangeSliderLive, CalendarLive, GalleryLive}
+  alias ExcyteWeb.Components.{AddressAutocompleteLive, RangeSliderLive, CalendarLive, GalleryLive, EditorLive}
 end

@@ -1,17 +1,19 @@
 defmodule ExcyteWeb.Insight.CmaLive do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Mls.ResoApi}
-  alias ExcyteWeb.{InsightView, Insight.CmaBuilderLive}
+  alias Excyte.{Accounts, Insights, Mls.ResoApi}
+  alias ExcyteWeb.{InsightView}
 
   def render(assigns), do: InsightView.render("cma.html", assigns)
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_full_user_by_session_token(token)
+    templates = Insights.get_templates(cu.id, cu.brokerage_id)
     mls = hd(cu.mls_credentials)
     {:ok, assign(socket,
       current_user: cu,
       mls: mls.dataset_id,
       subject: nil,
+      templates: templates,
       possible_subject_properties: nil,
       comparables: nil,
       action: %{key: "", perform: ""},
@@ -73,9 +75,9 @@ defmodule ExcyteWeb.Insight.CmaLive do
     )}
   end
 
-  def handle_event("next-step", _,  %{assigns: assigns} = socket) do
+  def handle_event("build-cma", %{"template" => t} = params,  %{assigns: assigns} = socket) do
     key = "cma#{assigns.current_user.id}#{System.os_time(:second)}"
-    Cachex.put(:insight_cache, key, assigns, ttl: :timer.hours(48))
+    Cachex.put(:insight_cache, key, Map.merge(assigns, %{"template" => "default"}))
     {:noreply, push_redirect(socket, to: "/insights/cma/builder/#{key}")}
   end
 

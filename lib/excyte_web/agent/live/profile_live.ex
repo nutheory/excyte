@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Agent.ProfileLive do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Agents.Contact, Agents.Profile}
-  alias ExcyteWeb.AgentView
+  alias ExcyteWeb.{Helpers.SimpleS3Upload, AgentView}
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
@@ -72,18 +72,11 @@ defmodule ExcyteWeb.Agent.ProfileLive do
     {:noreply, socket}
   end
 
-  def handle_event("save_photo", _params, socket) do
-    IO.inspect(label: "HERE")
-    # uploaded_files =
-    #   consume_uploaded_entries(socket, :photo, fn %{} = meta, _entry ->
-    #     IO.inspect(meta, label: "PURL1")
-    #     {:ok, presigned_url} =
-    #       ExAws.Config.new(:s3)
-    #       |> ExAws.S3.presigned_url(:get, meta.bucket, meta.key, expires_in: 86_400)
-    #     IO.inspect(presigned_url, label: "PURL2")
-    #     # presigned_url
-    #   end)
-    #   IO.inspect(uploaded_files, label: "UPPED")
+  def handle_event("save_photo", params, socket) do
+    IO.inspect(params, label: "HERE")
+    uploaded_files =
+      consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end)
+    IO.inspect(uploaded_files, label: "UPPED")
     # {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
     {:noreply, socket}
   end
@@ -94,13 +87,32 @@ defmodule ExcyteWeb.Agent.ProfileLive do
 
   defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5)
 
+  # defp presign_upload(entry, socket) do
+  #   bucket = "excyte"
+  #   key = "public/#{entry.client_name}"
+
+  #   {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, key)
+  #   meta = %{uploader: "S3", bucket: bucket, key: key, url: presigned_url}
+  #   IO.inspect(meta, label: "META")
+  #   {:ok, meta, socket}
+  # end
+
   defp presign_upload(entry, socket) do
+    uploads = socket.assigns.uploads
     bucket = "excyte"
     key = "public/#{entry.client_name}"
 
-    {:ok, presigned_url} = ExAws.Config.new(:s3) |> ExAws.S3.presigned_url(:put, bucket, key)
-    meta = %{uploader: "S3", bucket: bucket, key: key, url: presigned_url}
-    IO.inspect(meta, label: "META")
+    config = Application.get_env(:excyte, :aws)
+
+    {:ok, fields} =
+      SimpleS3Upload.sign_form_upload(config, bucket,
+        key: key,
+        content_type: entry.client_type,
+        max_file_size: uploads.photo.max_file_size,
+        expires_in: :timer.hours(1)
+      )
+
+    meta = %{uploader: "S3", key: key, url: "http://#{bucket}.s3.amazonaws.com", fields: fields}
     {:ok, meta, socket}
   end
 

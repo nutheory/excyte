@@ -2,7 +2,12 @@ defmodule Excyte.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Excyte.{Mls.Credential, Accounts.Account, Repo}
+  alias Excyte.{
+    Accounts.Account,
+    Brokerages.Brokerage,
+    Mls.Credential,
+    Repo
+  }
 
   @derive {Inspect, except: [:password]}
 
@@ -15,6 +20,7 @@ defmodule Excyte.Accounts.User do
     field :completed_setup, :boolean
     field :confirmed_at, :naive_datetime
     belongs_to(:account, Account)
+    belongs_to(:brokerage, Brokerage)
     has_many(:mls_credentials, Credential)
     timestamps()
   end

@@ -189,12 +189,23 @@
   </div>
   <%= if length(@selected_comps) > 0 do %>
     <div class="fixed -right-2 -bottom-4 rounded-full h-20 w-20 z-30">
-      <div x-show="nextStepOpen" class="fixed left-0 bottom-6 w-full pl-32 pr-4">
+      <div x-show="nextStepOpen" class="fixed left-0 bottom-6 w-48 pr-4">
         <div class="shadow-md bg-green-100 border border-gray-400 rounded-md p-3 md:p-4">
-          <h2>If you would like to continue on to organize your CMA with the <%= length(@selected_comps) %> selected comparables click &quot;Continue&quot;</h2>
-          <div class="action-button my-6" phx-click="next-step">
-            Continue...
-          </div>
+          <form phx-submit="build-cma">
+            <%= if length(@templates) > 1 do %>
+              <select name="template" id="template_selector" class="dropdown-inner">
+                <option value="" id="no_template_selection">Choose your MLS</option>
+                <%= for opt <- @templates do %>
+                  <option value="<%= opt.id %>"><%= opt.name %></option>
+                <% end %>
+              </select>
+            <% else %>
+              <input type="hidden" name="template" value="default">
+              <h2>If you would like to continue on to organize your CMA with the <%= length(@selected_comps) %> selected comparables click &quot;Continue&quot;</h2>
+            <% end %>
+            <button type="submit" name="action" class="action-button my-6" value="edit">Continue to edit</button>
+            <button type="submit" name="action" class="action-button my-6" value="create">Quick Create</button>
+          </form>
         </div>
       </div>
       <span class="flex h-full w-full" @click.prevent="nextStepOpen = !nextStepOpen">

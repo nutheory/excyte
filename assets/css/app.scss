@@ -2,6 +2,7 @@
 @import "./forms.css";
 @import "./lists.css";
 @import "./states.css";
+@import "./editor.css";
 
 @tailwind base;
 
@@ -25,9 +26,21 @@
 }
 
 body {
-  @apply bg-gray-200 mt-16 text-gray-700;
+  @apply bg-gray-200 text-gray-700;
   font-size: 14px;
   line-height: 1.2;
+}
+
+h1 {
+  @apply text-xl leading-none font-extrabold;
+}
+
+h2 {
+  @apply text-lg leading-none font-bold;
+}
+
+h3 {
+  @apply leading-none font-bold;
 }
 
 /* LiveView specific classes for your customizations */
@@ -357,3 +370,4 @@ div.gallery {
     opacity: 1;
   }
 }
+

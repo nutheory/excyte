@@ -1,3 +1,20 @@
-<div class="">
-  loaded
+<div class="lg:max-w-4xl mx-auto h-48" x-data="{ tab: 'sections' }" >
+  <div class="shadow-md bg-white rounded-md p-3 md:p-4">
+    <div class="flex">
+      <h1 class="flex-1">CMA Builder <button x-show="tab === 'new_section'" @click.prevent="tab = 'sections'">go back</button></h1>
+    </div>
+    <div x-show="tab === 'sections'">
+      <ul>
+        <%= for section <- @sections do %>
+          <li>
+            <%= section.title %>
+          </li>
+        <% end %>
+      </ul>
+      <button @click.prevent="tab = 'new_section'">Add a section</button>
+    </div>
+    <div x-show="tab === 'new_section'">
+      <%= live_render @socket, EditorLive, id: :section_editor %>
+    </div>
+  </div>
 </div>

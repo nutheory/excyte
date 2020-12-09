@@ -8,7 +8,9 @@ defmodule Excyte.Repo.Migrations.Templates do
       add :default, :boolean, default: false
       add :name, :string, null: false
       add :description, :string
-      add :schema, :jsonb, default: "[]"
+      add :sections, :jsonb, default: "[]"
+      add :content, :jsonb, default: "[]"
+      add :type, :string
       timestamps()
     end
 

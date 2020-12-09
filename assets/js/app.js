@@ -19,6 +19,7 @@ import {Socket} from "phoenix"
 import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
 import {InitCheckout} from "./init_checkout"
+import {InitEditor} from "./editor"
 import {AutocompleteLocation} from "./location"
 // import {} from "./utilities"
 import {validatePassword, toggleShowPassword} from "./public"
@@ -26,6 +27,7 @@ import {validatePassword, toggleShowPassword} from "./public"
 let Hooks = {}
 let Uploaders = {}
 
+Hooks.InitEditor = InitEditor
 Hooks.InitCheckout = InitCheckout
 Hooks.AutocompleteLocation = AutocompleteLocation
 
@@ -36,21 +38,25 @@ Hooks.RegistrationPassword = {
   }
 }
 
-Uploaders.S3 = function (entries, onViewError) {
+Uploaders.S3 = function(entries, onViewError){
   entries.forEach(entry => {
+    let formData = new FormData()
+    let {url, fields} = entry.meta
+    Object.entries(fields).forEach(([key, val]) => formData.append(key, val))
+    formData.append("file", entry.file)
     let xhr = new XMLHttpRequest()
     onViewError(() => xhr.abort())
-    xhr.onload = () => (xhr.status === 200 ? entry.done() : entry.error())
+    xhr.onload = () => xhr.status === 204 || entry.error()
     xhr.onerror = () => entry.error()
-    xhr.upload.addEventListener("progress", event => {
-      if (event.lengthComputable) {
+    xhr.upload.addEventListener("progress", (event) => {
+      if(event.lengthComputable){
         let percent = Math.round((event.loaded / event.total) * 100)
         entry.progress(percent)
       }
     })
 
-    xhr.open("PUT", entry.meta.url, true)
-    xhr.send(entry.file)
+    xhr.open("POST", url, true)
+    xhr.send(formData)
   })
 }
 

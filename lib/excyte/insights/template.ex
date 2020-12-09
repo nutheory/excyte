@@ -30,38 +30,49 @@ defmodule Excyte.Insights.Template do
 
 
   def default_cma() do
-    [
-      %{
-        position: 1,
-        enabled: true,
-        func: :intro,
-        title: "Intro"
-      }, %{
-        position: 2,
-        enabled: true,
-        func: :agent_profile,
-        title: "Agent Profile"
-      }, %{
-        position: 3,
-        enabled: true,
-        func: :subject_property,
-        title: "Subject Property"
-      }, %{
-        position: 4,
-        enabled: true,
-        func: :comparables,
-        title: "Comparables"
-      }, %{
-        position: 5,
-        enabled: true,
-        func: :market_trends,
-        title: "Market Trends"
-      }
-    ]
+    %{
+      name: "Excyte default",
+      id: "default",
+      system: true,
+      sections: [
+        %{
+
+          position: 1,
+          enabled: true,
+          func: :intro,
+          title: "Intro"
+        }, %{
+          position: 2,
+          enabled: true,
+          func: :agent_profile,
+          title: "Agent Profile"
+        }, %{
+          position: 3,
+          enabled: true,
+          func: :subject_property,
+          title: "Subject Property"
+        }, %{
+          position: 4,
+          enabled: true,
+          func: :comparables,
+          title: "Comparables"
+        }, %{
+          position: 5,
+          enabled: true,
+          func: :market_trends,
+          title: "Market Trends"
+        }
+      ]
+    }
+  end
+
+  def intro(intro) do
+    "BOOM"
   end
 
   def subject_property(subject) do
     # Add Previous sale/listing info (sold and unsold)
+    "HEY"
   end
 
   def comparables(listings) do
@@ -72,7 +83,7 @@ defmodule Excyte.Insights.Template do
     "gdhgdjhgdjdjdj"
   end
 
-  def market_trends() do
+  def market_trends(whatevs) do
     "gfghkhgfkfk"
   end
 

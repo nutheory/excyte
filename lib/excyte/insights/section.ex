@@ -14,8 +14,8 @@ defmodule Excyte.Insights.Section do
     timestamps()
   end
 
-  def changeset(instight, attrs) do
-    instight
+  def changeset(insight, attrs) do
+    insight
     |> cast(attrs, [
       :title,
       :content,

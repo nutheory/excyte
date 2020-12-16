@@ -7,7 +7,6 @@ defmodule Excyte.Repo.Migrations.ProfilesTable do
       add :brokerage_id, references(:teams)
       add :default, :boolean, default: false
       add :photo_url, :text
-      add :logo_url, :text
       add :intro_video_url, :text
       add :bio, :text
       add :name, :string

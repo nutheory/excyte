@@ -36,11 +36,11 @@ defmodule Excyte.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:bcrypt_elixir, "~> 2.0"},
-      {:phoenix, "~> 1.5.6"},
+      {:phoenix, "~> 1.5.7"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view", override: true},
+      {:phoenix_live_view, "~> 0.15.0", override: true},
       {:floki, ">= 0.27.0", only: :test},
       {:faker, "~> 0.16", only: :test},
       {:ex_machina, "~> 2.4", only: :test},

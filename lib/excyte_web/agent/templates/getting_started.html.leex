@@ -31,7 +31,13 @@
             <% end %>
           </div>
         </div>
-        <%= live_render @socket, ProfileLive, current_user: @current_user, id: :profile %>
+        <%= live_component @socket, ProfileLive,
+          current_user: @current_user,
+          return_to: "/agent/dash",
+          default: true,
+          action: :new,
+          profile_id: nil,
+          id: :profile %>
       </div>
     <% _ -> %>
       <div class="w-full md:w-1/2 xl:w-1/4 mx-auto">

@@ -6,6 +6,9 @@ defmodule ExcyteWeb.ProtectedHeader do
   def render(assigns), do: LayoutView.render("protected_header.html", assigns)
 
   def update(assigns, socket) do
-    {:ok, assign(socket,  %{current_user: assigns.current_user})}
+    {:ok, assign(socket, %{
+      current_user: assigns.current_user,
+      profile: hd(assigns.current_user.profiles)
+    })}
   end
 end

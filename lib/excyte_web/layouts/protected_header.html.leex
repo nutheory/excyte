@@ -29,7 +29,11 @@
       <div class="flex-1"></div>
       <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
         <div class="avatar" @click="open = !open">
-          <%= String.first(@current_user.full_name) %>
+          <%= if @profile.photo_url do %>
+            <img src="<%= @profile.photo_url %>" />
+          <% else %>
+            <%= String.first(@profile.name) %>
+          <% end %>
         </div>
         <div
           x-show="open"

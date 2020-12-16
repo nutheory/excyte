@@ -1,9 +1,11 @@
 defmodule Excyte.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Excyte.{
     Accounts.Account,
+    Agents.Profile,
     Brokerages.Brokerage,
     Mls.Credential,
     Repo
@@ -22,6 +24,7 @@ defmodule Excyte.Accounts.User do
     belongs_to(:account, Account)
     belongs_to(:brokerage, Brokerage)
     has_many(:mls_credentials, Credential)
+    has_many(:profiles, Profile)
     timestamps()
   end
 
@@ -134,5 +137,46 @@ defmodule Excyte.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def with_mls(query) do
+    from [_, user] in query,
+    join: cred in Credential,
+    on: cred.user_id == user.id,
+    preload: [user: {user, [mls_credentials: cred]}]
+  end
+
+  def with_account(query) do
+    from [_, user] in query,
+    join: acc in Account,
+    on: acc.id == user.account_id,
+    preload: [user: {user, [account: acc]}]
+  end
+
+  def with_default_profile(query) do
+    from [_, user] in query,
+    join: p in Profile,
+    on: p.agent_id == user.id and p.default == true,
+    preload: [user: {user, [profiles: p]}]
+  end
+
+  def minimal_token_return(query) do
+    from [t, user, mls, acc, p] in query,
+    select: map(t, [
+      :id,
+      :token,
+      :user_id,
+      user: [
+        :id,
+        :agent_id,
+        :brokerage_id,
+        :completed_setup,
+        :full_name,
+        mls_credentials: [:mls_name, :dataset_id, :id_token, :agent_name, :username, :zone_info, :id],
+        profiles: [:id, :photo_url, :name],
+        account: [:id, :status]
+      ]
+    ])
+    # query
   end
 end

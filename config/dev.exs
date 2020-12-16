@@ -45,7 +45,6 @@ config :excyte, ExcyteWeb.Endpoint,
 config :excyte, :aws, %{
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
-  scheme: "http://",
   host: "s3.amazonaws.com",
   region: "us-west-1"
 }

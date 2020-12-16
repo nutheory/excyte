@@ -7,7 +7,7 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
 
   def mount(_params,  %{"user_token" => token}, socket) do
     cu = Accounts.get_full_user_by_session_token(token)
-
+    IO.inspect(cu, label: "WTF")
     current_step =
       if length(cu.mls_credentials) > 0 && cu.account.status !== "active", do: "payment", else: "mls"
 

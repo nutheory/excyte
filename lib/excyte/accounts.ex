@@ -139,6 +139,12 @@ defmodule Excyte.Accounts do
     User.registration_changeset(user, attrs)
   end
 
+  def update_user(uid, attrs \\ %{}) do
+    Repo.get!(User, uid)
+    |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
   ## Settings
 
   @doc """
@@ -274,12 +280,21 @@ defmodule Excyte.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+    User.with_mls(query)
+    |> User.with_account()
+    |> User.with_default_profile()
+    |> User.minimal_token_return()
+    |> Repo.one()
   end
 
   def get_full_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query) |> Repo.preload([:account, :mls_credentials])
+    full = User.with_mls(query)
+    |> User.with_account()
+    |> User.with_default_profile()
+    |> User.minimal_token_return()
+    |> Repo.one()
+    full.user
   end
 
   @doc """

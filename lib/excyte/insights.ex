@@ -25,7 +25,11 @@ defmodule Excyte.Insights do
   end
 
 
-
+  def create_document(attrs) do
+    %Section{}
+    |> Section.changeset(attrs)
+    |> Repo.insert()
+  end
 
   def get_section(id) do
     Repo.get(Section, id)

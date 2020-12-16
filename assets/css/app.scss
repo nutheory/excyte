@@ -169,14 +169,16 @@ span.icon-align{
     height: 36px;
     position: relative;
     width: 36px;
+    text-transform: uppercase;
     z-index: 100;
   }
 
   & .avatar img {
+    border-radius: 9999px;
     height: 100%;
     position: relative;
     width: 100%;
-    z-index: 102;
+    z-index: 99;
   }
 
   & .avatar::before,
@@ -189,7 +191,7 @@ span.icon-align{
     left: -21%;
     opacity: .6;
     position: absolute;
-    top: -22%;
+    top: -19%;
     transform: scale(0.725);
     width: 142%;
     z-index: 100;
@@ -253,11 +255,11 @@ span.icon-align{
       box-sizing: border-box;
       content: ' ';
       height: 142%;
-      left: -20%;
+      left: -21%;
       opacity: .6;
       position: absolute;
-      top: -20%;
-      transform: scale(0.714);
+      top: -19%;
+      transform: scale(0.725);
       width: 142%;
       z-index: 100;
     }

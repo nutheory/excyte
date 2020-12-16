@@ -1,27 +1,18 @@
 <div>
-  <div class="grid grid-cols-3 gap-6">
-    <div class="col-span-3 lg:col-span-1">
-      <div class="mb-6 bg-blue-200 rounded-md p-4" phx-drop-target="<%= @uploads.photo.ref %>">
-        <%= for {_ref, err} <- @uploads.photo.errors do %>
-          <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
-        <% end %>
-        <%= for url <- @uploaded_files do %>
-          <img src="<%= url %>" class="object-cover h-48" />
-        <% end %>
-        <%= for entry <- @uploads.photo.entries do %>
-          <%= live_img_preview entry, width: 64 %>
-        <% end %>
-        <form phx-change="validate_photo" phx-submit="save_photo">
+  <%= f = form_for @changeset, "#", [phx_change: "validate", phx_submit: "save", phx_target: @myself] %>
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col-span-3 lg:col-span-1">
+        <div class="mb-6 bg-blue-200 rounded-md p-4" phx-drop-target="<%= @uploads.photo.ref %>">
+          <%= for {_ref, err} <- @uploads.photo.errors do %>
+            <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
+          <% end %>
+          <%= for entry <- @uploads.photo.entries do %>
+            <%= live_img_preview entry, width: 80 %>
+          <% end %>
           <%= live_file_input @uploads.photo %>
-          <button type="submit">Upload</button>
-        </form>
+        </div>
       </div>
-      <div class="mb-6 bg-green-200 rounded-md p-4">
-      <label>Upload logo</label>
-      </div>
-    </div>
-    <div class="col-span-3 lg:col-span-2">
-      <%= f = form_for @changeset, "#", [phx_change: "validate", phx_submit: "save"] %>
+      <div class="col-span-3 lg:col-span-2">
         <div class="shadow-md bg-white rounded-md p-4">
           <h1>Create your profile</h1>
           <div class="mt-4">
@@ -69,9 +60,20 @@
             <% end %>
             <a href="#" class="subtle-button mt-2" phx-click="add_contact">Add a Contact</a>
           </div>
+          <%= if @default do %>
+            <%= hidden_input f, :default, value: true %>
+          <% else %>
+            <div>
+              <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+              </div>
+              <label for="toggle" class="text-gray-700">Set as default</label>
+            </div>
+          <% end %>
           <button type="submit" class="submit mt-4 w-full">Create profile</button>
         </div>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>

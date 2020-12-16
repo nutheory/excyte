@@ -24,7 +24,7 @@ defmodule ExcyteWeb.Insight.CmaBuilderLive do
   end
 
   def handle_info({:initial_build, %{"template" => t} = params}, socket) do
-    IO.inspect(params.templates, label: "PARAMS")
+    # IO.inspect(params.templates, label: "PARAMS")
     tmpl = Enum.find(params.templates, fn pt -> pt.id === t end)
     if tmpl do
       sections =

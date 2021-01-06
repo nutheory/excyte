@@ -8,12 +8,13 @@ defmodule ExcyteWeb.Insight.CmaBuilderLive do
   def mount(%{"id" => id}, %{"user_token" => token}, socket) do
     {:ok, comp_info} = Cachex.get(:insight_cache, id)
     if comp_info do
-      cu = Accounts.get_full_user_by_session_token(token)
+      cu = Accounts.get_full_user(token)
       send self() , {:initial_build, comp_info}
       {:ok, assign(socket,
         current_user: cu,
         errors: [],
         sections: [],
+        insight_id: id,
         templates: comp_info.templates,
         subject_property: comp_info.subject,
         comparables: comp_info.selected_comps

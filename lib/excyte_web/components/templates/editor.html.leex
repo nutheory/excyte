@@ -1,40 +1,27 @@
-<div x-data="{ openImage: true }">
-  <div id="editorWrapper" phx-hook="InitEditor" data-content="<%= Jason.encode!(@doc.content) %>">
-    <div id="menuBar">
-      <span class="material-icons toggleBold">format_bold</span>
-      <span class="material-icons toggleItalic">format_italic</span>
-      <span class="material-icons toggleBold">format_underline</span>
-      <span class="material-icons toggleStrikethrough">format_strikethrough</span>
-      <span class="material-icons toggleAlignLeft">format_align_left</span>
-      <span class="material-icons toggleAlignCenter">format_align_center</span>
-      <span class="material-icons toggleAlignRight">format_align_right</span>
-      <span class="material-icons toggleAlignJustify">format_align_justify</span>
-      <span class="material-icons toggleBold">insert_link</span>
-      <span class="material-icons-outlined toggleItalic" @click="openImage = true">insert_photo</span>
-    </div>
-    <form id="editor-form">
-      <div id="editor" name="editor"></div>
-    </form>
+<div id="editorWrapper" phx-hook="InitEditor">
+  Loaded
+  <div id="documentEditor">
+    <script type="text/x-template" id="document-editor-template">
+      <div>
+        <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+          <button :class="{ 'is-active': isActive.bold() }" @click="commands.bold">
+            <span class="">font_bold</span>
+          </button>
+        </editor-menu-bar>
+        <editor-content :editor="editor" />
+      </div>
+    </script>
   </div>
-  <div class="fixed top-0 left-0 flex items-center justify-center w-full h-full" style="background-color: rgba(0,0,0,.7);" x-show="openImage">
-    <div class="h-auto p-4 mx-4 text-left bg-white rounded shadow md:max-w-xl md:p-6 lg:p-8 md:mx-0" @click.away="openImage = false">
+  <%# <div class="fixed top-0 left-0 flex items-center justify-center w-full h-full" style="background-color: rgba(0,0,0,.7);">
+    <div class="h-auto p-4 mx-4 text-left bg-white rounded shadow md:max-w-xl md:p-6 lg:p-8 md:mx-0">
       <div class="text-center sm:mt-0 sm:text-left">
         <h3 class="text-lg text-gray-700">
           Upload media
         </h3>
         <div class="mt-2 h-32 border-dashed border-4 border-light-blue-500 container">
-          <%= for {_ref, err} <- @uploads.photo.errors do %>
-            <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
-          <% end %>
-          <%= for entry <- @uploads.photo.entries do %>
-            <%= live_img_preview entry, width: 80 %>
-            <progress max="100" value="<%= entry.progress %>"/>
-          <% end %>
-          <form phx-change="validate" phx-submit="save_photo" phx-update="ignore" phx-target="<%= @myself %>">
-            <%= live_file_input @uploads.photo %>
-          </form>
+
         </div>
       </div>
     </div>
-  </div>
+  </div> %>
 </div>

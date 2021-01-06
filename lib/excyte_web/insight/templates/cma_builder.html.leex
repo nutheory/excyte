@@ -12,10 +12,7 @@
           </li>
         <% end %>
       </ul>
-      <button @click.prevent="tab = 'new_section'">Add a section</button>
-    </div>
-    <div x-show="tab === 'new_section'">
-      <%= live_component @socket, EditorLive, current_user: @current_user, id: :section_editor %>
+      <%= live_redirect "Add a section", to: Routes.live_path(@socket, ExcyteWeb.Components.EditorLive, @insight_id, "cma", "new") %>
     </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 defmodule Excyte.Insights do
   import Ecto.Query, warn: false
   alias Excyte.Repo
-  alias Excyte.Insights.{Template, Section}
+  alias Excyte.Insights.{Template, Document}
 
   def get_templates(agent_id, brokerage_id) do
 
@@ -26,13 +26,13 @@ defmodule Excyte.Insights do
 
 
   def create_document(attrs) do
-    %Section{}
-    |> Section.changeset(attrs)
+    %Document{}
+    |> Document.changeset(attrs)
     |> Repo.insert()
   end
 
-  def get_section(id) do
-    Repo.get(Section, id)
+  def get_document(id) do
+    Repo.get(Document, id)
   end
 
   defp maybe_filter_by_tgl(query, schema, tgl) do

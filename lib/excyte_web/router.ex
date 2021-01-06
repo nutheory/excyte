@@ -68,6 +68,7 @@ defmodule ExcyteWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
     live "/cma/create", CmaLive
     live "/cma/builder/:id", CmaBuilderLive
+    live "/insights/builder/:insight_id/:type/:doc_id", EditorLive
   end
 
   scope "/agent", ExcyteWeb.Agent do
@@ -77,9 +78,8 @@ defmodule ExcyteWeb.Router do
   end
 
   scope "/", ExcyteWeb do
-    pipe_through [:browser]
-    live "/", PublicHomeLive
-    live "/pricing", PricingLive
+    pipe_through [:browser, :require_authenticated_user]
+    live "/insights/builder/:insight_id/:type/:doc_id", Components.EditorLive
   end
 
   scope "/", ExcyteWeb do
@@ -100,5 +100,7 @@ defmodule ExcyteWeb.Router do
     post "/confirm", UserConfirmationController, :create
     get "/confirm/:token", UserConfirmationController, :confirm
     get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
+    live "/", PublicHomeLive
+    live "/pricing", PricingLive
   end
 end

@@ -287,7 +287,7 @@ defmodule Excyte.Accounts do
     |> Repo.one()
   end
 
-  def get_full_user_by_session_token(token) do
+  def get_full_user(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
     full = User.with_mls(query)
     |> User.with_account()

@@ -6,8 +6,8 @@ defmodule ExcyteWeb.Insight.CmaLive do
   def render(assigns), do: InsightView.render("cma.html", assigns)
 
   def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_full_user_by_session_token(token)
-    templates = Insights.get_templates(cu.user.id, cu.user.brokerage_id)
+    cu = Accounts.get_full_user(token)
+    templates = Insights.get_templates(cu.id, cu.brokerage_id)
     mls = hd(cu.mls_credentials)
     {:ok, assign(socket,
       current_user: cu,

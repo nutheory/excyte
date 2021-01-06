@@ -9,7 +9,7 @@ defmodule Excyte.Insights.Template do
   schema "templates" do
     field :name, :string
     field :description, :string
-    field :schema, {:array, :map}
+    field :content, {:array, :map}
     field :default, :boolean
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
@@ -21,7 +21,7 @@ defmodule Excyte.Insights.Template do
     |> cast(attrs, [
       :name,
       :description,
-      :schema,
+      :content,
       :default,
       :brokerage_id,
       :created_by_id

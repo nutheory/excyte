@@ -13,6 +13,9 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 
+import Vue from 'vue'
+window.Vue = Vue
+
 import "phoenix_html"
 import 'alpinejs'
 import {Socket} from "phoenix"

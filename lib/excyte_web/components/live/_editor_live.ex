@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.EditorLive do
+defmodule ExcyteWeb.Components.OldEditorLive do
   use ExcyteWeb, :live_component
 
   alias Excyte.{Accounts, Insights}

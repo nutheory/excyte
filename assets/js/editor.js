@@ -1,55 +1,85 @@
-import { createDomEditor, createDomManager, createStateFromContent } from 'remirror/dom'
-import { fromHtml, toHtml, getRemirrorJSON } from 'remirror/core'
-import { WysiwygPreset } from 'remirror/preset/wysiwyg'
+import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
+import {
+  Blockquote,
+  HardBreak,
+  Heading,
+  BulletList,
+  OrderedList,
+  ListItem,
+  Bold,
+  Italic,
+  Link,
+  Strike,
+  Underline,
+  History,
+} from 'tiptap-extensions'
 
 export const InitEditor = {
-  initContent() { return this.el.dataset.content },
   mounted() {
-    const menuEl = document.querySelector('#menuBar')
-    const element = document.querySelector('#editor')
-    const save = document.querySelector('#save')
-    const manager = createDomManager([new WysiwygPreset()])
-    const editor = createDomEditor({ manager, element })
-    const prev = JSON.parse(this.initContent())
-    // console.log(JSON.parse(this.initContent()))
-
-    createStateFromContent({content: prev})
-
-    // this.handleEvent("loadContentFromDb", ({content}) => {
-    //   console.log('LOADER', content)
-    // })
-
-    save.addEventListener('click', (e) => {
-      let st = editor.getState()
-      let htmlString = toHtml({ node: st.doc, schema: st.schema })
-      let res = getRemirrorJSON(st)
-      this.pushEventTo('#editor-form', 'editor-save', res, (reply) => {
-        if (htmlString !== undefined){
-          console.log('saved', reply)
+    const thisHook = this
+    const elem = thisHook.el.querySelector("#documentEditor")
+    console.log('thisEDDDD333', thisHook)
+    new Vue ({
+      el: "#documentEditor",
+      template: '#document-editor-template',
+      components: {
+        Editor,
+        EditorContent,
+        EditorMenuBar,
+      },
+      data () {
+        console.log('thisEDDDData', thisHook)
+        return{
+          editor: new Editor({
+            extensions: [
+              new Blockquote(),
+              new HardBreak(),
+              new Heading({ levels: [1, 2, 3] }),
+              new BulletList(),
+              new OrderedList(),
+              new ListItem(),
+              new Bold(),
+              new Italic(),
+              new Link(),
+              new Strike(),
+              new Underline(),
+              new History(),
+            ],
+            content: `
+              <h1>Yay Headlines!</h1>
+              <p>All these <strong>cool tags</strong> are working now.</p>
+            `,
+          }),
         }
-      })
+      },
+      created() {
+        thisHook.handleEvent("loadContentFromDb", ({content}) => {
+          this.editor.setContent(content)
+        })
+      }
     })
-
-    element.addEventListener('input', (ch) => {
-      let st = editor.getState()
-      let htmlString = toHtml({ node: st.doc, schema: st.schema })
-      let res = getRemirrorJSON(st)
-      this.pushEventTo('#editor-form', 'editor-update', res, (reply) => {
-        if (htmlString !== undefined){
-          console.log('reply', reply)
-        }
-      })
-    })
-
-    menuEl.querySelector('.toggleBold').addEventListener('mousedown', (e) => {
-      e.preventDefault()
-      editor.commands.toggleBold()
-    })
-
-    menuEl.querySelector('.toggleItalic').addEventListener('mousedown', (e) => {
-      e.preventDefault()
-      editor.commands.toggleItalic()
-    })
-
   }
+//   {
+//   "type": "doc",
+//   "content": [
+//     {
+//       "type": "paragraph",
+//       "content": [
+//         {
+//           "type": "text",
+//           "text": "hfjgfjfg"
+//         },
+//         {
+//           "type": "text",
+//           "marks": [
+//             {
+//               "type": "bold"
+//             }
+//           ],
+//           "text": "jfjgf"
+//         }
+//       ]
+//     }
+//   ]
+// }
 }

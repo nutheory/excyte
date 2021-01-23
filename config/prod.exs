@@ -1,5 +1,4 @@
-use Mix.Config
-
+import Config
 
 config :excyte, env: :prod
 
@@ -13,7 +12,7 @@ config :excyte, env: :prod
 # which you should run after static files are built and
 # before starting your production server.
 config :excyte, ExcyteWeb.Endpoint,
-  url: [host: "example.com", port: 80],
+  url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
@@ -55,4 +54,3 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-import_config "prod.secret.exs"

@@ -6,7 +6,7 @@
   }
 
   & .dropdown-inner:hover {
-    @apply text-gray-500
+    @apply text-gray-500;
   }
 
   & .dropdown-inner:focus {
@@ -18,7 +18,8 @@
   }
 }
 
-form, .form {
+form,
+.form {
   @apply text-gray-700 text-sm;
 
   & h1 {
@@ -43,40 +44,42 @@ form, .form {
     & h2 {
       @apply text-lg leading-none font-bold text-blue-700;
     }
-  } 
+  }
 
   input[type=range]::-webkit-slider-thumb {
     pointer-events: all;
     width: 24px;
     height: 24px;
     -webkit-appearance: none;
+
     /* @apply w-6 h-6 appearance-none pointer-events-auto; */
   }
 
-  & input.text-field{
-    @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-400 rounded py-2 px-4 block w-full appearance-none;
+  & input.text-field {
+    @apply shadow text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
   }
 
-  & input.text-field:focus{
+  & input.text-field:focus {
     outline: 2px solid transparent;
     outline-offset: 2px;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
   }
 
   & textarea.textarea {
-    @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-300 rounded py-2 px-4 block w-full appearance-none;
+    @apply shadow text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
   }
 
-  & textarea.textarea:focus{
+  & textarea.textarea:focus {
     outline: 2px solid transparent;
     outline-offset: 2px;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
   }
 
-  & button.submit{
+  & button.submit {
     @apply text-white font-bold py-2 px-4 rounded bg-indigo-600 transition duration-150 ease-in-out;
   }
-  & button.submit:hover{
+
+  & button.submit:hover {
     @apply bg-indigo-500;
   }
 
@@ -84,21 +87,22 @@ form, .form {
     @apply cursor-wait;
   }
 
-  & .action{
+  & .action {
     @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-green-600 block transition duration-150 ease-in-out;
   }
 
-  & .outline-small{
+  & .outline-small {
     @apply flex flex-1 items-center rounded border border-gray-400 px-2 cursor-pointer;
   }
 
-  & button.submit:focus{
+  & button.submit:focus {
     @apply border-indigo-700;
+
     outline: 2px solid transparent;
     outline-offset: 2px;
   }
 
-  & button.submit:active{
+  & button.submit:active {
     @apply bg-indigo-700;
   }
 
@@ -123,50 +127,57 @@ form, .form {
   }
 }
 
-.subtle-button{
+.subtle-button {
   @apply inline-block text-gray-600 text-xs py-2 px-4 rounded bg-white shadow transition duration-150 ease-in-out;
 }
-.subtle-button:hover{
+
+.subtle-button:hover {
   @apply bg-white cursor-pointer;
 }
 
-.delete-button{
+.delete-button {
   @apply inline-block text-red-700 py-2 px-2 rounded bg-red-200 shadow transition duration-150 ease-in-out;
 }
-.delete-button:hover{
+
+.delete-button:hover {
   @apply bg-red-600 text-white cursor-pointer;
 }
 
-button.action-button{
+button.action-button {
   @apply text-white font-bold py-2 px-4 rounded bg-green-600 transition duration-150 ease-in-out;
 }
-button.action-button:hover{
+
+button.action-button:hover {
   @apply bg-green-500 cursor-pointer;
 }
 
-button.edit-button, div.edit-button{
+button.edit-button,
+div.edit-button {
   @apply text-white font-bold py-2 px-4 rounded bg-pink-600 transition duration-150 ease-in-out whitespace-nowrap;
 }
-button.edit-button:hover, div.edit-button:hover{
+
+button.edit-button:hover,
+div.edit-button:hover {
   @apply bg-pink-500 cursor-pointer;
 }
 
-.fake-text-field{
-  @apply shadow-inner bg-gray-200 text-gray-700 border border-gray-400 rounded py-2 px-4 block w-full;
+.fake-text-field {
+  @apply bg-white text-gray-700 border border-bgray-200 shadow rounded py-2 px-4 block w-full appearance-none;
 }
 
-.fake-text-field:focus{
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+.fake-text-field:focus {
+  @apply outline-none focus:ring-1 focus:ring-offset-2;
 }
 
 .toggle-checkbox:checked {
   @apply right-0 border-green-400;
+
   right: 0;
-  border-color: #68D391;
+  border-color: #68d391;
 }
+
 .toggle-checkbox:checked + .toggle-label {
   @apply bg-green-400;
-  background-color: #68D391;
+
+  background-color: #68d391;
 }

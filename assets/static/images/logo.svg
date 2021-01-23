@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="137px" height="43px" viewBox="0 0 137 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Group</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-1">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+        <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Tablet" transform="translate(-19.000000, -14.000000)">
+            <g id="Group" transform="translate(18.000000, 1.000000)">
+                <text id="excyte" filter="url(#filter-2)" font-family="Arial-Black, Arial Black" font-size="36" font-weight="700" letter-spacing="-2.4" fill="#57534E">
+                    <tspan x="0" y="40">excyte</tspan>
+                </text>
+                <path d="M129,13 L130.249406,14.4456677 C131.097056,18.5394163 134.030141,21.870002 137.888307,23.2770721 L138,23.40625 L126.655611,44.2141717 C125.321184,42.3011527 123.117777,41.0393311 120.617587,41.0009031 L129,13 Z" id="Combined-Shape" fill="#A25550"></path>
+                <circle id="Oval" fill="#A25550" cx="120" cy="50" r="6"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

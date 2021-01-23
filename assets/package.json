@@ -7,18 +7,25 @@
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.4.0",
+    "@tiptap/core": "^2.0.0-alpha.10",
+    "@tiptap/extension-font-family": "^2.0.0-alpha.5",
+    "@tiptap/extension-highlight": "^2.0.0-alpha.5",
+    "@tiptap/extension-image": "^2.0.0-alpha.5",
+    "@tiptap/extension-link": "^2.0.0-alpha.5",
+    "@tiptap/extension-strike": "^2.0.0-alpha.5",
+    "@tiptap/extension-text-align": "^2.0.0-alpha.6",
+    "@tiptap/extension-text-style": "^2.0.0-alpha.5",
+    "@tiptap/extension-underline": "^2.0.0-alpha.5",
+    "@tiptap/starter-kit": "^2.0.0-alpha.7",
     "alpinejs": "^2.7.3",
     "axios": "^0.21.1",
-    "install": "^0.13.0",
-    "nprogress": "^0.2.0",
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view",
-    "sortablejs": "^1.12.0",
-    "tailwindcss": "^2.0.1",
-    "tiptap": "^1.31.0",
-    "tiptap-extensions": "^1.34.0",
-    "vue": "^2.6.12"
+    "remixicon": "^2.5.0",
+    "tailwindcss": "^2.0.2",
+    "topbar": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -37,9 +44,9 @@
     "postcss-import": "^12.0.1",
     "postcss-loader": "^4.0.4",
     "sass-loader": "^8.0.2",
+    "stylelint": "^13.8.0",
+    "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^2.3.2",
-    "vue-loader": "^15.9.6",
-    "vue-template-compiler": "^2.6.12",
     "webpack": "4.41.5",
     "webpack-cli": "^3.3.2"
   }

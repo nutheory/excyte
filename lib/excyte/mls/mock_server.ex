@@ -12,9 +12,9 @@ defmodule Mls.MockServer do
   # This causes response already sent error
   # plug Plug.Logger, log: :debug
 
-  get "/.well-known/openid-configuration" do
+  get "/:dataset/.well-known/openid-configuration" do
     success(conn, %{
-      "authorization_endpoint" => "http://localhost:4004/o/oauth2/v2/auth",
+      "authorization_endpoint" => "http://localhost:4004/o/oauth2/v2/#{dataset}",
       "claims_supported" => [
         "aud",
         "email",
@@ -77,8 +77,16 @@ defmodule Mls.MockServer do
     })
   end
 
-  get "/o/oauth2/v2/:rest" do
-    qs = "code=5465c65&access_token=c72f9c07c32759011128b84001acb35d&refresh_token=3o0iipzrpiknijyxtjrugkt29&id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazci&expires_in=3600"
+  get "/o/oauth2/v2/:dataset" do
+    at =
+      case dataset do
+        "actris_ref" -> "access_token=c72f9c07c32759011128b84001acb35d&member_key=77c4b2f3ec218c88bd7e41617ef63489"
+        "test" -> "access_token=6baca547742c6f96a6ff71b138424f21&member_key=M_5dba1fa4a2a50c5b81f082d9"
+        _ -> "oops"
+      end
+
+    nm = String.split(dataset, "_") |> hd() |> String.upcase()
+    qs = "code=5465c65&mls_name=#{nm}&dataset_id=#{dataset}&#{at}&refresh_token=3o0iipzrpiknijyxtjrugkt29&id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazci&expires_in=3600"
 
     conn
     |> Plug.Conn.put_resp_header("location", "#{conn.params["redirect_uri"]}?#{qs}&excyte_user_id=#{conn.params["excyte_user_id"]}&return_to=#{conn.params["return_to"]}")

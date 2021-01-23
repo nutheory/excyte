@@ -66,20 +66,15 @@ defmodule ExcyteWeb.Router do
 
   scope "/insights", ExcyteWeb.Insight do
     pipe_through [:browser, :require_authenticated_user]
-    live "/cma/create", CmaLive
-    live "/cma/builder/:id", CmaBuilderLive
-    live "/insights/builder/:insight_id/:type/:doc_id", EditorLive
+    live "/:type/create", CreateLive
+    live "/:type/builder/:id", BuilderLive
+    live "/:type/builder/:insight_id/editor/:doc_id", EditorLive
   end
 
   scope "/agent", ExcyteWeb.Agent do
     pipe_through [:browser, :require_authenticated_user]
     live "/dash", DashboardLive
     live "/getting-started", GettingStartedLive
-  end
-
-  scope "/", ExcyteWeb do
-    pipe_through [:browser, :require_authenticated_user]
-    live "/insights/builder/:insight_id/:type/:doc_id", Components.EditorLive
   end
 
   scope "/", ExcyteWeb do

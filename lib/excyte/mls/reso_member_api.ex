@@ -9,7 +9,7 @@ defmodule Excyte.Mls.ResoMemberApi do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  def getProperties(mls) do
+  def getMemberProperties(mls) do
     get("#{mls}/Member")
   end
 end

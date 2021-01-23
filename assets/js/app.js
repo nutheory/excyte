@@ -1,7 +1,7 @@
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
-import "../css/app.scss"
+import "../css/app.css"
 
 // webpack automatically bundles all modules in your
 // entry points. Those entry points can be configured
@@ -13,19 +13,15 @@ import "../css/app.scss"
 //     import socket from "./socket"
 //
 
-import Vue from 'vue'
-window.Vue = Vue
-
-import "phoenix_html"
 import 'alpinejs'
+import "phoenix_html"
 import {Socket} from "phoenix"
-import NProgress from "nprogress"
 import {LiveSocket} from "phoenix_live_view"
-import {InitCheckout} from "./init_checkout"
 import {InitEditor} from "./editor"
+import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
-// import {} from "./utilities"
 import {validatePassword, toggleShowPassword} from "./public"
+import topbar from "topbar"
 
 let Hooks = {}
 let Uploaders = {}
@@ -76,8 +72,10 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 
 // Show progress bar on live navigation and form submits
-window.addEventListener("phx:page-loading-start", info => NProgress.start())
-window.addEventListener("phx:page-loading-stop", info => NProgress.done())
+let progressTimeout
+topbar.config({ barThickness : 5, shadowColor: "rgba(0, 0, 0, .6)" })
+window.addEventListener("phx:page-loading-start", () => { clearTimeout(progressTimeout); progressTimeout = setTimeout(topbar.show, 100) })
+window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTimeout); topbar.hide() })
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()

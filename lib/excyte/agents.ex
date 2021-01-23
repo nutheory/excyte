@@ -10,6 +10,10 @@ defmodule Excyte.Agents do
     |> Repo.preload(contacts: from(c in Contact, order_by: c.id))
   end
 
+  def get_default_profile(aid) do
+    Repo.get_by(Profile, %{agent_id: aid, default: true})
+  end
+
   def get_profile(_profile_id), do: %Profile{contacts: []}
 
   def change_profile(%Profile{} = profile, attrs \\ %{}) do
@@ -21,7 +25,7 @@ defmodule Excyte.Agents do
   end
 
   def create_profile(%Profile{} = profile, attrs, after_save \\ &{:ok, &1}) do
-    set_default_profile(attrs.agent_id, attrs)
+    set_default_profile(attrs["agent_id"], attrs)
     profile
     |> Profile.changeset(attrs)
     |> Repo.insert()
@@ -29,7 +33,7 @@ defmodule Excyte.Agents do
   end
 
   def update_profile(%Profile{} = profile, attrs, after_save \\ &{:ok, &1}) do
-    set_default_profile(profile.agent_id, attrs)
+    set_default_profile(profile["agent_id"], attrs)
     profile
     |> Profile.changeset(attrs)
     |> Repo.update()
@@ -42,7 +46,7 @@ defmodule Excyte.Agents do
   defp after_save(error, _func), do: error
 
   defp set_default_profile(aid, attrs) do
-    if attrs.default === true do
+    if attrs["default"] === true do
       Repo.get_by(Profile, %{agent_id: aid, default: true})
       |> Repo.update(%{default: false})
     end

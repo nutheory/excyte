@@ -14,6 +14,9 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
       add :can_manage_team, :boolean, default: false
       add :excyte_role, :string
       add :system_role, :string, default: "user"
+      add :current_mls, :map, default: %{}
+      add :current_avatar, :text
+      add :current_account_status, :string, default: "new"
       add :completed_setup, :boolean, default: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime

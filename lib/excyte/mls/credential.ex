@@ -10,12 +10,14 @@ defmodule Excyte.Mls.Credential do
     field :mls_name, :string
     field :email, :string
     field :mls_id, :string
+    field :member_key, :string
     field :dataset_id, :string
     field :zone_info, :string
     field :username, :string
     field :id_token, :string
     field :refresh_token, :string
     field :access_token, :string
+    field :default, :boolean
     field :expires_in, :integer
     belongs_to(:user, User)
     timestamps()
@@ -30,14 +32,27 @@ defmodule Excyte.Mls.Credential do
       :mls_name,
       :email,
       :mls_id,
+      :member_key,
       :dataset_id,
       :zone_info,
       :username,
       :id_token,
       :refresh_token,
       :access_token,
+      :default,
       :expires_in
     ])
-    |> validate_required([:user_id, :mls_id, :id_token, :refresh_token, :access_token])
+    |> validate_required([
+      :user_id,
+      :mls_id,
+      :id_token,
+      :member_key,
+      :dataset_id,
+      :refresh_token,
+      :access_token
+    ])
   end
+
+
+
 end

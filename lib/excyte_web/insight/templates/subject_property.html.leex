@@ -1,0 +1,16 @@
+<div class="lg:w-2/5 md:w-2/3 mt-24 mx-auto">
+  <h1 class="text-center pb-2">Create a CMA</h1>
+  <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
+  <%= live_component @socket, AddressAutocompleteLive, id: :subject_location %>
+  <h4 class="text-center text-bgray-400 mb-4 mt-8">Or find by listing ID</h4>
+  <div class="form flex lg:w-4/5 mx-auto">
+    <input
+      type="text"
+      data-lpignore="true"
+      name="listing-id"
+      placeholder="Listing ID"
+      class="fake-text-field flex-1"
+    >
+    <button class="submit ml-4">Find listing</button>
+  </div>
+</div>

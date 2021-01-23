@@ -9,7 +9,6 @@ defmodule Excyte.Agents.Profile do
     field :bio, :string
     field :company, :string
     field :photo_url, :string
-    field :logo_url, :string
     field :intro_video_url, :string
     field :default, :boolean
     has_many(:contacts, Contact)

@@ -1,4 +1,4 @@
-<div>
+<div class="px-4 sm:px-6 xl:px-8 mt-8">
   <%= case @current_step do %>
     <% "payment" -> %>
       <div class="w-full md:w-2/3 mx-auto">
@@ -7,13 +7,13 @@
             <h2 class="text-gray-700 font-bold pb-2">Step 2 of 3</h2>
           </div>
           <div>
-            <%= if @current_user.account.status === "active" do %>
+            <%= if @account.status === "active" do %>
               <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStartedLive, step: "profile") %>
             <% end %>
           </div>
         </div>
-        <%= live_component @socket, PaymentLive, current_user: @current_user, id: :payment %>
-        <%= if @current_user.account.status === "active" do %>
+        <%= live_component @socket, PaymentLive, current_user: @current_user, account: @account, id: :payment %>
+        <%= if @account.status === "active" do %>
           <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
             <div class="action-button my-6">Continue...</div>
           <% end %>
@@ -46,13 +46,13 @@
             <h2 class="text-gray-700 font-bold pb-2">Step 1 of 3</h2>
           </div>
           <div>
-            <%= if length(@current_user.mls_credentials) > 0 do %>
+            <%= if length(@mls_list) > 0 do %>
               <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStartedLive, step: "payment") %>
             <% end %>
           </div>
         </div>
-        <%= live_component @socket, MlsAuthLive, return_to: @return_to, current_user: @current_user, id: :mls %>
-        <%= if length(@current_user.mls_credentials) > 0 do %>
+        <%= live_component @socket, MlsAuthLive, return_to: @return_to, current_user: @current_user, mls_list: @mls_list, id: :mls %>
+        <%= if length(@mls_list) > 0 do %>
           <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "payment"), replace: false do %>
             <div class="action-button my-6">Continue...</div>
           <% end %>

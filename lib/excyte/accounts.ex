@@ -135,10 +135,6 @@ defmodule Excyte.Accounts do
     end
   end
 
-  def change_mls_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs)
-  end
-
   def update_user(uid, attrs \\ %{}) do
     Repo.get!(User, uid)
     |> User.update_changeset(attrs)
@@ -201,9 +197,9 @@ defmodule Excyte.Accounts do
   defp user_email_multi(user, email, context) do
     changeset = user |> User.email_changeset(%{email: email}) |> User.confirm_changeset()
 
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
+    Multi.new()
+    |> Multi.update(:user, changeset)
+    |> Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, [context]))
   end
 
   @doc """
@@ -280,22 +276,13 @@ defmodule Excyte.Accounts do
   """
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
-    User.with_mls(query)
-    |> User.with_account()
-    |> User.with_default_profile()
-    |> User.minimal_token_return()
-    |> Repo.one()
+    Repo.one(query)
   end
 
-  def get_full_user(token) do
-    {:ok, query} = UserToken.verify_session_token_query(token)
-    full = User.with_mls(query)
-    |> User.with_account()
-    |> User.with_default_profile()
-    |> User.minimal_token_return()
-    |> Repo.one()
-    full.user
-  end
+  # def get_full_user(token) do
+  #   {:ok, query} = UserToken.verify_session_token_query(token)
+  #   Repo.one(query) |> Repo.preload([:account, :profiles])
+  # end
 
   @doc """
   Deletes the signed token with the given context.
@@ -347,9 +334,9 @@ defmodule Excyte.Accounts do
   end
 
   defp confirm_user_multi(user) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.confirm_changeset(user))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
+    Multi.new()
+    |> Multi.update(:user, User.confirm_changeset(user))
+    |> Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
   end
 
   ## Reset password
@@ -404,9 +391,9 @@ defmodule Excyte.Accounts do
 
   """
   def reset_user_password(user, attrs) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, User.password_changeset(user, attrs))
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    Multi.new()
+    |> Multi.update(:user, User.password_changeset(user, attrs))
+    |> Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

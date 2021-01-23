@@ -1,0 +1,37 @@
+@import "./main.css";
+@import "./forms.css";
+@import "./lists.css";
+@import "./editor.css";
+
+@tailwind base;
+@tailwind components;
+
+@layer base {
+  html {
+    /* font-size: 16px; */
+  }
+
+  body {
+    @apply bg-bgray-100 text-gray-600;
+
+    line-height: 1.2;
+  }
+
+  h1 {
+    @apply text-3xl leading-none font-extrabold;
+  }
+
+  h2 {
+    @apply text-2xl leading-none font-bold;
+  }
+
+  h3 {
+    @apply text-xl leading-none font-bold;
+  }
+
+  h4 {
+    @apply text-lg leading-none font-bold;
+  }
+}
+
+@tailwind utilities;

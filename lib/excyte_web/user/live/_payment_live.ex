@@ -12,23 +12,24 @@ defmodule ExcyteWeb.Settings.PaymentLive do
   def update(assigns, socket) do
     {:ok, assign(socket,
       intent: nil,
+      account: assigns.account,
       payment_success: false,
-      plan: plan_details(assigns.current_user.account.source_plan_id),
+      plan: plan_details(assigns.account.source_plan_id),
       current_user: assigns.current_user
     )}
   end
 
-  def handle_event("payment-success", %{"id" => pm_id}, %{assigns: %{current_user: cu, plan: pl}} = socket) do
-    cu_id = cu.account.source_customer_id
+  def handle_event("payment-success", %{"id" => pm_id}, %{assigns: %{account: account, plan: pl}} = socket) do
+    cust_id = account.source_customer_id
     # Add confirmation email
     {:ok, receipt} =
       with {:ok, subscription} <- Billing.create_subscription(%{
-              customer_id: cu_id,
+              customer_id: cust_id,
               plan_id: pl.plan_id,
               payment_id: pm_id,
               trial_length: 30
           }),
-          {:ok, acc} <- Accounts.update_account_details(cu.account_id, %{
+          {:ok, acc} <- Accounts.update_account_details(account.id, %{
               status: subscription.status,
               amount: subscription.plan.amount,
               source_plan_id: subscription.plan.id,

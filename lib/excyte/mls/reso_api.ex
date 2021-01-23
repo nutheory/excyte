@@ -4,8 +4,8 @@ defmodule Excyte.Mls.ResoApi do
   alias Excyte.Mls.{MetaCache}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
-  plug Tesla.Middleware.Headers,
-    [{"authorization", "Bearer #{Application.get_env(:excyte, :bridge_server_api_key)}"}]
+  # plug Tesla.Middleware.Headers,
+    # [{"authorization", "Bearer #{Application.get_env(:excyte, :bridge_server_api_key)}"}]
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
@@ -13,7 +13,7 @@ defmodule Excyte.Mls.ResoApi do
                   "StreetName", "StateOrProvince", "City", "PostalCode", "UnitNumber",
                   "BathroomsOneQuarter", "BathroomsThreeQuarter", "BathroomsFull",
                   "BathroomsHalf", "BedroomsTotal", "PropertySubType", "LivingArea",
-                  "PropertyType"]
+                  "PropertyType", "ModificationTimestamp"]
 
   @expanded_fields @minimal_fields ++ ["Media", "PublicRemarks", "YearBuilt", "CloseDate",
                   "ExteriorFeatures", "InteriorFeatures", "WaterfrontFeatures", "PoolFeatures",
@@ -27,7 +27,7 @@ defmodule Excyte.Mls.ResoApi do
                   "ListingContractDate", "WithdrawnDate", "OffMarketDate", "OffMarketTimestamp",
                   "OnMarketDate", "OnMarketTimestamp", "OriginalEntryTimestamp", "PendingTimestamp",
                   "PriceChangeTimestamp", "StatusChangeTimestamp", "PurchaseContractDate",
-                  "MajorChangeTimestamp", "MajorChangeType", "ModificationTimestamp"
+                  "MajorChangeTimestamp", "MajorChangeType"
                 ]
 
 
@@ -36,6 +36,26 @@ defmodule Excyte.Mls.ResoApi do
                 "AssociationFeeIncludes", "AssociationFeeFrequency", "ListingTerms", "View",
                 "Appliances"]
 
+
+
+  # Run find/replace /Properties?access_token=#{mls.access_token} w/ /Properties?access_token=#{mls.access_token}access_token=#{mls.access_token}
+  # dont forget $metadata
+  # uncomment middleware above
+
+  def get_listings_by_agent(mls, %{list_agent_key: lak}) do
+    # ListAgentKet: "e01c0c36ad4a8e406770f2a56522ef91"
+    # ListAgentKet: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
+    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&$top=9&"
+      <> "$orderby=ModificationTimestamp%20asc&#{get_select(mls, @minimal_fields, ["Media"])}$filter="
+      <> "ListAgentKey%20eq%20%27#{lak}%27")
+    |> format_response()
+  end
+
+  def get_listings_by_brokerage(mls, %{office_broker_key: obk}) do
+  # OfficeBrokerKey: "238cb1a714e69b74eccf629b85a70ffc"
+
+  end
+
   def property_by_address(mls, %{
     street_number: street_number,
     safe_street_name: safe_street_name,
@@ -43,7 +63,7 @@ defmodule Excyte.Mls.ResoApi do
     state: state,
     zip: zip
   }) do
-    get("#{mls}/Properties?#{get_select(mls, @minimal_fields, ["Media"])}$filter="
+    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&#{get_select(mls, @minimal_fields, ["Media"])}$filter="
       <> "#{number(street_number)}%20and%20"
       <> "#{street(safe_street_name)}%20and%20"
       <> "#{city(city)}%20and%20"
@@ -57,10 +77,10 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   def comparable_properties(mls, opts) do
-    get("#{mls}/Properties?$top=20&"
+    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&$top=18&"
       <> get_select(mls, @expanded_fields)
-      <> "$filter=#{get_listings_by_distance(opts)}%20and%20"
-      <> "#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.low_price, high: opts.high_price})}"
+      <> "$filter=#{get_listings_by_distance(opts)}"
+      # <> "#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.low_price, high: opts.high_price})}"
     )
     |> format_response()
   end
@@ -126,14 +146,14 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   def get_metadata(mls) do
-    case MetaCache.get(mls) do
+    case MetaCache.get(mls["dataset_id"]) do
       %{} = meta -> meta
       _ -> get_metadata_from_mls(mls)
     end
   end
 
   def get_metadata_from_mls(mls) do
-    {:ok, %Tesla.Env{:body => body}} = get("#{mls}/$metadata")
+    {:ok, %Tesla.Env{:body => body}} = get("#{mls["dataset_id"]}/$metadata?access_token=#{mls["access_token"]}")
     meta =
       parse(body)
       |> xmap(entities: [
@@ -161,7 +181,7 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp process_media(prop) do
-    prop
+    Map.put(prop, "MainPhotoUrl", "N/A")
   end
 
   defp process_bathrooms(p) do
@@ -223,4 +243,5 @@ defmodule Excyte.Mls.ResoApi do
     IO.inspect(error, label: "ERR")
     {:error, error}
   end
+
 end

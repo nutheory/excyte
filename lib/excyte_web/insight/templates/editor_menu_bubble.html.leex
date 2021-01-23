@@ -1,0 +1,57 @@
+<template x-if="editor">
+  <div>
+    <nav class="space-y-0.5 w-32" x-show="!menuLinkVisible">
+      <button
+        class="bg-gray-200 rounded px-1 py-1"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('bold') }"
+        @click="editor.chain().focus().toggleBold().run()"
+      >
+        <svg class='remix'>
+          <use xlink:href="/images/remixicon.symbol.svg#ri-bold"></use>
+        </svg>
+      </button>
+      <button
+        class="bg-gray-200 rounded px-1 py-1"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('italic') }"
+        @click="editor.chain().focus().toggleItalic().run()"
+      >
+        <svg class='remix'>
+          <use xlink:href="/images/remixicon.symbol.svg#ri-italic"></use>
+        </svg>
+      </button>
+      <button
+        class="bg-gray-200 rounded px-1 py-1"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('highlight') }"
+        @click="editor.chain().focus().toggleHighlight().run()"
+      >
+        <svg class='remix'>
+          <use xlink:href="/images/remixicon.symbol.svg#ri-mark-pen-line"></use>
+        </svg>
+      </button>
+      <button
+        class="bg-gray-200 rounded px-1 py-1"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('link') }"
+        @click="addLink()"
+      >
+        <svg class='remix'>
+          <use xlink:href="/images/remixicon.symbol.svg#ri-link"></use>
+        </svg>
+      </button>
+    </nav>
+    <div x-show="menuLinkVisible" class="flex w-56">
+      <div class="flex-1">
+        <input type="text" placeholder="Enter Url" id="editor-link" />
+      </div>
+      <div class="">
+        <button
+          class="bg-gray-200 rounded px-2 py-1 fill-current text-red-300"
+          @click="editor.chain().focus().toggleLink().run()"
+        >
+          <svg class='remix'>
+            <use xlink:href="/images/remixicon.symbol.svg#ri-close-line"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

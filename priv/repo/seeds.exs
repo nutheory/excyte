@@ -28,6 +28,7 @@ mls = Mls.create_credential(%{
   agent_name: agent.full_name,
   mls_name: "ACTRIS",
   mls_id: "67475454757",
+  member_key: "77c4b2f3ec218c88bd7e41617ef63489",
   sub: "actris_ref",
   dataset_id: "actris_ref",
   username: "nutheory",

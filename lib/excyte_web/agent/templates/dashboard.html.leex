@@ -1,7 +1,38 @@
-<div>
-  <%= live_redirect to: Routes.live_path(@socket, CmaLive) do %>
-    <button class="">Create CMA</button>
-  <% end %>
-
-
+<div class="px-4 sm:px-6 xl:px-8">
+  <div class="flex mt-6">
+    <h1 class="flex-1">Dashboard</h1>
+    <div class="flex">
+      <%= live_redirect to: Routes.live_path(@socket, CreateLive, "cma") do %>
+        <button class="py-2 px-4 h-full mr-0.5 capitalize tracking-wide bg-bgray-600 text-white rounded hover:bg-gray-500 focus:outline-none focus:bg-gray-700">Create a CMA</button>
+      <% end %>
+      <div x-data="{ dropdownOpen: false }" class="relative">
+        <button @click="dropdownOpen = !dropdownOpen" class="relative z-10 block bg-bgray-600 rounded p-2 hover:bg-gray-500 focus:outline-none focus:bg-gray-700">
+          <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+          </svg>
+        </button>
+        <ul
+          x-show="dropdownOpen"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="transform opacity-0 scale-95"
+          x-transition:enter-end="transform opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-300"
+          x-transition:leave-start="transform opacity-100 scale-100"
+          x-transition:leave-end="transform opacity-0 scale-95"
+          class="w-48 absolute top-11 right-0 bg-white shadow rounded border border-gray-200 py-1 z-20"
+        >
+          <li href="#" class="py-2 px-4 hover:bg-blue-100">Property Report</li>
+          <li href="#" class="py-2 px-4 hover:bg-blue-100">Showcase</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="mt-16">
+    <h2>Recent Activity</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      <%= for listing <- @recents do %>
+        <%= live_component @socket, DashListingLive, listing: listing, id: "listing_id_#{listing["ListingId"]}" %>
+      <% end %>
+    </div>
+  </div>
 </div>

@@ -31,7 +31,7 @@ defmodule ExcyteWeb.Components.AddressAutocompleteLive do
         |> Map.put(:formatted, details["formatted_address"])
         |> Map.put(:coords, details["geometry"]["location"])
 
-      send self(), {:get_property, %{address: loc}}
+      send self(), {:get_comps, %{address: loc}}
     end
     {:noreply, socket}
   end

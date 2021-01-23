@@ -40,7 +40,8 @@ defmodule Excyte.Accounts.UserToken do
     query =
       from token in token_and_context_query(token, "session"),
         join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day")
+        where: token.inserted_at > ago(@session_validity_in_days, "day"),
+        select: user
 
     {:ok, query}
   end

@@ -23,16 +23,16 @@
       </form>
     </div>
   </div>
-  <%= if length(@current_user.mls_credentials) > 0 do %>
+  <%= if length(@mls_list) > 0 do %>
     <h3 class="text-lg leading-none font-bold text-green-500 px-2 py-1">Currently connected</h3>
     <ul class="border-t border-gray-400">
-      <%= for cred <- @current_user.mls_credentials do %>
+      <%= for cred <- @mls_list do %>
         <li class="mls-list-item">
           <h4><%= cred.mls_name %> <span><%= cred.username %></span></h4>
           <div class="flex">
             <div class="flex-1">
               <label>MLS ID</label>
-              <p><%= cred.mls_id %></p>
+              <p><%#= cred.mls_id %></p>
             </div>
             <button class="text-red-400 pt-1 mt-1 cursor-pointer" phx-click="disconnect" value="<%= cred.id %>">
               <i class="material-icons">link_off</i> <span class="icon-align">disconnect</span>

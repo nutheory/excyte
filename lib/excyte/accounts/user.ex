@@ -18,6 +18,9 @@ defmodule Excyte.Accounts.User do
     field :email, :string
     field :excyte_role, :string
     field :password, :string, virtual: true
+    field :current_account_status, :string
+    field :current_mls, :map
+    field :current_avatar, :string
     field :hashed_password, :string
     field :completed_setup, :boolean
     field :confirmed_at, :naive_datetime
@@ -38,7 +41,12 @@ defmodule Excyte.Accounts.User do
   """
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:completed_setup])
+    |> cast(attrs, [
+      :current_mls,
+      :current_avatar,
+      :current_account_status,
+      :completed_setup
+    ])
   end
 
   def client_registration_changeset(user, attrs) do
@@ -161,7 +169,7 @@ defmodule Excyte.Accounts.User do
   end
 
   def minimal_token_return(query) do
-    from [t, user, mls, acc, p] in query,
+    from [t, user, acc, p] in query,
     select: map(t, [
       :id,
       :token,
@@ -172,7 +180,7 @@ defmodule Excyte.Accounts.User do
         :brokerage_id,
         :completed_setup,
         :full_name,
-        mls_credentials: [:mls_name, :dataset_id, :id_token, :agent_name, :username, :zone_info, :id],
+        mls_credentials: [:mls_name, :dataset_id, :member_key, :agent_name, :username, :zone_info, :id],
         profiles: [:id, :photo_url, :name],
         account: [:id, :status]
       ]

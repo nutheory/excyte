@@ -6,7 +6,7 @@ defmodule ExcyteWeb.Settings.DashboardLive do
   def render(assigns), do: UserView.render("settings_dashboard.html", assigns)
 
   def mount(_params,  %{"user_token" => token}, socket) do
-    cu = Accounts.get_full_user(token)
+    cu = Accounts.get_user_by_session_token(token)
 
     {:ok, assign(socket, current_user: cu)}
   end

@@ -1,5 +1,10 @@
 # Excyte
 
+## Live Test Data
+dataset_id: actris_ref
+export BRIDGE_SERVER_KEY=c72f9c07c32759011128b84001acb35d
+
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`

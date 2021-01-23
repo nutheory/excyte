@@ -53,8 +53,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def simple_date_format(date) do
-    date
-    |> Timex.parse!("%Y-%m-%d", :strftime)
-    |> Timex.format!("%b %d, %Y", :strftime)
+    # Remove Timex? Is it being used elsewhere?
+    # {:ok, d, _} = DateTime.from_iso8601(date)
+    # Calendar.strftime(d, "%b %d, %Y")
   end
 end

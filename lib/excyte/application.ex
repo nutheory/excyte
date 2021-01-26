@@ -34,6 +34,8 @@ defmodule Excyte.Application do
           ]
         [_] ->
           [
+            {Plug.Cowboy,
+              scheme: :http, plug: Mls.MockServer, options: [port: 4004]},
             Excyte.Repo,
             Excyte.Mls.MetaCache,
             {Cachex, name: :insight_cache},

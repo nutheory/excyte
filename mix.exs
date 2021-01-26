@@ -62,7 +62,7 @@ defmodule Excyte.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
       {:money, "~> 1.8"},
-      {:bamboo, "~> 1.5"},
+      {:bamboo, "~> 1.6"},
       {:stripity_stripe, "~> 2.9.0"},
       {:openid_connect, "~> 0.2.2"}
     ]

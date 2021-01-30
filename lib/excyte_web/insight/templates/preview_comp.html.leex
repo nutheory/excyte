@@ -1,0 +1,148 @@
+<div class="h-full flex flex-col pt-8 lg:pt-12">
+  <div class="flex">
+    <div class="pr-2 mr-2 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <div class="flex-1">
+      <div class="flex">
+        <div class="mr-1">
+          <svg class="w-5 h-5 inline <%= Utilities.status_to_color(@listing["Status"]["MlsStatus"]).text %> " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <p class="text-sm flex-1 pt-0.5 text-gray-500">
+          4.6<span class="text-xs">mi from subject property</span>
+        </p>
+        <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full <%= Enum.join(Map.values(Utilities.status_to_color(@listing["Status"]["MlsStatus"])), " ") %> %>">
+          <%= @listing["Status"]["MlsStatus"] %>
+        </div>
+      </div>
+      <h3 class="my-1">
+        <%= @listing["StreetNumber"] %> <%= @listing["StreetName"] %>
+        <%= if @listing["UnitNumber"] do %>
+          <span class="pt-1 inline-block ml-1 text-gray-400 text-base">
+            <label>Unit</label>
+            <%= @listing["UnitNumber"] %>
+          </span>
+        <% end %>
+      </h3>
+    </div>
+  </div>
+  <%= if @added do %>
+    <div class="text-green-500 font-bold text-center my-8">
+      Added to Comparables
+        <span
+          class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
+          phx-click="remove-comp"
+          phx-value-key="<%= @listing["ListingKey"] %>"
+        >remove</span>
+    </div>
+  <% else %>
+    <button
+      class="action-button my-8 mx-auto w-4/5"
+      phx-click="add-comp"
+      phx-value-key="<%= @listing["ListingKey"] %>"
+    >
+      Add to Comparables
+    </button>
+  <% end %>
+  <div x-data="{selectedTab: 'main'}">
+    <ul class="flex border-b w-full border-gray-400 px-2">
+      <li class="-mb-px mr-1">
+        <a
+          :class="{ 'bg-gray-100 text-blue-700 border-gray-400 border-l border-t border-r' : selectedTab === 'main'}"
+          class="inline-block rounded-t py-2 px-4 border-gray-400 font-semibold hover:text-blue-800 bg-bgray-300 text-blue-700 border-l border-t border-r"
+          href="#"
+          @click.prevent="selectedTab = 'main'"
+          >Info</a
+        >
+      </li>
+      <li class="-mb-px mr-1">
+        <a
+          :class="{ 'bg-gray-100 text-blue-700 border-gray-400 border-l border-t border-r' : selectedTab === 'features'}"
+          class="inline-block rounded-t py-2 px-4 border-gray-400 font-semibold hover:text-blue-800 bg-bgray-300 text-blue-700 border-l border-t border-r"
+          href="#"
+          @click.prevent="selectedTab = 'features'"
+          >Features</a
+        >
+      </li>
+    </ul>
+    <div x-show="selectedTab === 'main'" class="flex-1 py-4 overflow-y-auto">
+      <div class="grid grid-cols-4 gap-4 text-gray-400">
+        <div class="text-center">
+          <label class="block text-right uppercase text-tiny">List price</label>
+          <p class="">$<span class="font-bold"><%= number_to_delimited(@listing["ListPrice"], precision: 0) %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">sqft</label>
+          <p class="font-bold"><%= number_to_delimited(@listing["LivingArea"], precision: 0) %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Beds</label>
+          <p class="font-bold"><%= @listing["BedroomsTotal"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Baths</label>
+          <p class="font-bold"><%= @listing["Bathrooms"]["Total"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Built</label>
+          <p class="font-bold"><%= @listing["YearBuilt"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Garage</label>
+          <p class="font-bold"><%= if @listing["GarageSpaces"], do: @listing["GarageSpaces"], else: "N/A" %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Walkscore</label>
+          <p class="font-bold"><%= @listing["Walkscore"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">MLS Status</label>
+          <p class="font-bold"><%= @listing["Status"]["MlsStatus"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Stories</label>
+          <p class="font-bold"><%= @listing["Stories"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Days On Market</label>
+          <p class="font-bold"><%= @listing["DaysOnMarket"] %></p>
+        </div>
+        <div class="text-center">
+          <label class="block uppercase text-tiny">Lot Sqft</label>
+          <p class="font-bold"><%= @listing["LotSizeSquareFeet"] %></p>
+        </div>
+        <div class="text-center col-span-2">
+          <label class="block uppercase text-tiny">Property Sub Type</label>
+          <p class="font-bold"><%= @listing["PropertySubType"] %></p>
+        </div>
+        <div class="text-center col-span-2">
+          <label class="block uppercase text-tiny">Subdivision</label>
+          <p class="font-bold"><%= @listing["SubdivisionName"] %></p>
+        </div>
+        <%= if @listing["Timeline"]["OffMarketDate"] do %>
+          <div class="text-center col-span-2">
+            <label class="block uppercase text-tiny">Off Market Date</label>
+            <p class="font-bold"><%= Utilities.simple_date_format(@listing["Timeline"]["OffMarketDate"]) %></p>
+          </div>
+        <% end %>
+      </div>
+      <div class="w-full my-6 rounded">
+        <%= live_component @socket, GalleryLive, media: @listing["Media"], id: @listing["ListingKey"] <> "_gallery" %>
+      </div>
+    </div>
+    <div x-show="selectedTab === 'features'" class="flex-1 py-4 overflow-y-auto">
+      <div class="flex flex-wrap mb-4 mt-2">
+        <p class="text-sm">
+          <strong>Remarks: </strong>
+          <%= @listing["PublicRemarks"] %>
+        </p>
+      </div>
+      <%= Utilities.display_relevant_features(@listing["Features"]) %>
+    </div>
+  </div>
+</div>

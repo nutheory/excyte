@@ -17,6 +17,7 @@ import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
+import {ViewportResize} from "./viewport_resize"
 import {InitEditor} from "./editor"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
@@ -29,7 +30,7 @@ let Uploaders = {}
 Hooks.InitEditor = InitEditor
 Hooks.InitCheckout = InitCheckout
 Hooks.AutocompleteLocation = AutocompleteLocation
-
+Hooks.ViewportResize = ViewportResize
 
 Hooks.RegistrationPassword = {
   mounted(){
@@ -63,7 +64,13 @@ let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("
 let liveSocket = new LiveSocket("/live", Socket, {
   hooks: Hooks, 
   uploaders: Uploaders, 
-  params: {_csrf_token: csrfToken},
+  params: { 
+    _csrf_token: csrfToken,
+    viewport: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+  },
   dom: {
     onBeforeElUpdated(from, to){
       if(from.__x){ window.Alpine.clone(from.__x, to) }

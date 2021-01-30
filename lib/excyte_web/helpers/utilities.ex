@@ -3,15 +3,22 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def status_to_color(status) do
     case status do
-      "Active" -> "green-500"
-      "Active Under Contract" -> "green-200"
-      "Canceled" -> "yellow-500"
-      "Closed" -> "red-500"
-      "Expired" -> "pink-700"
-      "Pending" -> "blue-500"
-      "Withdrawn" -> "purple-500"
+      "Active" ->  %{text: "text-green-600", bg: "bg-green-50", border: "border border-green-600"}
+      "Active Under Contract" -> %{text: "text-amber-600", bg: "bg-amber-50", border: "border border-amber-600"}
+      "Canceled" -> %{text: "text-red-600", bg: "bg-red-50", border: "border border-red-600"}
+      "Closed" ->  %{text: "text-teal-600", bg: "bg-teal-50", border: "border border-teal-600"}
+      "Expired" -> %{text: "text-pink-600", bg: "bg-pink-50", border: "border border-pink-600"}
+      "Pending" -> %{text: "text-cyan-600", bg: "bg-cyan-50", border: "border border-cyan-600"}
+      "Withdrawn" -> %{text: "text-indigo-600", bg: "bg-indigo-50", border: "border border-indigo-600"}
       _ -> ""
     end
+  end
+
+  def calculate_distance(subject_coords, listing_coords) do
+    IO.inspect(subject_coords, label: "SUBJECT")
+    IO.inspect(listing_coords, label: "LIST")
+    m = Geocalc.distance_between(subject_coords, listing_coords)
+    Float.round(m * 0.000621371192, 2)
   end
 
   def display_relevant_features(features) do
@@ -24,9 +31,9 @@ defmodule ExcyteWeb.Helpers.Utilities do
         end
       end)
     ~L"""
-      <ul class="flex flex-wrap -mx-2">
+      <ul class="feature-list">
         <%= for {{key, val}, idx} <- Enum.with_index(assigns) do %>
-          <li class="w-full sm:w-1/2 xl:w-1/3 px-2 pb-1">
+          <li class="feature-item">
             <label class="block"><%= split_by_case(key) %></label>
             <p class="text-sm"><%= Enum.join(val, ", ") %></p>
           </li>

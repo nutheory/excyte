@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Insight.PossibleSubjectsLive do
+defmodule ExcyteWeb.Insight.PossibleSubjects do
   use ExcyteWeb, :live_component
   alias ExcyteWeb.InsightView
 

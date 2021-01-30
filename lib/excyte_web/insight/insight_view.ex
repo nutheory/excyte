@@ -5,15 +5,19 @@ defmodule ExcyteWeb.InsightView do
   alias ExcyteWeb.Insight.{
     CreateLive,
     BuilderLive,
-    ListingLive,
-    SubjectPropertyLive,
-    PossibleSubjectsLive
+    EditorLive,
+    Listings,
+    ListingCard,
+    PossibleSubjects,
+    PreviewComp,
+    SelectedComps,
+    SubjectProperty
   }
   alias ExcyteWeb.Components.{
     AddressAutocompleteLive,
     RangeSliderLive,
     CalendarLive,
     GalleryLive,
-    EditorLive
+    FindByIdLive
   }
 end

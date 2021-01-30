@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.EditorLive do
+defmodule ExcyteWeb.Insight.EditorLive do
   use ExcyteWeb, :live_view
 
   alias Excyte.{Accounts, Insights}

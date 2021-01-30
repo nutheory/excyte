@@ -109,6 +109,20 @@ defmodule Excyte.Mls.ResoApi do
     end
   end
 
+  def get_by_Listing_ids(mls, ids_array) do
+    ids_str = Enum.reduce(ids_array, "$filter=", fn id, acc ->
+      "#{acc}#{listing_id(id)}"
+    end)
+    |> String.trim_trailing("%20or%20")
+
+    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&#{ids_str}")
+    |> format_response()
+  end
+
+  defp listing_id(id) do
+    "ListingId%20eq%20%27#{URI.encode(id)}%27%20or%20"
+  end
+
   defp number(number) do
     "StreetNumber%20eq%20%27#{URI.encode(number)}%27"
   end

@@ -1,0 +1,97 @@
+<div class="col-start-1 col-span-7 pt-16" x-data="{ filtersOpen: false }">
+  <div class="sticky top-16 bg-gray-100 z-30 pt-8 lg:pt-12">
+    <div class="flex">
+      <div class="flex-1">
+        <h4 class="text-base lg:text-lg text-gray-400">Subject Property</h4>
+        <h2 class="text-xl leading-none lg:text-2xl lg:leading-none">
+          <%= @subject.street_number %> <%= @subject.street_name %>
+          <%= if Map.has_key?(@subject, :unit_number) do %>
+            <span class="pt-1 inline-block ml-1"><label>Unit</label><%= @subject.unit_number %></span>
+          <% end %>
+        </h2>
+        <p class="text-xs lg:text-sm text-gray-400"><%= @subject.city %>, <%= @subject.state %> <%= @subject.zip %></p>
+      </div>
+      <div phx-click="reset-subject" class=" mb-2 ml-3 text-red-300 hover:text-red-400">
+        <svg class="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"
+          />
+        </svg>
+        <p class="text-sm">Start Over</p>
+      </div>
+    </div>
+    <div class="flex">
+      <div
+        @click="{ filtersOpen = !filtersOpen }"
+        class="flex-1 flex rounded px-4 py-2 my-4 border cursor-pointer border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600"
+      >
+        <div class="flex-1">
+          <svg class="h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+            />
+          </svg>
+          <span class="ml-0.5">Filter</span>
+        </div>
+        <p class="text-right text-sm"><span class="font-bold"><%= length(@comps) %></span> Comparable listings</p>
+      </div>
+      <%= if length(@selected_comps) > 0 do %>
+        <div
+          phx-click="toggle-selected"
+          class="relative inline-flex text-sm rounded px-4 py-2 my-4 ml-4 border cursor-pointer border-green-700 text-green-700 bg-green-50 hover:border-green-600 hover:text-green-600"
+        >
+          <span class="flex absolute top-0 right-0 -mt-1 -mr-1 h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+          <strong><%= length(@selected_comps) %></strong>&nbsp;Selected
+        </div>
+      <% end %>
+    </div>
+    <div class="hidden lg:block h-12 pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
+  </div>
+  <%= if @filters do %>
+    <div
+      x-show="filtersOpen"
+      x-transition:enter="transition-transform transition-opacity ease-out duration-500"
+      x-transition:enter-start="opacity-0 transform -translate-y-8"
+      x-transition:enter-end="opacity-100 transform translate-y-0"
+      x-transition:leave="transition ease-in duration-500"
+      x-transition:leave-end="opacity-0 transform -translate-y-6"
+    >
+      <div class="">
+        <%# Price %>
+        <%# Distance %>
+        <%# Status/ Close Date %>
+        <%#= live_component @socket, RangeSliderLive, opts: %{
+          min: @filters.min_price,
+          max: @filters.max_price,
+          low: @filters.low_price,
+          high: @filters.high_price,
+          interval: @filters.price_interval,
+          buffer: 5
+        }, id: :modify_comp_filter %>
+      </div>
+    </div>
+  <% end %>
+  <%= if @comps do %>
+    <ul class="py-6">
+      <%= for listing <- @comps do %>
+        <li class="w-full py-1">
+          <%= live_component @socket, ListingCard,
+            listing: listing,
+            subject_coords: [@subject.coords["lng"], @subject.coords["lat"]],
+            added: Enum.find(@selected_comps, fn sc -> sc["ListingKey"] === listing["ListingKey"] end) !== nil,
+            id: listing["ListingKey"]
+          %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

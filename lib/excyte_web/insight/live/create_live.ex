@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateLive do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Accounts, Insights, Mls.ResoApi}
   alias ExcyteWeb.{InsightView}
 
@@ -12,10 +13,12 @@ defmodule ExcyteWeb.Insight.CreateLive do
       current_user: cu,
       mls: cu.current_mls,
       subject: nil,
+      client_info: assign_client_info(socket),
       templates: templates,
       possible_subject_properties: nil,
       comparables: nil,
-      action: %{key: "", perform: ""},
+      preview: nil,
+      show_panel: false,
       selected_comps: [],
       filters: nil,
       filter_defaults: nil
@@ -54,34 +57,43 @@ defmodule ExcyteWeb.Insight.CreateLive do
     )}
   end
 
+  def handle_event("toggle-selected", _, %{assigns: assigns} = socket) do
+    {:noreply, assign(socket, preview: nil, show_panel: !assigns.show_panel)}
+  end
+
+  def handle_event("preview-property", %{"key" => selected_lk}, socket) do
+    sel = Enum.find(socket.assigns.comparables, fn lk -> lk["ListingKey"] === selected_lk end)
+    {:noreply, assign(socket, preview: sel, show_panel: true)}
+  end
+
+  def handle_event("remove-preview", _, socket) do
+    {:noreply, assign(socket, preview: nil, show_panel: false)}
+  end
+
   def handle_event("add-comp", %{"key" => selected_lk}, socket) do
     s = socket.assigns
     sel = Enum.find(s.comparables, fn lk -> lk["ListingKey"] === selected_lk end)
-    ret = Enum.reject(s.comparables, fn lk -> lk["ListingKey"] === selected_lk end)
 
-    {:noreply, assign(socket,
-      action: %{key: selected_lk, perform: "animate-select"},
-      comparables: ret,
-      selected_comps: s.selected_comps ++ [sel]
-    )}
+    {:noreply, assign(socket, selected_comps: s.selected_comps ++ [sel], preview: nil)}
   end
 
   def handle_event("remove-comp", %{"key" => selected_lk}, socket) do
     s = socket.assigns
-    sel = Enum.find(s.selected_comps, fn lk -> lk["ListingKey"] === selected_lk end)
     ret = Enum.reject(s.selected_comps, fn lk -> lk["ListingKey"] === selected_lk end)
 
-    {:noreply, assign(socket,
-      action: %{key: selected_lk, perform: "animate-deselect"},
-      comparables: [sel | s.comparables],
-      selected_comps: ret
-    )}
+    {:noreply, assign(socket, selected_comps: ret)}
   end
 
-  def handle_event("build-cma", %{"template" => t} = params,  %{assigns: assigns} = socket) do
+  def handle_event("review-cma", _,  %{assigns: assigns} = socket) do
     key = "cma#{assigns.current_user.id}#{System.os_time(:second)}"
-    Cachex.put(:insight_cache, key, Map.merge(assigns, %{"template" => "default"}))
-    {:noreply, push_redirect(socket, to: "/insights/cma/builder/#{key}")}
+    Cachex.put(:insight_cache, key, %{
+      filters: nil,
+      selected_comps: assigns.selected_comps,
+      current_user: assigns.current_user,
+      subject: assigns.subject,
+      client_info: assigns.client_info
+    })
+    {:noreply, push_redirect(socket, to: "/insights/cma/review/#{key}")}
   end
 
   def handle_event("reset-subject", _, socket) do

@@ -26,6 +26,8 @@ module.exports = (env, options) => {
           paths: globAll.sync([
             '../lib/excyte_web/**/templates/**/*.html.leex',
             '../lib/excyte_web/**/templates/**/*.html.eex',
+            '../lib/excyte_web/**/*.html.leex',
+            '../lib/excyte_web/**/*.html.eex',
             '../assets/js/**/*.js',
           ]),
           extractors: [

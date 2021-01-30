@@ -27,6 +27,12 @@ module.exports = {
       height: {
         '18': '4.5rem',
       },
+      fontSize: {
+        'tiny': '.65rem',
+      },
+      spacing: {
+        '2/3': '66.666667%'
+      },
       maxWidth: {
         '8xl': '90rem',
       },

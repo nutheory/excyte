@@ -1,10 +1,6 @@
 .listing-item {
   @apply rounded shadow bg-white;
 
-  & .main-photo {
-    @apply rounded-l w-28;
-  }
-
   & .body {
     @apply flex-1;
   }

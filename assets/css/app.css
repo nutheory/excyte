@@ -12,9 +12,13 @@
   }
 
   body {
-    @apply bg-bgray-100 text-gray-600;
+    @apply bg-gray-100 text-gray-600;
 
     line-height: 1.2;
+  }
+
+  [x-cloak] {
+    display: none;
   }
 
   h1 {

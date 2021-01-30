@@ -1,12 +1,9 @@
 <%= if @listing["MainPhotoUrl"] do %>
-  <div
-    x-data="{ optsVisible: false }"
-    class="w-full h-48 bg-cover rounded shadow  border-bgray-300 grayscale-60"
-    style="background-image:url(<%= @listing["MainPhotoUrl"] %>)"
-  >
-    <div class="flex flex-col h-full">
+  <div x-data="{ optsVisible: false }" class="rounded border-bgray-300 shadow relative overflow-hidden pb-2/3">
+    <img src="<%= @listing["MainPhotoUrl"] %>" alt="" class="absolute h-full w-full object-cover grayscale-60" />
+    <div class="absolute flex flex-col h-full w-full z-20">
       <div class="flex-1"></div>
-      <div class="h-1/4 rounded-b bg-bgray-800 bg-opacity-90 text-bgray-100">
+      <div class="rounded-b bg-bgray-800 bg-opacity-90 text-bgray-100">
         <div class="flex h-full">
           <div
             x-show.transition.in.duration.300ms.origin.bottom.left.opacity.scale.65="!optsVisible"
@@ -24,7 +21,7 @@
           </div>
           <div
             x-show.transition.in.duration.300ms.origin.top.right.opacity.scale.65="optsVisible"
-            class="flex-1 flex w-full bg-bgray-200 text-gray-700 rounded-bl"
+            class="flex-1 flex w-full py-2 bg-bgray-200 text-gray-700 rounded-bl"
           >
             <%= live_redirect to: Routes.live_path(@socket, CreateLive, "property"), class: "w-full" do %>
               <div class="flex h-full cursor-pointer hover:bg-cyan-300 items-center px-2">

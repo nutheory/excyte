@@ -1,151 +1,44 @@
-<div class="cma mt-8 px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
-  <div class="" x-data="{ filtersOpen: false }">
-    <%= if @subject === nil do %>
-      <%= live_component @socket, SubjectPropertyLive, id: :subject_property %>
-      <%= if @possible_subject_properties do %>
-        <ul>
-          <%= for prop <- @possible_subject_properties do %>
-            <%= live_component @socket, PossibleSubjectsLive, prop: prop, id: "sub_property_#{prop["ListingKey"]}" %>
-          <% end %>
-        </ul>
-      <% end %>
-    <% else %>
-      <div class="flex">
-        <div class="listing-item flex-1 bg-blue-100">
-          <div class="flex h-full">
-            <%= if @subject["MainPhotoUrl"] do %>
-              <div :class="{'rounded-bl-none rounded-br': open}" class="main-photo" style="background-repeat: no-repeat; background-size: cover; background-image: url(<%= @subject["MainPhotoUrl"] %>)"></div>
-            <% end %>
-            <div class="body flex p-3">
-              <div class="flex-1">
-                <div class="">
-                  <%= if @subject["ListPrice"] do %>
-                    <div class="inline-block font-bold">
-                      $<%= number_to_delimited(@subject["ListPrice"], precision: 0) %>
-                    </div>
-                  <% end %>
-                  <%= if @subject["LivingArea"] do %>
-                    <div class="inline-block ml-1 md:ml-3">
-                      <label>SqFt</label> <strong><%= number_to_delimited(@subject["LivingArea"], precision: 0) %></strong>
-                    </div>
-                  <% end %>
-                </div>
-                <div class="text-gray-400 text-xs">
-                  <p>
-                    <%= @subject["StreetNumber"] %> <%= @subject["StreetName"] %>
-                    <%= if @subject["UnitNumber"] do %>
-                      <span class="pt-1 inline-block ml-1"><label>Unit</label><%= @subject["UnitNumber"] %></span>
-                    <% end %>
-                  </p>
-                  <%= if @subject["StateOrProvince"] do %>
-                    <p><%= @subject["City"] %>, <%= String.upcase(@subject["StateOrProvince"]) %> <%= @subject["PostalCode"] %></p>
-                  <% end %>
-                </div>
-              </div>
-              <div class="hidden sm:flex text-gray-500">
-                <div class="mx-2 text-center">
-                  <span class="material-icons-outlined block">king_bed</span>
-                  <label class="block">Beds</label>
-                  <h3><%= @subject["BedroomsTotal"] %></h3>
-                </div>
-                <div class="mx-2 text-center">
-                  <span class="material-icons-outlined block">bathtub</span>
-                  <label class="block">Baths</label>
-                  <h3><%= @subject["Bathrooms"]["Total"] %></h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ml-2 flex flex-col text-gray-400">
-          <div phx-click="reset-subject" class="outline-small mb-2 hover:border-red-400 hover:text-red-400">
-            <span class="material-icons-outlined text-xl">backspace</span> <span class="hidden md:inline-block ml-1">Reset</span>
-          </div>
-          <div @click="{ filtersOpen = !filtersOpen }" class="outline-small hover:border-green-400 hover:text-green-400">
-            <span class="material-icons text-xl">tune</span> <span class="hidden md:inline-block ml-1">Filter</span>
-          </div>
-        </div>
-      </div>
-      <%= if @filters do %>
-        <div
-          x-show="filtersOpen"
-          x-transition:enter="transition-transform transition-opacity ease-out duration-500"
-          x-transition:enter-start="opacity-0 transform -translate-y-8"
-          x-transition:enter-end="opacity-100 transform translate-y-0"
-          x-transition:leave="transition ease-in duration-500"
-          x-transition:leave-end="opacity-0 transform -translate-y-6"
-        >
-          <div class="">
-            <%#= live_component @socket, RangeSliderLive, opts: %{
-              min: @filters.min_price,
-              max: @filters.max_price,
-              low: @filters.low_price,
-              high: @filters.high_price,
-              interval: @filters.price_interval,
-              buffer: 5
-            }, id: :modify_comp_filter %>
-          </div>
-          <div class="">
-            <%= live_component @socket, CalendarLive, date: nil, id: :date_selector %>
-          </div>
-        </div>
-      <% end %>
+<div class="cma px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }" phx-hook="ViewportResize" id="create-insight">
+  <%= if @subject === nil do %>
+    <%= live_component @socket, SubjectProperty, current_user: @current_user, id: :subject_property %>
+    <%= if @possible_subject_properties do %>
+      <ul>
+        <%= for prop <- @possible_subject_properties do %>
+          <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop["ListingKey"]}" %>
+        <% end %>
+      </ul>
     <% end %>
-  </div>
-  <%= if @selected_comps do %>
-    <ul class="">
-      <%= for comp <- @selected_comps do %>
-        <li class="w-full py-1">
-          <%= live_component @socket, ListingLive,
-            listing: comp,
-            selected: true,
-            action: @action,
-            id: comp["ListingKey"]
-          %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
-  <%= if @comparables do %>
-    <p class="mt-4 px-2 text-right text-sm text-gray-700"><span class="font-bold"><%= @comp_count %></span> Comparable listings</p>
-    <ul class="">
-      <%= for listing <- @comparables do %>
-        <li class="w-full py-1">
-          <%= live_component @socket, ListingLive,
-            listing: listing,
-            selected: false,
-            action: @action,
-            id: listing["ListingKey"]
-          %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
-  <%= if length(@selected_comps) > 0 do %>
-    <div class="fixed -right-2 -bottom-4 rounded-full h-20 w-20 z-30">
-      <div x-show="nextStepOpen" class="fixed left-0 bottom-6 w-48 pr-4">
-        <div class="shadow-md bg-green-100 border border-gray-400 rounded-md p-3 md:p-4">
-          <form phx-submit="build-cma">
-            <%= if length(@templates) > 1 do %>
-              <select name="template" id="template_selector" class="dropdown-inner">
-                <option value="" id="no_template_selection">Choose your MLS</option>
-                <%= for opt <- @templates do %>
-                  <option value="<%= opt.id %>"><%= opt.name %></option>
-                <% end %>
-              </select>
-            <% else %>
-              <input type="hidden" name="template" value="default">
-              <h2>If you would like to continue on to organize your CMA with the <%= length(@selected_comps) %> selected comparables click &quot;Continue&quot;</h2>
-            <% end %>
-            <button type="submit" name="action" class="action-button my-6" value="edit">Continue to edit</button>
-            <button type="submit" name="action" class="action-button my-6" value="create">Quick Create</button>
-          </form>
+  <% else %>
+    <div class="grid grid-cols-1 lg:grid-cols-12 xl:mx-8">
+      <%= live_component @socket, Listings, subject: @subject, selected_comps: @selected_comps, comps: @comparables, id: :listings_list %>
+      <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
+        <div class="lg:sticky lg:top-0 lg:col-start-9 lg:col-span-4 h-screen lg:pt-16 <%= if @preview, do: 'animate-select'%>">
+          <%= if @preview do %>
+            <%= live_component @socket, PreviewComp,
+              listing: @preview,
+              added: Enum.find(@selected_comps, fn sc -> sc["ListingKey"] === @preview["ListingKey"] end) !== nil,
+              id: :listing_preview
+            %>
+          <% else %>
+            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+          <% end %>
         </div>
-      </div>
-      <span class="flex h-full w-full" @click.prevent="nextStepOpen = !nextStepOpen">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-full w-full bg-green-500 text-4xl text-green-100 pt-4 font-bold justify-center opacity-75 hover:opacity-100"><%= length(@selected_comps) %></span>
-      </span>
+      <% else %>
+        <div
+          :class="{ 'right-0': <%= if @preview || @show_panel, do: true, else: false %> }"
+          class="panel-slidein bg-gray-100"
+        >
+          <%= if @preview do %>
+            <%= live_component @socket, PreviewComp,
+              listing: @preview,
+              added: Enum.find(@selected_comps, fn sc -> sc["ListingKey"] === @preview["ListingKey"] end) !== nil,
+              id: :listing_preview
+            %>
+          <% else %>
+            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>

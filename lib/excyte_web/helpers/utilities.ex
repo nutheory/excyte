@@ -15,8 +15,6 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def calculate_distance(subject_coords, listing_coords) do
-    IO.inspect(subject_coords, label: "SUBJECT")
-    IO.inspect(listing_coords, label: "LIST")
     m = Geocalc.distance_between(subject_coords, listing_coords)
     Float.round(m * 0.000621371192, 2)
   end
@@ -64,4 +62,41 @@ defmodule ExcyteWeb.Helpers.Utilities do
     # {:ok, d, _} = DateTime.from_iso8601(date)
     # Calendar.strftime(d, "%b %d, %Y")
   end
+
+  def format_str_json(body) do
+    Jason.decode!(body)
+    |> Map.new(fn {k, v} ->
+      if is_binary(k) do
+        {String.to_atom(k), handle_nested(v)}
+      else
+        {k, handle_nested(v)}
+      end
+    end)
+  end
+
+  def format_quoted_json(body) do
+    Map.new(body, fn {k, v} ->
+      if is_binary(k) do
+        {String.to_atom(k), handle_nested(v)}
+      else
+        {k, handle_nested(v)}
+      end
+    end)
+  end
+
+  defp handle_nested(v) when is_list(v) do
+    Enum.map(v, fn x ->
+      if Enumerable.impl_for(x) do
+        Map.new(x, fn {k, val} -> {String.to_atom(k), handle_nested(val)} end)
+      else
+        x
+      end
+    end)
+  end
+
+  defp handle_nested(v) when is_map(v) do
+    Map.new(v, fn {k, vm} -> {String.to_atom(k), handle_nested(vm)} end)
+  end
+
+  defp handle_nested(v), do: v
 end

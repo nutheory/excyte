@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Components.AddressAutocompleteLive do
   use ExcyteWeb, :live_component
   # alias Excyte.{Mls.ResoApi}
-  alias ExcyteWeb.ComponentView
+  alias ExcyteWeb.{ComponentView, Helpers.Utilities}
 
   def render(assigns), do: ComponentView.render("address_autocomplete.html", assigns)
 
@@ -31,7 +31,7 @@ defmodule ExcyteWeb.Components.AddressAutocompleteLive do
         |> Map.put(:formatted, details["formatted_address"])
         |> Map.put(:coords, details["geometry"]["location"])
 
-      send self(), {:get_comps, %{address: loc}}
+      send self(), {:get_comps, %{address: Utilities.format_quoted_json(loc)}}
     end
     {:noreply, socket}
   end

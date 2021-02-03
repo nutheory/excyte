@@ -1,6 +1,6 @@
 <div class="gallery">
   <div class="rounded relative overflow-hidden pb-2/3">
-    <img class="absolute h-full w-full object-cover rounded" src="<%= @current_item["MediaURL"] %>">
+    <img class="absolute h-full w-full object-cover rounded" src="<%= @current_item.media_url %>">
     <div class="prev" phx-click="prev" phx-target="<%= @myself %>">
       <span class="inline-block">
         <svg class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

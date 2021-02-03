@@ -1,70 +1,146 @@
-<div class="flex-1 sm:flex-none flex justify-center items-center lg:w-44 xl:w-48 sm:pl-6 xl:pl-8 opacity-70 hover:opacity-100 cursor-pointer">
-  <svg class="w-18 sm:w-36 h-8 sm:h-14 mt-2" viewBox="0 0 137 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-      <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-1">
-        <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
-      </filter>
-      <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-2">
-        <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
-      </filter>
-    </defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <g id="Tablet" transform="translate(-19.000000, -14.000000)">
-        <g id="Group" transform="translate(18.000000, 1.000000)">
-          <text id="excyte" filter="url(#filter-2)" font-family="Arial-Black, Arial Black" font-size="36" font-weight="700" letter-spacing="-2.4" fill="#57534E">
-            <tspan x="0" y="40">excyte</tspan>
-          </text>
-          <path d="M129,13 L130.249406,14.4456677 C131.097056,18.5394163 134.030141,21.870002 137.888307,23.2770721 L138,23.40625 L126.655611,44.2141717 C125.321184,42.3011527 123.117777,41.0393311 120.617587,41.0009031 L129,13 Z" id="Combined-Shape" fill="#A25550"></path>
-          <circle id="Oval" fill="#A25550" cx="120" cy="50" r="6"></circle>
-        </g>
-      </g>
-    </g>
-  </svg>
-</div>
-<div class="sm:flex-auto h-12 sm:h-18 flex items-center justify-between px-4 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
-  <div class="hidden sm:block w-full">
-    <div class="flex">
-      <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
-        <div class="ml-4">
-          <h3 class="text-lg font-bold leading-5 text-blue-600">Dash</h3>
-          <p class="text-xs text-bgray-400">Overview</p>
-        </div>
-      <% end %>
-      <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.CreateLive, "cma"), class: "block" do %>
-        <div class="ml-8">
-          <h3 class="text-lg font-bold leading-5 text-cyan-600">Insights</h3>
-          <p class="text-xs text-bgray-400">CMA's etc.</p>
-        </div>
-      <% end %>
-      <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
-        <div class="ml-8">
-          <h3 class="text-lg font-bold leading-5 text-teal-600">Clients</h3>
-          <p class="text-xs text-bgray-400">Leads etc.</p>
-        </div>
-      <% end %>
-    </div>
-  </div>
-  <div class="flex-1"></div>
-  <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
-    <div class="relative text-lg rounded-full flex items-center justify-center text-bgray-100 font-bold border-teal-500 bg-bgray-800 border-2 sm:border-4 uppercase h-9 w-9 sm:w-14 sm:h-14 z-30 cursor-pointer avatar" @click="open = !open">
-      <%= if @profile && @profile.photo_url do %>
-        <img class="rounded-full" src="<%= @profile.photo_url %>" />
-      <% else %>
-        <%= String.first(@current_user.full_name) %>
-      <% end %>
-    </div>
-    <ul
-      x-show="open"
-      x-transition:enter="transition ease-out duration-300"
-      x-transition:enter-start="transform opacity-0 scale-95"
-      x-transition:enter-end="transform opacity-100 scale-100"
-      x-transition:leave="transition ease-in duration-300"
-      x-transition:leave-start="transform opacity-100 scale-100"
-      x-transition:leave-end="transform opacity-0 scale-95"
-      class=" w-48 absolute top-12 right-0 bg-white shadow rounded border border-gray-200 py-1 z-20"
+<nav class="protected-header fixed top-0 z-30 lg:z-40 w-full">
+  <div class="max-w-8xl mx-auto bg-gray-100 flex-none flex">
+    <div
+      x-cloak
+      class="block sm:hidden w-12 mr-4 pl-4 relative"
+      x-data="{ navMenuOpen: false }"
+      @keydown.escape="navMenuOpen= false"
+      @click.away="navMenuOpen = false"
     >
-      <li class="py-2 px-4 hover:bg-blue-100"><%= live_redirect "Settings", to: Routes.live_path(@socket, ExcyteWeb.Settings.DashboardLive) %></li>
-      <li class="py-2 px-4 hover:bg-blue-100"><%= link "Log out", to: "/log_out", method: :delete %></li>
-    </ul>
+      <div @click="navMenuOpen = !navMenuOpen" class="h-12 w-8 pt-3 cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </div>
+      <div
+        x-show="navMenuOpen"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        class="fixed top-12 left-0 right-0 px-4"
+      >
+        <div class="w-full bg-gray-800 text-bgray-100 rounded">
+          <div class="flex flex-col pb-2">
+            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
+              <div class="p-4 hover:bg-bgray-700">
+                <h3 class="text-lg font-bold leading-5 text-blue-600">Dash</h3>
+                <p class="text-xs text-bgray-400">Overview</p>
+              </div>
+            <% end %>
+            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.CreateLive, "cma"), class: "block" do %>
+              <div class="p-4 hover:bg-bgray-700">
+                <h3 class="text-lg font-bold leading-5 text-cyan-600">Insights</h3>
+                <p class="text-xs text-bgray-400">CMA's etc.</p>
+              </div>
+            <% end %>
+            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
+              <div class="p-4 hover:bg-bgray-700">
+                <h3 class="text-lg font-bold leading-5 text-teal-600">Clients</h3>
+                <p class="text-xs text-bgray-400">Leads etc.</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-1 sm:flex-none flex justify-center items-center lg:w-44 xl:w-48 sm:pl-6 xl:pl-8 opacity-70 hover:opacity-100 cursor-pointer">
+      <svg class="w-18 sm:w-36 h-8 sm:h-14 mt-2" viewBox="0 0 137 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-1">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+          </filter>
+          <filter x="0.0%" y="0.0%" width="100.8%" height="100.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+          </filter>
+        </defs>
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+          <g id="Tablet" transform="translate(-19.000000, -14.000000)">
+            <g id="Group" transform="translate(18.000000, 1.000000)">
+              <text id="excyte" filter="url(#filter-2)" font-family="Arial-Black, Arial Black" font-size="36" font-weight="700" letter-spacing="-2.4" fill="#57534E">
+                <tspan x="0" y="40">excyte</tspan>
+              </text>
+              <path d="M129,13 L130.249406,14.4456677 C131.097056,18.5394163 134.030141,21.870002 137.888307,23.2770721 L138,23.40625 L126.655611,44.2141717 C125.321184,42.3011527 123.117777,41.0393311 120.617587,41.0009031 L129,13 Z" id="Combined-Shape" fill="#A25550"></path>
+              <circle id="Oval" fill="#A25550" cx="120" cy="50" r="6"></circle>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="sm:flex-auto h-12 sm:h-18 flex items-center justify-between px-4 sm:px-6 lg:mx-6 lg:px-0 xl:mx-8">
+      <div class="hidden sm:block w-full">
+        <div class="flex">
+          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
+            <div class="ml-4">
+              <h3 class="text-lg font-bold leading-5 text-blue-600">Dash</h3>
+              <p class="text-xs text-bgray-400">Overview</p>
+            </div>
+          <% end %>
+          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.CreateLive, "cma"), class: "block" do %>
+            <div class="ml-8">
+              <h3 class="text-lg font-bold leading-5 text-cyan-600">Insights</h3>
+              <p class="text-xs text-bgray-400">CMA's etc.</p>
+            </div>
+          <% end %>
+          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.DashboardLive), class: "block" do %>
+            <div class="ml-8">
+              <h3 class="text-lg font-bold leading-5 text-teal-600">Clients</h3>
+              <p class="text-xs text-bgray-400">Leads etc.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="flex-1"></div>
+      <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
+        <div class="relative text-lg rounded-full flex items-center justify-center text-bgray-100 font-bold border-teal-500 bg-bgray-800 border-2 sm:border-4 uppercase h-9 w-9 sm:w-14 sm:h-14 z-30 cursor-pointer avatar" @click="open = !open">
+          <%= if @profile && @profile.photo_url do %>
+            <img class="rounded-full" src="<%= @profile.photo_url %>" />
+          <% else %>
+            <%= String.first(@current_user.full_name) %>
+          <% end %>
+        </div>
+        <ul
+          x-show="open"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="transform opacity-0 scale-95"
+          x-transition:enter-end="transform opacity-100 scale-100"
+          x-transition:leave="transition ease-in duration-300"
+          x-transition:leave-start="transform opacity-100 scale-100"
+          x-transition:leave-end="transform opacity-0 scale-95"
+          class=" w-48 absolute top-12 right-0 bg-white shadow rounded border border-gray-200 py-1 z-20"
+        >
+          <li class="py-2 px-4">
+            <div class="flex">
+              <div class="flex justify-center items-center">
+                <svg class="w-6 h-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="flex-1 ml-2">
+                <p class="text-sm font-bold"><%= @current_mls_name %></p>
+                <p class="text-tiny uppercase">Current MLS</p>
+              </div>
+            </div>
+          </li>
+          <%= for mls <- @mls_options do %>
+            <%= if mls.id !== @current_mls_id do %>
+              <li class="py-2 px-4 hover:bg-blue-100 cursor-pointer" phx-click="switch-mls" phx-value-mls-id="<%= mls.id %>">
+                <div class="flex">
+                  <div class="flex justify-center items-center w-6"></div>
+                  <div class="flex-1 ml-2">
+                    <p class="text-sm font-bold"><%= mls.mls_name %></p>
+                    <p class="text-tiny uppercase">Click to Activate</p>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          <% end %>
+          <li class="py-2 px-4 hover:bg-blue-100 border-t border-bgray-300"><%= live_redirect "Settings", to: Routes.live_path(@socket, ExcyteWeb.Settings.DashboardLive) %></li>
+          <li class="py-2 px-4 hover:bg-blue-100"><%= link "Log out", to: "/log_out", method: :delete %></li>
+        </ul>
+      </div>
+    </div>
   </div>
-</div>
+</nav>

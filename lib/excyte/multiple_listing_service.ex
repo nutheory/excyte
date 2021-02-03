@@ -14,6 +14,7 @@ defmodule Excyte.Mls do
     |> Multi.run(:pre_check, __MODULE__, :change_cred_registration, [attrs])
     |> Multi.run(:maybe_merge, __MODULE__, :merge_default?, [attrs])
     |> Multi.run(:save, __MODULE__, :save_credential, [attrs])
+    |> Multi.run(:count, __MODULE__, :get_credential_count, [attrs])
     |> Multi.run(:update_user, __MODULE__, :update_current_mls, [attrs])
     |> Repo.transaction()
     |> case do
@@ -28,27 +29,40 @@ defmodule Excyte.Mls do
     |> Repo.insert()
   end
 
-  def update_current_mls(_repo, changes, attrs) do
-    IO.inspect(changes, label: "CHANGES")
-    Accounts.update_user(attrs.user_id, %{current_mls: %{
+  def update_current_mls(_repo, changes, %{user_id: user_id}) do
+    Accounts.update_user(user_id, %{current_mls: %{
       id: changes.save.id,
       dataset_id: changes.save.dataset_id,
-      access_token: changes.save.access_token
+      access_token: changes.save.access_token,
+      mls_name: changes.save.mls_name,
+      count: changes.count
     }})
   end
 
-  def destroy_credential(%{user_id: user_id, cred_id: cred_id}) do
-    cred = Repo.get_by!(Credential, %{user_id: user_id, id: cred_id})
+  def get_credential_count(_repo, _changes, %{user_id: user_id}) do
+    query =
+      from c in Credential,
+      where: c.user_id == ^user_id,
+      select: count()
 
+    {:ok, hd(Repo.all(query))}
+  end
+
+  def destroy_credential(%{user_id: user_id, cred_id: cred_id}) do
+    user = Repo.get!(User, user_id) |> Repo.preload([:mls_credentials])
+    cred = Enum.find(user.mls_credentials, fn cred -> cred.id === cred_id end)
+    IO.inspect(cred, label: "CRED")
+    IO.inspect(cred_id, label: "CRED_id")
     case Repo.delete cred do
-      {:ok, _} -> Repo.get!(User, user_id) |> Repo.preload([:account, :mls_credentials])
+      {:ok, _} -> reset_after_destroy(%{user_id: user_id})
       {:error, changeset} -> {:error, changeset}
     end
   end
 
   def get_credentials(%{user_id: user_id}) do
-    query = from c in Credential,
-          where: c.user_id == ^user_id
+    query =
+      from c in Credential,
+      where: c.user_id == ^user_id
 
     Repo.all(query)
   end
@@ -74,5 +88,22 @@ defmodule Excyte.Mls do
       end
 
     {:ok, new_attrs}
+  end
+
+  defp reset_after_destroy(%{user_id: user_id}) do
+    creds = get_credentials(%{user_id: user_id})
+    user =
+      if length(creds) > 0 do
+        Accounts.update_user(user_id, %{current_mls: %{
+          id: hd(creds).id,
+          dataset_id: hd(creds).dataset_id,
+          access_token: hd(creds).access_token,
+          mls_name: hd(creds).mls_name,
+          count: length(creds)
+        }})
+      else
+        Accounts.update_user(user_id, %{current_mls: nil})
+      end
+    creds
   end
 end

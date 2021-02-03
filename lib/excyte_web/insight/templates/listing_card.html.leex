@@ -1,4 +1,4 @@
-<div class="flex mb-12 cursor-pointer" phx-click="preview-property" phx-value-key="<%=  @listing["ListingKey"] %>">
+<div class="flex mb-12 cursor-pointer" phx-click="preview-property" phx-value-key="<%= @listing.listing_key %>">
   <div class="flex-1 relative">
     <%= if @added do %>
       <span class="flex absolute top-0 right-0 sm:-right-7 -mt-1 -mr-1 h-3 w-3 z-20">
@@ -7,52 +7,56 @@
       </span>
     <% end %>
     <div class="flex">
-      <div class="mr-1">
-        <svg class="w-5 h-5 inline <%= Utilities.status_to_color(@listing["Status"]["MlsStatus"]).text %> " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+      <div class="flex-1 flex">
+        <div class="mr-1">
+          <svg class="w-5 h-5 inline <%= Utilities.status_to_color(@listing.status.standard).text %>" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <p class="text-sm flex-1 pt-0.5 text-gray-500">
+          <%= if @listing.distance_from_subject do %>
+            <strong><%= @listing.distance_from_subject %></strong>
+            <span class="text-xs">mi from subject property</span>
+          <% end %>
+        </p>
       </div>
-      <p class="text-sm flex-1 pt-0.5 text-gray-500">
-        <strong><%= Utilities.calculate_distance(@subject_coords, @listing["Coordinates"]) %></strong>
-        <span class="text-xs">mi from subject property</span>
-      </p>
-      <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full <%= Enum.join(Map.values(Utilities.status_to_color(@listing["Status"]["MlsStatus"])), " ") %>">
-        <%= @listing["Status"]["MlsStatus"] %>
+      <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full <%= Enum.join(Map.values(Utilities.status_to_color(@listing.status.standard)), " ") %>">
+        <%= @listing.status.standard %>
       </div>
     </div>
     <h3 class="mt-1">
-      <%= @listing["StreetNumber"] %> <%= @listing["StreetName"] %>
-      <%= if @listing["UnitNumber"] do %>
+      <%= @listing.addr.street_number %> <%= @listing.addr.street_name %>
+      <%= if @listing.addr.unit do %>
         <span class="pt-1 inline-block ml-1">
           <label>Unit</label>
-          <%= @listing["UnitNumber"] %>
+          <%= @listing.addr.unit %>
         </span>
       <% end %>
     </h3>
     <div class="flex my-1 py-1 text-gray-400">
       <div class="mr-5">
         <label class="block text-right uppercase text-tiny">List price</label>
-        <p class="">$<span class="font-bold"><%= number_to_delimited(@listing["ListPrice"], precision: 0) %></p>
+        <p class="">$<span class="font-bold"><%= number_to_delimited(@listing.list_price, precision: 0) %></p>
       </div>
       <div class="mx-5 text-center">
         <label class="block uppercase text-tiny">sqft</label>
-        <p class="font-bold"><%= number_to_delimited(@listing["LivingArea"], precision: 0) %></p>
+        <p class="font-bold"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
       </div>
       <div class="mx-5 text-center">
         <label class="block uppercase text-tiny">Beds</label>
-        <p class="font-bold"><%= @listing["BedroomsTotal"] %></p>
+        <p class="font-bold"><%= @listing.beds %></p>
       </div>
       <div class="ml-5 text-center">
         <label class="block uppercase text-tiny">Baths</label>
-        <p class="font-bold"><%= @listing["Bathrooms"]["Total"] %></p>
+        <p class="font-bold"><%= @listing.baths.total %></p>
       </div>
     </div>
   </div>
   <div class="hidden sm:block ml-6 w-1/4">
-    <%= if @listing["MainPhotoUrl"] do %>
+    <%= if @listing.main_photo_url do %>
       <div class="rounded relative overflow-hidden pb-2/3">
-        <img src="<%= @listing["MainPhotoUrl"] %>" alt="" class="absolute h-full w-full object-cover" />
+        <img src="<%= @listing.main_photo_url %>" alt="" class="absolute h-full w-full object-cover" />
       </div>
     <% end %>
   </div>

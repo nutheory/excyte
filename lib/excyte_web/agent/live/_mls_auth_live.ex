@@ -11,6 +11,21 @@ defmodule ExcyteWeb.Agent.MlsAuthLive do
     end)
   end
 
+  def update(assigns, socket) do
+    IO.inspect(assigns.mls_list, label: "list")
+    dids = Enum.map(assigns.mls_list, fn li -> li.dataset_id end)
+    opts = Enum.filter(assigns.mls_opts, fn %{val: val} ->
+        !Enum.member?(dids, val)
+    end)
+    IO.inspect(opts, label: "OPTS-2")
+    {:ok, assign(socket,
+      current_user: assigns.current_user,
+      return_to: assigns.return_to,
+      mls_opts: opts,
+      mls_list: assigns.mls_list
+    )}
+  end
+
   def handle_event("authorize", %{"mls" => mls, "page" => return_to}, socket) do
     mls_redirect =
       OpenIDConnect.authorization_uri(
@@ -23,11 +38,13 @@ defmodule ExcyteWeb.Agent.MlsAuthLive do
     {:noreply, redirect(socket, external: mls_redirect)}
   end
 
-  def handle_event("disconnect", %{"value" => cred_id}, socket) do
-    cu = Mls.destroy_credential(
-      %{cred_id: cred_id, user_id: socket.assigns.current_user.id}
-    )
+  def handle_event("disconnect", %{"cred-id" => cred_id}, socket) do
+    new_creds = Mls.destroy_credential(%{
+      cred_id: String.to_integer(cred_id),
+      user_id: socket.assigns.current_user.id
+    })
 
-    {:noreply, assign(socket, current_user: cu)}
+    send self(), {:update_mls, %{current_user: socket.assigns.current_user, mls_list: new_creds}}
+    {:noreply, assign(socket, current_user: socket.assigns.current_user, mls_list: new_creds)}
   end
 end

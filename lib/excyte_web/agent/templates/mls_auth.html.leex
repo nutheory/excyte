@@ -27,17 +27,17 @@
     <h3 class="text-lg leading-none font-bold text-green-500 px-2 py-1">Currently connected</h3>
     <ul class="border-t border-gray-400">
       <%= for cred <- @mls_list do %>
-        <li class="mls-list-item">
-          <h4><%= cred.mls_name %> <span><%= cred.username %></span></h4>
-          <div class="flex">
-            <div class="flex-1">
-              <label>MLS ID</label>
-              <p><%#= cred.mls_id %></p>
-            </div>
-            <button class="text-red-400 pt-1 mt-1 cursor-pointer" phx-click="disconnect" value="<%= cred.id %>">
-              <i class="material-icons">link_off</i> <span class="icon-align">disconnect</span>
-            </button>
+        <li class="border-b border-gray-300 px-2 py-2 flex">
+          <div class="flex-1">
+            <p class="font-bold text-sm leading-none"><%= cred.mls_name %></p>
+            <p class="text-gray-400 text-sm"><%= cred.username %></p>
           </div>
+          <a href="#" class="text-red-400 block pt-1 mt-1" phx-click="disconnect" phx-value-cred-id="<%= cred.id %>" phx-target="<%= @myself %>">
+            <svg class="w-6 h-6 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+            </svg>
+            <span class="icon-align">disconnect</span>
+          </a>
         </li>
       <% end %>
     </ul>

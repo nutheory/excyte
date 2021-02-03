@@ -11,6 +11,13 @@ defmodule Excyte.Accounts do
 
   alias Stripe.Customer
 
+  @topic inspect(__MODULE__)
+
+
+  def subscribe(user_id) do
+    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{user_id}")
+  end
+
   ## Database getters
 
   @doc """
@@ -139,6 +146,7 @@ defmodule Excyte.Accounts do
     Repo.get!(User, uid)
     |> User.update_changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:user, :updated])
   end
 
   ## Settings
@@ -412,4 +420,15 @@ defmodule Excyte.Accounts do
       })
     end
   end
+
+  defp notify_subscribers({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(
+      Excyte.PubSub,
+      @topic <> "#{result.id}",
+      {__MODULE__, event, result}
+    )
+    {:ok, result}
+  end
+
+  defp notify_subscribers({:error, reason}, _), do: {:error, reason}
 end

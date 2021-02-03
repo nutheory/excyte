@@ -1,10 +1,10 @@
-<div class="px-4 sm:px-6 xl:px-8 mt-8">
+<div class="px-4 sm:px-6 xl:px-8 mt-28">
   <%= case @current_step do %>
     <% "payment" -> %>
       <div class="w-full md:w-2/3 mx-auto">
         <div class="flex">
           <div class="flex-1">
-            <h2 class="text-gray-700 font-bold pb-2">Step 2 of 3</h2>
+            <h3 class="text-gray-600 font-bold pb-2">Step 2 of 3</h3>
           </div>
           <div>
             <%= if @account.status === "active" do %>
@@ -23,7 +23,7 @@
       <div class="w-full md:w-2/3 mx-auto">
         <div class="flex">
           <div class="flex-1">
-            <h2 class="text-gray-700 font-bold pb-2">Step 3 of 3</h2>
+            <h2 class="text-gray-600 font-bold pb-2">Step 3 of 3</h2>
           </div>
           <div>
             <%= if @current_user.completed_setup do %>
@@ -43,7 +43,7 @@
       <div class="w-full md:w-1/2 xl:w-1/4 mx-auto">
         <div class="flex">
           <div class="flex-1">
-            <h2 class="text-gray-700 font-bold pb-2">Step 1 of 3</h2>
+            <h2 class="text-gray-600 font-bold pb-2">Step 1 of 3</h2>
           </div>
           <div>
             <%= if length(@mls_list) > 0 do %>

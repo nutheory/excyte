@@ -4,65 +4,70 @@ defmodule ExcyteWeb.Insight.CreateLive do
   alias Excyte.{Accounts, Insights, Mls.ResoApi}
   alias ExcyteWeb.{InsightView}
 
+  # @filter_defaults %{ distance: 20.0, status: ["closed", "pending"] }
+  @filter_defaults %{ distance: 2.0 }
+  @test_subject_info %{
+    beds: 3,
+    baths: 3,
+    stories: 2,
+    estimated_price: 951000,
+    address: nil
+  }
+
   def render(assigns), do: InsightView.render("create.html", assigns)
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    templates = Insights.get_templates(cu.id, cu.brokerage_id)
+    if connected?(socket), do: Accounts.subscribe(cu.id)
     {:ok, assign(socket,
       current_user: cu,
-      mls: cu.current_mls,
-      subject: nil,
+      selected_comps: [],
+      filters: @filter_defaults,
       client_info: assign_client_info(socket),
-      templates: templates,
+      subject: nil,
       possible_subject_properties: nil,
       comparables: nil,
       preview: nil,
-      show_panel: false,
-      selected_comps: [],
-      filters: nil,
-      filter_defaults: nil
+      show_panel: false
     )}
   end
 
-  # def handle_info({:get_property, %{address: address}}, socket) do
-  #   mls = hd(socket.assigns.current_user.mls_credentials)
-  #   {:ok, possible_subjects} = ResoApi.property_by_address(mls.dataset_id, address)
-  #   if length(possible_subjects.properties) === 1 do
-  #     handle_event("select-subject", %{"prop" => hd(possible_subjects.properties)}, socket)
-  #   else
-  #     {:noreply, assign(socket, possible_subject_properties: possible_subjects.properties )}
-  #   end
-  # end
+  def handle_info({:get_property, %{address: address}}, socket) do
+    mls = socket.assigns.mls
+    {:ok, possible_subjects} = ResoApi.property_by_address(mls.dataset_id, address)
 
-  def handle_info({:get_comps, %{address: address}}, %{assigns: %{mls: mls}} = socket) do
-    coords =
-      if address.coords["lat"] do
-        %{lng: address.coords["lng"], lat: address.coords["lat"]}
+    if length(possible_subjects.properties) === 1 do
+      handle_event("select-subject", %{"prop" => hd(possible_subjects.properties)}, socket)
+    else
+      {:noreply, assign(socket, possible_subject_properties: possible_subjects.properties )}
+    end
+  end
+
+  def handle_info({:get_comps, %{address: addr}}, %{assigns: a} = socket) do
+    find_by =
+      if addr.coords.lat do
+        %{zip: hd(String.split(addr.zip, "-")),
+          coords: %{lng: addr.coords.lng, lat: addr.coords.lat}}
       else
-        nil
+        %{ zip: hd(String.split(addr.zip, "-"))}
       end
-
-    opts = comparable_input(address)
-
-    IO.inspect(Map.merge(opts, %{coords: coords}), label: "BOINK")
-    {:ok, comps} =
-      ResoApi.comparable_properties(mls, Map.merge(opts, %{coords: coords}))
-
-    {:noreply, assign(socket,
-      subject: address,
-      comparables: comps.properties,
-      filters: opts,
-      comp_count: comps.count
-    )}
+    subject = Map.merge(@test_subject_info, addr)
+    opts = Map.merge(a.filters, find_by)
+    case ResoApi.comparable_properties(a.current_user.current_mls, subject, opts) do
+      {:ok, comps} -> {:noreply, assign(socket,
+                        subject: addr, comparables: comps.listings,
+                        filters: opts, comp_count: comps.count)}
+      {:error, err} -> {:noreply, assign(socket,
+                          errors: err, filters: opts, subject: addr)}
+    end
   end
 
-  def handle_event("toggle-selected", _, %{assigns: assigns} = socket) do
-    {:noreply, assign(socket, preview: nil, show_panel: !assigns.show_panel)}
+  def handle_event("toggle-panel", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, preview: nil, show_panel: !a.show_panel)}
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, socket) do
-    sel = Enum.find(socket.assigns.comparables, fn lk -> lk["ListingKey"] === selected_lk end)
+    sel = Enum.find(socket.assigns.comparables, fn lk -> lk.listing_key === selected_lk end)
     {:noreply, assign(socket, preview: sel, show_panel: true)}
   end
 
@@ -72,14 +77,14 @@ defmodule ExcyteWeb.Insight.CreateLive do
 
   def handle_event("add-comp", %{"key" => selected_lk}, socket) do
     s = socket.assigns
-    sel = Enum.find(s.comparables, fn lk -> lk["ListingKey"] === selected_lk end)
+    sel = Enum.find(s.comparables, fn lk -> lk.listing_key === selected_lk end)
 
     {:noreply, assign(socket, selected_comps: s.selected_comps ++ [sel], preview: nil)}
   end
 
   def handle_event("remove-comp", %{"key" => selected_lk}, socket) do
     s = socket.assigns
-    ret = Enum.reject(s.selected_comps, fn lk -> lk["ListingKey"] === selected_lk end)
+    ret = Enum.reject(s.selected_comps, fn lk -> lk.listing_key === selected_lk end)
 
     {:noreply, assign(socket, selected_comps: ret)}
   end
@@ -101,22 +106,20 @@ defmodule ExcyteWeb.Insight.CreateLive do
       comparables: nil,
       selected_comps: [],
       subject: nil,
-      anime: nil,
-      filter_defaults: nil,
-      filters: nil,
-      possible_subject_properties: nil)}
+      filters: @defaults,
+      possible_subject_properties: nil
+    )}
   end
 
-  defp comparable_input(subject) do
-    IO.inspect(subject, label: "BOOM")
-    %{
-      distance: 10.0,
-      zip: hd(String.split(subject.zip, "-"))
-      # min_price: subject["ListPrice"] - round(35/100 * subject["ListPrice"]),
-      # max_price: subject["ListPrice"] + round(35/100 * subject["ListPrice"]),
-      # price_interval: ceil(subject["ListPrice"]/100),
-      # low_price: subject["ListPrice"] - round(15/100 * subject["ListPrice"]),
-      # high_price: subject["ListPrice"] + round(15/100 * subject["ListPrice"])
-    }
+  def handle_info({Accounts, [:user, _], updated_user}, socket) do
+    IO.inspect(updated_user.current_mls, label: "FOUND")
+    {:noreply, assign(socket, current_user: updated_user)}
   end
 end
+
+# templates = Insights.get_templates(cu.id, cu.brokerage_id)
+# min_price: subject["ListPrice"] - round(35/100 * subject["ListPrice"]),
+# max_price: subject["ListPrice"] + round(35/100 * subject["ListPrice"]),
+# price_interval: ceil(subject["ListPrice"]/100),
+# low_price: subject["ListPrice"] - round(15/100 * subject["ListPrice"]),
+# high_price: subject["ListPrice"] + round(15/100 * subject["ListPrice"])

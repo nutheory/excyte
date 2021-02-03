@@ -1,7 +1,7 @@
 defmodule Excyte.Mls.ResoApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
-  alias Excyte.Mls.{MetaCache}
+  alias Excyte.Mls.{MetaCache, ProcessListings}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
@@ -9,7 +9,7 @@ defmodule Excyte.Mls.ResoApi do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  @minimal_fields ["ListingId", "Coordinates", "ListPrice", "MlsStatus", "StreetNumber",
+  @minimal_fields ["ListingId", "Coordinates", "ListPrice", "StandardStatus", "StreetNumber",
                   "StreetName", "StateOrProvince", "City", "PostalCode", "UnitNumber",
                   "BathroomsOneQuarter", "BathroomsThreeQuarter", "BathroomsFull",
                   "BathroomsHalf", "BedroomsTotal", "PropertySubType", "LivingArea",
@@ -31,8 +31,8 @@ defmodule Excyte.Mls.ResoApi do
                 ]
 
 
-  @main_details ["YearBuilt", "MlsStatus", "CloseDate", "Flooring", "GarageSpaces", "PropertyType",
-                "GarageYN", "GarageSpaces", "AttachedGarageYN", "LotSizeAcres", "AssociationFee",
+  @main_details ["YearBuilt", "StandardStatus", "CloseDate", "Flooring", "GarageSpaces", "GarageYN",
+                "GarageSpaces", "AttachedGarageYN", "LotSizeAcres", "AssociationFee",
                 "AssociationFeeIncludes", "AssociationFeeFrequency", "ListingTerms", "View",
                 "Appliances"]
 
@@ -45,8 +45,8 @@ defmodule Excyte.Mls.ResoApi do
   def get_listings_by_agent(mls, %{list_agent_key: lak}) do
     # ListAgentKet: "e01c0c36ad4a8e406770f2a56522ef91"
     # ListAgentKet: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
-    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&$top=9&"
-      <> "$orderby=ModificationTimestamp%20asc&#{get_select(mls, @minimal_fields, ["Media"])}$filter="
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
+      <> "$orderby=ModificationTimestamp%20asc&#{get_select(mls, %{fields: @minimal}, ["Media"])}$filter="
       <> "ListAgentKey%20eq%20%27#{lak}%27")
     |> format_response()
   end
@@ -63,7 +63,8 @@ defmodule Excyte.Mls.ResoApi do
     state: state,
     zip: zip
   }) do
-    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&#{get_select(mls, @minimal_fields, ["Media"])}$filter="
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&"
+      <> "#{get_select(mls, %{fields: @minimal_fields}, ["Media"])}$filter="
       <> "#{number(street_number)}%20and%20"
       <> "#{street(safe_street_name)}%20and%20"
       <> "#{city(city)}%20and%20"
@@ -76,13 +77,22 @@ defmodule Excyte.Mls.ResoApi do
     {:error, %{message: "invalid Address"}}
   end
 
-  def comparable_properties(mls, opts) do
-    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&$top=18&"
-      <> get_select(mls, @expanded_fields)
-      <> "$filter=#{get_listings_by_distance(opts)}"
+  def comparable_properties(mls, subject, opts) do
+    query = get_expanded(mls)
+    mod_opts = if query.coords, do: opts, else: Map.delete(opts, :coords)
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=18&"
+      <> query.select_str
+      <> "$filter=#{get_listings_by_distance(mod_opts)}"
+      <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
+      <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
       # <> "#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.low_price, high: opts.high_price})}"
     )
+    |> IO.inspect(label: "RETURN")
     |> format_response()
+    |> case do
+      {:ok, resp} -> ProcessListings.process_comparables(resp, subject)
+      {:error, err} -> err
+    end
   end
 
   def get_listings_by_distance(%{coords: %{lng: lng, lat: lat}, distance: d}) do
@@ -93,6 +103,24 @@ defmodule Excyte.Mls.ResoApi do
     zip_code(z)
   end
 
+  defp get_by_months_back(opts) do
+    gte_date = Timex.shift(Date.utc_today(), months: -opts.months)
+
+    if Map.has_key?(opts, :status) do
+      Enum.reduce(opts.status, "", fn st, acc ->
+        case st do
+          "closed" -> "#{acc}date(CloseDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "pending" -> "#{acc}date(ListingContractDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "active" -> "#{acc}date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          _ -> "#{acc}date(OffMarketDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+        end
+      end)
+      |> String.trim_trailing("%20or%20")
+    else
+      "#date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}"
+    end
+  end
+
   defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
@@ -101,6 +129,7 @@ defmodule Excyte.Mls.ResoApi do
     end
   end
 
+  # I think date wraps the attr not the string?
   defp get_attr_by_date_range(mls, %{attr: attr, low: l, high: h}) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
@@ -143,31 +172,50 @@ defmodule Excyte.Mls.ResoApi do
     "startswith(PostalCode,%27#{zip}%27)"
   end
 
-  defp status(status) do
-    "MlsStatus%20eq%20%27#{status}%27"
+  # Active, Active Under Contract, Canceled, Closed, Expired, Pending, Withdrawn
+  # ContractStatusChangeDate
+  defp status(status_arr) when is_list(status_arr) do
+    Enum.reduce(status_arr, "", fn st, acc ->
+      "#{acc}tolower(StandardStatus)%20eq%20%27#{st}%27%20or%20"
+    end)
+    |> String.trim_trailing("%20or%20")
   end
 
-  defp get_select(mls, fields, extra \\ []) do
+  defp status(stat) do
+    status([stat])
+  end
+
+  defp get_expanded(mls) do
+    case MetaCache.get("#{mls.dataset_id}_expanded") do
+      %{} = exp -> exp
+      _ -> get_select(mls, %{fields: @expanded_fields, name: "expanded"})
+    end
+  end
+
+  defp get_select(mls, %{fields: fields, name: name}, extra \\ []) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     min_list = fields ++ extra
-
-    Enum.reduce(fields ++ extra, "$select=ListingKey,", fn str, acc ->
-      acc = if Enum.member?(entity.attributes, str), do: acc <> str <> ",", else: acc
-    end)
-    |> String.trim_trailing(",")
-    |> (&<>/2).("&")
+    coords = Enum.member?(entity.attributes, "Coordinates")
+    res =
+      Enum.reduce(fields ++ extra, "$select=ListingKey,", fn str, acc ->
+        acc = if Enum.member?(entity.attributes, str), do: acc <> str <> ",", else: acc
+      end)
+      |> String.trim_trailing(",")
+      |> (&<>/2).("&")
+    MetaCache.put("#{mls.dataset_id}_#{name}", %{select_str: res, coords: coords})
+    %{select_str: res, coords: coords}
   end
 
   def get_metadata(mls) do
-    case MetaCache.get(mls["dataset_id"]) do
+    case MetaCache.get("#{mls.dataset_id}_meta") do
       %{} = meta -> meta
       _ -> get_metadata_from_mls(mls)
     end
   end
 
   def get_metadata_from_mls(mls) do
-    {:ok, %Tesla.Env{:body => body}} = get("#{mls["dataset_id"]}/$metadata?access_token=#{mls["access_token"]}")
+    {:ok, %Tesla.Env{:body => body}} = get("#{mls.dataset_id}/$metadata?access_token=#{mls.access_token}")
     meta =
       parse(body)
       |> xmap(entities: [
@@ -175,67 +223,8 @@ defmodule Excyte.Mls.ResoApi do
           entity_name: ~x"./@Name"s,
           attributes: ~x"./Property/@Name"ls
       ])
-    MetaCache.put(mls, meta)
+    MetaCache.put("#{mls.dataset_id}_meta", meta)
     meta
-  end
-
-  defp process_properties(props) do
-    Enum.map(props, fn property ->
-      property
-      |> process_media()
-      |> process_bathrooms()
-      |> process_attrs()
-    end)
-  end
-
-  defp process_media(%{"Media" => media} = prop) do
-    Map.put(prop, "MainPhotoUrl", Enum.find(media, fn m ->
-      m["MediaCategory"] === "Photo"
-    end)["MediaURL"])
-  end
-
-  defp process_media(prop) do
-    Map.put(prop, "MainPhotoUrl", "N/A")
-  end
-
-  defp process_bathrooms(p) do
-    bf = if p["BathroomsFull"], do: p["BathroomsFull"], else: 0
-    bh = if p["BathroomsHalf"], do: p["BathroomsHalf"] * 0.5, else: 0
-    boq = if p["BathroomsOneQuarter"], do: p["BathroomsOneQuarter"] * 0.25, else: 0
-    btq = if p["BathroomsThreeQuarter"], do: p["BathroomsThreeQuarter"] * 0.75, else: 0
-    added = bf + bh + boq + btq
-    total = if round(added) == added, do: round(added), else: added
-    Map.put(p, "Bathrooms", %{ "Full" => bf, "Half" => bh, "OneQuarter" => boq,
-      "ThreeQuarter" => btq, "Total" => total })
-  end
-
-  defp process_attrs(prop) do
-    Enum.reduce(prop, %{}, fn {key, val}, acc ->
-      # IO.inspect(key["YearBuilt"], label: "TEAR")
-      cond do
-        String.contains?(key, "Features") ->
-          feats = if acc["Features"], do: acc["Features"], else: %{}
-          new_val = Map.put(feats, hd(String.split(key, "Features")), val)
-          Map.put(acc, "Features", new_val)
-        String.contains?(key, "School") ->
-          sch = if acc["Schooling"], do: acc["Schooling"], else: %{}
-          new_val = Map.put(sch, key, val)
-          Map.put(acc, "Schooling", new_val)
-        String.contains?(key, "Association") ->
-          assc = if acc["Association"], do: acc["Association"], else: %{}
-          new_val = Map.put(assc, key, val)
-          Map.put(acc, "Association", new_val)
-        String.contains?(key, ["Date", "Timestamp", "Days"]) ->
-          tl = if acc["Timeline"], do: acc["Timeline"], else: %{}
-          new_val = Map.put(tl, key, val)
-          Map.put(acc, "Timeline", new_val)
-        String.contains?(key, "Status") ->
-          st = if acc["Status"], do: acc["Status"], else: %{}
-          new_val = Map.put(st, key, val)
-          Map.put(acc, "Status", new_val)
-        true -> Map.put(acc, key, val)
-      end
-    end)
   end
 
   defp format_response({:ok, %Tesla.Env{:body => %{"error" => error}}}) do
@@ -249,7 +238,7 @@ defmodule Excyte.Mls.ResoApi do
       context: body["@odata.context"],
       count: body["@odata.count"],
       next_link: body["@odata.nextLink"],
-      properties: process_properties(body["value"])
+      listings: body["value"]
     }}
   end
 

@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
 
   def render(assigns), do: AgentView.render("getting_started.html", assigns)
 
-  def mount(_params,  %{"user_token" => token}, socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{user_id: cu.id})
@@ -24,15 +24,11 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
     )}
   end
 
-  def handle_event("disconnect", %{"value" => cred_id}, socket) do
-    cu = Mls.destroy_credential(
-      %{cred_id: cred_id, user_id: socket.assigns.current_user.id}
-    )
-
-    {:noreply, assign(socket, current_user: cu)}
-  end
-
   def handle_params(params, _uri, socket) do
     {:noreply, assign(socket, current_step: params["step"])}
+  end
+
+  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
+    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
   end
 end

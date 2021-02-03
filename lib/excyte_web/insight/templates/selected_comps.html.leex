@@ -17,7 +17,7 @@
   <%= if length(@selected) > 0 do %>
     <div class="form">
       <button
-        class="submit my-8 mx-auto w-4/5"
+        class="submit block my-8 mx-auto w-4/5"
         phx-click="review-cma"
       >
         Contintue with selected
@@ -29,20 +29,20 @@
           <svg
             class="absolute z-40 top-2 right-2 w-6 h-6 text-red-500 cursor-pointer"
             phx-click="remove-comp"
-            phx-value-key="<%= listing["ListingKey"] %>"
+            phx-value-key="<%= listing.listing_key %>"
             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
           </svg>
-          <img src="<%= listing["MainPhotoUrl"] %>" alt="" class="absolute h-full w-full object-cover grayscale-60" />
+          <img src="<%= listing.main_photo_url %>" alt="" class="absolute h-full w-full object-cover grayscale-60" />
           <div class="absolute flex flex-col h-full w-full z-20">
             <div class="flex-1"></div>
             <div class="rounded-b bg-bgray-800 bg-opacity-90 text-bgray-100">
               <div class="flex h-full">
                 <div class="flex-1 px-4 py-2">
                   <p class="text-sm">
-                    <%= listing["StreetNumber"] %> <%= listing["StreetName"] %>
-                    <%= if listing["UnitNumber"] do %>
-                      <span class="text-xs text-gray-400 inline-block">Unit <%= listing["UnitNumber"] %></span>
+                    <%= listing.addr.street_number %> <%= listing.addr.street_name %>
+                    <%= if listing.addr.unit do %>
+                      <span class="text-xs text-gray-400 inline-block">Unit <%= listing.addr.unit %></span>
                     <% end %>
                   </p>
                 </div>

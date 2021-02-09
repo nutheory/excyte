@@ -2,15 +2,15 @@ defmodule ExcyteWeb.Helpers.Utilities do
   import Phoenix.LiveView.Helpers
 
   def status_to_color(status) do
-    case status do
-      "Active" ->  %{text: "text-green-600", bg: "bg-green-50", border: "border border-green-600"}
-      "Active Under Contract" -> %{text: "text-amber-600", bg: "bg-amber-50", border: "border border-amber-600"}
-      "Canceled" -> %{text: "text-red-600", bg: "bg-red-50", border: "border border-red-600"}
-      "Closed" ->  %{text: "text-teal-600", bg: "bg-teal-50", border: "border border-teal-600"}
-      "Expired" -> %{text: "text-pink-600", bg: "bg-pink-50", border: "border border-pink-600"}
-      "Pending" -> %{text: "text-cyan-600", bg: "bg-cyan-50", border: "border border-cyan-600"}
-      "Withdrawn" -> %{text: "text-indigo-600", bg: "bg-indigo-50", border: "border border-indigo-600"}
-      _ -> ""
+    cond do
+      String.contains?(status, "Active") ->  %{text: "text-green-600", bg: "bg-green-50", border: "border border-green-600"}
+      String.contains?(status, "Active Under Contract") -> %{text: "text-amber-600", bg: "bg-amber-50", border: "border border-amber-600"}
+      String.contains?(status, "Canceled") -> %{text: "text-red-600", bg: "bg-red-50", border: "border border-red-600"}
+      String.contains?(status, "Closed") ->  %{text: "text-teal-600", bg: "bg-teal-50", border: "border border-teal-600"}
+      String.contains?(status, "Expired") -> %{text: "text-pink-600", bg: "bg-pink-50", border: "border border-pink-600"}
+      String.contains?(status, "Pending") -> %{text: "text-cyan-600", bg: "bg-cyan-50", border: "border border-cyan-600"}
+      String.contains?(status, "Withdrawn") -> %{text: "text-indigo-600", bg: "bg-indigo-50", border: "border border-indigo-600"}
+      true -> ""
     end
   end
 

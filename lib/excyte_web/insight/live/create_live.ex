@@ -1,8 +1,8 @@
 defmodule ExcyteWeb.Insight.CreateLive do
   use ExcyteWeb, :live_view
   use ViewportHelpers
-  alias Excyte.{Accounts, Insights, Mls.ResoApi}
-  alias ExcyteWeb.{InsightView}
+  alias Excyte.{Accounts, Insights, Mls.ResoApi, Mls.RealtorApi}
+  alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   # @filter_defaults %{ distance: 20.0, status: ["closed", "pending"] }
   @filter_defaults %{ distance: 2.0 }
@@ -53,6 +53,8 @@ defmodule ExcyteWeb.Insight.CreateLive do
       end
     subject = Map.merge(@test_subject_info, addr)
     opts = Map.merge(a.filters, find_by)
+    sub = get_subject_property_id(addr)
+    RealtorApi.get_subject_details_start(sub)
     case ResoApi.comparable_properties(a.current_user.current_mls, subject, opts) do
       {:ok, comps} -> {:noreply, assign(socket,
                         subject: addr, comparables: comps.listings,
@@ -114,6 +116,18 @@ defmodule ExcyteWeb.Insight.CreateLive do
   def handle_info({Accounts, [:user, _], updated_user}, socket) do
     IO.inspect(updated_user.current_mls, label: "FOUND")
     {:noreply, assign(socket, current_user: updated_user)}
+  end
+
+  defp get_subject_property_id(loc) do
+    HTTPoison.get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input="
+      <> "#{loc.street_number}%20#{URI.encode(loc.street_name)}%20#{loc.zip}&area_types=state%2Ccity%2Ccounty%2C"
+      <> "postal_code%2Cneighborhood%2Caddress%2Cstreet%2Cbuilding%2Cmlsid%2Cbuilding%2Cschool%2C"
+      <> "school_district%2Cuniversity%2Cpark%2Cstate&limit=10")
+    |> case do
+      {:ok, %{body: body}} -> hd(Utilities.format_str_json(body).autocomplete)
+      {:error, err} -> err
+    end
+    |> IO.inspect(label: "RESP")
   end
 end
 

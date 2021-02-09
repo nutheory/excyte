@@ -87,7 +87,7 @@ defmodule Excyte.Mls.ResoApi do
       <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
       # <> "#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.low_price, high: opts.high_price})}"
     )
-    |> IO.inspect(label: "RETURN")
+    # |> IO.inspect(label: "RETURN")
     |> format_response()
     |> case do
       {:ok, resp} -> ProcessListings.process_comparables(resp, subject)

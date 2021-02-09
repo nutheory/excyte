@@ -1,10 +1,10 @@
-<div class="cma px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }" phx-hook="ViewportResize" id="create-insight">
+<div class="cma mt-24 mx-auto px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
   <%= if @subject === nil do %>
     <%= live_component @socket, SubjectProperty, current_user: @current_user, id: :subject_property %>
     <%= if @possible_subject_properties do %>
       <ul>
         <%= for prop <- @possible_subject_properties do %>
-          <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop["ListingKey"]}" %>
+          <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop.listing_key}" %>
         <% end %>
       </ul>
     <% end %>
@@ -16,7 +16,7 @@
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,
-              added: Enum.find(@selected_comps, fn sc -> sc["ListingKey"] === @preview["ListingKey"] end) !== nil,
+              added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
               id: :listing_preview
             %>
           <% else %>
@@ -31,7 +31,7 @@
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,
-              added: Enum.find(@selected_comps, fn sc -> sc["ListingKey"] === @preview["ListingKey"] end) !== nil,
+              added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
               id: :listing_preview
             %>
           <% else %>

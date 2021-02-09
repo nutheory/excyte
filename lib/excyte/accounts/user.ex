@@ -8,7 +8,7 @@ defmodule Excyte.Accounts.User do
     Agents.Profile,
     Brokerages.Brokerage,
     Mls.Credential,
-    Mls.CurrentMlsType,
+    Utils.MapType,
     Repo
   }
 
@@ -20,7 +20,7 @@ defmodule Excyte.Accounts.User do
     field :excyte_role, :string
     field :password, :string, virtual: true
     field :current_account_status, :string
-    field :current_mls, CurrentMlsType
+    field :current_mls, MapType
     field :current_avatar, :string
     field :hashed_password, :string
     field :completed_setup, :boolean

@@ -26,19 +26,17 @@ defmodule Excyte.Mls.ProcessListings do
     %{
       listing: l,
       changes: %{
-        addr: %{
-          street_name: l["StreetName"],
-          street_number: l["StreetNumber"],
-          unit: l["UnitNumber"],
-          city: l["City"],
-          zip: l["PostalCode"],
-          coords: l["Coordinates"],
-          state: l["StateOrProvince"]
-        },
-        status: %{
+        street_name: l["StreetName"],
+        street_number: l["StreetNumber"],
+        unit: l["UnitNumber"],
+        city: l["City"],
+        zip: l["PostalCode"],
+        coords: l["Coordinates"],
+        state: l["StateOrProvince"],
+        status: process_status(%{
           mls: l["MlsStatus"],
           standard: l["StandardStatus"]
-        },
+        }),
         parking: process_parking(%{
           garage_spaces: l["GarageSpaces"],
           garage_attached: l["AttachedGarageYN"],
@@ -58,7 +56,8 @@ defmodule Excyte.Mls.ProcessListings do
         main_photo_url: Enum.find(l["Media"], fn m ->
           m["MediaCategory"] === "Photo" && m["Order"] === 1
         end)["MediaURL"],
-        lot_size: process_lot_size(l),
+        lotsize_sqft: l["LotSizeSquareFeet"],
+        lotsize_acres: l["LotSizeAcres"],
         close_date: l["CloseDate"],
         pending_timestamp: l["PendingTimestamp"],
         distance_from_subject: distance_from_subject(l["Coordinates"], subject),
@@ -70,27 +69,20 @@ defmodule Excyte.Mls.ProcessListings do
         features: process_features(l),
         last_modified: l["ModificationTimestamp"],
         dirty_info: Map.delete(l, "Media"),
-        pool: %{
-          pool: l["PoolYN"],
-          spa: l["SpaYN"],
-          pool_private: l["PoolPrivateYN"]
-        },
+        pool: l["PoolYN"],
+        spa: l["SpaYN"],
         schools: %{
           elementary: l["ElementarySchool"],
           junior: l["JuniorSchool"],
           high: l["HighSchool"]
         },
-        association: %{
-          association_fee: l["AssociationFee"],
-          association_amenities: l["AssociationAmenities"],
-          association_name: l["AssociationName"],
-          association_fee_frequency: l["AssociationFeeFrequency"]
-        },
-        taxes: %{
-          tax_assessed_value: l["TaxAssessedValue"],
-          tax_annual_amount: l["TaxAnnualAmount"],
-          tax_year: l["TaxYear"]
-        }
+        association_fee: l["AssociationFee"],
+        association_amenities: l["AssociationAmenities"],
+        association_name: l["AssociationName"],
+        association_fee_frequency: l["AssociationFeeFrequency"],
+        tax_assessed_value: l["TaxAssessedValue"],
+        tax_annual_amount: l["TaxAnnualAmount"],
+        tax_year: l["TaxYear"]
       }
     }
   end
@@ -124,7 +116,6 @@ defmodule Excyte.Mls.ProcessListings do
   end
 
   defp process_bathrooms(p) do
-    IO.inspect(p, label: "BATH")
     bf = if p["BathroomsFull"], do: p["BathroomsFull"], else: 0
     bh = if p["BathroomsHalf"], do: p["BathroomsHalf"] * 0.5, else: 0
     boq = if p["BathroomsOneQuarter"], do: p["BathroomsOneQuarter"] * 0.25, else: 0
@@ -134,22 +125,20 @@ defmodule Excyte.Mls.ProcessListings do
     %{full: bf, half: bh, one_quarter: boq, three_quarter: btq, total: total}
   end
 
-  defp process_lot_size(l) do
-    cond do
-      l["LotSizeAcres"] -> %{type: "Acres", size: l["LotSizeAcres"]}
-      l["LotSizeSquareFeet"] -> %{type: "Sqft", size: l["LotSizeSquareFeet"]}
-      true -> %{type: "Sqft", size: nil}
-    end
-  end
-
   defp distance_from_subject(listing_coords, subject) do
-    IO.inspect(listing_coords, label: "L_COORDS")
-    IO.inspect(subject.coords, label: "SUB_COORDS")
     if listing_coords && subject.coords do
       m = Geocalc.distance_between(listing_coords, [subject.coords.lng, subject.coords.lat])
       Float.round(m * 0.000621371192, 2)
     else
       nil
+    end
+  end
+
+  defp process_status(%{mls: m, standard: s}) do
+    if m do
+      "#{m} (#{s})"
+    else
+      "#{s}"
     end
   end
 

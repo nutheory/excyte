@@ -5,7 +5,7 @@
 <p class="alert alert-danger" role="alert"
   phx-click="lv:clear-flash"
   phx-value-key="error"><%= live_flash(@flash, :error) %></p>
-<div role="main" class="w-full max-w-8xl mx-auto">
+<div role="main" phx-hook="ViewportResize" class="w-full max-w-8xl mx-auto" id="main_body">
   <%= @inner_content %>
 </div>
 <script defer phx-track-static type="text/javascript" src="/js/app.js"></script>

@@ -40,9 +40,9 @@
               <div class="flex h-full">
                 <div class="flex-1 px-4 py-2">
                   <p class="text-sm">
-                    <%= listing.addr.street_number %> <%= listing.addr.street_name %>
-                    <%= if listing.addr.unit do %>
-                      <span class="text-xs text-gray-400 inline-block">Unit <%= listing.addr.unit %></span>
+                    <%= listing.street_number %> <%= listing.street_name %>
+                    <%= if listing.unit do %>
+                      <span class="text-xs text-gray-400 inline-block">Unit <%= listing.unit %></span>
                     <% end %>
                   </p>
                 </div>

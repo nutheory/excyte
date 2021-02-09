@@ -1,8 +1,8 @@
-defmodule Excyte.Mls.CurrentMlsType do
+defmodule Excyte.Utils.MapType do
   use Ecto.Type
   def type, do: :map
-  def cast(mls_summary) when is_map(mls_summary) do
-    {:ok, Map.new(mls_summary, fn {k, v} ->
+  def cast(m) when is_map(m) do
+    {:ok, Map.new(m, fn {k, v} ->
       if is_binary(k) do
         {String.to_atom(k), v}
       else
@@ -11,8 +11,8 @@ defmodule Excyte.Mls.CurrentMlsType do
     end)}
   end
   def cast(_), do: :error
-  def load(mls_summary) when is_map(mls_summary) do
-    {:ok, Map.new(mls_summary, fn {k, v} ->
+  def load(m) when is_map(m) do
+    {:ok, Map.new(m, fn {k, v} ->
       if is_binary(k) do
         {String.to_atom(k), v}
       else
@@ -20,6 +20,6 @@ defmodule Excyte.Mls.CurrentMlsType do
       end
     end)}
   end
-  def dump(mls_summary) when is_map(mls_summary), do: {:ok, mls_summary}
+  def dump(m) when is_map(m), do: {:ok, m}
   def dump(_), do: :error
 end

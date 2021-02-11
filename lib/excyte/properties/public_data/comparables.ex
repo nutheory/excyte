@@ -1,4 +1,4 @@
-defmodule Excyte.Realtor.Comparables do
+defmodule Excyte.PublicData.TestComparables do
   use Crawly.Spider
 
   alias Crawly.Utils

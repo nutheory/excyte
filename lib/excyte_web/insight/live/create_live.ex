@@ -1,18 +1,8 @@
 defmodule ExcyteWeb.Insight.CreateLive do
   use ExcyteWeb, :live_view
   use ViewportHelpers
-  alias Excyte.{Accounts, Insights, Mls.ResoApi, Mls.RealtorApi}
+  alias Excyte.{Accounts, Insights, Mls.ResoApi, Properties}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
-
-  # @filter_defaults %{ distance: 20.0, status: ["closed", "pending"] }
-  @filter_defaults %{ distance: 2.0 }
-  @test_subject_info %{
-    beds: 3,
-    baths: 3,
-    stories: 2,
-    estimated_price: 951000,
-    address: nil
-  }
 
   def render(assigns), do: InsightView.render("create.html", assigns)
 
@@ -22,9 +12,10 @@ defmodule ExcyteWeb.Insight.CreateLive do
     {:ok, assign(socket,
       current_user: cu,
       selected_comps: [],
-      filters: @filter_defaults,
+      filters: %{},
       client_info: assign_client_info(socket),
       subject: nil,
+      fetching: false,
       possible_subject_properties: nil,
       comparables: nil,
       preview: nil,
@@ -32,18 +23,7 @@ defmodule ExcyteWeb.Insight.CreateLive do
     )}
   end
 
-  def handle_info({:get_property, %{address: address}}, socket) do
-    mls = socket.assigns.mls
-    {:ok, possible_subjects} = ResoApi.property_by_address(mls.dataset_id, address)
-
-    if length(possible_subjects.properties) === 1 do
-      handle_event("select-subject", %{"prop" => hd(possible_subjects.properties)}, socket)
-    else
-      {:noreply, assign(socket, possible_subject_properties: possible_subjects.properties )}
-    end
-  end
-
-  def handle_info({:get_comps, %{address: addr}}, %{assigns: a} = socket) do
+  def handle_info({:init_comp_search, %{address: addr}}, %{assigns: a} = socket) do
     find_by =
       if addr.coords.lat do
         %{zip: hd(String.split(addr.zip, "-")),
@@ -51,17 +31,17 @@ defmodule ExcyteWeb.Insight.CreateLive do
       else
         %{ zip: hd(String.split(addr.zip, "-"))}
       end
-    subject = Map.merge(@test_subject_info, addr)
     opts = Map.merge(a.filters, find_by)
-    sub = get_subject_property_id(addr)
-    RealtorApi.get_subject_details_start(sub)
-    case ResoApi.comparable_properties(a.current_user.current_mls, subject, opts) do
-      {:ok, comps} -> {:noreply, assign(socket,
-                        subject: addr, comparables: comps.listings,
-                        filters: opts, comp_count: comps.count)}
-      {:error, err} -> {:noreply, assign(socket,
-                          errors: err, filters: opts, subject: addr)}
+    if connected?(socket) do
+      sub = get_subject_property_id(addr)
+      Properties.subscribe(sub.mpr_id)
+      if Application.get_env(:excyte, :env) === :prod do
+        Properties.get_subject_details(sub)
+      else
+        Properties.get_subject_by_foreign_id(sub.mpr_id)
+      end
     end
+    {:noreply, assign(socket, subject: addr, filters: opts, fetching: true)}
   end
 
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do
@@ -118,6 +98,39 @@ defmodule ExcyteWeb.Insight.CreateLive do
     {:noreply, assign(socket, current_user: updated_user)}
   end
 
+  def handle_info({Properties, [:property, _], created_property}, %{assigns: a} = socket) do
+     case Properties.update_property(created_property.id, a.subject) do
+       {:ok, full_subject} -> setup_comp_query(full_subject, socket)
+       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
+     end
+  end
+
+  defp setup_comp_query(subject, %{assigns: a} = socket) do
+    filters = Map.merge(a.filters, %{
+      default: true,
+      price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
+      price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
+      beds_min: (if subject.beds, do: subject.beds - 1, else: 0),
+      beds_max: (if subject.beds, do: subject.beds + 1, else: 100),
+      baths_min: (if subject.baths, do: round(subject.baths) - 1, else: 0),
+      baths_max: (if subject.baths, do: round(subject.baths) + 1, else: 0),
+      sqft_min: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
+      sqft_max: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0),
+      # status: ["sold", "pending"]
+      distance: 200.0
+    })
+    query_mls(%{subject: subject, filters: filters}, socket)
+  end
+
+  defp query_mls(%{subject: subject, filters: filters},  %{assigns: a} = socket) do
+    case ResoApi.comparable_properties(a.current_user.current_mls, subject, filters) do
+      {:ok, c} -> {:noreply, assign(socket, comparables: c.listings, fetching: false,
+                        filters: c.filters, subject: subject, comp_count: c.count)}
+      {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
+                        subject: subject)}
+    end
+  end
+
   defp get_subject_property_id(loc) do
     HTTPoison.get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input="
       <> "#{loc.street_number}%20#{URI.encode(loc.street_name)}%20#{loc.zip}&area_types=state%2Ccity%2Ccounty%2C"
@@ -130,10 +143,3 @@ defmodule ExcyteWeb.Insight.CreateLive do
     |> IO.inspect(label: "RESP")
   end
 end
-
-# templates = Insights.get_templates(cu.id, cu.brokerage_id)
-# min_price: subject["ListPrice"] - round(35/100 * subject["ListPrice"]),
-# max_price: subject["ListPrice"] + round(35/100 * subject["ListPrice"]),
-# price_interval: ceil(subject["ListPrice"]/100),
-# low_price: subject["ListPrice"] - round(15/100 * subject["ListPrice"]),
-# high_price: subject["ListPrice"] + round(15/100 * subject["ListPrice"])

@@ -80,19 +80,23 @@ defmodule Excyte.Mls.ResoApi do
   def comparable_properties(mls, subject, opts) do
     query = get_expanded(mls)
     mod_opts = if query.coords, do: opts, else: Map.delete(opts, :coords)
-    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=18&"
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
       <> "$filter=#{get_listings_by_distance(mod_opts)}"
-      <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
-      <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
-      # <> "#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.low_price, high: opts.high_price})}"
+      # <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
+      # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.price_min, high: opts.price_max})}"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft_min, high: opts.sqft_max})}"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds_min, high: opts.beds_max})}"
+      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths_min, high: opts.baths_max})}"
     )
-    # |> IO.inspect(label: "RETURN")
     |> format_response()
+    |> ProcessListings.process_comparables(subject)
     |> case do
-      {:ok, resp} -> ProcessListings.process_comparables(resp, subject)
-      {:error, err} -> err
+      {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
+      {:error, err} -> {:error, err}
     end
+    # |> IO.inspect(label: "BOOM")
   end
 
   def get_listings_by_distance(%{coords: %{lng: lng, lat: lat}, distance: d}) do
@@ -125,7 +129,7 @@ defmodule Excyte.Mls.ResoApi do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
-      "((#{attr}%20ge%20#{l})%20and%20(#{attr}%20le%20#{h}))"
+      "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
     end
   end
 

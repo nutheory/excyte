@@ -1,18 +1,36 @@
-<div class="cma mt-24 mx-auto px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
-  <%= if @subject === nil do %>
-    <%= live_component @socket, SubjectProperty, current_user: @current_user, id: :subject_property %>
-    <%= if @possible_subject_properties do %>
-      <ul>
-        <%= for prop <- @possible_subject_properties do %>
-          <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop.listing_key}" %>
+<div class="cma mt-16 mx-auto px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
+  <%= if @comparables === nil do %>
+    <%= if @fetching === true do %>
+      <div class="w-full mt-36 overflow-hidden">
+        <svg class="animate-spin h-12 w-12 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <h2 class="text-center text-gray-500 mt-3 mb-1 text-xl font-semibold">Loading...</h2>
+        <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
+      </div>
+    <% else %>
+      <div class="mt-32">
+        <%= live_component @socket, SubjectProperty, current_user: @current_user, id: :subject_property %>
+        <%= if @possible_subject_properties do %>
+          <ul>
+            <%= for prop <- @possible_subject_properties do %>
+              <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop.listing_key}" %>
+            <% end %>
+          </ul>
         <% end %>
-      </ul>
+      </div>
     <% end %>
   <% else %>
     <div class="grid grid-cols-1 lg:grid-cols-12 xl:mx-8">
-      <%= live_component @socket, Listings, subject: @subject, selected_comps: @selected_comps, comps: @comparables, id: :listings_list %>
+      <%= live_component @socket, Listings,
+        subject: @subject,
+        selected_comps: @selected_comps,
+        filters: @filters,
+        comps: @comparables,
+        id: :listings_list %>
       <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
-        <div class="lg:sticky lg:top-0 lg:col-start-9 lg:col-span-4 h-screen lg:pt-16 <%= if @preview, do: 'animate-select'%>">
+        <div class="lg:sticky lg:top-0 lg:col-start-9 -m-16 pt-24 lg:col-span-4 h-screen <%= if @preview, do: 'animate-select'%>">
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,

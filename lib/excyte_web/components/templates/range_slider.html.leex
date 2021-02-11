@@ -1,7 +1,7 @@
 <div>
   <%= f = form_for :slider, "#", [phx_change: "slider-update", phx_target: @myself] %>
-    <div class="h-24 mt-6 flex justify-center items-center">
-      <div class="relative max-w-xl w-full">
+    <div class="my-2 flex justify-center items-center">
+      <div class="relative w-full">
         <div>
           <%= range_input f, :low_slide, [
             step: @opts.interval,
@@ -31,13 +31,15 @@
               style="right: <%= 100 - (((@opts.high - @opts.min) / (@opts.max - @opts.min)) * 100) %>%"></div>
           </div>
         </div>
-        <div class="flex justify-between items-center py-5">
-          <div>
-            <%= number_to_currency(@opts.low, precision: 0) %>
+        <div class="flex py-3">
+          <div class="w-1/5">
+            <%= if @opts.money, do: "$" %>
+            <%= number_to_delimited(@opts.low, precision: 0) %>
           </div>
-          <div class=""><h3>List Price Range</h3></div>
-          <div>
-            <%= number_to_currency(@opts.high, precision: 0) %>
+          <div class="w-3/5 text-center font-bold"><%= @opts.label %></div>
+          <div class="w-1/5">
+            <%= if @opts.money, do: "$" %>
+            <%= number_to_delimited(@opts.high, precision: 0) %>
           </div>
         </div>
       </div>

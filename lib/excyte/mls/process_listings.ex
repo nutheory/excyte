@@ -1,6 +1,6 @@
 defmodule Excyte.Mls.ProcessListings do
 
-  def process_comparables(%{listings: listings} = resp, subject) do
+  def process_comparables({:ok, %{listings: listings} = resp}, subject) do
     new_dataset =
       Enum.map(listings, fn listing ->
         Enum.filter(listing, fn {_, v} ->
@@ -214,6 +214,9 @@ defmodule Excyte.Mls.ProcessListings do
     |> tl()
     |> Enum.join(" ")
   end
+
+  def process_comparables({:error, err}), do: {:error, err}
+  def process_comparables(_), do: {:error, %{message: "Unknown Error"}}
 end
 
 

@@ -12,7 +12,7 @@ defmodule ExcyteWeb.Insight.Listings do
     #   ""
     # end
     {:ok, assign(socket,
-      filters: nil,
+      filters: assigns.filters,
       comps: assigns.comps,
       selected_comps: assigns.selected_comps,
       subject: assigns.subject

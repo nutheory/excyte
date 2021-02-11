@@ -22,13 +22,13 @@ defmodule Excyte.Properties.Property do
     field :parking, :string
     field :public_remarks, :string
     field :overview, :string
-    field :foriegn_url, :string
+    field :foreign_url, :string
     field :year_built, :string
     field :days_on_market, :integer
     field :property_type, :string
     field :property_sub_type, :string
     field :beds, :integer
-    field :baths, :integer
+    field :baths, :float
     field :sqft, :integer
     field :main_photo_url, :string
     field :lotsize_sqft, :integer
@@ -39,6 +39,7 @@ defmodule Excyte.Properties.Property do
     field :list_price, :string
     field :stories, :string
     field :walkscore, :integer
+    field :est_price, :integer
     field :listing_key, :string
     field :listing_id, :string
     field :features, {:array, :map}
@@ -50,7 +51,7 @@ defmodule Excyte.Properties.Property do
     field :spa, :boolean
     field :median_dom, :string
     field :median_sale_price, :string
-    field :median_list, :string
+    field :median_list_price, :string
     field :schools, {:array, :map}
     field :association_fee, :string
     field :association_amenities, {:array, :map}
@@ -79,7 +80,7 @@ defmodule Excyte.Properties.Property do
       :parking,
       :public_remarks,
       :overview,
-      :foriegn_url,
+      :foreign_url,
       :year_built,
       :days_on_market,
       :property_type,
@@ -94,6 +95,7 @@ defmodule Excyte.Properties.Property do
       :pending_timestamp,
       :distance_from_subject,
       :list_price,
+      :est_price,
       :stories,
       :walkscore,
       :listing_key,
@@ -107,7 +109,7 @@ defmodule Excyte.Properties.Property do
       :spa,
       :median_dom,
       :median_sale_price,
-      :median_list,
+      :median_list_price,
       :schools,
       :association_fee,
       :association_amenities,

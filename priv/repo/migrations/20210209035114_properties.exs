@@ -19,7 +19,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :parking, :string
       add :public_remarks, :text
       add :overview, :text
-      add :foriegn_url, :text
+      add :foreign_url, :text
       add :year_built, :string
       add :days_on_market, :integer
       add :property_type, :string

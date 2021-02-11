@@ -1,8 +1,8 @@
-<div class="col-start-1 col-span-7 pt-16">
-  <div class="sticky top-16 bg-gray-100 z-30 pt-8 lg:pt-12">
+<div class="col-start-1 col-span-7">
+  <div class="sticky top-16 bg-gray-100 z-30 pt-8 pb-2">
+    <h4 class="text-base lg:text-lg text-gray-400">Subject Property</h4>
     <div class="flex">
       <div class="flex-1">
-        <h4 class="text-base lg:text-lg text-gray-400">Subject Property</h4>
         <h2 class="text-xl leading-none lg:text-2xl lg:leading-none">
           <%= @subject.street_number %> <%= @subject.street_name %>
           <%= if Map.has_key?(@subject, :unit_number) do %>
@@ -11,7 +11,17 @@
         </h2>
         <p class="text-xs lg:text-sm text-gray-400"><%= @subject.city %>, <%= @subject.state %> <%= @subject.zip %></p>
       </div>
-      <div phx-click="reset-subject" class=" mb-2 ml-3 text-red-300 hover:text-red-400 cursor-pointer">
+      <div class="text-right pr-4 border-r border-gray-300">
+        <h2 class="text-xl leading-none lg:text-2xl lg:leading-none text-gray-500">
+          <%= if Map.has_key?(@subject, :est_price) do %>
+            <span class="font-light inline-block text-lg align-top -mt-1 mr-0.5">$</span><%= number_to_delimited(@subject.est_price, precision: 0) %>
+          <% else %>
+            N/A
+          <% end %>
+        </h2>
+        <p class="text-xs lg:text-sm text-gray-400">est. value</p>
+      </div>
+      <div phx-click="reset-subject" class="ml-4 text-red-300 hover:text-red-400 cursor-pointer">
         <svg class="h-6 w-6 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"
@@ -20,17 +30,17 @@
             d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"
           />
         </svg>
-        <p class="text-sm">Start Over</p>
+        <p class="text-sm">Reset</p>
       </div>
     </div>
-    <div x-data="{ filtersOpen: false }">
+    <div class="relative" x-data="{ filtersOpen: false }">
       <div class="flex">
         <div
           @click="{ filtersOpen = !filtersOpen }"
-          class="flex-1 flex rounded px-4 py-2 my-4 border cursor-pointer border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600"
+          class="flex-1 flex rounded px-4 py-2 my-2 border cursor-pointer border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600"
         >
           <div class="flex-1">
-            <svg class="h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg class="h-5 w-5 inline-block -mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -38,7 +48,8 @@
                 d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
               />
             </svg>
-            <span class="ml-0.5">Filter</span>
+            <span class="ml-0.5" :class="{ 'font-bold': filtersOpen === true }">Filter</span>
+            <span class="ml-0.5 text-xs" x-show="filtersOpen === true">close</span>
           </div>
           <p class="text-right text-sm"><span class="font-bold"><%= length(@comps) %></span> Comparable listings</p>
         </div>
@@ -57,27 +68,23 @@
       </div>
       <div
         x-show="filtersOpen"
-        x-transition:enter="transition-transform transition-opacity ease-out duration-500"
+        x-transition:enter="transition-transform transition-opacity ease-out duration-300"
         x-transition:enter-start="opacity-0 transform -translate-y-8"
         x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-500"
+        x-transition:leave="transition ease-in duration-300"
         x-transition:leave-end="opacity-0 transform -translate-y-6"
       >
-        <div class="">
-          <%# Price %>
+        <div class="rounded px-4 lg:px-6 py-4 border border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600">
           <%# Distance %>
           <%# Status/ Close Date %>
-          <%#= live_component @socket, RangeSliderLive, opts: %{
-            min: @filters.min_price,
-            max: @filters.max_price,
-            low: @filters.low_price,
-            high: @filters.high_price,
-            interval: @filters.price_interval,
-            buffer: 5
-          }, id: :modify_comp_filter %>
+          <%= live_component @socket, FilterListings,
+            subject: @subject,
+            filters: @filters,
+            id: :filter_listings
+          %>
         </div>
       </div>
-      <div class="hidden lg:block h-12 pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
+      <div class="hidden lg:block h-6 mt-2 pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
     </div>
   </div>
   <%= if length(@comps) > 0 do %>

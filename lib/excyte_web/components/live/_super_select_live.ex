@@ -8,6 +8,4 @@ defmodule ExcyteWeb.Components.SuperSelectLive do
   def update(assigns, socket) do
     {:ok, assign(socket, assigns)}
   end
-
-
 end

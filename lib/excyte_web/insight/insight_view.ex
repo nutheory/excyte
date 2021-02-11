@@ -6,6 +6,7 @@ defmodule ExcyteWeb.InsightView do
     CreateLive,
     BuilderLive,
     EditorLive,
+    FilterListings,
     Listings,
     ListingCard,
     PossibleSubjects,
@@ -17,6 +18,7 @@ defmodule ExcyteWeb.InsightView do
     AddressAutocompleteLive,
     RangeSliderLive,
     CalendarLive,
+    Dropdown,
     GalleryLive,
     FindByIdLive
   }

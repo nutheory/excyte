@@ -55,14 +55,27 @@ form,
     /* @apply w-6 h-6 appearance-none pointer-events-auto; */
   }
 
-  & input.text-field {
-    @apply shadow text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
+  input.no-controls::-webkit-outer-spin-button,
+  input.no-controls::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
-  & input.text-field:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  input[type=number].no-controls {
+    -moz-appearance: textfield;
+  }
+
+  & input.text-field {
+    @apply text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
+  }
+
+  & input.number-field {
+    @apply text-gray-700 border bg-white border-bgray-400 rounded py-2 px-2 block w-full;
+  }
+
+  & input.text-field:focus,
+  input.number-field:focus {
+    @apply outline-none focus:ring-1 focus:ring-offset-2;
   }
 
   & textarea.textarea {

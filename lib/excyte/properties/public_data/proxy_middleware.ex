@@ -14,6 +14,7 @@ defmodule Excyte.ProxyMiddleware do
         old_options = request.options
         new_options = [proxy: {p.ip, p.port}, proxy_auth: nil]
         new_request =  Map.put(request, :options, old_options ++ new_options)
+        IO.inspect(new_request, label: "NR")
         {new_request, state}
     end
   end

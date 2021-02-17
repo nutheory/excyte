@@ -4,6 +4,12 @@
 dataset_id: actris_ref
 export BRIDGE_SERVER_KEY=c72f9c07c32759011128b84001acb35d
 
+## IP Proxy Test
+$ iex -S mix
+page = Crawly.fetch("https://whatismyipaddress.com/")
+{:ok, doc} = Floki.parse_document(page.body)
+result = Floki.text(Floki.find(doc, "#ipv4 a"))
+
 ## Deploy instructions
 https://www.youtube.com/watch?v=DhSylrNr81k
 

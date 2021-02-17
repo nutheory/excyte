@@ -1,10 +1,11 @@
 defmodule Excyte.PublicData.PropertyDetails do
   use Crawly.Spider
 
-  alias Crawly.Utils
-
   @impl Crawly.Spider
   def base_url(), do: "https://www.realtor.com/"
+
+  @impl Crawly.Spider
+  def init(), do: [{:start_urls, ["https://www.realtor.com/realestateandhomes-detail/"]}]
 
   @impl Crawly.Spider
   def init(options), do: [start_urls: Keyword.get(options, :urls)]
@@ -20,18 +21,17 @@ defmodule Excyte.PublicData.PropertyDetails do
     neighbor = process_neighbor(start)
     overview = process_overview(Floki.text(Floki.find(start, "#ldp-detail-romance")))
 
-    IO.inspect(response)
     %Crawly.ParsedItem{
       requests: [],
       items: [%{
         internal_type: "subject",
         foreign_id: get_foreign_id(response.request_url),
-        beds: Floki.text(Floki.find(summary, "[data-label=property-meta-beds] span")),
-        baths: Floki.text(Floki.find(summary, "[data-label=property-meta-bath] span")),
+        beds: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-beds] span"))),
+        baths: to_f(Floki.text(Floki.find(summary, "[data-label=property-meta-bath] span"))),
         sqft: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-sqft] span"))),
         lotsize_sqft: process_lsqft(Floki.find(summary, "[data-label=property-meta-lotsize]")),
         lotsize_acres: process_lacres(Floki.find(summary, "[data-label=property-meta-lotsize]")),
-        est_price: to_i(hd(Floki.attribute(Floki.find(start, ".ldp-header-price"), "span", "content"))),
+        est_price: to_i(Floki.attribute(Floki.find(start, ".ldp-header-price"), "span", "content")),
         overview: overview,
         history: %{
           overview: Floki.text(Floki.find(history, "p")),
@@ -68,21 +68,19 @@ defmodule Excyte.PublicData.PropertyDetails do
 
   defp to_i(str) do
     if str !== "" do
-      String.replace(str, "$", "")
-      |> String.replace(",", "")
+      String.replace(str, ~r/\D/, "")
       |> String.to_integer()
     else
       0
     end
   end
 
-  defp process_est_price(price) when is_list(price), do: to_i(hd(price))
-
-  defp process_est_price(price) do
-    if price === "0" do
-      nil
+  defp to_f(str) do
+    if str !== "" do
+      String.replace(str, ~r/[^0-9.]/, "")
+      |> String.to_float()
     else
-      to_i(price)
+      0.0
     end
   end
 
@@ -92,7 +90,7 @@ defmodule Excyte.PublicData.PropertyDetails do
       |> String.trim()
 
     if String.contains?(str, "sqft lot") do
-      String.to_float(Floki.text(Floki.find(lotsize, ".data-value")))
+      to_i(Floki.text(Floki.find(lotsize, ".data-value")))
     else
       nil
     end
@@ -104,7 +102,7 @@ defmodule Excyte.PublicData.PropertyDetails do
       |> String.trim()
 
     if String.contains?(str, "acres lot") do
-      String.to_float(Floki.text(Floki.find(lotsize, ".data-value")))
+      to_f(Floki.text(Floki.find(lotsize, ".data-value")))
     else
       nil
     end
@@ -123,10 +121,10 @@ defmodule Excyte.PublicData.PropertyDetails do
     |> Enum.reduce(%{}, fn item, acc ->
       case Floki.text(hd(Floki.find(item, "div"))) do
         "Status" -> Map.put(acc, :status, Floki.text(Floki.find(item, ".key-fact-data")))
-        "Price/Sq Ft" -> Map.put(acc, :sqft_price, Floki.text(Floki.find(item, ".key-fact-data")))
+        "Price/Sq Ft" -> Map.put(acc, :sqft_price, to_i(Floki.text(Floki.find(item, ".key-fact-data"))))
         "Type" -> Map.put(acc, :property_type, Floki.text(Floki.find(item, ".key-fact-data")))
-        "Built" -> Map.put(acc, :year_built, Floki.text(Floki.find(item, ".key-fact-data")))
-        i -> IO.inspect(i, label: "inspect")
+        "Built" -> Map.put(acc, :year_built, to_i(Floki.text(Floki.find(item, ".key-fact-data"))))
+        _ -> acc
       end
     end)
   end
@@ -144,7 +142,7 @@ defmodule Excyte.PublicData.PropertyDetails do
   end
 
   defp process_overview(overview) do
-    if overview && overview !== "" do
+    if overview !== nil && overview !== "" do
       String.split(overview, "\n            ")
       |> Enum.at(1)
       |> String.trim()

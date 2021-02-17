@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.CalendarLive do
+defmodule ExcyteWeb.Components.Calendar do
   use ExcyteWeb, :live_component
   use Timex
 

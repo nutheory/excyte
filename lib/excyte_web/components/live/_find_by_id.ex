@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.FindByIdLive do
+defmodule ExcyteWeb.Components.FindById do
   use ExcyteWeb, :live_component
   alias Excyte.{Mls.ResoApi}
   alias ExcyteWeb.ComponentView

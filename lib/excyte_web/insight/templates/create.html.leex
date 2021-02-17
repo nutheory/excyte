@@ -28,9 +28,10 @@
         selected_comps: @selected_comps,
         filters: @filters,
         comps: @comparables,
+        show_filters: @show_filters,
         id: :listings_list %>
       <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
-        <div class="lg:sticky lg:top-0 lg:col-start-9 -m-16 pt-24 lg:col-span-4 h-screen <%= if @preview, do: 'animate-select'%>">
+        <div class="lg:sticky lg:top-0 lg:col-start-9 -mt-16 pt-24 lg:col-span-4 h-screen <%= if @preview, do: 'animate-select'%>">
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,

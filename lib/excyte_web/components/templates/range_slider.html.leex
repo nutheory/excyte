@@ -1,6 +1,6 @@
 <div>
   <%= f = form_for :slider, "#", [phx_change: "slider-update", phx_target: @myself] %>
-    <div class="my-2 flex justify-center items-center">
+    <div class="flex justify-center items-center">
       <div class="relative w-full">
         <div>
           <%= range_input f, :low_slide, [
@@ -31,13 +31,13 @@
               style="right: <%= 100 - (((@opts.high - @opts.min) / (@opts.max - @opts.min)) * 100) %>%"></div>
           </div>
         </div>
-        <div class="flex py-3">
-          <div class="w-1/5">
+        <div class="flex pt-3">
+          <div class="w-1/4">
             <%= if @opts.money, do: "$" %>
             <%= number_to_delimited(@opts.low, precision: 0) %>
           </div>
-          <div class="w-3/5 text-center font-bold"><%= @opts.label %></div>
-          <div class="w-1/5">
+          <div class="w-2/4 text-center font-bold"><%= @opts.label %></div>
+          <div class="w-1/4 text-right">
             <%= if @opts.money, do: "$" %>
             <%= number_to_delimited(@opts.high, precision: 0) %>
           </div>

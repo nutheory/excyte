@@ -1,4 +1,5 @@
 defmodule Excyte.Mls.ProcessListings do
+  alias Excyte.Properties.{Rankings}
 
   def process_comparables({:ok, %{listings: listings} = resp}, subject) do
     new_dataset =
@@ -17,7 +18,9 @@ defmodule Excyte.Mls.ProcessListings do
         |> top_level_info(subject)
         |> main_booleans()
         |> process_media()
+        |> Rankings.process(subject)
       end)
+    IO.inspect(hd(new_dataset), label: "KEYS")
 
     {:ok, Map.merge(resp, %{listings: new_dataset})}
   end

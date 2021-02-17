@@ -38,6 +38,19 @@ Hooks.RegistrationPassword = {
   }
 }
 
+Hooks.DistanceSelector = {
+  mounted(){
+    const add = this.el.querySelector('.add-distance')
+    const minus = this.el.querySelector('.minus-distance')
+    add.addEventListener("click", () => {
+      this.pushEventTo("#distance-selector", "update", "add", reply => {})  
+    })
+    minus.addEventListener("click", () => {
+      this.pushEventTo("#distance-selector", "update", "minus", reply => {})  
+    })
+  }
+}
+
 Uploaders.S3 = function(entries, onViewError){
   entries.forEach(entry => {
     let formData = new FormData()

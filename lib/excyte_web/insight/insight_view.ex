@@ -15,11 +15,13 @@ defmodule ExcyteWeb.InsightView do
     SubjectProperty
   }
   alias ExcyteWeb.Components.{
-    AddressAutocompleteLive,
-    RangeSliderLive,
-    CalendarLive,
+    AddressAutocomplete,
+    DistanceSelector,
+    RangeSlider,
+    Calendar,
     Dropdown,
-    GalleryLive,
-    FindByIdLive
+    Gallery,
+    FindById,
+    MultiSelect
   }
 end

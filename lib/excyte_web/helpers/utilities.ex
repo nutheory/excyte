@@ -1,6 +1,18 @@
 defmodule ExcyteWeb.Helpers.Utilities do
   import Phoenix.LiveView.Helpers
 
+  def status_options() do
+    [
+      %{value: "active", name: "Active"},
+      %{value: "cctive_under_contract", name: "Active Under Contract"},
+      %{value: "canceled", name: "Canceled"},
+      %{value: "closed", name: "Closed"},
+      %{value: "expired", name: "Expired"},
+      %{value: "pending", name: "Pending"},
+      %{value: "withdrawn", name: "Withdrawn"}
+    ]
+  end
+
   def status_to_color(status) do
     cond do
       String.contains?(status, "Active") ->  %{text: "text-green-600", bg: "bg-green-50", border: "border border-green-600"}

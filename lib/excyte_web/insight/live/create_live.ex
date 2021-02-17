@@ -19,7 +19,8 @@ defmodule ExcyteWeb.Insight.CreateLive do
       possible_subject_properties: nil,
       comparables: nil,
       preview: nil,
-      show_panel: false
+      show_panel: false,
+      show_filters: false
     )}
   end
 
@@ -44,8 +45,21 @@ defmodule ExcyteWeb.Insight.CreateLive do
     {:noreply, assign(socket, subject: addr, filters: opts, fetching: true)}
   end
 
+  def handle_info({:update_filter, val}, %{assigns: a} = socket) do
+    {:noreply, assign(socket, filters: Map.merge(a.filters, val))}
+  end
+
+  def handle_event("filter_search", form, %{assigns: a} = socket) do
+    IO.inspect(a.filters, label: "FORM")
+    {:noreply, socket}
+  end
+
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do
     {:noreply, assign(socket, preview: nil, show_panel: !a.show_panel)}
+  end
+
+  def handle_event("toggle-filters", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, show_filters: !a.show_filters)}
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, socket) do
@@ -116,7 +130,8 @@ defmodule ExcyteWeb.Insight.CreateLive do
       baths_max: (if subject.baths, do: round(subject.baths) + 1, else: 0),
       sqft_min: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
       sqft_max: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0),
-      # status: ["sold", "pending"]
+      # TODO switch to live make statuses ["closed", "pending"]
+      selected_statuses: [%{value: "active", name: "Active"}],
       distance: 200.0
     })
     query_mls(%{subject: subject, filters: filters}, socket)
@@ -140,6 +155,5 @@ defmodule ExcyteWeb.Insight.CreateLive do
       {:ok, %{body: body}} -> hd(Utilities.format_str_json(body).autocomplete)
       {:error, err} -> err
     end
-    |> IO.inspect(label: "RESP")
   end
 end

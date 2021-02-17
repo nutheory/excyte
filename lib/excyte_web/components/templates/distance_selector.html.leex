@@ -1,0 +1,29 @@
+<div class="h-full flex items-end justify-center" phx-hook="DistanceSelector" id="distance-selector" phx-target="<%= @myself %>">
+  <%= f = form_for :distance, "#", [phx_change: "update", phx_target: @myself, onsubmit: "return false;"] %>
+    <div class="flex h-full relative items-center justify-center">
+      <svg class="w-6 h-6 absolute -top-3 left-40 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <div class="minus-distance rounded-full hover:bg-green-200 cursor-pointer">
+        <svg class="w-6 h-6 text-cyan-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="text-lg mx-3 pt-1">
+        <input
+          type="number"
+          class="no-controls bg-cyan-50 w-10 font-bold"
+          name="distance"
+          step="<%= @step %>"
+          value="<%= @distance %>"
+        /> <span class="text-sm">mi. from subject</span>
+      </div>
+      <div class="add-distance rounded-full hover:bg-green-200 cursor-pointer">
+        <svg class="w-6 h-6 text-cyan-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </form>
+</div>

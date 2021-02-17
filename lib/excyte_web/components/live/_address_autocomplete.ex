@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.AddressAutocompleteLive do
+defmodule ExcyteWeb.Components.AddressAutocomplete do
   use ExcyteWeb, :live_component
   # alias Excyte.{Mls.ResoApi}
   alias ExcyteWeb.{ComponentView, Helpers.Utilities}

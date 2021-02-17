@@ -135,7 +135,7 @@
         <% end %>
       </div>
       <div class="w-full my-6 rounded">
-        <%= live_component @socket, GalleryLive, media: @listing.media, id: @listing.listing_key <> "_gallery" %>
+        <%= live_component @socket, Gallery, media: @listing.media, id: @listing.listing_key <> "_gallery" %>
       </div>
     </div>
     <div x-show="selectedTab === 'features'" class="flex-1 py-4 overflow-y-auto">

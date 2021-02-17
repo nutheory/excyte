@@ -5,17 +5,12 @@ defmodule ExcyteWeb.Insight.Listings do
   def render(assigns), do: InsightView.render("listings.html", assigns)
 
   def update(assigns, socket) do
-    # action =
-    # if assigns.action.key === assigns.listing["ListingKey"] do
-    #    assigns.action.perform
-    # else
-    #   ""
-    # end
     {:ok, assign(socket,
       filters: assigns.filters,
       comps: assigns.comps,
       selected_comps: assigns.selected_comps,
-      subject: assigns.subject
+      subject: assigns.subject,
+      show_filters: assigns.show_filters
     )}
   end
 end

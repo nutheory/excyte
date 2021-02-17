@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Components.GalleryLive do
+defmodule ExcyteWeb.Components.Gallery do
   use ExcyteWeb, :live_component
   alias ExcyteWeb.ComponentView
 

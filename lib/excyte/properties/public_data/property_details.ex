@@ -77,8 +77,13 @@ defmodule Excyte.PublicData.PropertyDetails do
 
   defp to_f(str) do
     if str !== "" do
-      String.replace(str, ~r/[^0-9.]/, "")
-      |> String.to_float()
+      if String.contains(str, ".") do
+        String.replace(str, ~r/[^0-9.]/, "")
+        |> String.to_float()
+      else
+        String.replace(str <> ".0", ~r/[^0-9.]/, "")
+        |> String.to_float()
+      end
     else
       0.0
     end

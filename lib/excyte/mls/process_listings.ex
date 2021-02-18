@@ -65,6 +65,7 @@ defmodule Excyte.Mls.ProcessListings do
         pending_timestamp: l["PendingTimestamp"],
         distance_from_subject: distance_from_subject(l["Coordinates"], subject),
         list_price: l["ListPrice"],
+        close_price: l["ClosePrice"],
         stories: l["Stories"],
         walkscore: l["Walkscore"],
         listing_key: l["ListingKey"],
@@ -89,6 +90,20 @@ defmodule Excyte.Mls.ProcessListings do
       }
     }
   end
+
+  # defp to_f(str) do
+  #   if "#{str}" !== "" do
+  #     if String.contains?("#{str}", ".") do
+  #       String.replace("#{str}", ~r/[^0-9.]/, "")
+  #       |> String.to_float()
+  #     else
+  #       String.replace("#{str}" <> ".0", ~r/[^0-9.]/, "")
+  #       |> String.to_float()
+  #     end
+  #   else
+  #     0.0
+  #   end
+  # end
 
   def main_booleans(%{listing: l, changes: changes}) do
     %{listing: l,

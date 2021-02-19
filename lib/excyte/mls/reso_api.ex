@@ -79,10 +79,10 @@ defmodule Excyte.Mls.ResoApi do
 
   def comparable_properties(mls, subject, opts) do
     query = get_expanded(mls)
-    mod_opts = if query.coords, do: opts, else: Map.delete(opts, :coords)
+    get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
-      <> "$filter=#{get_listings_by_distance(mod_opts)}"
+      <> "$filter=#{get_listings_by_distance(get_by_opts)}"
       # <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
       # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
       <> "%20and%20#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.price_min, high: opts.price_max})}"

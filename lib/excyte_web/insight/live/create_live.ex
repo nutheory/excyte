@@ -1,14 +1,15 @@
 defmodule ExcyteWeb.Insight.CreateLive do
   use ExcyteWeb, :live_view
   use ViewportHelpers
-  alias Excyte.{Accounts, Insights, Mls.ResoApi, Properties}
+  alias Excyte.{Accounts, Insights, Insights.Insight, Mls.ResoApi, Properties}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   def render(assigns), do: InsightView.render("create.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
+  def mount(params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if connected?(socket), do: Accounts.subscribe(cu.id)
+    if params["id"], do: send self(), {:load_from_store, params["id"]}
     {:ok, assign(socket,
       current_user: cu,
       selected_comps: [],
@@ -24,6 +25,27 @@ defmodule ExcyteWeb.Insight.CreateLive do
     )}
   end
 
+  def handle_info({:load_from_store, id}, %{assigns: a} = socket) do
+      case Insights.get_editable_insight(a.current_user.id, id) do
+        %Insight{} = insight -> query_mls(%{subject: insight.subject, filters: insight.criteria}, socket)
+        nil -> {:noreply, assign(socket, errors: [%{message: "cannot locate #{id}."}])}
+      end
+
+  end
+
+  def handle_info({Accounts, [:user, _], updated_user}, socket) do
+    IO.inspect(updated_user.current_mls, label: "FOUND")
+    {:noreply, assign(socket, current_user: updated_user)}
+  end
+
+  def handle_info({Properties, [:property, _], created_property}, %{assigns: a} = socket) do
+    attrs = Map.merge(a.subject, %{agent_id: a.current_user.id})
+    case Properties.update_property(created_property.id, attrs) do
+      {:ok, full_subject} -> setup_comp_query(full_subject, socket)
+      {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
+    end
+  end
+
   def handle_info({:init_comp_search, %{address: addr}}, %{assigns: a} = socket) do
     find_by =
       if addr.coords.lat do
@@ -33,16 +55,18 @@ defmodule ExcyteWeb.Insight.CreateLive do
         %{ zip: hd(String.split(addr.zip, "-"))}
       end
     opts = Map.merge(a.filters, find_by)
-    if connected?(socket) do
-      sub = get_subject_property_id(addr)
-      Properties.subscribe(sub.mpr_id)
-      if Application.get_env(:excyte, :env) === :prod do
-        Properties.get_subject_details(sub)
-      else
-        Properties.get_subject_by_foreign_id(sub.mpr_id)
-      end
-    end
+    send self(), {:aquire_subject, %{address: addr}}
     {:noreply, assign(socket, subject: addr, filters: opts, fetching: true)}
+  end
+
+  def handle_info({:aquire_subject, %{address: addr}}, %{assigns: %{current_user: cu}} = socket) do
+    sub = get_subject_property_id(addr)
+    case Properties.get_subject_by_foreign_id(%{foreign_id: sub.mpr_id, agent_id: cu.id}) do
+      %{} = subject -> setup_comp_query(subject, socket)
+      nil ->
+        Properties.get_subject_details(sub)
+        {:noreply, socket}
+    end
   end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
@@ -85,16 +109,29 @@ defmodule ExcyteWeb.Insight.CreateLive do
     {:noreply, assign(socket, selected_comps: ret)}
   end
 
-  def handle_event("review-cma", _,  %{assigns: assigns} = socket) do
-    key = "cma#{assigns.current_user.id}#{System.os_time(:second)}"
-    Cachex.put(:insight_cache, key, %{
-      filters: nil,
-      selected_comps: assigns.selected_comps,
-      current_user: assigns.current_user,
-      subject: assigns.subject,
-      client_info: assigns.client_info
+  def handle_event("review-cma", _,  %{assigns: a} = socket) do
+    key = "cma#{a.current_user.id}#{System.os_time(:second)}"
+    Insights.create_insight(%{
+      insight: %{
+        uuid: key,
+        type: "cma",
+        title: "draft",
+        created_by_id: a.current_user.id,
+        published: false,
+        mls: a.current_user.current_mls.dataset_id,
+        selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end)
+      },
+      search: %{
+        query: "",
+        coords: a.subject.coords,
+        zip: a.subject.zip,
+        criteria: a.filters
+      },
+      property: %{
+        subject_id: a.subject.id
+      }
     })
-    {:noreply, push_redirect(socket, to: "/insights/cma/review/#{key}")}
+    {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/review")}
   end
 
   def handle_event("reset-subject", _, socket) do
@@ -102,21 +139,8 @@ defmodule ExcyteWeb.Insight.CreateLive do
       comparables: nil,
       selected_comps: [],
       subject: nil,
-      filters: @defaults,
       possible_subject_properties: nil
     )}
-  end
-
-  def handle_info({Accounts, [:user, _], updated_user}, socket) do
-    IO.inspect(updated_user.current_mls, label: "FOUND")
-    {:noreply, assign(socket, current_user: updated_user)}
-  end
-
-  def handle_info({Properties, [:property, _], created_property}, %{assigns: a} = socket) do
-     case Properties.update_property(created_property.id, a.subject) do
-       {:ok, full_subject} -> setup_comp_query(full_subject, socket)
-       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
-     end
   end
 
   defp setup_comp_query(subject, %{assigns: a} = socket) do
@@ -134,13 +158,14 @@ defmodule ExcyteWeb.Insight.CreateLive do
       selected_statuses: [%{value: "active", name: "Active"}],
       distance: 200.0
     })
+
     query_mls(%{subject: subject, filters: filters}, socket)
   end
 
   defp query_mls(%{subject: subject, filters: filters},  %{assigns: a} = socket) do
     case ResoApi.comparable_properties(a.current_user.current_mls, subject, filters) do
       {:ok, c} -> {:noreply, assign(socket, comparables: c.listings, fetching: false,
-                        filters: c.filters, subject: subject, comp_count: c.count)}
+                  filters: c.filters, subject: subject, comp_count: c.count)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
                         subject: subject)}
     end

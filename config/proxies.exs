@@ -3,15 +3,15 @@ use Mix.Config
 config :excyte,
        :proxies, [
           %{
-            ip: "206.189.8.38",
+            ip: "82.99.243.35",
+            port: 8080,
+            protocol: "HTTPS"
+          },
+          %{
+            ip: "37.120.140.242",
             port: 3128,
             protocol: "HTTPS"
           },
-          # %{
-          #   ip: "149.100.165.85",
-          #   port: 8080,
-          #   protocol: "HTTPS"
-          # },
           # %{
           #   ip: "136.233.215.142",
           #   port: 80,
@@ -38,8 +38,8 @@ config :excyte,
           #   protocol: "HTTP"
           # }
           %{
-            ip: "173.249.13.171",
-            port: 8080,
+            ip: "37.120.239.151",
+            port: 3128,
             protocol: "HTTPS"
           }
         ]

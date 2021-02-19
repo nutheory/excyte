@@ -5,7 +5,10 @@ defmodule Excyte.Properties.Property do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Excyte.{Utils.MapType}
+  alias Excyte.{
+    Insights.Insight,
+    Utils.MapType
+  }
 
   schema "properties" do
     field :foreign_id, :string
@@ -23,7 +26,7 @@ defmodule Excyte.Properties.Property do
     field :public_remarks, :string
     field :overview, :string
     field :foreign_url, :string
-    field :year_built, :string
+    field :year_built, :integer
     field :days_on_market, :integer
     field :property_type, :string
     field :property_sub_type, :string
@@ -60,13 +63,18 @@ defmodule Excyte.Properties.Property do
     field :tax_assessed_value, :string
     field :tax_annual_amount, :string
     field :tax_year, :string
+    belongs_to(:insight, Insight)
+    belongs_to(:brokerage, Brokerage)
+    belongs_to(:agent, User)
     timestamps()
   end
 
   def changeset(property, attrs) do
     property
     |> cast(attrs, [
+      :agent_id,
       :foreign_id,
+      :insight_id,
       :doc_id,
       :internal_type,
       :street_name,

@@ -3,7 +3,6 @@ defmodule Excyte.Properties do
   alias Excyte.{
     Properties.Property,
     PublicData.PropertyDetails,
-    PublicData.TestComparables,
     Repo
   }
 
@@ -14,6 +13,7 @@ defmodule Excyte.Properties do
   end
 
   def get_subject_details(aws_es) do
+    subscribe(aws_es.mpr_id)
     line = String.replace(aws_es.line, " ", "-")
     city = String.replace(aws_es.city, " ", "-")
     address = "#{line}_#{city}_#{aws_es.state_code}_#{aws_es.postal_code}_"
@@ -22,9 +22,8 @@ defmodule Excyte.Properties do
       urls: ["https://www.realtor.com/realestateandhomes-detail/#{address}M#{id}"])
   end
 
-  def get_subject_by_foreign_id(foreign_id) do
-    prop = Repo.get_by(Property, %{foreign_id: foreign_id, internal_type: "subject"})
-    notify_subscribers({:ok, prop}, [:property, :created])
+  def get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
+    Repo.get_by(Property, %{agent_id: aid, foreign_id: fid, internal_type: "subject"})
   end
 
   def create_property(attrs) do

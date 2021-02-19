@@ -5,6 +5,7 @@ defmodule Excyte.Repo.Migrations.Properties do
     create table(:properties) do
       add :brokerage_id, references(:teams)
       add :agent_id, references(:users)
+      add :insight_id, references(:insights)
       add :foreign_id, :string
       add :doc_id, :integer
       add :internal_type, :string
@@ -20,7 +21,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :public_remarks, :text
       add :overview, :text
       add :foreign_url, :text
-      add :year_built, :string
+      add :year_built, :integer
       add :days_on_market, :integer
       add :property_type, :string
       add :property_sub_type, :string
@@ -59,5 +60,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :tax_year, :string
       timestamps()
     end
+
+    create unique_index(:properties, [:foreign_id, :agent_id])
   end
 end

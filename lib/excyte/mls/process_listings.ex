@@ -20,9 +20,13 @@ defmodule Excyte.Mls.ProcessListings do
         |> process_media()
         |> Rankings.process(subject)
       end)
-    IO.inspect(hd(new_dataset), label: "KEYS")
 
     {:ok, Map.merge(resp, %{listings: new_dataset})}
+  end
+
+  def process_comparables(_, _) do
+    #LOG ERR in DB
+    {:error, %{message: "Could not Process Comparable Listings"}}
   end
 
   def top_level_info(l, subject) do

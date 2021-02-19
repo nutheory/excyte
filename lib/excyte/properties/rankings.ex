@@ -61,8 +61,6 @@ defmodule Excyte.Properties.Rankings do
       |> sanitize_attrs()
       |> average_with_weight()
       |> ranking_summary()
-      # |> adjustment_recommendations()
-    IO.inspect(ranks, charlists: false, label: "RES")
 
     Map.merge(listing, %{excyte_ranking: ranks})
   end
@@ -129,10 +127,6 @@ defmodule Excyte.Properties.Rankings do
       grenades: grenades
     }})
   end
-
-  # defp adjustment_recommendations(ranking) do
-
-  # end
 
   defp average(nums) do
     Enum.sum(nums) / length(nums)

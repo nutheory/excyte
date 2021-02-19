@@ -1,7 +1,46 @@
 defmodule Excyte.Insights do
   import Ecto.Query, warn: false
-  alias Excyte.Repo
-  alias Excyte.Insights.{Template, Document}
+  alias Ecto.Multi
+  alias Excyte.{Properties, Repo}
+  alias Excyte.Insights.{Insight, Document, Template, SavedSearch}
+
+  def create_insight(attrs) do
+    Multi.new()
+    |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
+    |> Multi.run(:claim_subject, __MODULE__, :claim_subject, [attrs])
+    |> Multi.run(:search, __MODULE__, :create_saved_search, [attrs])
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{insight: insight}} -> {:ok, insight}
+      {:error, method, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  def create_insight(_repo, _changes, %{insight: ins}) do
+    %Insight{}
+    |> Insight.changeset(ins)
+    |> Repo.insert()
+  end
+
+  def create_saved_search(_repo, changes, %{search: srch}) do
+    %SavedSearch{}
+    |> SavedSearch.changeset(Map.merge(srch, %{insight_id: changes.insight.id}))
+    |> Repo.insert()
+  end
+
+  def claim_subject(_repo, changes, %{property: prop}) do
+    Properties.update_property(prop.subject_id, %{insight_id: changes.insight.id})
+  end
+
+  def get_initial_insight(uid, iid) do
+    Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload([:subject, :saved_search])
+  end
+
+  def get_review_insight(uid, iid) do
+    Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:subject)
+  end
+
+
 
   def get_templates(agent_id, brokerage_id) do
 
@@ -24,6 +63,11 @@ defmodule Excyte.Insights do
     # ++ [Template.default_cma()]
   end
 
+  def update_insight(uid, iid, attrs) do
+    insight = Repo.get_by(Insight, %{created_by_id: uid, uuid: iid})
+    Insight.changeset(insight, attrs)
+    |> Repo.update()
+  end
 
   def create_document(attrs) do
     %Document{}

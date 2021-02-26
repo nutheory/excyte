@@ -4,14 +4,15 @@ defmodule ExcyteWeb.InsightView do
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Insight.{
     CreateLive,
-    BuilderLive,
-    EditorLive,
+    # BuilderLive,
+    # EditorLive,
     FilterListings,
     Listings,
     ListingCard,
     PossibleSubjects,
     PreviewComp,
     SelectedComps,
+    SubjectForm,
     SubjectProperty
   }
   alias ExcyteWeb.Components.{

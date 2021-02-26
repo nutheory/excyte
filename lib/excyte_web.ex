@@ -46,7 +46,7 @@ defmodule ExcyteWeb do
     quote do
       use Phoenix.LiveView,
         layout: {ExcyteWeb.LayoutView, "app_live.html"}
-
+      use ViewportHelpers
       unquote(view_helpers())
     end
   end

@@ -101,6 +101,7 @@
         <%= live_component @socket, MultiSelect,
           options: @status_options,
           label: "Select statuses",
+          status: true,
           selected: @filters.selected_statuses,
           callback: :update_filter,
           key: :selected_statuses,

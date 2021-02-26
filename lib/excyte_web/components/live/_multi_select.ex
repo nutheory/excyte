@@ -9,6 +9,7 @@ defmodule ExcyteWeb.Components.MultiSelect do
     {:ok, assign(socket,
       options: assigns.options,
       label: assigns.label,
+      status: assigns.status,
       selected: selected,
       key: assigns.key,
       callback: assigns.callback)}

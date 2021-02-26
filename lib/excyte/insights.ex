@@ -28,8 +28,8 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
-  def claim_subject(_repo, changes, %{property: prop}) do
-    Properties.update_property(prop.subject_id, %{insight_id: changes.insight.id})
+  def claim_subject(_repo, %{insight: ins}, %{property: prop}) do
+    Properties.update_property(prop.subject_id, prop.agent_id, %{insight_id: ins.id})
   end
 
   def get_initial_insight(uid, iid) do

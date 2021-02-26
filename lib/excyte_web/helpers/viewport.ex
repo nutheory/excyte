@@ -17,6 +17,7 @@ defmodule ViewportHelpers do
       import ViewportHelpers
 
       def handle_event("viewport_resize", %{"width" => width}, socket) do
+        IO.inspect(width, label: "FIRING")
         {:noreply, assign(socket, client_info: %{ width: width, media: display_size(width) })}
       end
     end

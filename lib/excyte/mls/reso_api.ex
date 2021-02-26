@@ -148,7 +148,7 @@ defmodule Excyte.Mls.ResoApi do
     end)
     |> String.trim_trailing("%20or%20")
 
-    get("#{mls["dataset_id"]}/Properties?access_token=#{mls["access_token"]}&#{ids_str}")
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
     |> format_response()
   end
 

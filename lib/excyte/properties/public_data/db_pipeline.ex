@@ -2,7 +2,9 @@ defmodule Excyte.DbPipeline do
   alias Excyte.Properties
 
   @impl Crawly.Pipeline
-  def run(item, state, _opts \\ []) do
+  def run(item, state, opts \\ []) do
+    IO.inspect(state, label: "STATE")
+     IO.inspect(opts, label: "OPTS")
     case Properties.create_property(item) do
       {:ok, res} ->
         IO.inspect(res, label: "RESS")

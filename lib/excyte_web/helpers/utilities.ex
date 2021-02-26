@@ -4,12 +4,22 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def status_options() do
     [
       %{value: "active", name: "Active"},
-      %{value: "cctive_under_contract", name: "Active Under Contract"},
+      %{value: "active_under_contract", name: "Active Under Contract"},
       %{value: "canceled", name: "Canceled"},
       %{value: "closed", name: "Closed"},
       %{value: "expired", name: "Expired"},
       %{value: "pending", name: "Pending"},
       %{value: "withdrawn", name: "Withdrawn"}
+    ]
+  end
+
+  def feature_options() do
+    [
+      %{value: "pool", name: "Pool"},
+      %{value: "spa", name: "Spa"},
+      %{value: "view", name: "View"},
+      %{value: "waterfront", name: "Waterfront"},
+      %{value: "horses", name: "Horses"}
     ]
   end
 

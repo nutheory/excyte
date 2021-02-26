@@ -17,7 +17,7 @@ defmodule Excyte.Insights.Insight do
     field :title, :string, null: false
     field :content, MapType
     field :published, :boolean
-    has_one(:subject, Property)
+    has_one(:subject, Property, foreign_key: :insight_id)
     has_one(:saved_search, SavedSearch)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)

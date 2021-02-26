@@ -2,42 +2,58 @@ defmodule Excyte.Properties do
   import Ecto.Query, warn: false
   alias Excyte.{
     Properties.Property,
-    PublicData.PropertyDetails,
+    Properties.PublicDataApi,
     Repo
   }
 
   @topic inspect(__MODULE__)
 
-  def subscribe(prop_id) do
-    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{prop_id}")
+  def subscribe(id) do
+    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{id}")
   end
 
-  def get_subject_details(aws_es) do
-    subscribe(aws_es.mpr_id)
-    line = String.replace(aws_es.line, " ", "-")
-    city = String.replace(aws_es.city, " ", "-")
-    address = "#{line}_#{city}_#{aws_es.state_code}_#{aws_es.postal_code}_"
-    id = String.split(aws_es.mpr_id, "") |> List.insert_at(6, "-") |> Enum.join("")
-    Crawly.Engine.start_spider(PropertyDetails,
-      urls: ["https://www.realtor.com/realestateandhomes-detail/#{address}M#{id}"])
+  def fetch_subject_details(foreign_map, id, uid) do
+    foreign_id = format_foreign_id(foreign_map)
+    IO.inspect(foreign_map, label: "OOPS")
+    subscribe(foreign_map.mpr_id)
+    IO.inspect(foreign_id, label: "foreign_id")
+    case PublicDataApi.get_subject_by_foreign_id(foreign_id) do
+      {:ok, res} -> __MODULE__.update_property(id, uid, res)
+      {:error, err} -> IO.inspect(err, label: "OOPS")
+    end
   end
 
   def get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
     Repo.get_by(Property, %{agent_id: aid, foreign_id: fid, internal_type: "subject"})
   end
 
+  def get_property(id) do
+    Repo.get_by(Property, %{id: id})
+  end
+
+  def find_or_create_subject_property(%{foreign_id: fid, agent_id: aid} = attrs) do
+    case get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
+      %Property{} = subject -> {:ok, subject}
+      nil -> __MODULE__.create_property(attrs)
+    end
+  end
+
   def create_property(attrs) do
     %Property{}
     |> Property.changeset(attrs)
     |> Repo.insert()
-    |> notify_subscribers([:property, :created])
   end
 
-  def update_property(id, attrs) do
-    prop = Repo.get_by(Property, %{id: id})
+  def update_property(id, uid, attrs) do
+    prop = Repo.get_by(Property, %{id: id, agent_id: uid})
 
     Property.changeset(prop, attrs)
     |> Repo.update()
+    |> notify_subscribers([:property, :updated])
+  end
+
+  def change_property(%Property{} = property, attrs \\ %{}) do
+    Property.changeset(property, attrs)
   end
 
   def get_test_comparable_properties(addr) do
@@ -52,9 +68,17 @@ defmodule Excyte.Properties do
     Crawly.Engine.stop_spider(Comparables)
   end
 
-  defp notify_subscribers({:ok, result}, event) do
-    Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})
+  defp format_foreign_id(foreign_map) do
+    line = String.replace(foreign_map.line, " ", "-")
+    city = String.replace(foreign_map.city, " ", "-")
+    address = "#{line}_#{city}_#{foreign_map.state_code}_#{foreign_map.postal_code}_"
+    id = String.split(foreign_map.mpr_id, "") |> List.insert_at(6, "-") |> Enum.join("")
+    "#{address}M#{id}"
+  end
 
+  def notify_subscribers({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})
+    IO.inspect(result, label: "NOTIFY foreign_id")
     Phoenix.PubSub.broadcast(
       Excyte.PubSub,
       @topic <> "#{result.foreign_id}",
@@ -64,8 +88,18 @@ defmodule Excyte.Properties do
     {:ok, result}
   end
 
-  defp notify_subscribers({:error, reason}, _), do: {:error, reason}
+  def notify_subscribers({:error, reason}, _), do: {:error, reason}
 end
+
+# def get_subject_details(aws_es) do
+#   subscribe(aws_es.mpr_id)
+#   line = String.replace(aws_es.line, " ", "-")
+#   city = String.replace(aws_es.city, " ", "-")
+#   address = "#{line}_#{city}_#{aws_es.state_code}_#{aws_es.postal_code}_"
+#   id = String.split(aws_es.mpr_id, "") |> List.insert_at(6, "-") |> Enum.join("")
+#   Crawly.Engine.start_spider(PropertyDetails,
+#     urls: ["https://www.realtor.com/realestateandhomes-detail/#{address}M#{id}"], id: 45)
+# end
 
 # Replace input in querystring
 # https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=21982%20midcrest

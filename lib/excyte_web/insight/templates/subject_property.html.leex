@@ -1,7 +1,21 @@
 <div class="lg:w-2/5 md:w-2/3 mx-auto">
   <h1 class="text-center pb-2">Create a CMA</h1>
-  <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
-  <%= live_component @socket, AddressAutocomplete, id: :subject_location %>
-  <h4 class="text-center text-bgray-400 mb-4 mt-8">Or find by listing ID</h4>
-  <%= live_component @socket, FindById, mls: @mls, id: :find_listings_by_id %>
+  <%= if @manual_subject do %>
+    <h3 class="text-center text-bgray-400 my-4">Oops we could not locate public records for <%# manage both failures with coords/without coords %></h3>
+    <%= live_component @socket, SubjectForm,
+      label: "Manually create subject property",
+      subject: nil,
+      id: :manual_subject_create
+    %>
+  <% else %>
+    <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
+    <%= live_component @socket, AddressAutocomplete, id: :subject_location %>
+  <% end %>
+  <%= if @possible_subject_properties do %>
+    <ul>
+      <%= for prop <- @possible_subject_properties do %>
+        <%= live_component @socket, PossibleSubjects, prop: prop, id: "sub_property_#{prop.listing_key}" %>
+      <% end %>
+    </ul>
+  <% end %>
 </div>

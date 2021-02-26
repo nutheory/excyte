@@ -15,6 +15,5 @@ defmodule Excyte.Repo.Migrations.Documents do
 
     create index(:documents, [:created_by_id])
     create index(:documents, [:brokerage_id])
-    create index(:documents, [:insight_id])
   end
 end

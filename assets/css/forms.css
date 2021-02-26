@@ -35,7 +35,7 @@ form,
   }
 
   & label {
-    @apply block text-sm font-bold mb-1;
+    @apply block text-sm mb-1;
   }
 
   & .sub-form {
@@ -70,7 +70,7 @@ form,
   }
 
   & input.number-field {
-    @apply text-gray-700 border bg-white border-bgray-400 rounded py-2 px-2 block w-full;
+    @apply text-gray-700 border bg-white border-bgray-400 rounded leading-8 pl-3 block w-full;
   }
 
   & input.text-field:focus,

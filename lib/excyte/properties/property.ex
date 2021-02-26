@@ -127,5 +127,6 @@ defmodule Excyte.Properties.Property do
       :tax_annual_amount,
       :tax_year
     ])
+    |> validate_required([:agent_id, :internal_type])
   end
 end

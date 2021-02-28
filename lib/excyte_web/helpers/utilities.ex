@@ -1,5 +1,7 @@
 defmodule ExcyteWeb.Helpers.Utilities do
   import Phoenix.LiveView.Helpers
+  use Timex
+  import Number.{Delimit}
 
   def status_options() do
     [
@@ -19,6 +21,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       %{value: "spa", name: "Spa"},
       %{value: "view", name: "View"},
       %{value: "waterfront", name: "Waterfront"},
+      %{value: "new_construction", name: "New Construction"},
       %{value: "horses", name: "Horses"}
     ]
   end
@@ -33,6 +36,51 @@ defmodule ExcyteWeb.Helpers.Utilities do
       String.contains?(status, "Pending") -> %{text: "text-cyan-600", bg: "bg-cyan-50", border: "border border-cyan-600"}
       String.contains?(status, "Withdrawn") -> %{text: "text-indigo-600", bg: "bg-indigo-50", border: "border border-indigo-600"}
       true -> ""
+    end
+  end
+
+  def summarize_sale_info(listing) do
+    IO.inspect(listing, label: "hello")
+    if listing.list_price !== nil || listing.close_price !== nil do
+      if listing.close_price !== nil do
+        price_str = "Closed for <strong>#{Number.Delimit.number_to_delimited(listing.close_price)}</strong> "
+        dom_str = if Map.has_key?(listing, :days_on_market), do: "after #{listing.days_on_market} days on the market ", else: ""
+        "#{price_str}#{dom_str}#{time_to_text(listing, :close_date)}."
+      else
+        assigns = %{listing: listing}
+        ~L"""
+          Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
+          <%= if listing.days_on_market !== nil do %> with <strong><%= @listing.days_on_market %></strong> days on the market <% end %>
+          <%= time_to_text(@listing, :on_market_date) %>
+        """
+      end
+    else
+      ""
+    end
+  end
+
+  defp time_to_text(listing, key) do
+    if listing[key] !== nil do
+      months = Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+      cond do
+        months <= 2 ->
+          assigns = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+          ~L"""
+            <%= @days %> <%= Inflex.inflect("day", @days) %> ago
+          """
+        months <= 18 ->
+          assigns = %{months: months}
+          ~L"""
+            <%= @months %> <%= Inflex.inflect("month", @months) %> ago
+          """
+        months > 18 ->
+          assigns = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+          ~L"""
+            over <%= @years %> <%= Inflex.inflect("year", @years) %> ago
+          """
+      end
+    else
+      ""
     end
   end
 

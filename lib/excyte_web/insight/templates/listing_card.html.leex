@@ -28,13 +28,14 @@
     <h3 class="mt-1">
       <%= @listing.street_number %> <%= @listing.street_name %>
       <%= if @listing.unit do %>
-        <span class="pt-1 inline-block ml-1">
+        <span class="inline-block ml-1">
           <label>Unit</label>
           <%= @listing.unit %>
         </span>
       <% end %>
     </h3>
-    <div class="flex my-1 py-1 text-gray-400">
+    <p class="text-sm mt-1"><%= Utilities.summarize_sale_info(@listing) %></p>
+    <div class="flex mt-2 text-gray-400">
       <div class="mr-5">
         <label class="block text-right uppercase text-tiny">List price</label>
         <p class="">$<span class="font-bold"><%= number_to_delimited(@listing.list_price, precision: 0) %></span></p>

@@ -133,6 +133,10 @@ span.icon-align {
   text-transform: uppercase;
 }
 
+.deep-text-shadow {
+  text-shadow: 1px 1px 2px black;
+}
+
 div.action-button {
   @apply text-white text-center font-bold py-2 px-4 rounded bg-green-600 transition duration-150 ease-in-out;
 }

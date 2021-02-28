@@ -3,33 +3,27 @@ defmodule Excyte.Properties.Rankings do
     Property DB schema
   """
 
-  def process(listing, subject) do
+  def process_init(listing, subject) do
     listing_price = if listing.close_price, do: :close_price, else: :list_price
     ranks =
       %{
         attrs: %{
           beds: %{
             percentage: generic_percentage(listing.beds, subject.beds),
-            text: "beds",
+            text: Inflex.inflect("bed", listing.beds),
             value: "#{listing.beds}",
             weight: 1
           },
           baths: %{
             percentage: generic_percentage(listing.baths.total, subject.baths),
-            text: "baths",
+            text: Inflex.inflect("bath", listing.baths.total),
             value: "#{listing.baths.total}",
             weight: 1
           },
-          lotsize_sqft: %{
-            percentage: generic_percentage(listing.lotsize_sqft, subject.lotsize_sqft),
-            text: "lot sqft",
-            value: "#{listing.lotsize_sqft}",
-            weight: 1
-          },
-          lotsize_acres: %{
-            percentage: generic_percentage(listing.lotsize_acres, subject.lotsize_acres),
-            text: "lot acres",
-            value: "#{listing.lotsize_acres}",
+          lotsize: %{
+            percentage: check_value?(listing, subject),
+            text: (if Map.has_key?(listing.lotsize, :unit), do: "lot #{listing.lotsize.unit}", else: nil),
+            value: (if Map.has_key?(listing.lotsize, :value), do: "lot #{listing.lotsize.value}", else: nil),
             weight: 1
           },
           year_built: %{
@@ -71,6 +65,14 @@ defmodule Excyte.Properties.Rankings do
       |> Enum.into(%{})
 
     Map.merge(rankings, %{attrs: attrs})
+  end
+
+  defp check_value?(listing, subject) do
+    if Map.has_key?(listing.lotsize, :value) && Map.has_key?(subject.lotsize, :value) do
+      generic_percentage(listing.lotsize.value, subject.lotsize.value)
+    else
+      nil
+    end
   end
 
   defp generic_percentage(listing_val, subject_val) do

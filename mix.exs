@@ -53,6 +53,7 @@ defmodule Excyte.MixProject do
       {:gettext, "~> 0.11"},
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
+      {:inflex, "~> 2.0.0"},
       {:number, "~> 1.0.1"},
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},

@@ -1,7 +1,7 @@
 defmodule Excyte.Mls.ProcessListings do
   alias Excyte.Properties.{Rankings}
 
-  def process_comparables({:ok, %{listings: listings} = resp}, subject) do
+  def process_init({:ok, %{listings: listings} = resp}, subject) do
     new_dataset =
       Enum.map(listings, fn listing ->
         Enum.filter(listing, fn {_, v} ->
@@ -18,13 +18,13 @@ defmodule Excyte.Mls.ProcessListings do
         |> top_level_info(subject)
         |> main_booleans()
         |> process_media()
-        |> Rankings.process(subject)
+        |> Rankings.process_init(subject)
       end)
 
     {:ok, Map.merge(resp, %{listings: new_dataset})}
   end
 
-  def process_comparables(_, _) do
+  def process_init(_, _) do
     #LOG ERR in DB
     {:error, %{message: "Could not Process Comparable Listings"}}
   end
@@ -55,6 +55,10 @@ defmodule Excyte.Mls.ProcessListings do
         public_remarks: l["PublicRemarks"],
         year_built: l["YearBuilt"],
         days_on_market: l["DaysOnMarket"],
+        on_market_date: l["OnMarketDate"],
+        expiration_date: l["ExpirationDate"],
+        withdrawn_date: l["WithdrawnDate"],
+        pending_timestamp: l["PendingTimestamp"],
         property_type: l["PropertyType"],
         property_sub_type: l["PropertySubType"],
         beds: l["BedroomsTotal"],
@@ -63,15 +67,14 @@ defmodule Excyte.Mls.ProcessListings do
         main_photo_url: Enum.find(l["Media"], fn m ->
           m["MediaCategory"] === "Photo" && m["Order"] === 1
         end)["MediaURL"],
-        lotsize_sqft: l["LotSizeSquareFeet"],
-        lotsize_acres: l["LotSizeAcres"],
+        lotsize: process_lotsize(%{sqft: l["LotSizeSquareFeet"], acres: l["LotSizeAcres"]}, subject),
         close_date: l["CloseDate"],
-        pending_timestamp: l["PendingTimestamp"],
         distance_from_subject: distance_from_subject(l["Coordinates"], subject),
         list_price: l["ListPrice"],
         close_price: l["ClosePrice"],
+        default_price: process_price(%{list_price: l["ListPrice"], close_price: l["ClosePrice"]}),
         stories: l["Stories"],
-        walkscore: l["Walkscore"],
+        walkscore: l["WalkScore"],
         listing_key: l["ListingKey"],
         listing_id: l["ListingId"],
         features: process_features(l),
@@ -125,6 +128,28 @@ defmodule Excyte.Mls.ProcessListings do
         }
       })
     }
+  end
+
+  def process_price(%{list_price: list, close_price: close}) do
+    if close !== nil do
+      %{type: "close", value: close}
+    else
+      %{type: "list", value: list}
+    end
+  end
+
+  defp process_lotsize(%{sqft: sqft, acres: acres}, subject) do
+    if Map.has_key?(subject.lotsize, :unit) && (sqft !== nil || acres !== nil) do
+      cond do
+        subject.lotsize.unit === "sqft" && sqft !== nil -> %{unit: "sqft", value: sqft}
+        subject.lotsize.unit === "sqft" && acres !== nil -> %{unit: "sqft", value: acres_to_sqft(acres)}
+        subject.lotsize.unit === "acres" && sqft !== nil -> %{unit: "acres", value: sqft_to_acres(sqft)}
+        subject.lotsize.unit === "acres" && acres !== nil -> %{unit: "acres", value: acres}
+        true -> %{}
+      end
+    else
+      %{}
+    end
   end
 
   defp process_features(l) do
@@ -237,8 +262,16 @@ defmodule Excyte.Mls.ProcessListings do
     |> Enum.join(" ")
   end
 
-  def process_comparables({:error, err}), do: {:error, err}
-  def process_comparables(_), do: {:error, %{message: "Unknown Error"}}
+  defp acres_to_sqft(acres) do
+    acres * 43560
+  end
+
+  defp sqft_to_acres(sqft) do
+    Float.round(sqft/43560, 2)
+  end
+
+  def process_init({:error, err}), do: {:error, err}
+  def process_init(_), do: {:error, %{message: "Unknown Error"}}
 end
 
 

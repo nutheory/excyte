@@ -22,8 +22,9 @@ config :excyte, :gcp_places, System.get_env("GCP_EXCYTE_PLACES")
 #   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
 #   auth_token: System.get_env("TWILIO_AUTH_TOKEN")
 
-# config :crawly,
-#   port: 4002,
+# remove crawly to remove this setting
+config :crawly,
+  port: 4002
 #   closespider_timeout: 10,
 #   middlewares: [
 #     Crawly.Middlewares.UniqueRequest,

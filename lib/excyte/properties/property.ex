@@ -34,13 +34,12 @@ defmodule Excyte.Properties.Property do
     field :baths, :float
     field :sqft, :integer
     field :main_photo_url, :string
-    field :lotsize_sqft, :integer
-    field :lotsize_acres, :float
+    field :lotsize, MapType
     field :close_date, :string
     field :pending_timestamp, :naive_datetime
     field :distance_from_subject, :string
     field :list_price, :string
-    field :stories, :string
+    field :stories, :integer
     field :walkscore, :integer
     field :est_price, :integer
     field :listing_key, :string
@@ -97,8 +96,7 @@ defmodule Excyte.Properties.Property do
       :baths,
       :sqft,
       :main_photo_url,
-      :lotsize_sqft,
-      :lotsize_acres,
+      :lotsize,
       :close_date,
       :pending_timestamp,
       :distance_from_subject,

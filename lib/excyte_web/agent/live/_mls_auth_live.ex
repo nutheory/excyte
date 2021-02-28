@@ -12,7 +12,6 @@ defmodule ExcyteWeb.Agent.MlsAuthLive do
   end
 
   def update(assigns, socket) do
-    IO.inspect(assigns.mls_list, label: "list")
     dids = Enum.map(assigns.mls_list, fn li -> li.dataset_id end)
     opts = Enum.filter(assigns.mls_opts, fn %{val: val} ->
         !Enum.member?(dids, val)

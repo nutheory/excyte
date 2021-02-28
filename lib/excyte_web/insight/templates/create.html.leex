@@ -1,5 +1,5 @@
 <div class="cma mt-16 mx-auto px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
-  <% IO.inspect(@comparables, label: "COMP") %>
+  <%# IO.inspect(@comparables, label: "COMP") %>
   <%= if @comparables === nil do %>
     <%= if @fetching === true do %>
       <div class="w-full mt-36 overflow-hidden">

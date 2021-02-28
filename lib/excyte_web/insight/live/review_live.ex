@@ -5,7 +5,8 @@ defmodule ExcyteWeb.Insight.ReviewLive do
     Accounts,
     Insights,
     Insights.Insight,
-    Mls.ResoApi
+    Mls.ResoApi,
+    Properties.Adjustments
   }
   alias ExcyteWeb.{InsightView}
 
@@ -14,15 +15,15 @@ defmodule ExcyteWeb.Insight.ReviewLive do
   def mount(%{"id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     with %Insight{} = ins <- Insights.get_review_insight(cu.id, id),
-         {:ok, comps} <- ResoApi.get_by_Listing_ids(cu.current_mls,
-                    ins.selected_listing_ids) do
+         {:ok, comps} <- ResoApi.get_by_listing_ids(cu.current_mls,
+                    ins.selected_listing_ids, ins.subject) do
+      IO.inspect(comps, label: "length")
       subject = Map.merge(ins.subject, %{features: []})
       {:ok, assign(socket,
         current_user: cu,
         subject: subject,
-        subject_form: %{features: []},
         insight_uuid: id,
-        selected_comps: comps
+        selected_comps: Adjustments.process_init(comps.listings, subject)
       )}
     else
       _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}

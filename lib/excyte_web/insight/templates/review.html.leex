@@ -1,41 +1,51 @@
 <div class="mt-24 mx-auto w-full xl:w-4/5 px-4 sm:px-6 xl:px-8" id="review-insight">
-      <div class="flex flex-wrap">
-        <div class="w-full lg:flex-1 flex">
-          <%= live_redirect to: "/insights/cma/#{@insight_uuid}/create" do %>
-            <div class="pr-2 mr-2 border-r border-gray-400 flex h-full justify-center items-center cursor-pointer" phx-click="remove-preview">
-              <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </div>
-          <% end %>
-          <div class="flex-1">
-            <div>
-              <h4 class="text-gray-400">Step 2 of 3</h4>
-              <h3 class="mt-1">Review and add adjustments</h3>
-            </div>
-            <p class="text-sm">
-              <strong>Next step:</strong> Lastly you can organize and preview your final document.
-            </p>
-          </div>
+  <div class="flex flex-wrap">
+    <div class="w-full lg:flex-1 flex">
+      <%= live_redirect to: "/insights/cma/#{@insight_uuid}/create" do %>
+        <div class="pr-2 mr-2 border-r border-gray-400 flex h-full justify-center items-center cursor-pointer" phx-click="remove-preview">
+          <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
         </div>
+      <% end %>
+      <div class="flex-1">
         <div>
-          <%# template selector OR/AND adjustments %>
+          <h4 class="text-gray-400">Step 2 of 3</h4>
+          <h3 class="mt-1">Review and add quick adjustments</h3>
         </div>
+        <p class="text-sm w-full lg:w-3/5">
+          <strong>Next step:</strong> Lastly you can organize and preview your final document.
+          <span class="bg-yellow-200">The adjustments made here are intended either as a starting point or for quick publication.
+          You can edit or fine tune any information in the next step.</span>
+        </p>
       </div>
-      <div class="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-6" id="review-subject">
-        <div class="col-span-2 p-4 bg-cyan-50 rounded-lg">
-          <%= live_component @socket, SubjectForm,
-            label: "Review property accuracy",
-            subject: @subject,
-            id: :subject_adjustments
-          %>
-        </div>
-        <%= for comps <- @selected_comps do %>
-          <div>
-            <h4>Recomended adjustment considerations</h4>
-            <%# template selector %>
-            <%# adjustment slider %>
+    </div>
+    <div>
+      <%# template selector OR/AND adjustments %>
+    </div>
+  </div>
+  <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6" id="review-subject">
+    <div class="col-span-2 p-4 bg-cyan-50 rounded-lg shadow">
+      <%= live_component @socket, SubjectForm,
+        label: "Review property accuracy",
+        subject: @subject,
+        id: :subject_adjustments
+      %>
+    </div>
+    <%= for comp <- @selected_comps do %>
+      <div class="bg-bgray-200 rounded-lg relative overflow-hidden shadow">
+        <%= if comp do %>
+          <div class="rounded-t-lg relative h-24 overflow-hidden bg-bgray-900 ">
+            <img src="<%= comp.main_photo_url %>" alt="" class="absolute h-full w-full object-cover grayscale-60 opacity-80" />
+            <div class="absolute h-full w-full top-4 left-4 deep-text-shadow">
+              <h4 class="text-white shadow"><%= comp.street_number %> <%= comp.street_name %></h4>
+            </div>
           </div>
         <% end %>
+        <div class="font-bold text-sm">Recomended adjustment considerations</div>
+        <%# template selector %>
+        <%# adjustment slider %>
       </div>
+    <% end %>
+  </div>
 </div>

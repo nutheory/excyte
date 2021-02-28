@@ -29,14 +29,13 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :baths, :float
       add :sqft, :integer
       add :main_photo_url, :text
-      add :lotsize_sqft, :integer
-      add :lotsize_acres, :float
+      add :lotsize, :map, default: %{}
       add :close_date, :string
       add :pending_timestamp, :naive_datetime
       add :distance_from_subject, :string
       add :list_price, :string
       add :est_price, :integer
-      add :stories, :string
+      add :stories, :integer
       add :walkscore, :integer
       add :listing_key, :string
       add :listing_id, :string
@@ -47,6 +46,10 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :public_records, :map, default: %{}
       add :pool, :boolean
       add :spa, :boolean
+      add :horses, :boolean
+      add :new_construction, :boolean
+      add :view, :boolean
+      add :waterfront, :boolean
       add :median_dom, :string
       add :median_sale_price, :string
       add :median_list_price, :string

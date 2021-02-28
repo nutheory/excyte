@@ -116,8 +116,8 @@
           <p class="font-bold"><%= @listing.days_on_market %></p>
         </div>
         <div class="text-center">
-          <label class="block uppercase text-tiny"><%= @listing.lotsize_sqft %></label>
-          <p class="font-bold"><%= @listing.lotsize_sqft %></p>
+          <label class="block uppercase text-tiny">lot <%= Inflex.pluralize(@listing.lotsize.unit) %></label>
+          <p class="font-bold"><%= @listing.lotsize.value %></p>
         </div>
         <div class="text-center col-span-2">
           <label class="block uppercase text-tiny">Property Sub Type</label>

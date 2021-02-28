@@ -91,7 +91,7 @@ defmodule Excyte.Mls.ResoApi do
       # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths_min, high: opts.baths_max})}"
     )
     |> format_response()
-    |> ProcessListings.process_comparables(subject)
+    |> ProcessListings.process_init(subject)
     |> case do
       {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
       {:error, err} -> {:error, err}
@@ -142,7 +142,7 @@ defmodule Excyte.Mls.ResoApi do
     end
   end
 
-  def get_by_Listing_ids(mls, ids_array) do
+  def get_by_listing_ids(mls, ids_array, subject) do
     ids_str = Enum.reduce(ids_array, "$filter=", fn id, acc ->
       "#{acc}#{listing_id(id)}"
     end)
@@ -150,6 +150,7 @@ defmodule Excyte.Mls.ResoApi do
 
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
     |> format_response()
+    |> ProcessListings.process_init(subject)
   end
 
   defp listing_id(id) do

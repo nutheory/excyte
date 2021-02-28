@@ -28,7 +28,6 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   defp process_subject({:ok, %Tesla.Env{:body => body} = response}) do
-    IO.inspect(response, label: "WHAAAAAA?")
     {:ok, document} = Floki.parse_document(body)
     start = Floki.find(document, ".container-ldp")
     summary = Floki.find(start, "#ldp-property-meta")
@@ -44,8 +43,7 @@ defmodule Excyte.Properties.PublicDataApi do
       beds: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-beds] span"))),
       baths: to_f(Floki.text(Floki.find(summary, "[data-label=property-meta-bath] span"))),
       sqft: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-sqft] span"))),
-      lotsize_sqft: process_lsqft(Floki.find(summary, "[data-label=property-meta-lotsize]")),
-      lotsize_acres: process_lacres(Floki.find(summary, "[data-label=property-meta-lotsize]")),
+      lotsize: process_lotsize(Floki.find(summary, "[data-label=property-meta-lotsize]")),
       est_price: to_i(hd(Floki.attribute(Floki.find(start, ".ldp-header-price"), "span", "content"))),
       overview: overview,
       history: %{
@@ -64,6 +62,8 @@ defmodule Excyte.Properties.PublicDataApi do
       property_type: key_check(details, :property_type),
       status: key_check(details, :status),
       year_built: to_i(key_check(details, :year_built)),
+      pool: process_pool(public),
+      stories: process_stories(public),
       public_records: public,
       median_dom: key_check(neighbor, :median_dom),
       median_list_price: key_check(neighbor, :median_list_price),
@@ -79,6 +79,10 @@ defmodule Excyte.Properties.PublicDataApi do
     else
       nil
     end
+  end
+
+  defp to_bool(str) do
+    if str === "yes", do: true, else: false
   end
 
   defp to_i(str) do
@@ -104,27 +108,45 @@ defmodule Excyte.Properties.PublicDataApi do
     end
   end
 
-  defp process_lsqft(lotsize) do
+  defp process_lotsize(lotsize) do
     str =
       String.replace(Floki.text(lotsize), "\n", "")
       |> String.trim()
 
-    if String.contains?(str, "sqft lot") do
-      to_i(Floki.text(Floki.find(lotsize, ".data-value")))
-    else
-      nil
+    cond do
+      String.contains?(str, "sqft lot") -> %{unit: "sqft", value: to_i(Floki.text(Floki.find(lotsize, ".data-value")))}
+      String.contains?(str, "acres lot") -> %{unit: "acres", value: to_f(Floki.text(Floki.find(lotsize, ".data-value")))}
+      true -> nil
+    end
+  end
+    # if String.contains?(str, "sqft lot") do
+    #   to_i(Floki.text(Floki.find(lotsize, ".data-value")))
+    # else
+    #   nil
+    # end
+  # end
+
+  # defp process_lacres(lotsize) do
+  #   str =
+  #     String.replace(Floki.text(lotsize), "\n", "")
+  #     |> String.trim()
+
+  #   if String.contains?(str, "acres lot") do
+  #     to_f(Floki.text(Floki.find(lotsize, ".data-value")))
+  #   else
+  #     nil
+  #   end
+  # end
+
+  defp process_stories(public) do
+    if Map.has_key?(public, :stories) do
+      to_i(public.stories)
     end
   end
 
-  defp process_lacres(lotsize) do
-    str =
-      String.replace(Floki.text(lotsize), "\n", "")
-      |> String.trim()
-
-    if String.contains?(str, "acres lot") do
-      to_f(Floki.text(Floki.find(lotsize, ".data-value")))
-    else
-      nil
+  defp process_pool(public) do
+    if Map.has_key?(public, :pool) do
+      to_bool(public.pool)
     end
   end
 
@@ -132,7 +154,7 @@ defmodule Excyte.Properties.PublicDataApi do
     Floki.find(start, "#ldp-detail-public-records li")
     |> Enum.reduce(%{}, fn item, acc ->
       key_val = String.split(Floki.text(item), ":")
-      Map.put(acc, String.to_atom(hd(key_val)), hd(tl(key_val)))
+      Map.put(acc, name_to_atom(hd(key_val)), hd(tl(key_val)))
     end)
   end
 
@@ -169,6 +191,12 @@ defmodule Excyte.Properties.PublicDataApi do
       String.trim(str)
       |> String.replace("\n\n", "</p><p>")
     end
+  end
+
+  defp name_to_atom(name) do
+    String.downcase(name)
+    |> String.replace(" ", "_")
+    |> String.to_atom()
   end
 
   defp get_foreign_id(url) do

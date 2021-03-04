@@ -2,7 +2,7 @@
   <div class="flex flex-wrap">
     <div class="w-full lg:flex-1 flex">
       <%= live_redirect to: "/insights/cma/#{@insight_uuid}/create" do %>
-        <div class="pr-2 mr-2 border-r border-gray-400 flex h-full justify-center items-center cursor-pointer" phx-click="remove-preview">
+        <div class="pr-2 mr-2 border-r border-gray-400 flex h-full justify-center items-center cursor-pointer">
           <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
@@ -42,10 +42,27 @@
             </div>
           </div>
         <% end %>
-        <div class="font-bold text-sm">Recomended adjustment considerations</div>
-        <%# template selector %>
-        <%# adjustment slider %>
+        <div class="p-4">
+          <h4 class="font-bold text-sm">Adjustment considerations</h4>
+          <p class="text-sm"><%= Utilities.summarize_sale_info(comp) %></p>
+          <ul class="mb-2 flex flex-wrap -mx-2">
+            <%= for adj <- Enum.map(Enum.filter(comp.adjustments, fn {_, v} -> Map.has_key?(v, :to_text) end), fn {_, v} -> v end) do %>
+              <li class="w-1/2 py-1 px-2 text-sm"><%= adj.to_text %></li>
+            <% end %>
+          </ul>
+          <%= if Map.has_key?(comp.adjustments, :sqft) do %>
+            <h4 class="font-bold text-sm">Auto Adjustments</h4>
+            <p class="text-sm"><%= Utilities.summarize_auto_adjust(comp.adjustments.sqft) %></p>
+          <% end %>
+          <%# template selector %>
+          <%# adjustment slider %>
+        </div>
       </div>
     <% end %>
+    <div class="p-4 bg-cyan-50 rounded-lg shadow">
+      the end
+      <%# continue with auto adjust %>
+      <%# continue without adjustments (I got this.) %>
+    </div>
   </div>
 </div>

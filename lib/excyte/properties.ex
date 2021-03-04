@@ -46,14 +46,14 @@ defmodule Excyte.Properties do
 
   def update_property(id, uid, attrs) do
     prop = Repo.get_by(Property, %{id: id, agent_id: uid})
-
     Property.changeset(prop, attrs)
     |> Repo.update()
     |> notify_subscribers([:property, :updated])
   end
 
-  def change_property(%Property{} = property, attrs \\ %{}) do
-    Property.changeset(property, attrs)
+  def change_property(id, uid, attrs \\ %{}) do
+    prop = Repo.get_by(Property, %{id: id, agent_id: uid})
+    Property.changeset(prop, attrs)
   end
 
   def get_test_comparable_properties(addr) do

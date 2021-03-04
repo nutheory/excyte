@@ -1,14 +1,6 @@
-<div class="form" phx-submit="filter_submit">
+<div class="form">
   <div class="price_distance border-b border-cyan-300 pb-3">
     <div class="flex flex-wrap -mx-2 md:-mx-4">
-      <%# <div class="w-full xl:w-2/5 pt-2 pb-3 xl:py-0 mx-auto px-2 md:px-4"> %>
-        <%#= live_component @socket, DistanceSelector,
-          distance: @filters.distance,
-          callback: :update_filter,
-          step: 0.5,
-          id: :distance_filter %>
-      <%# </div> %>
-
       <div class="flex-1 mt-2 px-2 md:px-4">
         <%= live_component @socket, RangeSlider, opts: %{
           min: round(@filters.price_min * 0.6),
@@ -22,122 +14,109 @@
         }, callback: :update_filter, id: :price_filter %>
       </div>
       <div class="w-full md:w-1/4 px-2 md:px-4">
-        <label>mi. from subject</label>
-        <div class="">
-          <input
-            class="number-field"
-            placeholder="0.5"
-            type="number"
-            name="distance"
-            value="<%= @filters.distance %>"
-          />
-        </div>
+        <%= f = form_for :d, "#", [phx_change: "distance-filter-update"] %>
+          <label>mi. from subject</label>
+          <div class="">
+            <%= number_input f, :distance,
+              class: "number-field",
+              step: "0.5",
+              placeholder: "Radius",
+              value: @filters.distance,
+              phx_debounce: "blur" %>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  <div class="features border-b border-cyan-300 py-3">
-    <div class="features flex flex-wrap -mx-2 md:-mx-4">
-      <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
-        <label>Beds</label>
-        <div class="flex -mx-1 md:-mx-2">
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="min"
-              type="number"
-              name="beds_min"
-              value="<%= @filters.beds_min %>"
-            />
-          </div>
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="max"
-              type="number"
-              name="beds_max"
-              value="<%= @filters.beds_max %>"
-            />
+  <%= f = form_for :mf, "#", [phx_change: "main-filter-update", phx_submit: "filter-submit"] %>
+    <div class="features border-b border-cyan-300 py-3">
+      <div class="features flex flex-wrap -mx-2 md:-mx-4">
+        <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
+          <label>Beds</label>
+          <div class="flex -mx-1 md:-mx-2">
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :beds_min,
+                class: "number-field",
+                placeholder: "min",
+                value: @filters.beds_min %>
+            </div>
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :beds_max,
+              class: "number-field",
+              placeholder: "max",
+              value: @filters.beds_max %>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
-        <label>Baths</label>
-        <div class="flex -mx-2">
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="min"
-              type="number"
-              name="baths_min"
-              value="<%= @filters.baths_min %>"
-            />
-          </div>
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="max"
-              type="number"
-              name="baths_max"
-              value="<%= @filters.baths_max %>"
-            />
+        <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
+          <label>Baths</label>
+          <div class="flex -mx-2">
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :baths_min,
+                class: "number-field",
+                step: "0.25",
+                placeholder: "min",
+                value: @filters.baths_min %>
+            </div>
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :baths_max,
+                class: "number-field",
+                step: "0.25",
+                placeholder: "max",
+                value: @filters.baths_max %>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
-        <label>Sqft</label>
-        <div class="flex -mx-2">
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="min"
-              type="number"
-              name="sqft_min"
-              value="<%= @filters.sqft_min %>"
-            />
-          </div>
-          <div class="w-1/2 px-1 md:px-2">
-            <input
-              class="number-field"
-              placeholder="max"
-              type="number"
-              name="sqft_max"
-              value="<%= @filters.sqft_max %>"
-            />
+        <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
+          <label>Sqft</label>
+          <div class="flex -mx-2">
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :sqft_min,
+                class: "number-field",
+                placeholder: "min",
+                value: @filters.sqft_min %>
+            </div>
+            <div class="w-1/2 px-1 md:px-2">
+              <%= number_input f, :sqft_max,
+                class: "number-field",
+                placeholder: "max",
+                value: @filters.sqft_max %>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="status_button pt-3">
-    <div class="flex flex-wrap -mx-2">
-      <div class="px-2 flex-1 mb-4 md:mb-0">
-        <%= live_component @socket, MultiSelect,
-          options: @status_options,
-          label: "Select statuses",
-          status: true,
-          selected: @filters.selected_statuses,
-          callback: :update_filter,
-          key: :selected_statuses,
-          id: :update_statuses
-        %>
-      </div>
-      <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
-        <%= live_component @socket, Dropdown,
-          options: [
-            %{value: 1, text: "Past month"},
-            %{value: 2, text: "Past 2 months"},
-            %{value: 3, text: "Past 3 months"},
-            %{value: 6, text: "Past 6 months"},
-            %{value: 9, text: "Past 9 months"},
-            %{value: 12, text: "Past 12 months"}
-          ],
-          label: "Status updated",
-          id: :status_updated
-        %>
-      </div>
-      <div class="px-2 w-full md:w-28">
-        <button type="submit" class="submit w-full h-full" value="Submit">Filter</button>
+    <div class="status_button pt-3">
+      <div class="flex flex-wrap -mx-2">
+        <div class="px-2 flex-1 mb-4 md:mb-0">
+          <%= live_component @socket, MultiSelect,
+            options: @status_options,
+            label: "Select statuses",
+            status: true,
+            selected: @filters.selected_statuses,
+            callback: :update_filter,
+            key: :selected_statuses,
+            id: :update_statuses
+          %>
+        </div>
+        <div class="w-full md:w-1/3 px-2 mb-4 md:mb-0">
+          <%= live_component @socket, Dropdown,
+            options: [
+              %{value: 1, text: "Past month"},
+              %{value: 2, text: "Past 2 months"},
+              %{value: 3, text: "Past 3 months"},
+              %{value: 6, text: "Past 6 months"},
+              %{value: 9, text: "Past 9 months"},
+              %{value: 12, text: "Past 12 months"}
+            ],
+            label: "Status updated",
+            id: :status_updated
+          %>
+        </div>
+        <div class="px-2 w-full md:w-28">
+          <button type="submit" class="submit w-full h-full" value="Submit">Filter</button>
+        </div>
       </div>
     </div>
-  </div>
+  </form>
 </div>

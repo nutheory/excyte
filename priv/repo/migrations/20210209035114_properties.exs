@@ -44,12 +44,12 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :dirty_info, :jsonb, default: "[]"
       add :history, :map, default: %{}
       add :public_records, :map, default: %{}
-      add :pool, :boolean
-      add :spa, :boolean
-      add :horses, :boolean
-      add :new_construction, :boolean
-      add :view, :boolean
-      add :waterfront, :boolean
+      add :pool, :boolean, default: false
+      add :spa, :boolean, default: false
+      add :horses, :boolean, default: false
+      add :new_construction, :boolean, default: false
+      add :view, :boolean, default: false
+      add :waterfront, :boolean, default: false
       add :median_dom, :string
       add :median_sale_price, :string
       add :median_list_price, :string

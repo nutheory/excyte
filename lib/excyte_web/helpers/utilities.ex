@@ -39,19 +39,42 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
+  def summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps}) do
+    assigns = %{adj: adj, diff: diff, price_per_sqft: pps}
+    ~L"""
+      Total has been adjusted <strong><%= number_to_delimited(@adj, precision: 0) %></strong>
+      based on a difference of <%= diff %> at $<%= pps %> per sqft
+    """
+  end
+
+  def summarize_auto_adjust(_) do
+    assigns = %{}
+    ~L"""
+      None
+    """
+  end
+
   def summarize_sale_info(listing) do
-    IO.inspect(listing, label: "hello")
     if listing.list_price !== nil || listing.close_price !== nil do
       if listing.close_price !== nil do
-        price_str = "Closed for <strong>#{Number.Delimit.number_to_delimited(listing.close_price)}</strong> "
-        dom_str = if Map.has_key?(listing, :days_on_market), do: "after #{listing.days_on_market} days on the market ", else: ""
-        "#{price_str}#{dom_str}#{time_to_text(listing, :close_date)}."
+        when_text = time_to_text(listing, :close_date)
+        assigns = %{listing: listing, when_text: when_text}
+        ~L"""
+          Closed for $<strong><%= number_to_delimited(@listing.close_price, precision: 0) %></strong>
+          <%= if Map.has_key?(@listing, :close_date) do %>
+            after <%= @listing.days_on_market %> days on the market
+          <% end %>
+          <%= @when_text %>
+        """
       else
-        assigns = %{listing: listing}
+        when_text = time_to_text(listing, :on_market_date)
+        assigns = %{listing: listing, when_text: when_text}
         ~L"""
           Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
-          <%= if listing.days_on_market !== nil do %> with <strong><%= @listing.days_on_market %></strong> days on the market <% end %>
-          <%= time_to_text(@listing, :on_market_date) %>
+          <%= if Map.has_key?(@listing, :days_on_market) do %>
+            with <strong><%= @listing.days_on_market %></strong> days on the market
+          <% end %>
+          <%= when_text %>
         """
       end
     else
@@ -60,8 +83,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   defp time_to_text(listing, key) do
-    if listing[key] !== nil do
-      months = Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+    if Map.has_key?(listing, key) && listing[key] !== nil do
+      months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
       cond do
         months <= 2 ->
           assigns = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
@@ -125,6 +148,14 @@ defmodule ExcyteWeb.Helpers.Utilities do
     |> String.split(~r/(?=[A-Z])/)
     |> tl()
     |> Enum.join(" ")
+  end
+
+  def acres_to_sqft(acres) do
+    acres * 43560
+  end
+
+  def sqft_to_acres(sqft) do
+    Float.round(sqft/43560, 2)
   end
 
   def simple_date_format(date) do

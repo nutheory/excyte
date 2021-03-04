@@ -3,7 +3,7 @@ defmodule Excyte.Properties.Adjustments do
   def process_init(listings, subj) do
     # sale price w/ days on market and how long ago
     # compare boolean features
-    subject = sanitize_nils(Map.from_struct(subj))
+    subject = sanitize_nils(subj)
     Enum.map(listings, fn li ->
       listing = sanitize_nils(li)
       price = if Map.has_key?(listing, :close_price), do: :close_price, else: :list_price
@@ -25,8 +25,8 @@ defmodule Excyte.Properties.Adjustments do
         }
         |> sanitize_equals()
 
-      IO.inspect(adj, label: "ADJ")
-      Map.merge(listing, adj)
+
+      Map.merge(li, %{adjustments: adj})
     end)
   end
 
@@ -36,7 +36,7 @@ defmodule Excyte.Properties.Adjustments do
   end
 
   defp sanitize_equals(listing) do
-    Enum.filter(listing.adjustments, fn {_, v} -> v.difference !== 0 && !is_nil(v) end)
+    Enum.filter(listing.adjustments, fn {_, v} -> !is_nil(v) && v.difference !== 0 end)
     |> Enum.into(%{})
   end
 
@@ -62,7 +62,7 @@ defmodule Excyte.Properties.Adjustments do
   end
 
   defp calculate_time(subject, listing, attr, human_attr) do
-    if Map.has_key?(listing, attr) && Map.has_key?(subject, attr) do
+    if Map.has_key?(listing, attr) && Map.has_key?(subject, attr) && subject[attr] !== 0 do
       %{
         difference: subject[attr] - listing[attr],
         to_text: to_text_time(subject[attr] - listing[attr], human_attr)
@@ -81,8 +81,8 @@ defmodule Excyte.Properties.Adjustments do
 
   defp to_text(val, attr) do
     number = if val < 0, do: val * -1, else: val
-    adj = if val < 0, do: "less", else: "more"
-    "#{number} #{adj} #{Inflex.inflect(attr, number)}"
+    adj = if val < 0, do: "-", else: "+"
+    "#{adj}#{number} #{Inflex.inflect(attr, number)}"
   end
 
   defp to_text_time(val, attr) do

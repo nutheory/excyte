@@ -10,67 +10,7 @@ defmodule Excyte.Properties.Property do
     Utils.MapType
   }
 
-  schema "properties" do
-    field :foreign_id, :string
-    field :doc_id, :integer
-    field :internal_type, :string
-    field :street_name, :string
-    field :street_number, :string
-    field :unit, :string
-    field :city, :string
-    field :zip, :string
-    field :coords, MapType
-    field :state, :string
-    field :status, :string
-    field :parking, :string
-    field :public_remarks, :string
-    field :overview, :string
-    field :foreign_url, :string
-    field :year_built, :integer
-    field :days_on_market, :integer
-    field :property_type, :string
-    field :property_sub_type, :string
-    field :beds, :integer
-    field :baths, :float
-    field :sqft, :integer
-    field :main_photo_url, :string
-    field :lotsize, MapType
-    field :close_date, :string
-    field :pending_timestamp, :naive_datetime
-    field :distance_from_subject, :string
-    field :list_price, :string
-    field :stories, :integer
-    field :walkscore, :integer
-    field :est_price, :integer
-    field :listing_key, :string
-    field :listing_id, :string
-    field :features, {:array, :map}
-    field :last_modified, :naive_datetime
-    field :dirty_info, {:array, :map}
-    field :history, MapType
-    field :public_records, MapType
-    field :pool, :boolean
-    field :spa, :boolean
-    field :median_dom, :string
-    field :median_sale_price, :string
-    field :median_list_price, :string
-    field :schools, {:array, :map}
-    field :association_fee, :string
-    field :association_amenities, {:array, :map}
-    field :association_name, :string
-    field :association_fee_frequency, :string
-    field :tax_assessed_value, :string
-    field :tax_annual_amount, :string
-    field :tax_year, :string
-    belongs_to(:insight, Insight)
-    belongs_to(:brokerage, Brokerage)
-    belongs_to(:agent, User)
-    timestamps()
-  end
-
-  def changeset(property, attrs) do
-    property
-    |> cast(attrs, [
+  @cast_opts [
       :agent_id,
       :foreign_id,
       :insight_id,
@@ -113,6 +53,9 @@ defmodule Excyte.Properties.Property do
       :public_records,
       :pool,
       :spa,
+      :view,
+      :waterfront,
+      :horses,
       :median_dom,
       :median_sale_price,
       :median_list_price,
@@ -124,7 +67,73 @@ defmodule Excyte.Properties.Property do
       :tax_assessed_value,
       :tax_annual_amount,
       :tax_year
-    ])
+    ]
+
+  schema "properties" do
+    field :foreign_id, :string
+    field :doc_id, :integer
+    field :internal_type, :string
+    field :street_name, :string
+    field :street_number, :string
+    field :unit, :string
+    field :city, :string
+    field :zip, :string
+    field :coords, MapType
+    field :state, :string
+    field :status, :string
+    field :parking, :string
+    field :public_remarks, :string
+    field :overview, :string
+    field :foreign_url, :string
+    field :year_built, :integer
+    field :days_on_market, :integer
+    field :property_type, :string
+    field :property_sub_type, :string
+    field :beds, :integer
+    field :baths, :float
+    field :sqft, :integer
+    field :main_photo_url, :string
+    field :lotsize, MapType
+    field :close_date, :string
+    field :pending_timestamp, :naive_datetime
+    field :distance_from_subject, :string
+    field :list_price, :string
+    field :stories, :integer
+    field :walkscore, :integer
+    field :est_price, :integer
+    field :listing_key, :string
+    field :listing_id, :string
+    field :features, {:array, :map}
+    field :last_modified, :naive_datetime
+    field :dirty_info, {:array, :map}
+    field :history, MapType
+    field :public_records, MapType
+    field :pool, :boolean
+    field :spa, :boolean
+    field :waterfront, :boolean
+    field :view, :boolean
+    field :horses, :boolean
+    field :new_construction, :boolean
+    field :median_dom, :string
+    field :median_sale_price, :string
+    field :median_list_price, :string
+    field :schools, {:array, :map}
+    field :association_fee, :string
+    field :association_amenities, {:array, :map}
+    field :association_name, :string
+    field :association_fee_frequency, :string
+    field :tax_assessed_value, :string
+    field :tax_annual_amount, :string
+    field :tax_year, :string
+    belongs_to(:insight, Insight)
+    belongs_to(:brokerage, Brokerage)
+    belongs_to(:agent, User)
+    timestamps()
+  end
+
+  def changeset(property, attrs) do
+    property
+    |> cast(attrs, @cast_opts)
     |> validate_required([:agent_id, :internal_type])
   end
 end

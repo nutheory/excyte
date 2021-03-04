@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="mt-4">
-    <%= f = form_for @changeset, "#", [phx_change: "validate", phx_submit: "save", phx_target: @myself] %>
+    <%= f = form_for @changeset, "#", [phx_submit: "save_subject"] %>
       <div class="flex flex-wrap">
         <div class="w-full lg:w-3/5">
           <div class="flex flex-wrap -mx-4">
@@ -31,8 +31,8 @@
               <%= number_input f, :stories, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
             </div>
             <div class="w-32 px-4 py-2">
-              <%#= label f, :lotsize %>
-              <%= number_input f, [:lotsize][:value], class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+              <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit"><%= @subject.lotsize_unit %></span>)</label>
+              <%= number_input f, :lotsize_value, step: "any", class: "number-field", inputmode: "numeric", phx_debounce: "blur" %>
             </div>
             <div class="w-32 px-4 py-2">
               <%= label f, :year_built %>
@@ -54,13 +54,16 @@
             </div>
           </div>
         </div>
-        <div class="w-full lg:w-2/5 h-full text-cyan-700 flex flex-col">
+        <div class="w-full lg:w-2/5 text-cyan-700 flex flex-col">
           <div class="flex-1">
             <p class="mt-6">
               <strong>Note: </strong>On the next step you will be given the opportunity to add in anything else you might want to
               point out about the property, this might include a <strong>description of recent renovations</strong> or
               <strong>local market trends</strong>.
             </p>
+          </div>
+          <div class="">
+            <button class="submit">Update</button>
           </div>
         </div>
       </div>

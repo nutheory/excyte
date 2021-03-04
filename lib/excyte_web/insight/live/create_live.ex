@@ -15,7 +15,7 @@ defmodule ExcyteWeb.Insight.CreateLive do
       filters: %{},
       client_info: assign_client_info(socket),
       subject: nil,
-      fetching: false,
+      fetching: (if params["id"], do: true, else: false),
       possible_subject_properties: nil,
       comparables: nil,
       preview: nil,
@@ -31,7 +31,7 @@ defmodule ExcyteWeb.Insight.CreateLive do
         subject: ins.subject,
         selected: ins.selected_listing_ids,
         filters: Utilities.format_quoted_json(ins.saved_search.criteria)}, socket)
-      nil -> {:noreply, assign(socket, errors: [%{message: "cannot locate #{id}."}])}
+      nil -> {:noreply, assign(socket, fetching: false, errors: [%{message: "cannot locate #{id}."}])}
     end
   end
 
@@ -72,12 +72,64 @@ defmodule ExcyteWeb.Insight.CreateLive do
   end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
+    # new_val =
+    #   if Map.has_key?(val, :price) do
+    #     %{price_max: val.price.high, price_min: val.price.low}
+    #   else
+    #     val
+    #   end
     {:noreply, assign(socket, filters: Map.merge(a.filters, val))}
   end
 
-  def handle_event("filter_search", form, %{assigns: a} = socket) do
-    IO.inspect(a.filters, label: "FORM")
-    {:noreply, socket}
+  def handle_event("distance-filter-update", %{"d" => %{"distance" => d}},  %{assigns: a} = socket) do
+    if d === "" do
+      {:noreply, assign(socket, filters: Map.merge(a.filters, %{distance: 50.0}))}
+    else
+      case Float.parse(d) do
+        {fl, _} -> {:noreply, assign(socket, filters: Map.merge(a.filters, %{distance: fl}))}
+        :error -> {:noreply, assign(socket, filters: a.filters)}
+      end
+    end
+  end
+
+  def handle_event("main-filter-update", %{"_target" => target, "mf" => mf}, %{assigns: a} = socket) do
+    field_full = hd(tl(target))
+    field = hd(String.split(field_full, "_"))
+    min_max = hd(tl(String.split(field_full, "_")))
+    atom = String.to_atom(field_full)
+    num = cond do
+      field === "beds" -> String.to_integer(mf[field_full])
+      field === "sqft" -> String.to_integer(mf[field_full])
+      field === "baths" -> elem(Float.parse(mf[field_full]), 0)
+    end
+    IO.inspect(a.filters, label: "FILT")
+    IO.inspect(num, label: "NUM")
+
+    new_val =
+      if min_max === "min" do
+        if num <= a.filters[String.to_atom("#{field}_max")] do
+          IO.inspect(num, label: "NUM1")
+          IO.inspect(a.filters[String.to_atom("#{field}_max")], label: "NUM2")
+          Map.put(%{}, atom, num)
+        else
+          Map.put(%{}, atom, a.filters[atom])
+        end
+      else
+        if num >= a.filters[String.to_atom("#{field}_min")], do: Map.put(%{}, atom, num), else: Map.put(%{}, atom, a.filters[atom])
+      end
+    IO.inspect(new_val, label: "VAL")
+    {:noreply, assign(socket, filters: Map.merge(a.filters, new_val))}
+  end
+
+  def handle_event("filter-submit", form, %{assigns: a} = socket) do
+    IO.inspect(form, label: "FORM")
+    IO.inspect(a.filters, label: "FILT")
+    filters = %{
+      price_min: (if Map.has_key?(a.filters, :price), do: a.filters.price.low, else: a.filters.price_min),
+      price_max: (if Map.has_key?(a.filters, :price), do: a.filters.price.high, else: a.filters.price_max),
+      selected_statuses: a.filters.selected_statuses
+    }
+    query_mls(%{subject: a.subject, filters: filters, selected: []}, socket)
   end
 
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do

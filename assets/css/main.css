@@ -3,6 +3,10 @@ svg.remix {
   height: 20px;
 }
 
+.text-ss {
+  font-size: 0.6rem;
+}
+
 .translate-x-0 {
   --transform-translate-x: 0 !important;
 }

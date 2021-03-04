@@ -7,7 +7,7 @@ defmodule ExcyteWeb.Insight.SubjectForm do
 
   def update(%{subject: subj} = assigns, socket) do
     subject = if subj, do: subj, else: %Property{}
-    cs = Properties.change_property(subject)
+    cs = Properties.change_property(subj.id, subj.agent_id, subject)
     {:ok, assign(socket,
       changeset: cs,
       subject: subject,
@@ -15,4 +15,5 @@ defmodule ExcyteWeb.Insight.SubjectForm do
       feature_options: Utilities.feature_options()
       )}
   end
+
 end

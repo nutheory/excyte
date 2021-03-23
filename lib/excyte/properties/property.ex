@@ -36,7 +36,8 @@ defmodule Excyte.Properties.Property do
       :baths,
       :sqft,
       :main_photo_url,
-      :lotsize,
+      :lotsize_sqft,
+      :lotsize_preference,
       :close_date,
       :pending_timestamp,
       :distance_from_subject,
@@ -56,6 +57,7 @@ defmodule Excyte.Properties.Property do
       :view,
       :waterfront,
       :horses,
+      :manually_updated,
       :median_dom,
       :median_sale_price,
       :median_list_price,
@@ -93,7 +95,8 @@ defmodule Excyte.Properties.Property do
     field :baths, :float
     field :sqft, :integer
     field :main_photo_url, :string
-    field :lotsize, MapType
+    field :lotsize_sqft, :integer
+    field :lotsize_preference, :string
     field :close_date, :string
     field :pending_timestamp, :naive_datetime
     field :distance_from_subject, :string
@@ -113,6 +116,7 @@ defmodule Excyte.Properties.Property do
     field :waterfront, :boolean
     field :view, :boolean
     field :horses, :boolean
+    field :manually_updated, :boolean
     field :new_construction, :boolean
     field :median_dom, :string
     field :median_sale_price, :string

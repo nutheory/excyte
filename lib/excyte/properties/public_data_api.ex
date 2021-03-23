@@ -11,6 +11,7 @@ defmodule Excyte.Properties.PublicDataApi do
   def get_subject_by_foreign_id(foreign_id) do
     get("/realestateandhomes-detail/#{foreign_id}", opts: [adapter: [proxy: fetch_proxy()]])
     |> process_subject()
+    |> IO.inspect(label: "RETS")
   end
 
 
@@ -43,7 +44,7 @@ defmodule Excyte.Properties.PublicDataApi do
       beds: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-beds] span"))),
       baths: to_f(Floki.text(Floki.find(summary, "[data-label=property-meta-bath] span"))),
       sqft: to_i(Floki.text(Floki.find(summary, "[data-label=property-meta-sqft] span"))),
-      lotsize: process_lotsize(Floki.find(summary, "[data-label=property-meta-lotsize]")),
+      lotsize_sqft: process_lotsize(Floki.find(summary, "[data-label=property-meta-lotsize]")),
       est_price: to_i(hd(Floki.attribute(Floki.find(start, ".ldp-header-price"), "span", "content"))),
       overview: overview,
       history: %{
@@ -70,6 +71,14 @@ defmodule Excyte.Properties.PublicDataApi do
       median_sale_price: key_check(neighbor, :median_sale_price),
       foreign_url: response.url
     }}
+  end
+
+  defp process_subject({:error, :closed} = response) do
+    IO.inspect(response, label: "ERROR CLOSED")
+  end
+
+  defp process_subject({:error, :etimedout} = response) do
+    IO.inspect(response, label: "ERROR TIMEOUT")
   end
 
 
@@ -114,29 +123,11 @@ defmodule Excyte.Properties.PublicDataApi do
       |> String.trim()
 
     cond do
-      String.contains?(str, "sqft lot") -> %{unit: "sqft", value: to_i(Floki.text(Floki.find(lotsize, ".data-value")))}
-      String.contains?(str, "acres lot") -> %{unit: "acres", value: to_f(Floki.text(Floki.find(lotsize, ".data-value")))}
+      String.contains?(str, "sqft lot") -> to_i(Floki.text(Floki.find(lotsize, ".data-value")))
+      String.contains?(str, "acres lot") ->  acres_to_sqft(to_f(Floki.text(Floki.find(lotsize, ".data-value"))))
       true -> nil
     end
   end
-    # if String.contains?(str, "sqft lot") do
-    #   to_i(Floki.text(Floki.find(lotsize, ".data-value")))
-    # else
-    #   nil
-    # end
-  # end
-
-  # defp process_lacres(lotsize) do
-  #   str =
-  #     String.replace(Floki.text(lotsize), "\n", "")
-  #     |> String.trim()
-
-  #   if String.contains?(str, "acres lot") do
-  #     to_f(Floki.text(Floki.find(lotsize, ".data-value")))
-  #   else
-  #     nil
-  #   end
-  # end
 
   defp process_stories(public) do
     if Map.has_key?(public, :stories) do
@@ -206,5 +197,9 @@ defmodule Excyte.Properties.PublicDataApi do
     |> String.reverse()
     |> String.replace("-", "")
     |> String.slice(1..-1)
+  end
+
+  defp acres_to_sqft(acres) do
+    round(acres * 43560)
   end
 end

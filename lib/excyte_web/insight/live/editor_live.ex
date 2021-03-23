@@ -2,9 +2,9 @@ defmodule ExcyteWeb.Insight.EditorLive do
   use ExcyteWeb, :live_view
 
   alias Excyte.{Accounts, Insights}
-  alias ExcyteWeb.{ComponentView}
+  alias ExcyteWeb.{InsightView}
 
-  def render(assigns), do: ComponentView.render("editor.html", assigns)
+  def render(assigns), do: InsightView.render("editor.html", assigns)
 
   def mount(%{"doc_id" => did}, %{"user_token" => token}, socket) when did !== "new" do
     cu = Accounts.get_user_by_session_token(token)
@@ -22,6 +22,10 @@ defmodule ExcyteWeb.Insight.EditorLive do
 
   # def handle_info({:load_document, attrs}, socket) do
   #   {:noreply, push_event(socket, "loadContentFromDb", %{content: attrs})}
+  # end
+
+  # def handle_event("toggle-image-panel", _, %{assigns: a} = socket) do
+  #   {:noreply, assign(socket, image_panel: !a.image_panel)}
   # end
 
   def handle_event("editor-update", params, socket) do

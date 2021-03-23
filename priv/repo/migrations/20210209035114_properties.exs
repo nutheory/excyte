@@ -29,7 +29,8 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :baths, :float
       add :sqft, :integer
       add :main_photo_url, :text
-      add :lotsize, :map, default: %{}
+      add :lotsize_sqft, :integer
+      add :lotsize_preference, :string, default: "sqft"
       add :close_date, :string
       add :pending_timestamp, :naive_datetime
       add :distance_from_subject, :string
@@ -50,6 +51,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :new_construction, :boolean, default: false
       add :view, :boolean, default: false
       add :waterfront, :boolean, default: false
+      add :manually_updated, :boolean, default: false
       add :median_dom, :string
       add :median_sale_price, :string
       add :median_list_price, :string

@@ -35,6 +35,22 @@ defmodule ExcyteWeb.Insight.ReviewLive do
     {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
   end
 
+  def handle_event("adjust-comp", %{"adjustment" => adj, "listing-id" => id}, %{assigns: a} = socket) do
+    val = if String.contains?(adj, "."), do: round(String.to_float(adj)), else: String.to_integer(adj)
+    comps = Enum.map(a.selected_comps, fn c ->
+      if c.listing_id === id, do: Map.merge(c, %{excyte_price: val}), else: c
+    end)
+    {:noreply, assign(socket, selected_comps: comps)}
+  end
+
+  def handle_event("toggle-adjustment", %{"action" => act, "id" => id}, %{assigns: a} = socket) do
+    comps = Enum.map(a.selected_comps, fn c ->
+      val = if act === "apply", do: c.excyte_suggested_price, else: c.default_price.value
+      if c.listing_id === id, do: Map.merge(c, %{excyte_price: val}), else: c
+    end)
+    {:noreply, assign(socket, selected_comps: comps)}
+  end
+
   def handle_event("save_subject", %{"property" => form}, %{assigns: a} = socket) do
     formatted = Utilities.format_quoted_json(form)
     subject_attrs =
@@ -67,11 +83,11 @@ defmodule ExcyteWeb.Insight.ReviewLive do
   defp sanitize_subject(subject_in) do
     sub = Map.from_struct(subject_in)
     features = load_features(sub)
-    unit = if subject_in.lotsize.unit, do: subject_in.lotsize.unit, else: "sqft"
+    unit = if subject_in.lotsize_preference, do: subject_in.lotsize_preference, else: "sqft"
     Map.merge(sub, %{
       features: features,
       lotsize_unit: unit,
-      lotsize_value: subject_in.lotsize.value
+      lotsize_value: subject_in.lotsize_sqft
     })
   end
 
@@ -99,9 +115,9 @@ defmodule ExcyteWeb.Insight.ReviewLive do
 
   def sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
     if unit === "acres" do
-      %{lotsize: %{unit: "acres", value: String.to_float(val)}}
+      %{lotsize_preference: "acres", lotsize_sqft: round(Utilities.acres_to_sqft(String.to_float(val)))}
     else
-      %{lotsize: %{unit: "sqft", value: round(String.to_integer(val))}}
+      %{lotsize_preference: "sqft", lotsize_sqft: round(String.to_integer(val))}
     end
   end
 end

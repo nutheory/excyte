@@ -8,6 +8,7 @@
           low: @filters.price_min,
           high: @filters.price_max,
           money: true,
+          type: Integer,
           label: "Close/List Price",
           interval: (if Map.has_key?(@subject, :est_price), do: round(@subject.est_price * 0.005), else: 3000),
           buffer: 5
@@ -28,7 +29,7 @@
       </div>
     </div>
   </div>
-  <%= f = form_for :mf, "#", [phx_change: "main-filter-update", phx_submit: "filter-submit"] %>
+  <%= f = form_for :mf, "#", [phx_submit: "filter-submit"] %>
     <div class="features border-b border-cyan-300 py-3">
       <div class="features flex flex-wrap -mx-2 md:-mx-4">
         <div class="w-1/2 md:w-1/3 px-2 md:px-4 mb-4 md:mb-0">
@@ -38,13 +39,13 @@
               <%= number_input f, :beds_min,
                 class: "number-field",
                 placeholder: "min",
-                value: @filters.beds_min %>
+                value: @filters.beds.low %>
             </div>
             <div class="w-1/2 px-1 md:px-2">
               <%= number_input f, :beds_max,
               class: "number-field",
               placeholder: "max",
-              value: @filters.beds_max %>
+              value: @filters.beds.high %>
             </div>
           </div>
         </div>
@@ -56,14 +57,14 @@
                 class: "number-field",
                 step: "0.25",
                 placeholder: "min",
-                value: @filters.baths_min %>
+                value: @filters.baths.low %>
             </div>
             <div class="w-1/2 px-1 md:px-2">
               <%= number_input f, :baths_max,
                 class: "number-field",
                 step: "0.25",
                 placeholder: "max",
-                value: @filters.baths_max %>
+                value: @filters.baths.high %>
             </div>
           </div>
         </div>
@@ -74,13 +75,13 @@
               <%= number_input f, :sqft_min,
                 class: "number-field",
                 placeholder: "min",
-                value: @filters.sqft_min %>
+                value: @filters.sqft.low %>
             </div>
             <div class="w-1/2 px-1 md:px-2">
               <%= number_input f, :sqft_max,
                 class: "number-field",
                 placeholder: "max",
-                value: @filters.sqft_max %>
+                value: @filters.sqft.high %>
             </div>
           </div>
         </div>

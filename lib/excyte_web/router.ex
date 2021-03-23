@@ -69,8 +69,8 @@ defmodule ExcyteWeb.Router do
     live "/:type/:id/create", CreateLive
     live "/:type/create", CreateLive
     live "/:type/:id/review", ReviewLive
-    live "/:type/builder/:id", BuilderLive
-    live "/:type/builder/:insight_id/editor/:doc_id", EditorLive
+    live "/:type/:insight_id/builder", BuilderLive
+    live "/:type/:insight_id/editor/:doc_id", EditorLive
   end
 
   scope "/agent", ExcyteWeb.Agent do

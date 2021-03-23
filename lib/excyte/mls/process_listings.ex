@@ -67,7 +67,8 @@ defmodule Excyte.Mls.ProcessListings do
         main_photo_url: Enum.find(l["Media"], fn m ->
           m["MediaCategory"] === "Photo" && m["Order"] === 1
         end)["MediaURL"],
-        lotsize: process_lotsize(%{sqft: l["LotSizeSquareFeet"], acres: l["LotSizeAcres"]}, subject),
+        lotsize_sqft: process_lotsize(%{sqft: l["LotSizeSquareFeet"], acres: l["LotSizeAcres"]}),
+        lotsize_preference: "sqft",
         close_date: l["CloseDate"],
         distance_from_subject: distance_from_subject(l["Coordinates"], subject),
         list_price: l["ListPrice"],
@@ -138,17 +139,15 @@ defmodule Excyte.Mls.ProcessListings do
     end
   end
 
-  defp process_lotsize(%{sqft: sqft, acres: acres}, subject) do
-    if Map.has_key?(subject.lotsize, :unit) && (sqft !== nil || acres !== nil) do
+  defp process_lotsize(%{sqft: sqft, acres: acres}) do
+    if (sqft !== nil || acres !== nil) do
       cond do
-        subject.lotsize.unit === "sqft" && sqft !== nil -> %{unit: "sqft", value: sqft}
-        subject.lotsize.unit === "sqft" && acres !== nil -> %{unit: "sqft", value: acres_to_sqft(acres)}
-        subject.lotsize.unit === "acres" && sqft !== nil -> %{unit: "acres", value: sqft_to_acres(sqft)}
-        subject.lotsize.unit === "acres" && acres !== nil -> %{unit: "acres", value: acres}
-        true -> %{}
+        sqft !== nil -> sqft
+        acres !== nil -> acres_to_sqft(acres)
+        true -> nil
       end
     else
-      %{}
+      nil
     end
   end
 

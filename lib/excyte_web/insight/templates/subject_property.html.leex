@@ -4,7 +4,8 @@
     <h3 class="text-center text-bgray-400 my-4">Oops we could not locate public records for <%# manage both failures with coords/without coords %></h3>
     <%= live_component @socket, SubjectForm,
       label: "Manually create subject property",
-      subject: nil,
+      new: true,
+      subject: Map.from_struct(@subject),
       id: :manual_subject_create
     %>
   <% else %>

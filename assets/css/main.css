@@ -161,6 +161,12 @@ div.gallery {
   }
 }
 
+.blackout {
+  @apply w-screen h-screen fixed top-0 left-0 opacity-80 bg-bgray-800 hidden;
+
+  z-index: 1050;
+}
+
 .panel-slidein {
   @apply bg-bgray-200;
 
@@ -168,7 +174,7 @@ div.gallery {
   max-width: 36rem;
   padding: 0 1rem;
   position: fixed;
-  z-index: 100;
+  z-index: 2000;
   top: 0;
   right: -100%;
   height: 100%;

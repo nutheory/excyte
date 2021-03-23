@@ -40,6 +40,9 @@ defmodule Excyte.Insights do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:subject)
   end
 
+  def get_insight(uid, id) do
+    Repo.get_by(Insight, %{created_by_id: uid, id: id}) |> Repo.preload([:subject, :documents])
+  end
 
 
   def get_templates(agent_id, brokerage_id) do

@@ -1,6 +1,6 @@
-defmodule ExcyteWeb.Components.EditorMenuFloat do
+defmodule ExcyteWeb.Insight.EditorMenuFloat do
   use ExcyteWeb, :live_component
-  alias ExcyteWeb.ComponentView
+  alias ExcyteWeb.InsightView
 
-  def render(assigns), do: ComponentView.render("editor_menu_float.html", assigns)
+  def render(assigns), do: InsightView.render("editor_menu_float.html", assigns)
 end

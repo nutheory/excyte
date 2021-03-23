@@ -14,17 +14,25 @@ defmodule Excyte.Properties do
 
   def fetch_subject_details(foreign_map, id, uid) do
     foreign_id = format_foreign_id(foreign_map)
-    IO.inspect(foreign_map, label: "OOPS")
+    IO.inspect(foreign_map, label: "OOPS1")
     subscribe(foreign_map.mpr_id)
     IO.inspect(foreign_id, label: "foreign_id")
     case PublicDataApi.get_subject_by_foreign_id(foreign_id) do
       {:ok, res} -> __MODULE__.update_property(id, uid, res)
-      {:error, err} -> IO.inspect(err, label: "OOPS")
+      {:error, err} -> IO.inspect(err, label: "OOPS2")
     end
   end
 
   def get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
     Repo.get_by(Property, %{agent_id: aid, foreign_id: fid, internal_type: "subject"})
+  end
+
+  def get_subject_by_address(%{street_number: sn, agent_id: aid} = attrs) do
+    Repo.get_by(Property, %{
+      agent_id: aid,
+      street_number: sn,
+      street_name: attrs.street_name,
+      internal_type: "subject"})
   end
 
   def get_property(id) do
@@ -33,6 +41,16 @@ defmodule Excyte.Properties do
 
   def find_or_create_subject_property(%{foreign_id: fid, agent_id: aid} = attrs) do
     case get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
+      %Property{} = subject -> {:ok, subject}
+      nil -> __MODULE__.create_property(attrs)
+    end
+  end
+
+  def find_or_create_subject_property(%{agent_id: aid} = attrs) do
+    case get_subject_by_address(%{
+      street_number: attrs.street_number,
+      street_name: attrs.street_name,
+      agent_id: aid}) do
       %Property{} = subject -> {:ok, subject}
       nil -> __MODULE__.create_property(attrs)
     end

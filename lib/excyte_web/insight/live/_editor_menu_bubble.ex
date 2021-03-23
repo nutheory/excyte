@@ -1,6 +1,6 @@
-defmodule ExcyteWeb.Components.EditorMenuBubble do
+defmodule ExcyteWeb.Insight.EditorMenuBubble do
   use ExcyteWeb, :live_component
-  alias ExcyteWeb.ComponentView
+  alias ExcyteWeb.InsightView
 
-  def render(assigns), do: ComponentView.render("editor_menu_bubble.html", assigns)
+  def render(assigns), do: InsightView.render("editor_menu_bubble.html", assigns)
 end

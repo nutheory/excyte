@@ -53,13 +53,20 @@ defmodule ExcyteWeb.Insight.CreateLive do
       end
 
     opts = Map.merge(a.filters, find_by)
-    subject_map = get_subject_property_id(addr)
-    {:ok, subject} = Properties.find_or_create_subject_property(Map.merge(addr, %{
-      agent_id: a.current_user.id,
-      internal_type: "subject",
-      foreign_id: subject_map.mpr_id}))
-    send self(), {:aquire_subject, %{map: subject_map}}
-    {:noreply, assign(socket, subject: subject, filters: opts, fetching: true)}
+    case get_subject_property_id(addr) do
+      %{mpr_id: mpr_id} = subject_map ->
+        {:ok, subject} = Properties.find_or_create_subject_property(Map.merge(addr, %{
+          agent_id: a.current_user.id,
+          internal_type: "subject",
+          foreign_id: mpr_id}))
+        send self(), {:aquire_subject, %{map: subject_map}}
+        {:noreply, assign(socket, subject: subject, filters: opts, fetching: true)}
+      _ ->
+        {:ok, subject} = Properties.find_or_create_subject_property(Map.merge(addr, %{
+          agent_id: a.current_user.id,
+          internal_type: "subject"}))
+        {:noreply, assign(socket, subject: subject, manual_subject: true)}
+    end
   end
 
   def handle_info({:aquire_subject, %{map: map}}, %{assigns: a} = socket) do
@@ -72,12 +79,6 @@ defmodule ExcyteWeb.Insight.CreateLive do
   end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
-    # new_val =
-    #   if Map.has_key?(val, :price) do
-    #     %{price_max: val.price.high, price_min: val.price.low}
-    #   else
-    #     val
-    #   end
     {:noreply, assign(socket, filters: Map.merge(a.filters, val))}
   end
 
@@ -92,43 +93,44 @@ defmodule ExcyteWeb.Insight.CreateLive do
     end
   end
 
-  def handle_event("main-filter-update", %{"_target" => target, "mf" => mf}, %{assigns: a} = socket) do
-    field_full = hd(tl(target))
-    field = hd(String.split(field_full, "_"))
-    min_max = hd(tl(String.split(field_full, "_")))
-    atom = String.to_atom(field_full)
-    num = cond do
-      field === "beds" -> String.to_integer(mf[field_full])
-      field === "sqft" -> String.to_integer(mf[field_full])
-      field === "baths" -> elem(Float.parse(mf[field_full]), 0)
-    end
-    IO.inspect(a.filters, label: "FILT")
-    IO.inspect(num, label: "NUM")
+  # def handle_event("main-filter-update", %{"_target" => target, "mf" => mf}, %{assigns: a} = socket) do
+  #   field_full = hd(tl(target))
+  #   field = hd(String.split(field_full, "_"))
+  #   min_max = hd(tl(String.split(field_full, "_")))
+  #   atom = String.to_atom(field_full)
+  #   num = cond do
+  #     field === "beds" -> String.to_integer(mf[field_full])
+  #     field === "sqft" -> String.to_integer(mf[field_full])
+  #     field === "baths" -> elem(Float.parse(mf[field_full]), 0)
+  #   end
+  #   IO.inspect(a.filters, label: "FILT")
+  #   IO.inspect(num, label: "NUM")
 
-    new_val =
-      if min_max === "min" do
-        if num <= a.filters[String.to_atom("#{field}_max")] do
-          IO.inspect(num, label: "NUM1")
-          IO.inspect(a.filters[String.to_atom("#{field}_max")], label: "NUM2")
-          Map.put(%{}, atom, num)
-        else
-          Map.put(%{}, atom, a.filters[atom])
-        end
-      else
-        if num >= a.filters[String.to_atom("#{field}_min")], do: Map.put(%{}, atom, num), else: Map.put(%{}, atom, a.filters[atom])
-      end
-    IO.inspect(new_val, label: "VAL")
-    {:noreply, assign(socket, filters: Map.merge(a.filters, new_val))}
-  end
+  #   new_val =
+  #     if min_max === "min" do
+  #       if num <= a.filters[String.to_atom("#{field}_max")] do
+  #         IO.inspect(num, label: "NUM1")
+  #         IO.inspect(a.filters[String.to_atom("#{field}_max")], label: "NUM2")
+  #         Map.put(%{}, atom, num)
+  #       else
+  #         Map.put(%{}, atom, a.filters[atom])
+  #       end
+  #     else
+  #       if num >= a.filters[String.to_atom("#{field}_min")], do: Map.put(%{}, atom, num), else: Map.put(%{}, atom, a.filters[atom])
+  #     end
+  #   IO.inspect(new_val, label: "VAL")
+  #   {:noreply, assign(socket, filters: Map.merge(a.filters, new_val))}
+  # end
 
-  def handle_event("filter-submit", form, %{assigns: a} = socket) do
+  def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
     IO.inspect(form, label: "FORM")
     IO.inspect(a.filters, label: "FILT")
-    filters = %{
-      price_min: (if Map.has_key?(a.filters, :price), do: a.filters.price.low, else: a.filters.price_min),
-      price_max: (if Map.has_key?(a.filters, :price), do: a.filters.price.high, else: a.filters.price_max),
+    filters = Map.merge(a.filters, %{
+      baths: %{low: to_i(form["baths_min"]), high: to_i(form["baths_max"])},
+      beds: %{low: to_i(form["beds_min"]), high: to_i(form["beds_max"])},
+      sqft: %{low: to_i(form["sqft_min"]), high: to_i(form["sqft_max"])},
       selected_statuses: a.filters.selected_statuses
-    }
+    })
     query_mls(%{subject: a.subject, filters: filters, selected: []}, socket)
   end
 
@@ -203,14 +205,29 @@ defmodule ExcyteWeb.Insight.CreateLive do
       default: true,
       price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
       price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
-      beds_min: (if subject.beds, do: subject.beds - 1, else: 0),
-      beds_max: (if subject.beds, do: subject.beds + 1, else: 100),
-      baths_min: (if subject.baths, do: round(subject.baths) - 1, else: 0),
-      baths_max: (if subject.baths, do: round(subject.baths) + 1, else: 0),
-      sqft_min: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
-      sqft_max: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0),
+      price: %{
+        type: Integer,
+        low: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
+        high: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000)
+      },
+      beds: %{
+        type: Integer,
+        low: (if subject.beds, do: subject.beds - 1, else: 0),
+        high: (if subject.beds, do: subject.beds + 1, else: 100)
+      },
+      baths: %{
+        type: Float,
+        low: (if subject.baths, do: round(subject.baths) - 1, else: 0),
+        high: (if subject.baths, do: round(subject.baths) + 1, else: 0)
+      },
+      sqft: %{
+        type: Integer,
+        low: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
+        high: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0)
+      },
       # TODO switch to live make statuses ["closed", "pending"]
       selected_statuses: [%{value: "active", name: "Active"}],
+      status_updated: -24,
       distance: 200.0
     })
 
@@ -238,6 +255,14 @@ defmodule ExcyteWeb.Insight.CreateLive do
       {:ok, %{body: body}} ->
         hd(Utilities.format_str_json(body).autocomplete)
       {:error, err} -> err
+    end
+  end
+
+  defp to_i(str) do
+    if str === "" do
+      nil
+    else
+      Integer.parse(str) |> elem(0)
     end
   end
 end

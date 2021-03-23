@@ -1,12 +1,21 @@
-<div class="">
-  <div>
-    <h4 class="text-gray-400">Step 1 of 3</h4>
-    <h3 class="mt-2">Comparable properties</h3>
+<div class="mt-6">
+  <div class="flex">
+    <div class="pr-2 mr-3 block md:hidden border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <div class="flex-1">
+      <div>
+        <h4 class="text-gray-400">Step 1 of 3</h4>
+        <h3 class="mt-2">Comparable properties</h3>
+      </div>
+      <p class="text-sm mt-2">
+        <strong>Next step:</strong> Next you will have the chance to review,
+        modify, and/or make any adjustments.
+      </p>
+    </div>
   </div>
-  <p class="text-sm mt-2">
-    <strong>Next step:</strong> Next you will have the chance to review,
-    modify, and/or make any adjustments.
-  </p>
   <%= if length(@selected) > 0 do %>
     <div class="form">
       <button

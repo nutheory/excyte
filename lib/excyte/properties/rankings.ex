@@ -21,9 +21,9 @@ defmodule Excyte.Properties.Rankings do
             weight: 1
           },
           lotsize: %{
-            percentage: check_value?(listing, subject),
-            text: (if Map.has_key?(listing.lotsize, :unit), do: "lot #{listing.lotsize.unit}", else: nil),
-            value: (if Map.has_key?(listing.lotsize, :value), do: "lot #{listing.lotsize.value}", else: nil),
+            percentage: generic_percentage(listing.lotsize_sqft, subject.lotsize_sqft),
+            text: "lot sqft",
+            value: "#{listing.lotsize_sqft}",
             weight: 1
           },
           year_built: %{
@@ -65,14 +65,6 @@ defmodule Excyte.Properties.Rankings do
       |> Enum.into(%{})
 
     Map.merge(rankings, %{attrs: attrs})
-  end
-
-  defp check_value?(listing, subject) do
-    if Map.has_key?(listing.lotsize, :value) && Map.has_key?(subject.lotsize, :value) do
-      generic_percentage(listing.lotsize.value, subject.lotsize.value)
-    else
-      nil
-    end
   end
 
   defp generic_percentage(listing_val, subject_val) do

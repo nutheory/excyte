@@ -15,6 +15,7 @@
         <%= live_component @socket, SubjectProperty,
           current_user: @current_user,
           manual_subject: @manual_subject,
+          subject: @subject,
           possible_subject_properties: @possible_subject_properties,
           id: :subject_property
         %>

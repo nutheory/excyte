@@ -4,7 +4,6 @@ defmodule ExcyteWeb.ComponentView do
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Components.{
     AddressAutocomplete,
-    EditorMenuBubble,
     CalendarDay,
     Calendar,
     RangeSlider

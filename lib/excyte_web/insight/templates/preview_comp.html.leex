@@ -1,6 +1,6 @@
 <div class="h-full flex flex-col">
-  <div class="flex">
-    <div class="pr-2 mr-2 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+  <div class="flex mt-6">
+    <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
       <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
@@ -116,8 +116,8 @@
           <p class="font-bold"><%= @listing.days_on_market %></p>
         </div>
         <div class="text-center">
-          <label class="block uppercase text-tiny">lot <%= Inflex.pluralize(@listing.lotsize.unit) %></label>
-          <p class="font-bold"><%= @listing.lotsize.value %></p>
+          <label class="block uppercase text-tiny">lot <%= @listing.lotsize_preference %></label>
+          <p class="font-bold"><%= if @listing.lotsize_preference === "sqft", do: @listing.lotsize_sqft, else: Utilities.sqft_to_acres(@listing.lotsize_sqft) %></p>
         </div>
         <div class="text-center col-span-2">
           <label class="block uppercase text-tiny">Property Sub Type</label>

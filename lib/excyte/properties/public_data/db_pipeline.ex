@@ -3,11 +3,8 @@ defmodule Excyte.DbPipeline do
 
   @impl Crawly.Pipeline
   def run(item, state, opts \\ []) do
-    IO.inspect(state, label: "STATE")
-     IO.inspect(opts, label: "OPTS")
     case Properties.create_property(item) do
       {:ok, res} ->
-        IO.inspect(res, label: "RESS")
         # insert successful, carry on with pipeline
         {item, state}
       {:error, err} ->

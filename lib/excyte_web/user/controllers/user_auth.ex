@@ -99,7 +99,6 @@ defmodule ExcyteWeb.UserAuth do
       {user_token, conn}
     else
       conn = fetch_cookies(conn, signed: [@remember_me_cookie])
-
       if user_token = conn.cookies[@remember_me_cookie] do
         {user_token, put_session(conn, :user_token, user_token)}
       else
@@ -146,11 +145,5 @@ defmodule ExcyteWeb.UserAuth do
   end
 
   defp maybe_store_return_to(conn), do: conn
-  defp signed_in_path(conn) do
-    if conn.assigns.current_user.completed_setup do
-      "/agent/dash"
-    else
-      "/agent/getting-started"
-    end
-  end
+  defp signed_in_path(conn), do: "/agent/dash"
 end

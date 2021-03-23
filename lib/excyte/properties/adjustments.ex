@@ -7,7 +7,6 @@ defmodule Excyte.Properties.Adjustments do
     Enum.map(listings, fn li ->
       listing = sanitize_nils(li)
       price = if Map.has_key?(listing, :close_price), do: :close_price, else: :list_price
-      # lotsize = normalize_lotsize(subject, listing)
 
       adj =
         %{
@@ -26,7 +25,13 @@ defmodule Excyte.Properties.Adjustments do
         |> sanitize_equals()
 
 
-      Map.merge(li, %{adjustments: adj})
+      Map.merge(li, %{
+        adjustments: adj,
+        excyte_price: (listing[price] + adj.sqft.adjustment),
+        excyte_suggested_price: (listing[price] + adj.sqft.adjustment),
+        min_adjustment_price: min_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10),
+        max_adjustment_price: max_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10)
+      })
     end)
   end
 
@@ -41,10 +46,10 @@ defmodule Excyte.Properties.Adjustments do
   end
 
   defp calculate_lotsize(subject, listing) do
-    if Map.has_key?(subject.lotsize, :unit) && Map.has_key?(listing.lotsize, :unit) do
+    if Map.has_key?(subject, :lotsize_sqft) && Map.has_key?(listing, :lotsize_sqft) do
       %{
-        difference: Float.round(subject.lotsize.value - listing.lotsize.value, 2),
-        to_text: to_text(Float.round(subject.lotsize.value - listing.lotsize.value, 2), "lot #{listing.lotsize.unit}")
+        difference: subject.lotsize_sqft - listing.lotsize_sqft,
+        to_text: to_text_lot(subject.lotsize_preference, subject.lotsize_sqft - listing.lotsize_sqft)
       }
     else
       nil
@@ -58,6 +63,22 @@ defmodule Excyte.Properties.Adjustments do
         price_per_sqft: round(listing_price/listing.sqft),
         adjustment: round((subject.sqft - listing.sqft) * (listing_price/listing.sqft))
       }
+    else
+      %{adjustment: 0}
+    end
+  end
+
+  def min_adjustment_price(price, auto_price, percent) do
+    if price && auto_price do
+      low_price = hd(Enum.sort([price, auto_price], :asc))
+      round(low_price - (low_price * (percent/100)))
+    end
+  end
+
+  def max_adjustment_price(price, auto_price, percent) do
+    if price && auto_price do
+      high_price = hd(Enum.sort([price, auto_price], :desc))
+      round(high_price + (high_price * (percent/100)))
     end
   end
 
@@ -83,6 +104,16 @@ defmodule Excyte.Properties.Adjustments do
     number = if val < 0, do: val * -1, else: val
     adj = if val < 0, do: "-", else: "+"
     "#{adj}#{number} #{Inflex.inflect(attr, number)}"
+  end
+
+  defp to_text_lot(unit, diff) do
+    number = if diff < 0, do: diff * -1, else: diff
+    adj = if diff < 0, do: "-", else: "+"
+    if unit === "sqft" do
+      "#{adj}#{diff} lot #{unit}"
+    else
+      "#{adj}#{Float.round(number/43560, 2)} lot #{unit}"
+    end
   end
 
   defp to_text_time(val, attr) do

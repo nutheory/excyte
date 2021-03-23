@@ -1,30 +1,28 @@
-<div id="editorWrapper" phx-hook="InitEditor" class="lg:flex mt-16">
-  <div class="fixed z-40 inset-0 flex-none h-full bg-black bg-opacity-25 w-full lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block hidden">
-    <h1>Pages</h1>
-  </div>
-  <div phx-update="ignore">
+<div id="editorWrapper" phx-hook="InitEditor" class="max-w-screen-xl lg:flex mt-16 md:mt-24 mx-auto">
+  <div class="flex-1 mx-4 md:mx-6 h-full" phx-update="ignore">
     <div class="header flex">
       <%# Title (Editable) %><%# Save %>
-      <button
-        class="bg-indigo-500 text-white rounded px-3 py-1"
-        x-on:click="console.log(content)"
-      >
-        Save
-      </button>
     </div>
-    <div id="documentEditor">
+    <div id="documentEditor" class="h-full">
       <div
         x-data="setupEditor('<p>My content goes here</p>')"
-        x-init="() => init($refs.editor)"
-        x-on:click.away="inFocus = false;"
+        x-init="() => init($refs.editor, $refs.bubbleMenu, $refs.floatMenu)"
+        @click.away="inFocus = false;"
+        class="h-full"
       >
-        <%= live_component @socket, EditorMenuBubble, id: "EditorMenuBubble" %>
-        <div x-ref="editor"></div>
-      </div>
-    </div>
-    <%# <div class="fixed top-0 left-0 flex items-center justify-center w-full h-full" style="background-color: rgba(0,0,0,.7);">
-      <div class="h-auto p-4 mx-4 text-left bg-white rounded shadow md:max-w-xl md:p-6 lg:p-8 md:mx-0">
-        <div class="text-center sm:mt-0 sm:text-left">
+        <div x-ref="bubbleMenu">
+          <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
+        </div>
+        <div x-ref="floatMenu">
+          <%= live_component @socket, EditorMenuFloat, id: :editor_menu_float %>
+        </div>
+        <div x-ref="editor" class="w-full p-4 lg:p-6 xl:p-10 h-full bg-white shadow rounded-md"></div>
+        <div class="blackout" :class="{ 'block': imagePanelVisible }"></div>
+        <div
+          :class="{ 'right-0': imagePanelVisible }"
+          class="panel-slidein bg-gray-100"
+          id="image-panel"
+        >
           <h3 class="text-lg text-gray-700">
             Upload media
           </h3>
@@ -33,6 +31,15 @@
           </div>
         </div>
       </div>
-    </div> %>
+    </div>
+  </div>
+  <div class="fixed z-40 inset-0 flex-none h-full bg-black bg-opacity-25 w-full lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block hidden">
+    <h1>Tooling</h1>
+    <button
+      class="bg-indigo-500 mt-6 text-white rounded px-3 py-1"
+      @click="console.log(content)"
+    >
+      Save
+    </button>
   </div>
 </div>

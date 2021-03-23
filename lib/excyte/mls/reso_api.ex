@@ -9,32 +9,32 @@ defmodule Excyte.Mls.ResoApi do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  @minimal_fields ["ListingId", "Coordinates", "ListPrice", "StandardStatus", "StreetNumber",
-                  "StreetName", "StateOrProvince", "City", "PostalCode", "UnitNumber",
-                  "BathroomsOneQuarter", "BathroomsThreeQuarter", "BathroomsFull",
+  @minimal_fields ["ListingId", "Coordinates", "ListPrice", "ClosePrice", "StandardStatus",
+                  "StreetNumber", "StreetName", "StateOrProvince", "City", "PostalCode",
+                  "UnitNumber", "BathroomsOneQuarter", "BathroomsThreeQuarter", "BathroomsFull",
                   "BathroomsHalf", "BedroomsTotal", "PropertySubType", "LivingArea",
                   "PropertyType", "ModificationTimestamp"]
 
-  @expanded_fields @minimal_fields ++ ["Media", "PublicRemarks", "YearBuilt", "CloseDate",
+  @expanded_fields @minimal_fields ++ ["Media", "PublicRemarks", "YearBuilt", "ListingTerms",
                   "ExteriorFeatures", "InteriorFeatures", "WaterfrontFeatures", "PoolFeatures",
                   "SecurityFeatures", "SpaFeatures", "FireplaceFeatures", "ParkingFeatures",
                   "DoorFeatures", "WindowFeatures", "PatioAndPorchFeatures", "CommunityFeatures",
                   "Flooring", "GarageSpaces", "PropertyType", "GarageYN", "GarageSpaces",
-                  "AttachedGarageYN", "BedroomsPossible", "LotSizeAcres", "AssociationFee",
-                  "AssociationFeeIncludes", "AssociationFeeFrequency", "ListingTerms", "View",
-                  "Appliances", "SubdivisionName", "CloseDate", "CancellationDate", "DaysOnMarket",
-                  "ContractStatusChangeDate", "CumulativeDaysOnMarket", "ExpirationDate",
+                  "AttachedGarageYN", "BedroomsPossible", "LotSizeAcres", "LotSizeSquareFeet",
+                  "AssociationFee", "AssociationFeeIncludes", "AssociationFeeFrequency",
+                  "HorseYN", "ViewYN", "WaterfrontYN", "NewConstructionYN", "PoolPrivateYN", "SpaYN",
+                  "SubdivisionName", "CloseDate", "CancellationDate", "DaysOnMarket", "ExpirationDate",
+                  "ContractStatusChangeDate", "CumulativeDaysOnMarket", "Appliances", "OnMarketDate",
                   "ListingContractDate", "WithdrawnDate", "OffMarketDate", "OffMarketTimestamp",
-                  "OnMarketDate", "OnMarketTimestamp", "OriginalEntryTimestamp", "PendingTimestamp",
+                  "OnMarketTimestamp", "OriginalEntryTimestamp", "PendingTimestamp",
                   "PriceChangeTimestamp", "StatusChangeTimestamp", "PurchaseContractDate",
-                  "MajorChangeTimestamp", "MajorChangeType"
-                ]
+                  "MajorChangeTimestamp", "MajorChangeType"]
 
 
-  @main_details ["YearBuilt", "StandardStatus", "CloseDate", "Flooring", "GarageSpaces", "GarageYN",
-                "GarageSpaces", "AttachedGarageYN", "LotSizeAcres", "AssociationFee",
-                "AssociationFeeIncludes", "AssociationFeeFrequency", "ListingTerms", "View",
-                "Appliances"]
+  # @main_details ["YearBuilt", "StandardStatus", "CloseDate", "Flooring", "GarageSpaces", "GarageYN",
+  #               "GarageSpaces", "AttachedGarageYN", "LotSizeAcres", "AssociationFee",
+  #               "AssociationFeeIncludes", "AssociationFeeFrequency", "ListingTerms", "View",
+  #               "Appliances"]
 
 
 
@@ -83,12 +83,17 @@ defmodule Excyte.Mls.ResoApi do
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
       <> "$filter=#{get_listings_by_distance(get_by_opts)}"
+      <> "%20and%20#{get_listings_by_price(mls, opts)}"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "%20and%20#{status(opts.selected_statuses)}"
       # <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
       # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.price_min, high: opts.price_max})}"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft_min, high: opts.sqft_max})}"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds_min, high: opts.beds_max})}"
-      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths_min, high: opts.baths_max})}"
+      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.price_min, high: opts.price_max})}"
+      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft_min, high: opts.sqft_max})}"
+      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds_min, high: opts.beds_max})}"
+      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
     )
     |> format_response()
     |> ProcessListings.process_init(subject)
@@ -107,12 +112,18 @@ defmodule Excyte.Mls.ResoApi do
     zip_code(z)
   end
 
-  defp get_by_months_back(opts) do
-    gte_date = Timex.shift(Date.utc_today(), months: -opts.months)
+  defp get_listings_by_price(mls, %{price: price}) do
+    "#{get_attr_by_range(mls, %{attr: "ListPrice", low: price.low, high: price.high})}%20or%20"
+    <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: price.low, high: price.high})}%20or%20"
+    |> String.trim_trailing("%20or%20")
+  end
 
-    if Map.has_key?(opts, :status) do
-      Enum.reduce(opts.status, "", fn st, acc ->
-        case st do
+  defp get_by_months_back(%{selected_statuses: statuses, status_updated: updated}) do
+    gte_date = Timex.shift(Date.utc_today(), months: updated)
+
+    if length(statuses) > 0 do
+      Enum.reduce(statuses, "", fn st, acc ->
+        case st.value do
           "closed" -> "#{acc}date(CloseDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
           "pending" -> "#{acc}date(ListingContractDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
           "active" -> "#{acc}date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
@@ -121,15 +132,24 @@ defmodule Excyte.Mls.ResoApi do
       end)
       |> String.trim_trailing("%20or%20")
     else
-      "#date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}"
+      "date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}"
     end
+  end
+
+  defp get_by_months_back(_) do
+    ""
   end
 
   defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
-      "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
+      cond do
+        l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
+        l !== nil -> "#{attr}%20ge%20#{l}"
+        h !== nil -> "#{attr}%20le%20#{h}"
+        true -> ""
+      end
     end
   end
 
@@ -181,7 +201,7 @@ defmodule Excyte.Mls.ResoApi do
   # ContractStatusChangeDate
   defp status(status_arr) when is_list(status_arr) do
     Enum.reduce(status_arr, "", fn st, acc ->
-      "#{acc}tolower(StandardStatus)%20eq%20%27#{st}%27%20or%20"
+      "#{acc}tolower(StandardStatus)%20eq%20%27#{st.value}%27%20or%20"
     end)
     |> String.trim_trailing("%20or%20")
   end

@@ -2,17 +2,20 @@ defmodule Excyte.Insights.Template do
   use Ecto.Schema
   import Ecto.Changeset
   alias Excyte.{
+    Accounts.User,
     Brokerages.Brokerage,
-    Accounts.User
+    Insights.Document,
+    Utils.MapType
   }
 
   schema "templates" do
     field :name, :string
     field :description, :string
-    field :content, {:array, :map}
+    field :content, MapType
     field :default, :boolean
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
+    many_to_many(:documents, Document, join_through: "document_templates")
     timestamps()
   end
 

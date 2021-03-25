@@ -14,6 +14,11 @@ defmodule Excyte.Agents do
     Repo.get_by(Profile, %{agent_id: aid, default: true})
   end
 
+  def get_agent_profile(aid) do
+    Repo.get_by(Profile, %{agent_id: aid} )
+    |> Repo.preload(contacts: from(c in Contact, order_by: c.id))
+  end
+
   def get_profile(_profile_id), do: %Profile{contacts: []}
 
   def change_profile(%Profile{} = profile, attrs \\ %{}) do

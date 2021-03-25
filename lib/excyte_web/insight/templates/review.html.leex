@@ -30,7 +30,7 @@
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4 lg:mb-6 xl:mb-8" id="review-subject">
     <%= for comp <- @selected_comps do %>
-      <div class="bg-bgray-200 rounded-lg relative overflow-hidden shadow">
+      <div class="flex flex-col bg-white rounded-lg relative overflow-hidden shadow">
         <%= if comp do %>
           <div class="rounded-t-lg relative h-24 overflow-hidden bg-bgray-900 ">
             <img src="<%= comp.main_photo_url %>" alt="" class="absolute h-full w-full object-cover grayscale-60 opacity-80" />
@@ -39,14 +39,16 @@
             </div>
           </div>
         <% end %>
-        <div class="p-4">
+        <div class="p-4 flex-1">
           <h4 class="font-bold text-sm">Adjustment considerations</h4>
           <p class="text-sm"><%= Utilities.summarize_sale_info(comp) %></p>
-          <ul class="mb-2 flex flex-wrap -mx-2">
+          <ul class="flex flex-wrap -mx-2">
             <%= for adj <- Enum.map(Enum.filter(comp.adjustments, fn {_, v} -> Map.has_key?(v, :to_text) end), fn {_, v} -> v end) do %>
               <li class="w-1/2 py-1 px-2 text-sm"><%= adj.to_text %></li>
             <% end %>
           </ul>
+        </div>
+        <div class="px-4 pb-2">
           <%= if Map.has_key?(comp.adjustments, :sqft) do %>
             <h4 class="font-bold text-sm">Auto Adjustments</h4>
             <p class="text-sm"><%= Utilities.summarize_auto_adjust(comp.adjustments.sqft) %></p>
@@ -62,15 +64,19 @@
               value="<%= comp.excyte_price %>"
             />
             <div class="flex">
-              <div
-                class="flex-1 hover:cursor-pointer"
-                phx-click="toggle-adjustment"
-                phx-value-action="<%= if comp.excyte_price === comp.excyte_suggested_price, do: "remove", else: "apply" %>"
-                phx-value-id="<%= comp.listing_id %>"
-              >
-                <%= if comp.excyte_price === comp.excyte_suggested_price, do: "Remove adj.", else: "Apply adj." %>
+              <%= if Map.has_key?(comp.adjustments, :sqft) do %>
+                <div
+                  class="flex-1 mt-1 cursor-pointer text-cyan-700 hover:underline"
+                  phx-click="toggle-adjustment"
+                  phx-value-action="<%= if comp.excyte_price === comp.excyte_suggested_price, do: "remove", else: "apply" %>"
+                  phx-value-id="<%= comp.listing_id %>"
+                >
+                  <%= if comp.excyte_price === comp.excyte_suggested_price, do: "Remove adjustment", else: "Apply adjustment" %>
+                </div>
+              <% end %>
+              <div class="font-bold text-lg">
+                <span class="font-light inline-block text-sm align-top mr-0.5">$</span><%= number_to_delimited(comp.excyte_price, precision: 0) %>
               </div>
-              <div class=""><%= comp.excyte_price %></div>
             </div>
           </form>
         </div>
@@ -78,10 +84,10 @@
     <% end %>
     <div class="p-4 bg-cyan-50 rounded-lg shadow form">
       <p class="pb-3">
-        Continue to organize and preview your final document.
+        <strong>Next step:</strong> Continue to organize and preview your final document.
       </p>
       <div class="text-right">
-        <button class="submit">Continue</button>
+        <button class="submit" phx-click="save-review">Continue</button>
       </div>
     </div>
   </div>

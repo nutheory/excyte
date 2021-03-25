@@ -22,4 +22,5 @@ defmodule Excyte.Utils.MapType do
   end
   def dump(m) when is_map(m), do: {:ok, m}
   def dump(_), do: :error
+
 end

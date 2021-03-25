@@ -11,7 +11,7 @@ defmodule Excyte.Agents.Profile do
     field :photo_url, :string
     field :intro_video_url, :string
     field :default, :boolean
-    has_many(:contacts, Contact)
+    has_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:agent, User)
     timestamps()
   end

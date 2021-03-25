@@ -1,6 +1,7 @@
 <div class="w-full inline-block relative" x-data="{ menuOpen: false }">
   <div
     @click="menuOpen = !menuOpen"
+    @click.away="menuOpen = false"
     :class="{'font-semibold': menuOpen, 'shadow-none': menuOpen}"
     class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded p-1.5 pl-3 pr-1 bg-white"
   >

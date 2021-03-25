@@ -142,11 +142,11 @@ span.icon-align {
 }
 
 div.action-button {
-  @apply text-white text-center font-bold py-2 px-4 rounded bg-green-600 transition duration-150 ease-in-out;
+  @apply text-white text-center font-bold py-2 px-4 rounded bg-teal-600 transition duration-150 ease-in-out;
 }
 
 div.action-button:hover {
-  @apply bg-green-500 cursor-pointer;
+  @apply bg-teal-500 cursor-pointer;
 }
 
 div.gallery {

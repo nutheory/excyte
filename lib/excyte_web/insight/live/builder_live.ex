@@ -1,11 +1,22 @@
 defmodule ExcyteWeb.Insight.BuilderLive do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Insights.Template, Insights.Section}
+  alias Excyte.{Accounts, Insights, Insights.Insight, Insights.Template, Insights.Section}
   alias ExcyteWeb.InsightView
 
   def render(assigns), do: InsightView.render("builder.html", assigns)
 
-  def mount(%{"id" => id}, %{"user_token" => token}, %{assigns: a} = socket) do
+  def mount(%{"insight_id" => id}, %{"user_token" => token}, %{assigns: a} = socket) do
+    cu = Accounts.get_user_by_session_token(token)
+    case Insights.get_insight(id, cu.id) do
+      %Insight{} = ins ->
+        if length(ins.documents) === 0, do: send self(), {:build_new, ins}
+        {:ok, assign(socket, current_user: cu, insight: ins, content: nil)}
+      _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
+    end
+  end
+
+  def handle_info({:build_new, ins}, %{assigns: a} = socket) do
+    {:noreply, socket}
   end
 
   # def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do

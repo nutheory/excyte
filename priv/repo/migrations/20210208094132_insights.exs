@@ -16,7 +16,7 @@ defmodule Excyte.Repo.Migrations.Insights do
       timestamps()
     end
 
-    create index(:insights, [:created_by_id])
+    create index(:insights, [:created_by_id, :uuid])
     create index(:insights, [:brokerage_id])
     create unique_index(:insights, [:uuid])
   end

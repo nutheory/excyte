@@ -10,10 +10,6 @@ defmodule Excyte.Insights do
     |> Multi.run(:claim_subject, __MODULE__, :claim_subject, [attrs])
     |> Multi.run(:search, __MODULE__, :create_saved_search, [attrs])
     |> Repo.transaction()
-    |> case do
-      {:ok, %{insight: insight}} -> {:ok, insight}
-      {:error, method, changeset, _} -> {:error, changeset}
-    end
   end
 
   def create_insight(_repo, _changes, %{insight: ins}) do
@@ -32,6 +28,26 @@ defmodule Excyte.Insights do
     Properties.update_property(prop.subject_id, prop.agent_id, %{insight_id: ins.id})
   end
 
+  def update_insight(uuid, uid, attrs) do
+    ins = Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid})
+    if ins do
+      Insight.changeset(ins, attrs)
+      |> Repo.update()
+    else
+      {:error, %{message: "Insight could not be found."}}
+    end
+  end
+
+  def update_saved_search(ins_id, filter_criteria) do
+    ss = Repo.get(SavedSearch, ins_id)
+    if ss do
+      SavedSearch.changeset(ss, %{criteria: filter_criteria})
+      |> Repo.update()
+    else
+      {:error, %{message: "Search could not be found."}}
+    end
+  end
+
   def get_initial_insight(uid, iid) do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload([:subject, :saved_search])
   end
@@ -40,10 +56,13 @@ defmodule Excyte.Insights do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:subject)
   end
 
-  def get_insight(uid, id) do
-    Repo.get_by(Insight, %{created_by_id: uid, id: id}) |> Repo.preload([:subject, :documents])
+  def get_insight(uuid, uid) do
+    Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid}) |> Repo.preload([:subject, :documents])
   end
 
+  def build_comp_documents(comps) do
+
+  end
 
   def get_templates(agent_id, brokerage_id) do
 

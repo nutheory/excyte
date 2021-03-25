@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Agent.MlsAuthLive do
+defmodule ExcyteWeb.Agent.MlsAuth do
   use ExcyteWeb, :live_component
   alias Excyte.{Accounts, Mls}
   alias ExcyteWeb.AgentView
@@ -12,16 +12,16 @@ defmodule ExcyteWeb.Agent.MlsAuthLive do
   end
 
   def update(assigns, socket) do
-    dids = Enum.map(assigns.mls_list, fn li -> li.dataset_id end)
+    mls_list = Mls.get_credentials(%{user_id: assigns.current_user.id})
+    dids = Enum.map(mls_list, fn li -> li.dataset_id end)
     opts = Enum.filter(assigns.mls_opts, fn %{val: val} ->
         !Enum.member?(dids, val)
     end)
-    IO.inspect(opts, label: "OPTS-2")
     {:ok, assign(socket,
       current_user: assigns.current_user,
       return_to: assigns.return_to,
       mls_opts: opts,
-      mls_list: assigns.mls_list
+      mls_list: mls_list
     )}
   end
 

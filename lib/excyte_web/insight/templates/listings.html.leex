@@ -51,7 +51,7 @@
             <span class="ml-0.5 <%= if @show_filters, do: "font-bold" %>">Filter</span>
             <span class="ml-0.5 text-xs" x-show="<%= @show_filters %>">close</span>
           </div>
-          <p class="text-right text-sm"><span class="font-bold"><%= length(@comps) %></span> Comparable listings</p>
+          <p class="text-right text-sm"><span class="font-bold"><%= length(@comps) %></span> Comparables</p>
         </div>
         <%= if length(@selected_comps) > 0 do %>
           <div

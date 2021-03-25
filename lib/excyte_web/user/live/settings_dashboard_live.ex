@@ -8,7 +8,15 @@ defmodule ExcyteWeb.Settings.DashboardLive do
   def mount(_params,  %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
 
-    {:ok, assign(socket, current_user: cu)}
+    {:ok, assign(socket,
+      current_user: cu,
+      section: "profile",
+      return_to: "/settings?section=mls_auth"
+    )}
+  end
+
+  def handle_params(params, _uri, socket) do
+    {:noreply, assign(socket, section: params["section"])}
   end
 
   def handle_info({:delivered_email, _email}, socket) do

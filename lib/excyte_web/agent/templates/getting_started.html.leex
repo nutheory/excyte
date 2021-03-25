@@ -12,7 +12,7 @@
             <% end %>
           </div>
         </div>
-        <%= live_component @socket, PaymentLive, current_user: @current_user, account: @account, id: :payment %>
+        <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
         <%= if @account.status === "active" do %>
           <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
             <div class="action-button my-6">Continue...</div>
@@ -31,12 +31,9 @@
             <% end %>
           </div>
         </div>
-        <%= live_component @socket, ProfileLive,
+        <%= live_component @socket, Profile,
           current_user: @current_user,
           return_to: "/agent/dash",
-          default: true,
-          action: :new,
-          profile_id: nil,
           id: :profile %>
       </div>
     <% _ -> %>
@@ -51,7 +48,7 @@
             <% end %>
           </div>
         </div>
-        <%= live_component @socket, MlsAuthLive, return_to: @return_to, current_user: @current_user, mls_list: @mls_list, id: :mls %>
+        <%= live_component @socket, MlsAuth, return_to: @return_to, current_user: @current_user, id: :mls %>
         <%= if length(@mls_list) > 0 do %>
           <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "payment"), replace: false do %>
             <div class="action-button my-6">Continue...</div>

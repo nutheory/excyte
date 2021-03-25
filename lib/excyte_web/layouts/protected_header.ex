@@ -37,6 +37,7 @@ defmodule ExcyteWeb.ProtectedHeader do
       dataset_id: mls.dataset_id,
       access_token: mls.access_token,
       mls_name: mls.mls_name,
+      member_key: mls.member_key,
       count: length(assigns.mls_options)
     }})
     {:noreply, assign(socket,

@@ -1,46 +1,38 @@
-<div>
+<div class="w-full lg:w-1/2">
   <%= if @plan do %>
-    <div class="grid grid-cols-3 gap-6">
-      <div class="col-span-3 lg:col-span-1">
-        <div class="bg-green-200 rounded-md p-4">
-          <h3 class="text-lg leading-none font-extrabold text-gray-900">
-            Start your free trial
-          </h3>
-          <p class="text-xs text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
-        </div>
-      </div>
-      <div class="col-span-3 lg:col-span-2">
-        <div class="bg-white mb-4 shadow rounded p-4">
-          <h2 class="text-lg font-bold text-gray-700"><%= @plan.name %></h2>
-          <p><%= @plan.description %></p>
-        </div>
-        <%= if @payment_success do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
-            <div class="action-button bg-green-600">Payment succeeded... Continue</div>
-          <% end %>
-        <% else %>
-          <form action="#" method="post" phx-hook="InitCheckout" id="payment-form" phx-target="<%= @myself %>">
-            <div class="bg-white mb-4 shadow rounded p-4">
-              <label for="card-element" class="tag-label px-1">
-                Credit or debit card
-              </label>
-              <div id="card-element" class="tag-input fake-text-field"></div>
-              <div id="card-errors" class="tag-label text-red-400 p-2" role="alert"></div>
-              <div class="flex">
-                <button class="submit w-full" type="submit">
-                  <svg id="processing-icon" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span id="submit-text">Submit Payment<span>
-                </button>
-                <div class="edit-button block ml-4" phx-click="change-plan" phx-target="<%= @myself %>">Change Plan</div>
-              </div>
-            </div>
-          </form>
-        <% end %>
-      </div>
+    <div class="bg-white mb-4 shadow rounded p-4">
+      <h2 class="text-lg font-bold text-gray-700"><%= @plan.name %></h2>
+      <p><%= @plan.description %></p>
+      <h3 class="text-lg mt-3 font-extrabold text-gray-900">
+        Start your free trial
+      </h3>
+      <p class="text-xs text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
     </div>
+    <%= if @payment_success do %>
+      <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
+        <div class="action-button bg-green-600">Payment succeeded... Continue</div>
+      <% end %>
+    <% else %>
+      <form action="#" method="post" phx-hook="InitCheckout" id="payment-form" phx-target="<%= @myself %>">
+        <div class="bg-white mb-4 shadow rounded p-4">
+          <label for="card-element" class="tag-label px-1">
+            Credit or debit card
+          </label>
+          <div id="card-element" class="tag-input fake-text-field"></div>
+          <div id="card-errors" class="tag-label text-red-400 p-2" role="alert"></div>
+          <div class="flex">
+            <button class="submit w-full" type="submit">
+              <svg id="processing-icon" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span id="submit-text">Submit Payment<span>
+            </button>
+            <div class="edit-button block ml-4" phx-click="change-plan" phx-target="<%= @myself %>">Change Plan</div>
+          </div>
+        </div>
+      </form>
+    <% end %>
   <% else %>
     <%= live_component @socket, PricingLive, current_user: @current_user, id: :pricing %>
   <% end %>

@@ -13,7 +13,7 @@ defmodule ExcyteWeb.Insight.ReviewLive do
 
   def render(assigns), do: InsightView.render("review.html", assigns)
 
-  def mount(%{"id" => id}, %{"user_token" => token}, socket) do
+  def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     with %Insight{} = ins <- Insights.get_review_insight(cu.id, id),
          {:ok, comps} <- ResoApi.get_by_listing_ids(cu.current_mls,
@@ -80,6 +80,24 @@ defmodule ExcyteWeb.Insight.ReviewLive do
     end
   end
 
+  def handle_event("save-review", _, %{assigns: a}  = socket) do
+    case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
+      content: %{comps: a.selected_comps}
+    }) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.insight_uuid}/builder")}
+      {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    end
+  end
+
+  # defp comp_content(comps) do
+  #   comp_listings = Enum.map(comps, fn c ->
+  #     %{
+
+  #     }
+  #   end)
+  #   %{ comps: comp_listings }
+  # end
+
   defp sanitize_subject(subject_in) do
     sub = Map.from_struct(subject_in)
     features = load_features(sub)
@@ -113,7 +131,7 @@ defmodule ExcyteWeb.Insight.ReviewLive do
     end)
   end
 
-  def sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
+  defp sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
     if unit === "acres" do
       %{lotsize_preference: "acres", lotsize_sqft: round(Utilities.acres_to_sqft(String.to_float(val)))}
     else

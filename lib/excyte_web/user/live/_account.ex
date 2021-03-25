@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Settings.AccountLive do
+defmodule ExcyteWeb.Settings.Account do
   use ExcyteWeb, :live_component
   alias Excyte.{Accounts}
   alias ExcyteWeb.{UserView, Helpers.Utilities}

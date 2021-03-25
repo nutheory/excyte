@@ -1,79 +1,76 @@
-<div>
+<div class="w-full lg:w-2/3 xl:w-1/2">
   <%= f = form_for @changeset, "#", [phx_change: "validate", phx_submit: "save", phx_target: @myself] %>
-    <div class="grid grid-cols-3 gap-6">
-      <div class="col-span-3 lg:col-span-1">
-        <div class="mb-6 bg-blue-200 rounded-md p-4" phx-drop-target="<%= @uploads.photo.ref %>">
-          <%= for {_ref, err} <- @uploads.photo.errors do %>
-            <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
-          <% end %>
-          <%= for entry <- @uploads.photo.entries do %>
-            <%= live_img_preview entry, width: 80 %>
-          <% end %>
-          <%= live_file_input @uploads.photo %>
-        </div>
+    <div class="shadow-md bg-white rounded-md p-4 relative">
+      <h3 class="text-lg leading-none font-extrabold text-gray-900">
+        <%= if @action === :edit, do: "Edit profile", else: "Create a new profile" %>
+      </h3>
+      <div class="w-28 h-28 absolute top-2 right-4 bg-blue-200 rounded-full p-1" phx-drop-target="<%= @uploads.photo.ref %>">
+        <%= for {_ref, err} <- @uploads.photo.errors do %>
+          <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
+        <% end %>
+        <%= for entry <- @uploads.photo.entries do %>
+          <%= live_img_preview entry, width: 90, class: "w-full h-full rounded-full" %>
+        <% end %>
+        <%= live_file_input @uploads.photo, class: "opacity-0 h-full w-full cursor-pointer absolute top-1 left-1" %>
+        <img src="<%= @profile.photo_url %>" class="w-full h-full rounded-full" />
       </div>
-      <div class="col-span-3 lg:col-span-2">
-        <div class="shadow-md bg-white rounded-md p-4">
-          <h1>Create your profile</h1>
-          <div class="mt-4">
-            <%= label f, :name %>
-            <%= text_input f, :name, class: "text-field", phx_debounce: "blur" %>
-            <%= error_tag f, :name %>
-          </div>
-          <div class="mt-4">
-            <%= label f, :tagline %>
-            <%= text_input f, :tagline, class: "text-field", phx_debounce: "blur" %>
-            <%= error_tag f, :tagline %>
-          </div>
-          <div class="mt-4">
-            <%= label f, :bio %>
-            <%= textarea f, :bio, class: "textarea", phx_debounce: "blur" %>
-            <%= error_tag f, :bio %>
-          </div>
-          <div class="sub-form">
-            <h2>Contacts</h2>
-            <%= inputs_for f, :contacts, fn fc -> %>
-              <div class="mt-2 -mx-1">
-                <div class="flex content-start items-start">
-                  <div class="px-1 flex-1">
-                    <%= label fc, :name, class: "text-xs" %>
-                    <%= text_input fc, :name, class: "text-field w-full", placeholder: "Mobile phone, Slack etc.", phx_debounce: "blur" %>
-                    <%= error_tag fc, :name %>
-                  </div>
-                  <div class="px-1 flex-1">
-                    <%= label fc, :content, class: "text-xs" %>
-                    <%= text_input fc, :content, class: "text-field", placeholder: "(555) 555-5555" %>
-                    <%= error_tag fc, :content %>
-                  </div>
-                  <div class="px-1">
-                    <%= if is_nil(fc.data.temp_id) do %>
-                      <%= checkbox fc, :delete %>
-                    <% else %>
-                      <%= hidden_input fc, :temp_id %>
-                      <a href="#" class="delete-button mt-5 " phx-click="remove_contact" phx-value-remove="<%= fc.data.temp_id %>">
-                        <span class="material-icons text-sm leading-none">clear</span>
-                      </a>
-                    <% end %>
-                  </div>
-                </div>
+      <div class="mt-4 w-3/4">
+        <%= label f, :name %>
+        <%= text_input f, :name, class: "text-field", phx_debounce: "blur" %>
+        <%= error_tag f, :name %>
+      </div>
+      <div class="mt-4">
+        <%= label f, :tagline %>
+        <%= text_input f, :tagline, class: "text-field", phx_debounce: "blur" %>
+        <%= error_tag f, :tagline %>
+      </div>
+      <div class="mt-4">
+        <%= label f, :bio %>
+        <%= textarea f, :bio, class: "textarea", phx_debounce: "blur" %>
+        <%= error_tag f, :bio %>
+      </div>
+      <div class="sub-form">
+        <h2>Contacts</h2>
+        <%= inputs_for f, :contacts, fn fc -> %>
+          <div class="mt-2 -mx-1">
+            <div class="flex content-start items-start">
+              <div class="px-1 flex-1">
+                <%= label fc, :name, class: "text-xs" %>
+                <%= text_input fc, :name, class: "text-field w-full", placeholder: "Mobile phone, Slack etc.", phx_debounce: "blur" %>
+                <%= error_tag fc, :name %>
               </div>
-            <% end %>
-            <a href="#" class="subtle-button mt-2" phx-click="add_contact">Add a Contact</a>
-          </div>
-          <%= if @default do %>
-            <%= hidden_input f, :default, value: true %>
-          <% else %>
-            <div>
-              <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-                <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+              <div class="px-1 flex-1">
+                <%= label fc, :content, class: "text-xs" %>
+                <%= text_input fc, :content, class: "text-field", placeholder: "(555) 555-5555" %>
+                <%= error_tag fc, :content %>
               </div>
-              <label for="toggle" class="text-gray-700">Set as default</label>
+              <div class="px-1">
+                <%= if is_nil(fc.data.temp_id) do %>
+                  <%= checkbox fc, :delete %>
+                <% else %>
+                  <%= hidden_input fc, :temp_id %>
+                  <a href="#" class="delete-button mt-5 " phx-click="remove_contact" phx-value-remove="<%= fc.data.temp_id %>">
+                    <span class="material-icons text-sm leading-none">clear</span>
+                  </a>
+                <% end %>
+              </div>
             </div>
-          <% end %>
-          <button type="submit" class="submit mt-4 w-full">Create profile</button>
-        </div>
+          </div>
+        <% end %>
+        <a href="#" class="subtle-button mt-2" phx-click="add_contact">Add a Contact</a>
       </div>
+      <%= if @default do %>
+        <%= hidden_input f, :default, value: true %>
+      <% else %>
+        <div>
+          <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+            <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+            <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+          </div>
+          <label for="toggle" class="text-gray-700">Set as default</label>
+        </div>
+      <% end %>
+      <button type="submit" class="submit mt-4 w-full">Create profile</button>
     </div>
   </form>
 </div>

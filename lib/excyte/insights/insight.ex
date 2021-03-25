@@ -5,6 +5,7 @@ defmodule Excyte.Insights.Insight do
     Accounts.User,
     Brokerages.Brokerage,
     Insights.SavedSearch,
+    Insights.Document,
     Properties.Property,
     Utils.MapType
   }
@@ -19,6 +20,7 @@ defmodule Excyte.Insights.Insight do
     field :published, :boolean
     has_one(:subject, Property, foreign_key: :insight_id)
     has_one(:saved_search, SavedSearch)
+    has_many(:documents, Document)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
     timestamps()

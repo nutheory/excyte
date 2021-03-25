@@ -10,6 +10,7 @@ defmodule Excyte.Repo.Migrations.Documents do
       add :title, :string, null: false
       add :content, :map, default: %{}
       add :template, :boolean, default: false
+      add :is_public, :boolean, default: false
       add :order, :integer
       add :description, :string
       add :type, :string

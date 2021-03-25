@@ -1,18 +1,53 @@
-<div class="lg:max-w-4xl mx-auto h-48" x-data="{ tab: 'sections' }" >
-  <div class="shadow-md bg-white rounded-md p-3 md:p-4">
-    <div class="flex">
-      <h1 class="flex-1">CMA Builder <button x-show="tab === 'new_section'" @click.prevent="tab = 'sections'">go back</button></h1>
-      <div class="" id="save"><button>Save</button></div>
-    </div>
-    <div x-show="tab === 'sections'">
-      <ul>
-        <%= for section <- @sections do %>
+<div class="mt-24 mx-auto">
+  <div class="flex mx-6">
+    <div class="px-4 w-64 lg:sticky lg:top-0 -mt-24 pt-24 h-screen">
+      <h1 class="">CMA Builder</h1>
+      <h3 class="mt-6">Contents</h3>
+      <ul class="toc">
+        <%= for section <- @insight.documents do %>
           <li>
             <%= section.title %>
           </li>
         <% end %>
+        <li class="section">
+          <h4>Introduction</h4>
+          <div class="flex">
+
+          </div>
+        </li>
       </ul>
-      <%= live_redirect "Add a section", to: Routes.live_path(@socket, ExcyteWeb.Components.EditorLive, @insight_id, "cma", "new") %>
+      <%= live_redirect to: "/insights/cma/#{@insight.uuid}/editor/new", replace: false do %>
+        <button class="action-button w-full my-6">Add a section</button>
+      <% end %>
+    </div>
+    <div class="flex-1">
+      <h2 class="pr-1 text-right">Preview</h2>
+      <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200">
+        <%# <div class="" id="cover">
+        </div>
+        <div class="" id="intro">
+        </div>
+        <div class="" id="your-agent">
+        </div>
+        <div class="" id="subject-property">
+        </div> %>
+        <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
+        <%= for comp <- @insight.content.comps do %>
+          <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
+            <div class="mx-6">
+              <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
+            </div>
+            <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
+              <%= for image <- comp["media"] do %>
+                <div>
+                  <img class="h-full block" src="<%= image["media_url"] %>" />
+                </div>
+              <% end %>
+            </div>
+            <br />
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>

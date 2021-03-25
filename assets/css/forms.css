@@ -92,7 +92,7 @@ form,
   }
 
   & .action {
-    @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-green-600 block transition duration-150 ease-in-out;
+    @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-teal-600 block transition duration-150 ease-in-out;
   }
 
   & .outline-small {
@@ -148,11 +148,11 @@ form,
 }
 
 button.action-button {
-  @apply text-white font-bold py-2 px-4 rounded bg-green-500 transition duration-150 ease-in-out;
+  @apply text-white font-bold py-2 px-4 rounded bg-teal-600 transition duration-150 ease-in-out;
 }
 
 button.action-button:hover {
-  @apply bg-green-400 cursor-pointer;
+  @apply bg-teal-500 cursor-pointer;
 }
 
 button.edit-button,

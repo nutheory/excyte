@@ -45,10 +45,12 @@ defmodule Excyte.Mls.ResoApi do
   def get_listings_by_agent(mls, %{list_agent_key: lak}) do
     # ListAgentKet: "e01c0c36ad4a8e406770f2a56522ef91"
     # ListAgentKet: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
+    query = get_expanded(mls)
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
-      <> "$orderby=ModificationTimestamp%20asc&#{get_select(mls, %{fields: @minimal}, ["Media"])}$filter="
+      <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="
       <> "ListAgentKey%20eq%20%27#{lak}%27")
     |> format_response()
+    |> ProcessListings.simple_process()
   end
 
   def get_listings_by_brokerage(mls, %{office_broker_key: obk}) do
@@ -63,8 +65,9 @@ defmodule Excyte.Mls.ResoApi do
     state: state,
     zip: zip
   }) do
+    query = get_expanded(mls)
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&"
-      <> "#{get_select(mls, %{fields: @minimal_fields}, ["Media"])}$filter="
+      <> "#{query.select_str}$filter="
       <> "#{number(street_number)}%20and%20"
       <> "#{street(safe_street_name)}%20and%20"
       <> "#{city(city)}%20and%20"
@@ -88,12 +91,8 @@ defmodule Excyte.Mls.ResoApi do
       <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
       <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "%20and%20#{status(opts.selected_statuses)}"
-      # <> if Map.has_key?(opts, :status), do: "%20and%20(#{status(opts.status)})", else: ""
       # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
-      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "ListPrice", low: opts.price_min, high: opts.price_max})}"
-      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft_min, high: opts.sqft_max})}"
-      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds_min, high: opts.beds_max})}"
-      # <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+
     )
     |> format_response()
     |> ProcessListings.process_init(subject)
@@ -101,7 +100,6 @@ defmodule Excyte.Mls.ResoApi do
       {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
       {:error, err} -> {:error, err}
     end
-    # |> IO.inspect(label: "BOOM")
   end
 
   def get_listings_by_distance(%{coords: %{lng: lng, lat: lat}, distance: d}) do
@@ -209,6 +207,8 @@ defmodule Excyte.Mls.ResoApi do
   defp status(stat) do
     status([stat])
   end
+
+
 
   defp get_expanded(mls) do
     case MetaCache.get("#{mls.dataset_id}_expanded") do

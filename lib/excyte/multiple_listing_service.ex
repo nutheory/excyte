@@ -33,6 +33,7 @@ defmodule Excyte.Mls do
     Accounts.update_user(user_id, %{current_mls: %{
       id: changes.save.id,
       dataset_id: changes.save.dataset_id,
+      member_key: changes.save.member_key,
       access_token: changes.save.access_token,
       mls_name: changes.save.mls_name,
       count: changes.count
@@ -51,8 +52,6 @@ defmodule Excyte.Mls do
   def destroy_credential(%{user_id: user_id, cred_id: cred_id}) do
     user = Repo.get!(User, user_id) |> Repo.preload([:mls_credentials])
     cred = Enum.find(user.mls_credentials, fn cred -> cred.id === cred_id end)
-    IO.inspect(cred, label: "CRED")
-    IO.inspect(cred_id, label: "CRED_id")
     case Repo.delete cred do
       {:ok, _} -> reset_after_destroy(%{user_id: user_id})
       {:error, changeset} -> {:error, changeset}
@@ -98,6 +97,7 @@ defmodule Excyte.Mls do
           id: hd(creds).id,
           dataset_id: hd(creds).dataset_id,
           access_token: hd(creds).access_token,
+          member_key: hd(creds).member_key,
           mls_name: hd(creds).mls_name,
           count: length(creds)
         }})

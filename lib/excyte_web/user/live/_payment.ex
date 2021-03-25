@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Settings.PaymentLive do
+defmodule ExcyteWeb.Settings.Payment do
   use ExcyteWeb, :live_component
   alias ExcyteWeb.UserView
   alias Excyte.{Accounts, Accounts.Billing}
@@ -10,11 +10,12 @@ defmodule ExcyteWeb.Settings.PaymentLive do
   end
 
   def update(assigns, socket) do
+    account = Accounts.get_account!(assigns.current_user.account_id)
     {:ok, assign(socket,
       intent: nil,
-      account: assigns.account,
+      account: account,
       payment_success: false,
-      plan: plan_details(assigns.account.source_plan_id),
+      plan: plan_details(account.source_plan_id),
       current_user: assigns.current_user
     )}
   end

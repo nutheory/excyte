@@ -3,17 +3,22 @@ defmodule Excyte.Insights.Document do
   import Ecto.Query
   import Ecto.Changeset
   alias Excyte.{
+    Accounts.User,
     Brokerages.Brokerage,
-    Accounts.User
+    Insights.Insight,
+    Insights.Template,
+    Utils.MapType
   }
 
   schema "documents" do
     field :title, :string, null: false
     field :description, :string
     field :type, :string
-    field :content, {:array, :map}
+    field :content, MapType
+    belongs_to(:insight, Insight)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
+    many_to_many(:templates, Template, join_through: "document_templates")
     timestamps()
   end
 
@@ -21,6 +26,7 @@ defmodule Excyte.Insights.Document do
     insight
     |> cast(attrs, [
       :title,
+      :insight_id,
       :content,
       :description,
       :type,

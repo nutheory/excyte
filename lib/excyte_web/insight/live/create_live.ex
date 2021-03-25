@@ -8,14 +8,15 @@ defmodule ExcyteWeb.Insight.CreateLive do
   def mount(params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if connected?(socket), do: Accounts.subscribe(cu.id)
-    if params["id"], do: send self(), {:load_from_store, params["id"]}
+    if params["insight_id"], do: send self(), {:load_from_store, params["insight_id"]}
     {:ok, assign(socket,
       current_user: cu,
       selected_comps: [],
       filters: %{},
       client_info: assign_client_info(socket),
       subject: nil,
-      fetching: (if params["id"], do: true, else: false),
+      key: params["insight_id"],
+      fetching: (if params["insight_id"], do: true, else: false),
       possible_subject_properties: nil,
       comparables: nil,
       preview: nil,
@@ -93,35 +94,6 @@ defmodule ExcyteWeb.Insight.CreateLive do
     end
   end
 
-  # def handle_event("main-filter-update", %{"_target" => target, "mf" => mf}, %{assigns: a} = socket) do
-  #   field_full = hd(tl(target))
-  #   field = hd(String.split(field_full, "_"))
-  #   min_max = hd(tl(String.split(field_full, "_")))
-  #   atom = String.to_atom(field_full)
-  #   num = cond do
-  #     field === "beds" -> String.to_integer(mf[field_full])
-  #     field === "sqft" -> String.to_integer(mf[field_full])
-  #     field === "baths" -> elem(Float.parse(mf[field_full]), 0)
-  #   end
-  #   IO.inspect(a.filters, label: "FILT")
-  #   IO.inspect(num, label: "NUM")
-
-  #   new_val =
-  #     if min_max === "min" do
-  #       if num <= a.filters[String.to_atom("#{field}_max")] do
-  #         IO.inspect(num, label: "NUM1")
-  #         IO.inspect(a.filters[String.to_atom("#{field}_max")], label: "NUM2")
-  #         Map.put(%{}, atom, num)
-  #       else
-  #         Map.put(%{}, atom, a.filters[atom])
-  #       end
-  #     else
-  #       if num >= a.filters[String.to_atom("#{field}_min")], do: Map.put(%{}, atom, num), else: Map.put(%{}, atom, a.filters[atom])
-  #     end
-  #   IO.inspect(new_val, label: "VAL")
-  #   {:noreply, assign(socket, filters: Map.merge(a.filters, new_val))}
-  # end
-
   def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
     IO.inspect(form, label: "FORM")
     IO.inspect(a.filters, label: "FILT")
@@ -166,8 +138,35 @@ defmodule ExcyteWeb.Insight.CreateLive do
   end
 
   def handle_event("review-cma", _,  %{assigns: a} = socket) do
-    key = "cma#{a.current_user.id}#{System.os_time(:second)}"
-    Insights.create_insight(%{
+    if a.key do
+      with {:ok, updated} <- Insights.update_insight(a.key, a.current_user.id, insight_data(a.key, a).insight),
+           {:ok, saved} <- Insights.update_saved_search(updated.id, a.filters) do
+        {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
+      else
+        {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+      end
+    else
+      key = "cma#{a.current_user.id}#{System.os_time(:second)}"
+      case Insights.create_insight(insight_data(key, a)) do
+        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/review")}
+        {:error, method, changeset, _} ->
+          # TODO Log Error
+          {:noreply, put_flash(socket, :error, "Something went wrong.")}
+      end
+    end
+  end
+
+  def handle_event("reset-subject", _, socket) do
+    {:noreply, assign(socket,
+      comparables: nil,
+      selected_comps: [],
+      subject: nil,
+      possible_subject_properties: nil
+    )}
+  end
+
+  defp insight_data(key, a) do
+    %{
       insight: %{
         uuid: key,
         type: "cma",
@@ -187,17 +186,7 @@ defmodule ExcyteWeb.Insight.CreateLive do
         subject_id: a.subject.id,
         agent_id: a.current_user.id
       }
-    })
-    {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/review")}
-  end
-
-  def handle_event("reset-subject", _, socket) do
-    {:noreply, assign(socket,
-      comparables: nil,
-      selected_comps: [],
-      subject: nil,
-      possible_subject_properties: nil
-    )}
+    }
   end
 
   defp setup_comp_query(subject, %{assigns: a} = socket) do

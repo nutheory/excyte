@@ -3,11 +3,11 @@ defmodule ExcyteWeb.AgentView do
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Agent.{
     DashboardLive,
-    DashListingLive,
+    DashListing,
     GettingStartedLive,
-    MlsAuthLive,
-    ProfileLive
+    MlsAuth,
+    Profile
   }
   alias ExcyteWeb.Insight.{CreateLive}
-  alias ExcyteWeb.Settings.{PaymentLive}
+  alias ExcyteWeb.Settings.{Payment}
 end

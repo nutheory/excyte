@@ -31,7 +31,7 @@
     <h2>Recent Activity</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
       <%= for listing <- @recents do %>
-        <%= live_component @socket, DashListingLive, listing: listing, id: "listing_id_#{listing["ListingId"]}" %>
+        <%= live_component @socket, DashListing, listing: listing, id: "listing_id_#{listing["ListingId"]}" %>
       <% end %>
     </div>
   </div>

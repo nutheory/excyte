@@ -58,7 +58,6 @@ defmodule ExcyteWeb.Router do
   scope "/settings", ExcyteWeb.Settings do
     pipe_through [:browser, :require_authenticated_user]
     live "/", DashboardLive
-    # live "/payment", PaymentLive
     # put "/settings/update_password", UserSettingsController, :update_password
     # put "/settings/update_email", UserSettingsController, :update_email
     get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
@@ -66,9 +65,9 @@ defmodule ExcyteWeb.Router do
 
   scope "/insights", ExcyteWeb.Insight do
     pipe_through [:browser, :require_authenticated_user]
-    live "/:type/:id/create", CreateLive
+    live "/:type/:insight_id/create", CreateLive
     live "/:type/create", CreateLive
-    live "/:type/:id/review", ReviewLive
+    live "/:type/:insight_id/review", ReviewLive
     live "/:type/:insight_id/builder", BuilderLive
     live "/:type/:insight_id/editor/:doc_id", EditorLive
   end

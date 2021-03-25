@@ -1,6 +1,15 @@
 defmodule Excyte.Mls.ProcessListings do
   alias Excyte.Properties.{Rankings}
 
+  def simple_process({:ok, %{listings: listings} = resp}) do
+    new_dataset =
+      Enum.map(listings, fn listing ->
+        Map.put(listing, "MainPhotoUrl", main_photo(listing["Media"]))
+      end)
+
+    {:ok, Map.merge(resp, %{listings: new_dataset})}
+  end
+
   def process_init({:ok, %{listings: listings} = resp}, subject) do
     new_dataset =
       Enum.map(listings, fn listing ->
@@ -64,9 +73,7 @@ defmodule Excyte.Mls.ProcessListings do
         beds: l["BedroomsTotal"],
         baths: process_bathrooms(l),
         sqft: l["LivingArea"],
-        main_photo_url: Enum.find(l["Media"], fn m ->
-          m["MediaCategory"] === "Photo" && m["Order"] === 1
-        end)["MediaURL"],
+        main_photo_url: main_photo(l["Media"]),
         lotsize_sqft: process_lotsize(%{sqft: l["LotSizeSquareFeet"], acres: l["LotSizeAcres"]}),
         lotsize_preference: "sqft",
         close_date: l["CloseDate"],
@@ -112,6 +119,12 @@ defmodule Excyte.Mls.ProcessListings do
   #     0.0
   #   end
   # end
+
+  defp main_photo(media) do
+    Enum.find(media, fn m ->
+      m["MediaCategory"] === "Photo" && m["Order"] === 1
+    end)["MediaURL"]
+  end
 
   def main_booleans(%{listing: l, changes: changes}) do
     %{listing: l,

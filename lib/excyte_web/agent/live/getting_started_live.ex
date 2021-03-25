@@ -19,7 +19,6 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
       account: account,
       return_to: "/agent/getting-started?step=mls",
       current_step: current_step,
-      mls_list: mls_list,
       profile: profile
     )}
   end

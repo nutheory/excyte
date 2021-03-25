@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Agent.ProfileLive do
+defmodule ExcyteWeb.Agent.Profile do
   use ExcyteWeb, :live_component
   alias Excyte.{Accounts, Agents, Agents.Contact, Agents.Profile}
   alias ExcyteWeb.{Helpers.SimpleS3Upload, AgentView}
@@ -9,19 +9,29 @@ defmodule ExcyteWeb.Agent.ProfileLive do
     {:ok, allow_upload(socket, :photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
   end
 
-  def update(%{profile_id: pid} = assigns, socket) do
-    profile = if pid, do: Agents.get_profile(pid), else: %Profile{}
+  def update(assigns, socket) do
+    profile = Agents.get_agent_profile(assigns.current_user.id)
+
     cs =
       Agents.change_profile(profile)
       |> Ecto.Changeset.put_assoc(:contacts, [Agents.change_contact(%Contact{temp_id: get_temp_id()})])
-
-    {:ok, assign(socket,
-      changeset: cs,
-      return_to: assigns.return_to,
-      action: assigns.action,
-      default: assigns.default,
-      current_user: assigns.current_user,
-      profile: profile)}
+    if profile do
+      {:ok, assign(socket,
+        changeset: cs,
+        return_to: assigns.return_to,
+        action: :edit,
+        default: true,
+        current_user: assigns.current_user,
+        profile: profile)}
+    else
+      {:ok, assign(socket,
+        changeset: cs,
+        return_to: assigns.return_to,
+        action: :new,
+        default: true,
+        current_user: assigns.current_user,
+        profile: profile)}
+    end
   end
 
   def handle_event("validate", %{"profile" => attrs}, socket) do

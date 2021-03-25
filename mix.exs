@@ -58,6 +58,7 @@ defmodule Excyte.MixProject do
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},
       {:geocalc, "~> 0.5"},
+      {:solid, "~> 0.7.1"},
       {:timex, "~> 3.6.2"},
       {:cachex, "~> 3.3"},
       {:plug_cowboy, "~> 2.0"},

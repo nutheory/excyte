@@ -25,6 +25,9 @@ module.exports = {
       white: "#FFFFFF",
     },
     extend: {
+      top: {
+        '18': '4.5rem',
+      },
       height: {
         '18': '4.5rem',
       },

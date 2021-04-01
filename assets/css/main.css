@@ -3,6 +3,16 @@ svg.remix {
   height: 20px;
 }
 
+/* not working in tailwind theme extend */
+.top-18 {
+  top: 4.5rem;
+}
+
+.blur {
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
 .text-ss {
   font-size: 0.6rem;
 }

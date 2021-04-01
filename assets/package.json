@@ -14,6 +14,7 @@
     "@tiptap/extension-bold": "file:../../tiptap-next/packages/extension-bold",
     "@tiptap/extension-bullet-list": "file:../../tiptap-next/packages/extension-bullet-list",
     "@tiptap/extension-document": "file:../../tiptap-next/packages/extension-document",
+    "@tiptap/extension-dropcursor": "file:../../tiptap-next/packages/extension-dropcursor",
     "@tiptap/extension-focus": "file:../../tiptap-next/packages/extension-focus",
     "@tiptap/extension-font-family": "file:../../tiptap-next/packages/extension-font-family",
     "@tiptap/extension-hard-break": "file:../../tiptap-next/packages/extension-hard-break",
@@ -57,7 +58,6 @@
     "html-webpack-plugin": "latest",
     "mini-css-extract-plugin": "^1.3.9",
     "node-sass": "^4.14.1",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss": "^8.1.8",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^4.0.4",
@@ -66,7 +66,7 @@
     "stylelint": "^13.8.0",
     "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^2.3.2",
-    "webpack": "^5.24.4",
+    "webpack": "5.24.4",
     "webpack-cli": "^4.5.0"
   },
   "resolutions": {

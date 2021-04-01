@@ -3,7 +3,7 @@ defmodule Excyte.Repo.Migrations.Properties do
 
   def change do
     create table(:properties) do
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       add :agent_id, references(:users)
       add :insight_id, references(:insights)
       add :foreign_id, :string

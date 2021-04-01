@@ -5,7 +5,7 @@
     <%= if @current_user do %>
       <button class="action-button block w-full" value="<%= @plan.plan_id %>" phx-click="choose-plan" phx-target="<%= @myself %>">Choose plan</button>
     <% else %>
-      <%= live_redirect "Sign up", to: Routes.live_path(@socket, ExcyteWeb.RegistrationLive, plan: @plan.friendly_name) %>
+      <%= live_redirect "Sign up", to: Routes.live_path(@socket, ExcyteWeb.AgentRegistrationLive, plan: @plan.friendly_name) %>
     <% end %>
   </div>
 </div>

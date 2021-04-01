@@ -1,124 +1,50 @@
-// var showPassword = document.getElementById('show_password_txt')
-// var userPasswordInput = document.getElementById('create_account_password')
-// var createAccountForm = document.getElementById('create_account')
-// var validateMlsButton = document.getElementById('validate_mls_btn')
-// var mlsSelector = document.getElementById('mls_selector')
-// var submitButton = document.getElementById('submit_btn')
-// var authActionArea = document.getElementById('auth_action')
-var passwordInstruct = document.getElementById('password_instruct')
-var pwLength = document.getElementById('pw_length')
-var pwCase = document.getElementById('pw_case')
-var pwSpecial = document.getElementById('pw_special')
-var passwordValid = false
+import "../css/public.css"
 
-const checkStrLength = (str, length) =>
-str.length >= 8
+import 'alpinejs'
+import "phoenix_html"
+import {Socket} from "phoenix"
+import {LiveSocket} from "phoenix_live_view"
+import topbar from "topbar"
 
-const checkStrUpperLowerCase = (str) =>
-  str.toUpperCase() != str && str.toLowerCase() != str
+const left = document.querySelector(".left")
+const right = document.querySelector(".right")
+const container = document.querySelector(".p-container")
 
-const checkStrAlphanumeric = (str) =>
-  /[a-z]/i.test(str) && /[0-9]/i.test(str)
+left.addEventListener('mouseenter', () => {
+  container.classList.add('hover-left')
+})
 
-const checkStrSpecialChar = (str) => /[!@#$%]/i.test(str)
+left.addEventListener('mouseleave', () => {
+  container.classList.remove('hover-left')
+})
 
+right.addEventListener('mouseenter', () => {
+  container.classList.add('hover-right')
+})
 
-export const toggleShowPassword = (e, userPasswordInput, showPassword) => {
-  e.stopPropagation()
-  if (userPasswordInput){
-    if (userPasswordInput.type === "password") {
-      showPassword.innerHTML = "hide password"
-      userPasswordInput.type = "text"
-    } else {
-      showPassword.innerHTML = "show password"
-      userPasswordInput.type = "password"
+right.addEventListener('mouseleave', () => {
+  container.classList.remove('hover-right')
+})
+
+let Hooks = {}
+
+let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
+let liveSocket = new LiveSocket("/live", Socket, {
+  hooks: Hooks, 
+  params: { _csrf_token: csrfToken },
+  dom: {
+    onBeforeElUpdated(from, to){
+      if(from.__x){ window.Alpine.clone(from.__x, to) }
     }
   }
-}
+})
 
+// Show progress bar on live navigation and form submits
+let progressTimeout
+topbar.config({ barThickness : 5, shadowColor: "rgba(0, 0, 0, .6)" })
+window.addEventListener("phx:page-loading-start", () => { clearTimeout(progressTimeout); progressTimeout = setTimeout(topbar.show, 100) })
+window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTimeout); topbar.hide() })
 
-// const selectMls = async () => {
-//   if (mlsSelector.value === ""){
-//     mlsSelector.style.cssText = "color: red;"
-//   } else {
-//     mlsSelector.style.cssText = "color: black;"
-//   }
-// }
+liveSocket.connect()
 
-export const validatePassword = (ev) => {
-  const str = ev.currentTarget.value
-  if (checkStrLength(str)) {
-    pwLength.style.cssText = "color: green;"
-  } else {
-    pwLength.style.cssText = "color: #4a5568;"
-  }
-
-  if (checkStrUpperLowerCase(str)) {
-    pwCase.style.cssText = "color: green;"
-  } else {
-    pwCase.style.cssText = "color: #4a5568;"
-  }
-
-  if (checkStrSpecialChar(str) || checkStrAlphanumeric(str)) {
-    pwSpecial.style.cssText = "color: green;"
-  } else {
-    pwSpecial.style.cssText = "color: #4a5568;"
-  }
-
-  if (checkStrLength(str) && checkStrUpperLowerCase(str) && (checkStrAlphanumeric(str) || checkStrSpecialChar(str))) {
-    passwordValid = true
-  } else {
-    passwordValid = false
-  }
-}
-
-export function multiSelect() {
-  return {
-    open: false,
-    textInput: '',
-    tags: [],
-    init() {
-      this.tags = JSON.parse(this.$el.parentNode.getAttribute('data-tags'));
-    },
-    addTag(tag) {
-      tag = tag.trim()
-      if (tag != "" && !this.hasTag(tag)) {
-        this.tags.push( tag )
-      }
-      this.clearSearch()
-      this.$refs.textInput.focus()
-      this.fireTagsUpdateEvent()
-    },
-    fireTagsUpdateEvent() {
-      this.$el.dispatchEvent(new CustomEvent('tags-update', {
-        detail: { tags: this.tags },
-        bubbles: true,
-      }));
-    },
-    hasTag(tag) {
-      var tag = this.tags.find(e => {
-        return e.toLowerCase() === tag.toLowerCase()
-      })
-      return tag != undefined
-    },
-    removeTag(index) {
-      this.tags.splice(index, 1)
-      this.fireTagsUpdateEvent()
-    },
-    search(q) {
-      if ( q.includes(",") ) {
-        q.split(",").forEach(function(val) {
-          this.addTag(val)
-        }, this)
-      }
-      this.toggleSearch()
-    },
-    clearSearch() {
-      this.textInput = ''
-      this.toggleSearch()
-    },
-    toggleSearch() {
-      this.open = this.textInput != ''
-    }
-  }
-}
+window.liveSocket = liveSocket

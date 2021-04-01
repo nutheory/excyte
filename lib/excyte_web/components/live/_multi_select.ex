@@ -5,7 +5,12 @@ defmodule ExcyteWeb.Components.MultiSelect do
   def render(assigns), do: ComponentView.render("multi_select.html", assigns)
 
   def update(assigns, socket) do
-    selected = if Map.has_key?(assigns, :selected), do: assigns.selected, else: []
+    selected =
+      if Map.has_key?(assigns, :selected) && is_list(assigns.selected) do
+        assigns.selected
+      else
+        []
+      end
     {:ok, assign(socket,
       options: assigns.options,
       label: assigns.label,

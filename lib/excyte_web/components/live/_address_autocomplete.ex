@@ -30,7 +30,7 @@ defmodule ExcyteWeb.Components.AddressAutocomplete do
         end)
         |> Map.put(:formatted, details["formatted_address"])
         |> Map.put(:coords, details["geometry"]["location"])
-      send self(), {:init_comp_search, %{address: Utilities.format_quoted_json(loc)}}
+      send self(), {:init_subject, %{address: Utilities.format_quoted_json(loc)}}
     end
     {:noreply, socket}
   end

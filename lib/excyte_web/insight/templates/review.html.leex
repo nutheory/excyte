@@ -21,13 +21,6 @@
       </div>
     </div>
   </div>
-  <div class="p-4 my-6 bg-cyan-50 rounded-lg shadow">
-    <%= live_component @socket, SubjectForm,
-      label: "Review property accuracy",
-      subject: @subject,
-      id: :subject_adjustments
-    %>
-  </div>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4 lg:mb-6 xl:mb-8" id="review-subject">
     <%= for comp <- @selected_comps do %>
       <div class="flex flex-col bg-white rounded-lg relative overflow-hidden shadow">

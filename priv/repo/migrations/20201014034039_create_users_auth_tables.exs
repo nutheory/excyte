@@ -6,7 +6,7 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
 
     create table(:users) do
       add :account_id, references(:accounts, on_delete: :delete_all)
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       add :agent_id, references(:users)
       add :full_name, :string, null: false
       add :email, :citext, null: false

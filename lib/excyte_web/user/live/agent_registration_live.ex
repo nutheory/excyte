@@ -1,9 +1,9 @@
-defmodule ExcyteWeb.RegistrationLive do
+defmodule ExcyteWeb.AgentRegistrationLive do
   use ExcyteWeb, :live_auth_view
   alias Excyte.{Accounts, Accounts.User, Agents.Agent}
   alias ExcyteWeb.{UserView, Helpers.Utilities}
 
-  def render(assigns), do: UserView.render("registration.html", assigns)
+  def render(assigns), do: UserView.render("agent_registration.html", assigns)
 
   def mount(params, _sesh, socket) do
     cs = Agent.pre_register(%Agent{}, %{})

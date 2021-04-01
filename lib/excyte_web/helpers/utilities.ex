@@ -21,8 +21,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
       %{value: "spa", name: "Spa"},
       %{value: "view", name: "View"},
       %{value: "waterfront", name: "Waterfront"},
-      %{value: "new_construction", name: "New Construction"},
-      %{value: "horses", name: "Horses"}
+      %{value: "construction", name: "New Construction"},
+      %{value: "horses", name: "Horse Stable"}
     ]
   end
 

@@ -4,7 +4,7 @@ import Document from '@tiptap/extension-document'
 import Bold from '@tiptap/extension-bold'
 import Text from '@tiptap/extension-text'
 import Link from '@tiptap/extension-link'
-// import Image from '@tiptap/extension-image'
+import Dropcursor from '@tiptap/extension-dropcursor'
 import Italic from '@tiptap/extension-italic'
 import Focus from '@tiptap/extension-focus'
 import Heading from '@tiptap/extension-heading'
@@ -68,6 +68,7 @@ window.setupEditor = function (content) {
           Hardbreak,
           Underline, 
           Highlight, 
+          Dropcursor,
           // FontFamily, 
           // TextAlign, 
           // TextStyle,

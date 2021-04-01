@@ -1,4 +1,4 @@
-<li class="listing-item mt-3 md:mt-4 cursor-pointer hover:bg-green-50" phx-click="select-subject" phx-target="<%= @myself %>" phx-value-key=<%= @prop["ListingKey"] %>>
+<div class="listing-item mt-3 md:mt-4 cursor-pointer hover:bg-green-50" phx-click="select-subject" phx-target="<%= @myself %>" phx-value-key=<%= @prop["ListingKey"] %>>
   <div class="flex h-full">
     <%= if @prop["MainPhotoUrl"] do %>
       <div :class="{'rounded-bl-none rounded-br': open}" class="main-photo" style="background-repeat: no-repeat; background-size: cover; background-image: url(<%= @prop["MainPhotoUrl"] %>)"></div>
@@ -41,4 +41,4 @@
       </div>
     </div>
   </div>
-</li>
+</div>

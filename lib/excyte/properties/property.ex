@@ -140,4 +140,5 @@ defmodule Excyte.Properties.Property do
     |> cast(attrs, @cast_opts)
     |> validate_required([:agent_id, :internal_type])
   end
+
 end

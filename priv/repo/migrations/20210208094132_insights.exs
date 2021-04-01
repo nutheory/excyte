@@ -4,7 +4,7 @@ defmodule Excyte.Repo.Migrations.Insights do
   def change do
     create table(:insights) do
       add :created_by_id, references(:users)
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       # add :client_id, references(:clients)
       add :type, :string
       add :mls, :string

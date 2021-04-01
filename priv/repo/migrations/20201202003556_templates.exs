@@ -4,7 +4,7 @@ defmodule Excyte.Repo.Migrations.Templates do
   def change do
     create table(:templates) do
       add :created_by_id, references(:users)
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       add :default, :boolean, default: false
       add :name, :string, null: false
       add :description, :string

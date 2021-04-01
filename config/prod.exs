@@ -17,6 +17,8 @@ config :excyte, ExcyteWeb.Endpoint,
   url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
+
 # Do not print debug messages in production
 config :logger, level: :info
 

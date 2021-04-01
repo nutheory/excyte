@@ -8,18 +8,19 @@ defmodule Excyte.Properties do
 
   @topic inspect(__MODULE__)
 
-  def subscribe(id) do
-    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{id}")
-  end
+  # def subscribe(id) do
+  #   Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{id}")
+  # end
 
-  def fetch_subject_details(foreign_map, id, uid) do
-    foreign_id = format_foreign_id(foreign_map)
-    IO.inspect(foreign_map, label: "OOPS1")
-    subscribe(foreign_map.mpr_id)
-    IO.inspect(foreign_id, label: "foreign_id")
-    case PublicDataApi.get_subject_by_foreign_id(foreign_id) do
-      {:ok, res} -> __MODULE__.update_property(id, uid, res)
-      {:error, err} -> IO.inspect(err, label: "OOPS2")
+  def fetch_subject_details(mpr_id, aid) do
+    # subscribe(mpr_id)
+    IO.inspect(mpr_id, label: "foreign_id")
+    case PublicDataApi.get_subject_by_foreign_id(mpr_id) do
+      {:ok, res} -> {:ok, res}
+      {:error, err} ->
+        # LOG error
+        IO.inspect(err, label: "OOPS2")
+        {:error, err}
     end
   end
 
@@ -39,22 +40,22 @@ defmodule Excyte.Properties do
     Repo.get_by(Property, %{id: id})
   end
 
-  def find_or_create_subject_property(%{foreign_id: fid, agent_id: aid} = attrs) do
-    case get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
-      %Property{} = subject -> {:ok, subject}
-      nil -> __MODULE__.create_property(attrs)
-    end
-  end
+  # def find_or_create_subject_property(%{foreign_id: fid, agent_id: aid} = attrs) do
+  #   case get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
+  #     %Property{} = subject -> {:ok, subject}
+  #     nil -> __MODULE__.create_property(attrs)
+  #   end
+  # end
 
-  def find_or_create_subject_property(%{agent_id: aid} = attrs) do
-    case get_subject_by_address(%{
-      street_number: attrs.street_number,
-      street_name: attrs.street_name,
-      agent_id: aid}) do
-      %Property{} = subject -> {:ok, subject}
-      nil -> __MODULE__.create_property(attrs)
-    end
-  end
+  # def find_or_create_subject_property(%{agent_id: aid} = attrs) do
+  #   case get_subject_by_address(%{
+  #     street_number: attrs.street_number,
+  #     street_name: attrs.street_name,
+  #     agent_id: aid}) do
+  #     %Property{} = subject -> {:ok, subject}
+  #     nil -> __MODULE__.create_property(attrs)
+  #   end
+  # end
 
   def create_property(attrs) do
     %Property{}
@@ -66,24 +67,16 @@ defmodule Excyte.Properties do
     prop = Repo.get_by(Property, %{id: id, agent_id: uid})
     Property.changeset(prop, attrs)
     |> Repo.update()
-    |> notify_subscribers([:property, :updated])
+    # |> notify_subscribers([:property, :updated])
   end
 
-  def change_property(id, uid, attrs \\ %{}) do
-    prop = Repo.get_by(Property, %{id: id, agent_id: uid})
+  def change_property(sid, attrs) do
+    prop = Repo.get_by(Property, %{id: sid})
     Property.changeset(prop, attrs)
   end
 
-  def get_test_comparable_properties(addr) do
-    Crawly.Engine.start_spider(Comparables, urls: ["https://www.realtor.com/soldhomeprices/#{addr.zip}"])
-  end
-
-  def stop_subject_details() do
-    Crawly.Engine.stop_spider(PropertyDetails)
-  end
-
-  def stop_test_comparable_properties() do
-    Crawly.Engine.stop_spider(Comparables)
+  def change_property(attrs) do
+    Property.changeset(%Property{}, attrs)
   end
 
   defp format_foreign_id(foreign_map) do
@@ -94,19 +87,19 @@ defmodule Excyte.Properties do
     "#{address}M#{id}"
   end
 
-  def notify_subscribers({:ok, result}, event) do
-    Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})
-    IO.inspect(result, label: "NOTIFY foreign_id")
-    Phoenix.PubSub.broadcast(
-      Excyte.PubSub,
-      @topic <> "#{result.foreign_id}",
-      {__MODULE__, event, result}
-    )
+  # def notify_subscribers({:ok, result}, event) do
+  #   Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})
+  #   IO.inspect(result, label: "NOTIFY foreign_id")
+  #   Phoenix.PubSub.broadcast(
+  #     Excyte.PubSub,
+  #     @topic <> "#{result.foreign_id}",
+  #     {__MODULE__, event, result}
+  #   )
 
-    {:ok, result}
-  end
+  #   {:ok, result}
+  # end
 
-  def notify_subscribers({:error, reason}, _), do: {:error, reason}
+  # def notify_subscribers({:error, reason}, _), do: {:error, reason}
 end
 
 # def get_subject_details(aws_es) do

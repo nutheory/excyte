@@ -1,0 +1,36 @@
+@import "./home.css";
+
+@tailwind base;
+@tailwind components;
+
+@layer base {
+  html,
+  body {
+    @apply bg-gray-100 text-gray-600;
+
+    line-height: 1.2;
+    height: 100%;
+  }
+
+  [x-cloak] {
+    display: none;
+  }
+
+  h1 {
+    @apply text-3xl leading-none font-extrabold;
+  }
+
+  h2 {
+    @apply text-2xl leading-none font-bold;
+  }
+
+  h3 {
+    @apply text-xl leading-none font-bold;
+  }
+
+  h4 {
+    @apply text-lg leading-none font-bold;
+  }
+}
+
+@tailwind utilities;

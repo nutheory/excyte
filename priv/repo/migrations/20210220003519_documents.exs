@@ -4,7 +4,7 @@ defmodule Excyte.Repo.Migrations.Documents do
   def change do
     create table(:documents) do
       add :created_by_id, references(:users)
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       add :insight_id, references(:insights)
       add :foreign_id, :string
       add :title, :string, null: false

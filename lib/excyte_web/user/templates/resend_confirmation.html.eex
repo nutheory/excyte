@@ -10,6 +10,6 @@
 <% end %>
 
 <p>
-  <%= link "Register", to: Routes.live_path(@conn, ExcyteWeb.RegistrationLive) %> |
+  <%= link "Register", to: Routes.live_path(@conn, ExcyteWeb.AgentRegistrationLive) %> |
   <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
 </p>

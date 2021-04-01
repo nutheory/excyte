@@ -6,9 +6,10 @@ defmodule ExcyteWeb.Insight.SubjectProperty do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
+      current_user: assigns.current_user,
+      errors: assigns.errors,
       mls: assigns.current_user.current_mls,
       subject: assigns.subject,
-      manual_subject: assigns.manual_subject,
       possible_subject_properties: assigns.possible_subject_properties
     )}
   end

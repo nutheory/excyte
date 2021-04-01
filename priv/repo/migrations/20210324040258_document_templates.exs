@@ -4,7 +4,7 @@ defmodule Excyte.Repo.Migrations.DocumentTemplates do
   def change do
     create table(:document_templates) do
       add :created_by_id, references(:users)
-      add :brokerage_id, references(:teams)
+      add :brokerage_id, references(:brokerages)
       add :template_id, references(:templates, on_delete: :nothing)
       add :document_id, references(:documents, on_delete: :nothing)
       add :default, :boolean, default: false

@@ -9,10 +9,10 @@
             <%= section.title %>
           </li>
         <% end %>
-        <li class="section">
+        <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
           <h4>Introduction</h4>
-          <div class="flex">
-
+          <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
+            hey you
           </div>
         </li>
       </ul>

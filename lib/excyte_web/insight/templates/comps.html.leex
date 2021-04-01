@@ -1,0 +1,39 @@
+<div>
+  <div class="grid grid-cols-1 lg:grid-cols-12">
+    <%= live_component @socket, Listings,
+      subject: @subject,
+      selected_comps: @selected_comps,
+      filters: @filters,
+      comps: @comparables,
+      show_filters: @show_filters,
+      id: :listings_list %>
+    <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
+      <div class="lg:sticky lg:top-0 lg:col-start-9 -mt-16 pt-24 lg:col-span-4 h-screen <%= if @preview, do: 'animate-select'%>">
+        <%= if @preview do %>
+          <%= live_component @socket, PreviewComp,
+            listing: @preview,
+            added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+            id: :listing_preview
+          %>
+        <% else %>
+          <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+        <% end %>
+      </div>
+    <% else %>
+      <div
+        :class="{ 'right-0': <%= if @preview || @show_panel, do: true, else: false %> }"
+        class="panel-slidein bg-gray-100"
+      >
+        <%= if @preview do %>
+          <%= live_component @socket, PreviewComp,
+            listing: @preview,
+            added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+            id: :listing_preview
+          %>
+        <% else %>
+          <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

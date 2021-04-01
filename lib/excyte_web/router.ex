@@ -3,7 +3,7 @@ defmodule ExcyteWeb.Router do
 
   import ExcyteWeb.UserAuth
 
-  pipeline :browser do
+  pipeline :app_browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
@@ -12,6 +12,17 @@ defmodule ExcyteWeb.Router do
     plug :put_secure_browser_headers
     plug :fetch_current_user
   end
+
+  pipeline :public do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {ExcyteWeb.LayoutView, :public_root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+
 
   pipeline :auth do
     plug :put_layout, {ExcyteWeb.LayoutView, "auth.html"}
@@ -22,7 +33,7 @@ defmodule ExcyteWeb.Router do
   end
 
   # scope "/", ExcyteWeb do
-  #   pipe_through :browser
+  #   pipe_through :app_browser
 
   #   live "/", PageLive, :index
   # end
@@ -43,7 +54,7 @@ defmodule ExcyteWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through :app_browser
       live_dashboard "/dashboard", metrics: ExcyteWeb.Telemetry
     end
   end
@@ -56,7 +67,7 @@ defmodule ExcyteWeb.Router do
   ## Authentication routes
 
   scope "/settings", ExcyteWeb.Settings do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:app_browser, :require_authenticated_user]
     live "/", DashboardLive
     # put "/settings/update_password", UserSettingsController, :update_password
     # put "/settings/update_email", UserSettingsController, :update_email
@@ -64,7 +75,7 @@ defmodule ExcyteWeb.Router do
   end
 
   scope "/insights", ExcyteWeb.Insight do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:app_browser, :require_authenticated_user]
     live "/:type/:insight_id/create", CreateLive
     live "/:type/create", CreateLive
     live "/:type/:insight_id/review", ReviewLive
@@ -73,14 +84,27 @@ defmodule ExcyteWeb.Router do
   end
 
   scope "/agent", ExcyteWeb.Agent do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:app_browser, :require_authenticated_user]
+    live "/dash", DashboardLive
+    live "/getting-started", GettingStartedLive
+  end
+
+  scope "/brokerage", ExcyteWeb.Brokerage do
+    pipe_through [:app_browser, :require_authenticated_user]
     live "/dash", DashboardLive
     live "/getting-started", GettingStartedLive
   end
 
   scope "/", ExcyteWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated, :auth]
-    live "/registration", RegistrationLive
+    pipe_through [:app_browser, :require_authenticated_user]
+    get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
+    delete "/log_out", UserSessionController, :delete
+  end
+
+  scope "/", ExcyteWeb do
+    pipe_through [:app_browser, :redirect_if_user_is_authenticated, :auth]
+    live "/agent/registration", AgentRegistrationLive
+    live "/brokerage/registration", BrokerageRegistrationLive
     get "/log_in", UserSessionController, :new
     post "/log_in", UserSessionController, :create
     get "/reset_password", UserResetPasswordController, :new
@@ -90,12 +114,11 @@ defmodule ExcyteWeb.Router do
   end
 
   scope "/", ExcyteWeb do
-    pipe_through [:browser]
-    delete "/log_out", UserSessionController, :delete
+    pipe_through [:public]
+    get "/log_in", UserSessionController, :new
     get "/confirm", UserConfirmationController, :new
     post "/confirm", UserConfirmationController, :create
     get "/confirm/:token", UserConfirmationController, :confirm
-    get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
     live "/", PublicHomeLive
     live "/pricing", PricingLive
   end

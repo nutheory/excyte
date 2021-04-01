@@ -1,62 +1,29 @@
-<div class="cma mt-16 mx-auto px-4 sm:px-6 xl:px-8" x-data="{ nextStepOpen: false }">
-  <%# IO.inspect(@comparables, label: "COMP") %>
-  <%= if @comparables === nil do %>
-    <%= if @fetching === true do %>
-      <div class="w-full mt-36 overflow-hidden">
-        <svg class="animate-spin h-12 w-12 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <h2 class="text-center text-gray-500 mt-3 mb-1 text-xl font-semibold">Loading...</h2>
-        <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
-      </div>
-    <% else %>
-      <div class="mt-32">
-        <%= live_component @socket, SubjectProperty,
-          current_user: @current_user,
-          manual_subject: @manual_subject,
-          subject: @subject,
-          possible_subject_properties: @possible_subject_properties,
-          id: :subject_property
-        %>
-      </div>
-    <% end %>
+<div class="cma mt-16 mx-auto px-4 sm:px-6 xl:px-8">
+  <%= if @fetching === true do %>
+    <div class="w-full mt-36 overflow-hidden">
+      <svg class="animate-spin h-12 w-12 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <h2 class="text-center text-gray-500 mt-3 mb-1 text-xl font-semibold">Loading...</h2>
+      <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
+    </div>
   <% else %>
-    <div class="grid grid-cols-1 lg:grid-cols-12 xl:mx-8">
-      <%= live_component @socket, Listings,
-        subject: @subject,
-        selected_comps: @selected_comps,
-        filters: @filters,
-        comps: @comparables,
-        show_filters: @show_filters,
-        id: :listings_list %>
-      <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
-        <div class="lg:sticky lg:top-0 lg:col-start-9 -mt-16 pt-24 lg:col-span-4 h-screen <%= if @preview, do: 'animate-select'%>">
-          <%= if @preview do %>
-            <%= live_component @socket, PreviewComp,
-              listing: @preview,
-              added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-              id: :listing_preview
-            %>
-          <% else %>
-            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
-          <% end %>
+    <div class="mt-32">
+      <h1 class="text-center pb-2 mt-32">Create a CMA</h1>
+      <%= if @address === nil do %>
+        <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
+        <div class="lg:w-2/5 md:w-2/3 mx-auto">
+          <%= live_component @socket, AddressAutocomplete, id: :subject_location %>
         </div>
       <% else %>
-        <div
-          :class="{ 'right-0': <%= if @preview || @show_panel, do: true, else: false %> }"
-          class="panel-slidein bg-gray-100"
-        >
-          <%= if @preview do %>
-            <%= live_component @socket, PreviewComp,
-              listing: @preview,
-              added: Enum.find(@selected_comps, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-              id: :listing_preview
-            %>
-          <% else %>
-            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
-          <% end %>
-        </div>
+          <%= live_component @socket, SubjectProperty,
+            current_user: @current_user,
+            subject: @subject,
+            errors: @errors,
+            possible_subject_properties: @possible_subject_properties,
+            id: :subject_property
+          %>
       <% end %>
     </div>
   <% end %>

@@ -1,84 +1,47 @@
 <div>
-  <div class="flex flex-wrap">
-    <div class="flex-1">
-      <h2><%= @label %></h2>
-    </div>
-    <%= if !@new do %>
+  <%= f = form_for @changeset, "#", [phx_submit: "save_subject"] %>
+    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div>
-        <h4 class="mt-2">
-          <%= @subject.street_number %> <%= @subject.street_name %>
-        </h4>
+        <%= label f, :beds %>
+        <%= number_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
       </div>
-    <% end %>
-  </div>
-  <div class="mt-4">
-    <%= f = form_for @changeset, "#", [phx_submit: "save_subject"] %>
-      <div class="flex flex-wrap">
-        <div class="w-full lg:w-3/5 pr-6 lg:pr-12">
-          <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <div>
-              <%= label f, :beds %>
-              <%= number_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-            </div>
-            <div>
-              <%= label f, :baths %>
-              <%= number_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-            </div>
-            <div>
-              <%= label f, :sqft %>
-              <%= number_input f, :sqft, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-            </div>
-            <div>
-              <%= label f, :stories %>
-              <%= number_input f, :stories, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-            </div>
-            <div>
-              <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit"><%= @subject.lotsize_unit %></span>)</label>
-              <%= number_input f, :lotsize_value, step: "any", class: "number-field", inputmode: "numeric", phx_debounce: "blur" %>
-            </div>
-            <div>
-              <%= label f, :year_built %>
-              <%= number_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-            </div>
-          </div>
-          <div class="w-full mt-6">
-            <h4>Features</h4>
-            <div class="mt-2">
-              <%= live_component @socket, MultiSelect,
-                options: @feature_options,
-                label: "Select applicable features",
-                selected: @subject.features,
-                status: false,
-                callback: :update_features,
-                key: :features,
-                id: :subject_features
-              %>
-            </div>
-          </div>
-        </div>
-        <div class="w-full lg:w-2/5 text-cyan-700 flex flex-col">
-          <div class="flex-1">
-          <%= if !@new do %>
-            <p class="mt-6">
-              <strong>Note: </strong>On the next step you will be given the opportunity to add in anything else you might want to
-              point out about the property, this might include a <strong>description of recent renovations</strong> or
-              <strong>local market trends</strong>.
-            </p>
-          <% else %>
-            <p class="mt-6">
-
-            </p>
-          <% end %>
-          </div>
-          <div class="">
-            <%= if !@new do %>
-              <button class="submit">Update</button>
-            <% else %>
-              <button class="create-submit">Create</button>
-            <% end %>
-          </div>
-        </div>
+      <div>
+        <%= label f, :baths %>
+        <%= number_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
       </div>
-    </form>
-  </div>
+      <div>
+        <%= label f, :sqft %>
+        <%= number_input f, :sqft, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+      </div>
+      <div>
+        <%= label f, :stories %>
+        <%= number_input f, :stories, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+      </div>
+      <div>
+        <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit"><%#= @subject.lotsize_unit %></span>)</label>
+        <%= number_input f, :lotsize_value, step: "any", class: "number-field", inputmode: "numeric", phx_debounce: "blur" %>
+      </div>
+      <div>
+        <%= label f, :year_built %>
+        <%= number_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+      </div>
+    </div>
+    <div class="w-full my-6">
+      <h4>Features</h4>
+      <div class="mt-2">
+        <%= live_component @socket, MultiSelect,
+          options: @feature_options,
+          label: "Select applicable features",
+          selected: @subject.features,
+          status: false,
+          callback: :update_features,
+          key: :features,
+          id: :subject_features
+        %>
+      </div>
+    </div>
+    <div class="">
+      <button class="submit w-full"><%= @button_label %></button>
+    </div>
+  </form>
 </div>

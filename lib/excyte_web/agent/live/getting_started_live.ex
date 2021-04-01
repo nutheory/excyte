@@ -17,6 +17,7 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
     {:ok, assign(socket,
       current_user: cu,
       account: account,
+      mls_list: mls_list,
       return_to: "/agent/getting-started?step=mls",
       current_step: current_step,
       profile: profile

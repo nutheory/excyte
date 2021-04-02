@@ -66,6 +66,7 @@ defmodule ExcyteWeb.Insight.CompsLive do
   end
 
   def handle_event("toggle-filters", _, %{assigns: a} = socket) do
+    IO.inspect(a.show_filters, label: "filters")
     {:noreply, assign(socket, show_filters: !a.show_filters)}
   end
 
@@ -93,21 +94,12 @@ defmodule ExcyteWeb.Insight.CompsLive do
   end
 
   def handle_event("review-cma", _,  %{assigns: a} = socket) do
-    if a.key do
-      with {:ok, updated} <- Insights.update_insight(a.key, a.current_user.id, insight_data(a.key, a).insight),
-           {:ok, saved} <- Insights.update_saved_search(updated.id, a.filters) do
-        {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
-      else
-        {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
-      end
+    update = %{selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end)}
+    with {:ok, updated} <- Insights.update_insight(a.key, a.current_user.id, update),
+          {:ok, saved} <- Insights.update_saved_search(updated.id, a.filters) do
+      {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
     else
-      key = "cma#{a.current_user.id}#{System.os_time(:second)}"
-      case Insights.create_insight(insight_data(key, a)) do
-        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/review")}
-        {:error, method, changeset, _} ->
-          # TODO Log Error
-          {:noreply, put_flash(socket, :error, "Something went wrong.")}
-      end
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end
 
@@ -118,64 +110,6 @@ defmodule ExcyteWeb.Insight.CompsLive do
       subject: nil,
       possible_subject_properties: nil
     )}
-  end
-
-  defp insight_data(key, a) do
-    %{
-      insight: %{
-        uuid: key,
-        type: "cma",
-        title: "draft",
-        created_by_id: a.current_user.id,
-        published: false,
-        mls: a.current_user.current_mls.dataset_id,
-        selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end)
-      },
-      search: %{
-        query: "",
-        coords: a.subject.coords,
-        zip: a.subject.zip,
-        criteria: a.filters
-      },
-      property: %{
-        subject_id: a.subject.id,
-        agent_id: a.current_user.id
-      }
-    }
-  end
-
-  defp setup_comp_query(subject, %{assigns: a} = socket) do
-    filters = Map.merge(a.filters, %{
-      default: true,
-      price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
-      price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
-      price: %{
-        type: Integer,
-        low: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
-        high: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000)
-      },
-      beds: %{
-        type: Integer,
-        low: (if subject.beds, do: subject.beds - 1, else: 0),
-        high: (if subject.beds, do: subject.beds + 1, else: 100)
-      },
-      baths: %{
-        type: Float,
-        low: (if subject.baths, do: round(subject.baths) - 1, else: 0),
-        high: (if subject.baths, do: round(subject.baths) + 1, else: 0)
-      },
-      sqft: %{
-        type: Integer,
-        low: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
-        high: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0)
-      },
-      # TODO switch to live make statuses ["closed", "pending"]
-      selected_statuses: [%{value: "active", name: "Active"}],
-      status_updated: -24,
-      distance: 200.0
-    })
-
-    query_mls(%{subject: subject, filters: filters, selected: []}, socket)
   end
 
   defp query_mls(%{subject: subject, filters: filters, selected: sids},  %{assigns: a} = socket) do

@@ -39,6 +39,38 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
+  def default_filter(subject) do
+    %{
+      default: true,
+      price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
+      price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
+      price: %{
+        type: Integer,
+        low: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
+        high: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000)
+      },
+      beds: %{
+        type: Integer,
+        low: (if subject.beds, do: subject.beds - 1, else: 0),
+        high: (if subject.beds, do: subject.beds + 1, else: 100)
+      },
+      baths: %{
+        type: Float,
+        low: (if subject.baths, do: round(subject.baths) - 1, else: 0),
+        high: (if subject.baths, do: round(subject.baths) + 1, else: 0)
+      },
+      sqft: %{
+        type: Integer,
+        low: (if subject.sqft, do: round(subject.sqft * 0.9), else: 0),
+        high: (if subject.sqft, do: round(subject.sqft * 1.1), else: 0)
+      },
+      # TODO switch to live make statuses ["closed", "pending"]
+      selected_statuses: [%{value: "active", name: "Active"}],
+      status_updated: -24,
+      distance: 200.0
+    }
+  end
+
   def summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps}) do
     assigns = %{adj: adj, diff: diff, price_per_sqft: pps}
     ~L"""

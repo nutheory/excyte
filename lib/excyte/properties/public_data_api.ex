@@ -29,6 +29,7 @@ defmodule Excyte.Properties.PublicDataApi do
     prop = hd(body["properties"])
     property = %{
       internal_type: "subject",
+      foreign_id: prop["property_id"],
       main_photo_url: hd(prop["photos"])["href"],
       est_price: prop["price"],
       beds: prop["beds"],
@@ -37,7 +38,7 @@ defmodule Excyte.Properties.PublicDataApi do
       property_type: prop["prop_type"],
       status: prop["prop_status"],
       features: process_features(hd(prop["public_records"])),
-      lotsize_sqft: process_lotsize(prop["lots_size"]),
+      lotsize_sqft: process_lotsize(prop["lot_size"]),
       lotsize_preference: "sqft",
       sqft: prop["building_size"]["size"],
       history: %{overview: "", timeline_items: prop["property_history"]},
@@ -73,8 +74,8 @@ defmodule Excyte.Properties.PublicDataApi do
 
   defp process_lotsize(lotsize) do
     cond do
-      lotsize["unit"] === "sqft" -> lotsize["size"]
-      lotsize["unit"] === "acres" -> acres_to_sqft(lotsize["size"])
+      lotsize["units"] === "sqft" -> lotsize["size"]
+      lotsize["units"] === "acres" -> acres_to_sqft(lotsize["size"])
       true -> nil
     end
   end

@@ -45,19 +45,27 @@
   <div class="flex-1">
     <%= case @section do %>
       <% "profile" -> %>
-        <%= live_component @socket, Profile, current_user: @current_user, return_to: "/settings?section=account", id: :profile %>
+        <div class="w-full lg:w-2/3 xl:w-1/2">
+          <%= live_component @socket, Profile, current_user: @current_user, return_to: "/settings?section=account", id: :profile %>
+        </div>
       <% "mls_auth" -> %>
-        <%= live_component @socket, MlsAuth,
-          current_user: @current_user,
-          return_to: @return_to,
-          id: :mls_auth
-        %>
+        <div class="w-full md:w-3/5 lg:w-1/2 xl:w-1/3">
+          <%= live_component @socket, MlsAuth,
+            current_user: @current_user,
+            return_to: @return_to,
+            id: :mls_auth
+          %>
+        </div>
       <% "account" -> %>
-        <h1 class="text-2xl leading-none font-bold text-gray-700 mb-2">Account Settings</h1>
-        <%= live_component @socket, Account, current_user: @current_user, id: :account_settings %>
+        <div class="w-full md:w-3/5 lg:w-1/2 xl:w-1/3">
+          <h1 class="text-2xl leading-none font-bold text-gray-700 mb-2">Account Settings</h1>
+          <%= live_component @socket, Account, current_user: @current_user, id: :account_settings %>
+        </div>
       <% _ -> %>
-        <h1 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment Settings</h1>
-        <%= live_component @socket, Payment, current_user: @current_user, id: :payment %>
+        <div class="w-full lg:w-1/2">
+          <h1 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment Settings</h1>
+          <%= live_component @socket, Payment, current_user: @current_user, id: :payment %>
+        </div>
     <% end %>
   </div>
 </div>

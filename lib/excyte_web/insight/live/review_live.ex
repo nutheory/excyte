@@ -46,49 +46,12 @@ defmodule ExcyteWeb.Insight.ReviewLive do
     {:noreply, assign(socket, selected_comps: comps)}
   end
 
-  # def handle_event("save_subject", %{"property" => form}, %{assigns: a} = socket) do
-  #   formatted = Utilities.format_quoted_json(form)
-  #   subject_attrs =
-  #     Map.merge(formatted, map_save_features(a.subject.features))
-  #     |> Map.merge(sanitize_lotsize(%{lotsize_unit: a.subject.lotsize_unit, lotsize_value: formatted.lotsize_value}))
-  #   subject =
-  #     case Properties.update_property(a.subject.id, a.current_user.id, subject_attrs) do
-  #       {:ok, subject} -> sanitize_subject(subject)
-  #       {:error, err} -> err
-  #     end
-  #   {:noreply, assign(socket,
-  #     subject: subject,
-  #     selected_comps: Adjustments.process_init(a.listings, subject))}
-  # end
-
-  def handle_event("toggle-lot-unit", _, %{assigns: a}  = socket) do
-    if a.subject.lotsize_unit === "acres" do
-      {:noreply, assign(socket, subject: Map.merge(a.subject, %{
-        lotsize_unit: "sqft",
-        lotsize_value: round(Utilities.acres_to_sqft(a.subject.lotsize_value))
-      }))}
-    else
-      {:noreply, assign(socket, subject: Map.merge(a.subject, %{
-        lotsize_unit: "acres",
-        lotsize_value: Utilities.sqft_to_acres(a.subject.lotsize_value)
-      }))}
-    end
-  end
-
   def handle_event("save-review", _, %{assigns: a}  = socket) do
     case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
       content: %{comps: a.selected_comps}
     }) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.insight_uuid}/builder")}
       {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
-    end
-  end
-
-  defp sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
-    if unit === "acres" do
-      %{lotsize_preference: "acres", lotsize_sqft: round(Utilities.acres_to_sqft(String.to_float(val)))}
-    else
-      %{lotsize_preference: "sqft", lotsize_sqft: round(String.to_integer(val))}
     end
   end
 end

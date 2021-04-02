@@ -3,7 +3,7 @@ defmodule Excyte.Properties.Adjustments do
   def process_init(listings, subj) do
     # sale price w/ days on market and how long ago
     # compare boolean features
-    subject = sanitize_nils(subj)
+    subject = sanitize_nils(Map.from_struct(subj))
     Enum.map(listings, fn li ->
       listing = sanitize_nils(li)
       price = if Map.has_key?(listing, :close_price), do: :close_price, else: :list_price

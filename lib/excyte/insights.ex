@@ -7,7 +7,7 @@ defmodule Excyte.Insights do
   def create_insight(attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
-    |> Multi.run(:claim_subject, __MODULE__, :claim_subject, [attrs])
+    |> Multi.run(:create_subject, __MODULE__, :create_subject, [attrs])
     |> Multi.run(:search, __MODULE__, :create_saved_search, [attrs])
     |> Repo.transaction()
   end
@@ -24,8 +24,8 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
-  def claim_subject(_repo, %{insight: ins}, %{property: prop}) do
-    Properties.update_property(prop.subject_id, prop.agent_id, %{insight_id: ins.id})
+  def create_subject(_repo, %{insight: ins}, %{subject: sub}) do
+    Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
   end
 
   def update_insight(uuid, uid, attrs) do

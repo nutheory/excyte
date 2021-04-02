@@ -18,14 +18,6 @@ defmodule ExcyteWeb.Insight.CreateLive do
     )}
   end
 
-  # def handle_info({Accounts, [:user, _], updated_user}, socket) do
-  #   {:noreply, assign(socket, current_user: updated_user)}
-  # end
-
-  # def handle_info({Properties, [:property, _], updated_property}, socket) do
-  #   setup_comp_query(updated_property, socket)
-  # end
-
   def handle_info({:update_features, val}, %{assigns: a} = socket) do
     IO.inspect(val, label: "NEW_VAL")
     {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
@@ -46,6 +38,16 @@ defmodule ExcyteWeb.Insight.CreateLive do
     end
   end
 
+  def handle_info({:create_subject, attrs}, %{assigns: a} = socket) do
+    key = "cma#{a.current_user.id}#{System.os_time(:second)}"
+    case Insights.create_insight(insight_data(attrs, key, a)) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/comparables")}
+      {:error, method, changeset, _} ->
+          # TODO Log Error
+          {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    end
+  end
+
   defp get_subject_property_id(loc) do
     with {:ok, %{body: body}} <- HTTPoison.get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input="
          <> "#{loc.street_number}%20#{URI.encode(loc.street_name)}%20#{loc.zip}&area_types=state%2Ccity%2Ccounty%2C"
@@ -60,14 +62,24 @@ defmodule ExcyteWeb.Insight.CreateLive do
     end
   end
 
-  # defp map_save_features(features) do
-  #   simple_feats = Enum.map(features, fn f -> f.value end)
-  #   Enum.reduce(Utilities.feature_options(), %{}, fn opt, acc ->
-  #     if Enum.member?(simple_feats, opt.value) do
-  #       Map.put(acc, String.to_atom(opt.value), true)
-  #     else
-  #       Map.put(acc, String.to_atom(opt.value), false)
-  #     end
-  #   end)
-  # end
+  defp insight_data(subject_attrs, key, a) do
+    %{
+      insight: %{
+        uuid: key,
+        type: "cma",
+        title: "draft",
+        created_by_id: a.current_user.id,
+        published: false,
+        mls: a.current_user.current_mls.dataset_id,
+        selected_listing_ids: []
+      },
+      search: %{
+        query: "",
+        coords: subject_attrs.coords,
+        zip: subject_attrs.zip,
+        criteria: Utilities.default_filter(subject_attrs)
+      },
+      subject: subject_attrs
+    }
+  end
 end

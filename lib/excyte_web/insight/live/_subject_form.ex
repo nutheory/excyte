@@ -6,28 +6,66 @@ defmodule ExcyteWeb.Insight.SubjectForm do
   def render(assigns), do: InsightView.render("subject_form.html", assigns)
 
   def update(%{subject: subj } = assigns, socket) do
-    subject = if subj, do: subj, else: %{internal_type: "subject"}
-    cs = Properties.change_property(Map.merge(%{agent_id: assigns.current_user.id}, subject))
-    new = if Map.has_key?(assigns, :new), do: assigns.new, else: false
-    lotsize_unit = if Map.has_key?(subject, :lotsize_preference), do: subject.lotsize_preference, else: "sqft"
-    lotsize_value = if Map.has_key?(subject, :lotsize_sqft), do: subject.lotsize_sqft, else: nil
+    subject = Map.merge(subj, %{internal_type: "subject", agent_id: assigns.current_user.id})
+    cs = Properties.change_property(subject)
     {:ok, assign(socket,
       changeset: cs,
-      action: assigns.action,
       current_user: assigns.current_user,
-      lotsize_unit: lotsize_unit,
-      lotsize_value: lotsize_value,
-      subject: sanitize_subject(subject),
+      lotsize_unit: subject.lotsize_preference,
+      lotsize_value: subject.lotsize_sqft,
+      subject: subject,
       button_label: assigns.button_label,
       feature_options: Utilities.feature_options()
     )}
   end
 
-  defp sanitize_subject(sub) do
-    unit = if sub.lotsize_preference, do: sub.lotsize_preference, else: "sqft"
-    Map.merge(sub, %{
-      lotsize_unit: unit,
-      lotsize_value: sub.lotsize_sqft
-    })
+  def handle_event("update-form", %{"property" => form}, %{assigns: a} = socket) do
+    ls_val =
+      if a.lotsize_unit === "acres" do
+        round(Utilities.acres_to_sqft(String.to_float(form["lotsize_value"])))
+      else
+        round(String.to_integer(form["lotsize_value"]))
+      end
+
+    {:noreply, assign(socket, lotsize_value: ls_val)}
+  end
+
+  def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
+    subject_attrs =
+      Map.merge(a.subject, %{
+        beds: String.to_integer(form["beds"]),
+        baths: String.to_float(form["baths"]),
+        sqft: String.to_integer(form["sqft"]),
+        stories: String.to_integer(form["stories"]),
+        year_built: String.to_integer(form["year_built"]),
+      })
+      |> Map.merge(sanitize_lotsize(%{
+        lotsize_unit: a.lotsize_unit,
+        lotsize_value: form["lotsize_value"]
+      }))
+    send self(), {:create_subject, subject_attrs}
+    {:noreply, socket}
+  end
+
+  def handle_event("toggle-lot-unit", _, %{assigns: a}  = socket) do
+    if a.lotsize_unit === "acres" do
+      {:noreply, assign(socket,
+        lotsize_unit: "sqft",
+        lotsize_value: round(Utilities.acres_to_sqft(a.lotsize_value))
+      )}
+    else
+      {:noreply, assign(socket,
+        lotsize_unit: "acres",
+        lotsize_value: Utilities.sqft_to_acres(a.lotsize_value)
+      )}
+    end
+  end
+
+  defp sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
+    if unit === "acres" do
+      %{lotsize_preference: "acres", lotsize_sqft: round(Utilities.acres_to_sqft(String.to_float(val)))}
+    else
+      %{lotsize_preference: "sqft", lotsize_sqft: round(String.to_integer(val))}
+    end
   end
 end

@@ -1,26 +1,17 @@
 import { Editor as TipTap } from "@tiptap/core"
-// import { defaultExtensions } from "@tiptap/starter-kit"
-import Document from '@tiptap/extension-document'
-import Bold from '@tiptap/extension-bold'
-import Text from '@tiptap/extension-text'
+import { defaultExtensions } from "@tiptap/starter-kit"
 import Link from '@tiptap/extension-link'
-import Dropcursor from '@tiptap/extension-dropcursor'
-import Italic from '@tiptap/extension-italic'
-import Focus from '@tiptap/extension-focus'
-import Heading from '@tiptap/extension-heading'
-import ListItem from '@tiptap/extension-list-item'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import Blockquote from '@tiptap/extension-blockquote'
-import Paragraph from '@tiptap/extension-paragraph'
-import Hardbreak from '@tiptap/extension-hard-break'
-import MenuBubble from '@tiptap/extension-menu-bubble'
-import MenuFloat from '@tiptap/extension-menu-float'
-// import TextStyle from '@tiptap/extension-text-style'
+import Image from '@tiptap/extension-image'
+import BubbleMenu from '@tiptap/extension-bubble-menu'
+import FloatingMenu from '@tiptap/extension-floating-menu'
 import Highlight from '@tiptap/extension-highlight'
-// import TextAlign from '@tiptap/extension-text-align'
-// import FontFamily from '@tiptap/extension-font-family'
+import TextAlign from '@tiptap/extension-text-align'
+import FontFamily from '@tiptap/extension-font-family'
 import Underline from '@tiptap/extension-underline'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableHeader from '@tiptap/extension-table-header'
+import TableCell from '@tiptap/extension-table-cell'
 import { verifyLink } from "./utilities"
 
 const floatOffsetHeight = () => {
@@ -41,10 +32,10 @@ const floatOffsetHeight = () => {
 }
 
 window.setupEditor = function (content) {
-
+  console.log("loaded")
   // updatedAt is to force Alpine to rerender on selection change
   return {
-    pdatedAt: Date.now(),
+    updatedAt: Date.now(),
     content: content,
     inFocus: true,
     linkInput: null,
@@ -52,41 +43,22 @@ window.setupEditor = function (content) {
     imagePanelVisible: false,
     editor: null,
 
-    init(el, bubbleMenu, floatMenu) {
+    init(el) {
       let editor = new TipTap({
         element: el,
-        extensions: [
-          Bold,
-          Text,
+        extensions: [        
+          ...defaultExtensions(),
           Link,
-          Focus,
-          // Image,
-          Italic,
-          Document,
-          Paragraph,
-          Blockquote,
-          Hardbreak,
+          Image,
+          Highlight,
           Underline, 
-          Highlight, 
-          Dropcursor,
-          // FontFamily, 
-          // TextAlign, 
-          // TextStyle,
-          ListItem,
-          BulletList,
-          OrderedList,
-          Heading.configure({
-            levels: [1, 2, 3],
+          FontFamily,
+          TextAlign,
+          BubbleMenu.configure({
+            element: document.querySelector('#bubbleMenu'),
           }),
-          MenuBubble.configure({
-            menuEl: bubbleMenu,
-            xOffset: 0,
-            yOffset: -40,
-          }),
-          MenuFloat.configure({
-            menuEl: floatMenu,
-            xOffset: 0,
-            yOffset: floatOffsetHeight(),
+          FloatingMenu.configure({
+            element: document.querySelector('#floatingMenu'),
           }),
         ],
         content: this.content,
@@ -163,12 +135,42 @@ window.setupEditor = function (content) {
 export const InitEditor = {
   mounted() {
     const editorOffsetHeight = window.innerWidth <= 768 ? 84 : 116
+    // let el = this.el.querySelector('#editor')
+    // const bubbleMenu = document.querySelector('#bubbleMenu')
+    // const floatingMenu = document.querySelector('#floatingMenu')
     const editorWrapper = document.querySelector('#editorWrapper')
-
-    .setAttribute("style",`height:${window.innerHeight - editorOffsetHeight}px`)
+      .setAttribute("style",`height:${window.innerHeight - editorOffsetHeight}px`)
+    // let c = "Initializing..."
+    // let editor
 
     this.handleEvent("loadContentFromDb", ({content}) => {
-      window.setupEditor('<p>Hello</p>')
+      console.log("CONTENT", content)
+      // editor.commands.setContent(content)
     })
+
+    // this.editor = new TipTap({
+    //   element: el,
+    //   extensions: [
+    //     ...defaultExtensions(),
+    //     Link,
+    //     BubbleMenu.configure({
+    //       element: bubbleMenu,
+    //     }),
+    //     FloatingMenu.configure({
+    //       element: floatingMenu,
+    //     })
+    //   ],
+    //   content: c,
+    //   editorProps: {
+    //     attributes: {
+    //       class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl focus:outline-none"
+    //     }
+    //   },
+    // })
+
+    // console.log("mount", editor)
+
+    // window.editor = editor
+
   }
 }

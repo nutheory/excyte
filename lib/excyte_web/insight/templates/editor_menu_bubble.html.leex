@@ -1,65 +1,67 @@
 <template x-if="editor">
-  <div>
-    <div class="rounded border boder-bgray-800 shadow bg-white p-1">
-      <nav class="w-32" x-show="!menuLinkVisible">
-        <button
-          class="hover:bg-gray-200 rounded px-1 py-1"
-          :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('bold') }"
-          @click="editor.chain().focus().toggleBold().run()"
-        >
-          <svg class='remix'>
-            <use xlink:href="/images/remixicon.symbol.svg#ri-bold"></use>
-          </svg>
-        </button>
-        <button
-          class="hover:bg-gray-200 rounded px-1 py-1"
-          :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('italic') }"
-          @click="editor.chain().focus().toggleItalic().run()"
-        >
-          <svg class='remix'>
-            <use xlink:href="/images/remixicon.symbol.svg#ri-italic"></use>
-          </svg>
-        </button>
-        <button
-          class="hover:bg-gray-200 rounded px-1 py-1"
-          :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('highlight') }"
-          @click="editor.chain().focus().toggleHighlight().run()"
-        >
-          <svg class='remix'>
-            <use xlink:href="/images/remixicon.symbol.svg#ri-mark-pen-line"></use>
-          </svg>
-        </button>
-        <button
-          class="hover:bg-gray-200 rounded px-1 py-1"
-          :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('link') }"
-          @click="addLink()"
-        >
-          <svg class='remix'>
-            <use xlink:href="/images/remixicon.symbol.svg#ri-link"></use>
-          </svg>
-        </button>
-      </nav>
-      <div x-show="menuLinkVisible" class="flex w-64">
-        <div class="flex-1">
-          <input class="w-full h-full px-1 naked-text" type="text" placeholder="Enter Url" id="editor-link" />
-        </div>
-        <div class="flex">
+  <div class="relative">
+    <div id="bubbleMenu">
+      <div class="rounded border boder-bgray-800 shadow bg-white p-1">
+        <nav class="w-32" x-show="!menuLinkVisible">
           <button
-            class="hover:bg-gray-100 rounded px-1 py-1 fill-current text-green-400"
-            @click="editor.chain().focus().toggleLink().run()"
+            class="hover:bg-gray-200 rounded px-1 py-1"
+            :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('bold') }"
+            @click="editor.chain().focus().toggleBold().run()"
           >
             <svg class='remix'>
-              <use xlink:href="/images/remixicon.symbol.svg#ri-check-line"></use>
+              <use xlink:href="/images/remixicon.symbol.svg#ri-bold"></use>
             </svg>
           </button>
           <button
-            class="hover:bg-gray-100 rounded px-1 py-1 fill-current text-red-300"
-            @click="cancelLink()"
+            class="hover:bg-gray-200 rounded px-1 py-1"
+            :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('italic') }"
+            @click="editor.chain().focus().toggleItalic().run()"
           >
             <svg class='remix'>
-              <use xlink:href="/images/remixicon.symbol.svg#ri-close-line"></use>
+              <use xlink:href="/images/remixicon.symbol.svg#ri-italic"></use>
             </svg>
           </button>
+          <button
+            class="hover:bg-gray-200 rounded px-1 py-1"
+            :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('highlight') }"
+            @click="editor.chain().focus().toggleHighlight().run()"
+          >
+            <svg class='remix'>
+              <use xlink:href="/images/remixicon.symbol.svg#ri-mark-pen-line"></use>
+            </svg>
+          </button>
+          <button
+            class="hover:bg-gray-200 rounded px-1 py-1"
+            :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('link') }"
+            @click="addLink()"
+          >
+            <svg class='remix'>
+              <use xlink:href="/images/remixicon.symbol.svg#ri-link"></use>
+            </svg>
+          </button>
+        </nav>
+        <div x-show="menuLinkVisible" class="flex w-64">
+          <div class="flex-1">
+            <input class="w-full h-full px-1 naked-text" type="text" placeholder="Enter Url" id="editor-link" />
+          </div>
+          <div class="flex">
+            <button
+              class="hover:bg-gray-100 rounded px-1 py-1 fill-current text-green-400"
+              @click="editor.chain().focus().toggleLink().run()"
+            >
+              <svg class='remix'>
+                <use xlink:href="/images/remixicon.symbol.svg#ri-check-line"></use>
+              </svg>
+            </button>
+            <button
+              class="hover:bg-gray-100 rounded px-1 py-1 fill-current text-red-300"
+              @click="cancelLink()"
+            >
+              <svg class='remix'>
+                <use xlink:href="/images/remixicon.symbol.svg#ri-close-line"></use>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,20 +1,24 @@
-<div id="editorWrapper" phx-hook="InitEditor" class="max-w-screen-xl lg:flex mt-16 md:mt-24 mx-auto">
+<div class="max-w-screen-xl lg:flex mt-16 md:mt-24 mx-auto" id="editorWrapper" phx-hook="InitEditor">
   <div class="flex-1 mx-4 md:mx-6 h-full" phx-update="ignore">
     <div class="header flex">
       <%# Title (Editable) %><%# Save %>
     </div>
     <div id="documentEditor" class="h-full">
       <div
-        x-data="setupEditor('<p>My content goes here</p>')"
-        x-init="() => init($refs.editor, $refs.bubbleMenu, $refs.floatMenu)"
-        @click.away="inFocus = false;"
         class="h-full"
+        x-data="setupEditor('<p>My content goes here</p>')"
+        x-init="() => init($refs.editor)"
+        x-on:click.away="inFocus = false"
       >
-        <div x-ref="bubbleMenu">
-          <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
+        <div class="relative">
+          <div id="bubbleMenu">
+            <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
+          </div>
         </div>
-        <div x-ref="floatMenu">
-          <%= live_component @socket, EditorMenuFloat, id: :editor_menu_float %>
+        <div class="relative">
+          <div id="floatingMenu">
+            <%= live_component @socket, EditorMenuFloat, id: :editor_menu_float %>
+          </div>
         </div>
         <div x-ref="editor" class="w-full p-4 lg:p-6 xl:p-10 h-full bg-white shadow rounded-md"></div>
         <div class="blackout" :class="{ 'block': imagePanelVisible }"></div>
@@ -23,12 +27,24 @@
           class="panel-slidein bg-gray-100"
           id="image-panel"
         >
-          <h3 class="text-lg text-gray-700">
-            Upload media
-          </h3>
-          <div class="mt-2 h-32 border-dashed border-4 border-light-blue-500 container">
-
+          <div class="mt-6 flex">
+            <div class="pr-2 mr-3 flex md:hidden border-r border-gray-400 justify-center items-center cursor-pointer" phx-click="remove-preview">
+              <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="mt-2">Upload media</h3>
+              <p class="text-sm mt-2">
+                <strong>Next step:</strong> Next you will have the chance to review,
+                modify, and/or make any adjustments.
+              </p>
+            </div>
           </div>
+          <div class="mt-6 h-32 border-dashed flex items-center justify-center border-4 border-cyan-300 container">
+            <span class="text-cyan-600">Drop images, photos, videos here.</span>
+          </div>
+
         </div>
       </div>
     </div>

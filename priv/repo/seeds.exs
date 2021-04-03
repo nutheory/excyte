@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Excyte.{Accounts, Mls}
+alias Excyte.{Accounts, Mls, Insights}
 import Excyte.AccountsFixtures
 
 agent = agent_fixture(%{email: "drush81@gmail.com"})
@@ -41,3 +41,11 @@ Accounts.update_account_details(agent.account_id, %{
   amount: 3000,
   status: "trialing"
 })
+
+# Insights.create_template(%{
+#   name: "Excyte default layout"
+#   description: "Includes general pages that would be used for a generic CMA, or as a good starting point."
+#   default: true
+#   type: "cma"
+#   is_public: true
+# })

@@ -8,13 +8,13 @@
           </div>
           <div>
             <%= if @account.status === "active" do %>
-              <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStartedLive, step: "profile") %>
+              <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "profile") %>
             <% end %>
           </div>
         </div>
         <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
         <%= if @account.status === "active" do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
+          <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false do %>
             <div class="action-button my-6">Continue...</div>
           <% end %>
         <% end %>
@@ -27,7 +27,7 @@
           </div>
           <div>
             <%= if @current_user.completed_setup do %>
-              <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, DashboardLive) %>
+              <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, Dashboard) %>
             <% end %>
           </div>
         </div>
@@ -43,7 +43,7 @@
           </div>
           <div>
             <%= if length(@mls_list) > 0 do %>
-              <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStartedLive, step: "payment") %>
+              <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "payment") %>
             <% end %>
           </div>
         </div>

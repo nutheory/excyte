@@ -5,38 +5,38 @@
       <ul>
         <%= if @section === "profile" do %>
           <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
-            <%= live_patch "Profile", to: Routes.live_path(@socket, DashboardLive, section: "profile") %>
+            <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "profile") %>
           </li>
         <% else %>
           <li class="px-3 py-2 border-t border-gray-300 hover:underline">
-            <%= live_patch "Profile", to: Routes.live_path(@socket, DashboardLive, section: "profile") %>
+            <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "profile") %>
           </li>
         <% end %>
         <%= if @section === "mls_auth" do %>
           <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
-            <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, DashboardLive, section: "mls_auth") %>
+            <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
           </li>
         <% else %>
           <li class="px-3 py-2 border-t border-gray-300 hover:underline">
-            <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, DashboardLive, section: "mls_auth") %>
+            <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
           </li>
         <% end %>
         <%= if @section === "account" do %>
           <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
-            <%= live_patch "Account", to: Routes.live_path(@socket, DashboardLive, section: "account") %>
+            <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
           </li>
         <% else %>
           <li class="px-3 py-2 border-t border-gray-300 hover:underline">
-            <%= live_patch "Account", to: Routes.live_path(@socket, DashboardLive, section: "account") %>
+            <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
           </li>
         <% end %>
         <%= if @section === "payment" do %>
           <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
-            <%= live_patch "Payment", to: Routes.live_path(@socket, DashboardLive, section: "payment") %>
+            <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
           </li>
         <% else %>
           <li class="px-3 py-2 border-t border-gray-300 hover:underline">
-            <%= live_patch "Payment", to: Routes.live_path(@socket, DashboardLive, section: "payment") %>
+            <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
           </li>
         <% end %>
       </ul>

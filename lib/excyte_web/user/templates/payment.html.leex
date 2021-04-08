@@ -34,6 +34,6 @@
       </form>
     <% end %>
   <% else %>
-    <%= live_component @socket, PricingLive, current_user: @current_user, id: :pricing %>
+    <%= live_component @socket, AgentPricing, current_user: @current_user, id: :pricing %>
   <% end %>
 </div>

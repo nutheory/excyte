@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Agent.GettingStartedLive do
+defmodule ExcyteWeb.Agent.GettingStarted do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Mls}
   alias ExcyteWeb.AgentView

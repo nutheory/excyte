@@ -1,8 +1,8 @@
-defmodule ExcyteWeb.PricingLive do
+defmodule ExcyteWeb.AgentPricing do
   use ExcyteWeb, :live_component
   alias ExcyteWeb.{PublicView}
 
-  def render(assigns), do: PublicView.render("pricing.html", assigns)
+  def render(assigns), do: PublicView.render("agent_pricing.html", assigns)
 
   def mount(socket) do
     plans = Application.get_env(:excyte, :pricing_items)

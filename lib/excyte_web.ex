@@ -45,7 +45,7 @@ defmodule ExcyteWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "app_live.html"}
+        layout: {ExcyteWeb.LayoutView, "app.html"}
       use ViewportHelpers
       unquote(view_helpers())
     end
@@ -55,7 +55,7 @@ defmodule ExcyteWeb do
   def live_auth_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "auth_live.html"}
+        layout: {ExcyteWeb.LayoutView, "auth.html"}
 
       unquote(view_helpers())
     end
@@ -64,7 +64,7 @@ defmodule ExcyteWeb do
   def live_public_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "public_live.html"}
+        layout: {ExcyteWeb.LayoutView, "public.html"}
 
       unquote(view_helpers())
     end

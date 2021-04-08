@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Agent.DashboardLive do
+defmodule ExcyteWeb.Agent.Dashboard do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Mls.ResoApi}
   alias ExcyteWeb.AgentView

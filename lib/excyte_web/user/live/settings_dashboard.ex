@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Settings.DashboardLive do
+defmodule ExcyteWeb.Settings.Dashboard do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts}
   alias ExcyteWeb.UserView

@@ -1,8 +1,8 @@
-defmodule ExcyteWeb.PricingLive.Plan do
+defmodule ExcyteWeb.AgentPricingPlan do
   use ExcyteWeb, :live_component
   alias ExcyteWeb.{PublicView, Settings.Payment}
 
-  def render(assigns), do: PublicView.render("plan.html", assigns)
+  def render(assigns), do: PublicView.render("agent_plan.html", assigns)
 
   def handle_event("choose-plan", %{"value" => plan_id}, socket) do
     send_update(Payment, [id: :payment, plan_id: plan_id])

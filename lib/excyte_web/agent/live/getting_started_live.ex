@@ -5,20 +5,27 @@ defmodule ExcyteWeb.Agent.GettingStartedLive do
 
   def render(assigns), do: AgentView.render("getting_started.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
+  def mount(%{"step" => step}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{user_id: cu.id})
     profile = Agents.get_default_profile(cu.id)
 
     current_step =
-      if length(mls_list) > 0 && cu.current_account_status !== "active", do: "payment", else: "mls"
+      cond do
+        step !== nil -> step
+        length(mls_list) === 0 -> "mls"
+        cu.current_account_status !== "active" -> "payment"
+        length(profile) === 0 -> "profile"
+        #TODO: set setup completed
+        true -> "mls"
+      end
 
     {:ok, assign(socket,
       current_user: cu,
       account: account,
       mls_list: mls_list,
-      return_to: "/agent/getting-started?step=mls",
+      return_to: "/agent/getting-started/#{current_step}",
       current_step: current_step,
       profile: profile
     )}

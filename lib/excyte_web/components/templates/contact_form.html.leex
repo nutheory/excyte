@@ -1,0 +1,47 @@
+<div>
+  <%= if @form do %>
+    <div class="mt-2 -mx-1">
+      <%= for fc <- inputs_for(@form, :contacts) do %>
+        <div class="border-t border-cyan-200 py-2">
+          <div class="flex content-start items-start">
+            <div class="px-1 flex-1">
+              <%= label fc, :name, class: "text-xs" %>
+              <%= text_input fc, :name, class: "text-field w-full", placeholder: "Mobile phone, Slack etc.", phx_debounce: "blur" %>
+              <%= error_tag fc, :name %>
+            </div>
+            <div class="px-1 flex-1">
+              <%= label fc, :content, class: "text-xs" %>
+              <%= text_input fc, :content, class: "text-field", placeholder: "(555) 555-5555" %>
+              <%= error_tag fc, :content %>
+            </div>
+            <div class="px-1">
+              <%= if is_nil(fc.data.temp_id) do %>
+                <%= checkbox fc, :delete %>
+              <% else %>
+                <%= hidden_input fc, :temp_id %>
+                <a href="#" class="delete-button mt-5 " phx-click="remove_contact" phx-value-remove="<%= fc.data.temp_id %>">
+                  <span class="material-icons text-sm leading-none">clear</span>
+                </a>
+              <% end %>
+            </div>
+          </div>
+          <%= if Map.has_key?(fc.source.changes, :type) && fc.source.changes.type === "phone" do %>
+            <div class="w-full px-1 pt-3">
+              <%= live_component @socket, Toggle,
+                form: fc,
+                c_type: :small,
+                input_name: :textable,
+                label: "Recieve text messages using this number?",
+                id: "#{fc.id}_textable",
+                callback: "return"
+              %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+      <div class="pt-3 border-t border-cyan-200">
+        <a href="#" class="pl-1 link-button" phx-click="add_contact">Add a Contact</a>
+      </div>
+    </div>
+  <% end %>
+</div>

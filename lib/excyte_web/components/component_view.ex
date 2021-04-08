@@ -6,6 +6,7 @@ defmodule ExcyteWeb.ComponentView do
     AddressAutocomplete,
     CalendarDay,
     Calendar,
-    RangeSlider
+    RangeSlider,
+    Toggle
   }
 end

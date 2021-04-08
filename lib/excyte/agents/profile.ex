@@ -11,7 +11,7 @@ defmodule Excyte.Agents.Profile do
     field :photo_url, :string
     field :intro_video_url, :string
     field :default, :boolean
-    field :contacts, {:array, :map}
+    embeds_many :contacts, Contact
     belongs_to(:agent, User)
     timestamps()
   end
@@ -27,7 +27,7 @@ defmodule Excyte.Agents.Profile do
       :default,
       :agent_id
     ])
-    |> cast_assoc(:contacts)
+    |> cast_embed(:contacts)
     |> validate_required([:name, :agent_id])
   end
 end

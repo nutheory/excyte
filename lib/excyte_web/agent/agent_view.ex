@@ -8,6 +8,7 @@ defmodule ExcyteWeb.AgentView do
     MlsAuth,
     Profile
   }
+  alias ExcyteWeb.Components.{ContactForm, Toggle}
   alias ExcyteWeb.Insight.{CreateLive}
   alias ExcyteWeb.Settings.{Payment}
 end

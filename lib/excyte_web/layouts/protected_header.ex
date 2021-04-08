@@ -11,19 +11,19 @@ defmodule ExcyteWeb.ProtectedHeader do
     #TODO move avatar to to cu
     profile = Agents.get_default_profile(cu.id)
 
-    if cu.current_mls do
+    if Enum.empty?(cu.current_mls) do
       {:ok, assign(socket, %{
         current_user: cu,
-        current_mls_id: cu.current_mls.id,
-        current_mls_name: cu.current_mls.mls_name,
+        current_mls_id: nil,
+        current_mls_name: nil,
         mls_options: mls_list,
         profile: profile
       })}
     else
       {:ok, assign(socket, %{
         current_user: cu,
-        current_mls_id: nil,
-        current_mls_name: nil,
+        current_mls_id: cu.current_mls.id,
+        current_mls_name: cu.current_mls.mls_name,
         mls_options: mls_list,
         profile: profile
       })}

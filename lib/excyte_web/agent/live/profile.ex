@@ -1,62 +1,51 @@
 defmodule ExcyteWeb.Agent.Profile do
-  use ExcyteWeb, :live_component
+  use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Agents.Contact, Agents.Profile}
-  alias ExcyteWeb.{Helpers.SimpleS3Upload, AgentView}
+  alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, AgentView}
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
-  def mount(socket) do
-    {:ok, allow_upload(socket, :photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
-  end
-
-  def update(assigns, socket) do
-    profile = Agents.get_agent_profile(assigns.current_user.id)
-
+  def mount(_params, %{"return_to" => rt, "profile_id" => pid, "user_id" =>  uid}, socket) do
+    profile = Agents.get_agent_profile(pid)
+    contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
+    action = if pid !== nil, do: :edit, else: :new
     cs =
       Agents.change_profile(profile)
-      |> Ecto.Changeset.put_assoc(:contacts, [Agents.change_contact(%Contact{temp_id: get_temp_id()})])
-    if profile do
-      {:ok, assign(socket,
+      |> Ecto.Changeset.put_embed(:contacts, contacts)
+
+    {:ok,
+      assign(socket,
         changeset: cs,
-        return_to: assigns.return_to,
-        action: :edit,
-        default: true,
-        current_user: assigns.current_user,
-        profile: profile)}
-    else
-      {:ok, assign(socket,
-        changeset: cs,
-        return_to: assigns.return_to,
-        action: :new,
-        default: true,
-        current_user: assigns.current_user,
-        profile: profile)}
-    end
+        action: action,
+        return_to: rt,
+        current_user_id: uid,
+        profile: profile)
+      |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
   end
 
   def handle_event("validate", %{"profile" => attrs}, socket) do
     existing_contacts = Map.get(socket.assigns.changeset.changes, :contacts, socket.assigns.profile.contacts)
 
     cs =
-      Agents.change_profile(%Profile{}, Map.merge(attrs, %{"agent_id" => socket.assigns.current_user.id}))
+      Agents.change_profile(%Profile{}, Map.merge(attrs, %{"agent_id" => socket.assigns.current_user_id}))
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, changeset: cs)}
   end
 
   def handle_event("save", %{"profile" => profile_params}, socket) do
-    save_profile(socket, socket.assigns.action, profile_params)
+    save_profile(socket, socket.assigns.action, filter_empty_contacts(profile_params))
   end
 
   def handle_event("add_contact", _, socket) do
     existing_contacts = Map.get(socket.assigns.changeset.changes, :contacts, socket.assigns.profile.contacts)
     contacts =
       existing_contacts
-      |> Enum.concat([%Contact{temp_id: get_temp_id()}])
+      |> Enum.concat([%Contact{temp_id: Utilities.get_temp_id()}])
 
     cs =
       socket.assigns.changeset
-      |> Ecto.Changeset.put_assoc(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contacts, contacts)
 
     {:noreply, assign(socket, changeset: cs)}
   end
@@ -70,7 +59,7 @@ defmodule ExcyteWeb.Agent.Profile do
 
     changeset =
       socket.assigns.changeset
-      |> Ecto.Changeset.put_assoc(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contacts, contacts)
 
     {:noreply, assign(socket, changeset: changeset)}
   end
@@ -89,9 +78,17 @@ defmodule ExcyteWeb.Agent.Profile do
     {:ok, profile}
   end
 
+  defp filter_empty_contacts(profile_params) do
+    contacts = Enum.filter(profile_params["contacts"], fn {k, v} ->
+      if v["name"] !== "" && v["content"] !== "", do: true, else: false
+    end)
+    Map.merge(profile_params, %{"contacts" => contacts})
+  end
+
   defp save_profile(socket, :new, profile_params) do
-    profile = put_photo_url(socket, %Profile{})
-    uid = socket.assigns.current_user.id
+    profile =
+      put_photo_url(socket, %Profile{})
+    uid = socket.assigns.current_user_id
     attrs = Map.merge(profile_params, %{"agent_id" => uid})
     with {:ok, _profile} <- Agents.create_profile(profile, attrs, &consume_photo(socket, &1)),
          {:ok, _user} <- Accounts.update_user(uid, %{completed_setup: true}) do
@@ -121,18 +118,16 @@ defmodule ExcyteWeb.Agent.Profile do
 
   defp put_photo_url(socket, %Profile{} = profile) do
     {completed, []} = uploaded_entries(socket, :photo)
-    %Profile{profile | photo_url: Path.join(s3_host(), s3_key(hd(completed), socket.assigns.current_user.id))}
+    %Profile{profile | photo_url: Path.join(s3_host(), s3_key(hd(completed), socket.assigns.current_user_id))}
   end
 
   @bucket "excyte"
   defp s3_host, do: "//#{@bucket}.s3.amazonaws.com"
-  defp s3_key(entry, user_id), do: "agent_photos/#{user_id}/#{get_temp_id}.#{ext(entry)}"
-
-  defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5)
+  defp s3_key(entry, user_id), do: "agent_photos/#{user_id}/#{Utilities.get_temp_id()}.#{ext(entry)}"
 
   defp presign_upload(entry, socket) do
     uploads = socket.assigns.uploads
-    key = s3_key(entry, socket.assigns.current_user.id)
+    key = s3_key(entry, socket.assigns.current_user_id)
 
     config = Application.get_env(:excyte, :aws)
 

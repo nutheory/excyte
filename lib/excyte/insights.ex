@@ -60,41 +60,22 @@ defmodule Excyte.Insights do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid}) |> Repo.preload([:subject, :documents])
   end
 
-  def build_comp_documents(comps) do
-
-  end
-
-  def get_templates(agent_id, brokerage_id) do
-
-    # Ecto.Query.from(r in Record, where: r.id in [9, 1, 4, 3])
-    # |> Ecto.Query.order_by([r], fragment("array_position(?, ?)", [9, 1, 4, 3], r.id)
-    # |> Repo.all()
-
-
-    query =
-      # if is_nil(brokerage_id) do
-        from t in Template, where: t.created_by_id == ^agent_id
-      # else
-      #   from t in Template,
-      #   where: t.created_by_id == ^agent_id,
-      #   or_where: not is_nil(t.brokerage_id) == ^brokerage_id
-      #   # Add select to only pull id and name
-      # end
-
-    Repo.all(query)
-    # ++ [Template.default_cma()]
-  end
-
-  def update_insight(uid, iid, attrs) do
-    insight = Repo.get_by(Insight, %{created_by_id: uid, uuid: iid})
-    Insight.changeset(insight, attrs)
-    |> Repo.update()
+  def create_template(attrs) do
+    %Template{}
+    |> Template.changeset(attrs)
+    |> Repo.insert()
   end
 
   def create_document(attrs) do
     %Document{}
     |> Document.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_insight(uid, iid, attrs) do
+    insight = Repo.get_by(Insight, %{created_by_id: uid, uuid: iid})
+    Insight.changeset(insight, attrs)
+    |> Repo.update()
   end
 
   def get_document(id) do

@@ -1,13 +1,14 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  future: {
-    // removeDeprecatedGapUtilities: true,
-    // purgeLayersByDefault: true,
-    // defaultLineHeights: true,
-    // standardFontWeights: true
-  },
-  purge: [],
+  mode: 'jit',
+  purge: [
+    '../lib/excyte_web/**/templates/**/*.html.leex',
+    '../lib/excyte_web/**/templates/**/*.html.eex',
+    '../lib/excyte_web/**/*.html.leex',
+    '../lib/excyte_web/**/*.html.eex',
+    '../assets/js/**/*.js',
+  ],
   theme: {
     colors: {
       bgray: colors.blueGray,
@@ -49,7 +50,6 @@ module.exports = {
       }
     }
   },
-  variants: {},
   plugins: [
     require('@tailwindcss/typography'),
   ]

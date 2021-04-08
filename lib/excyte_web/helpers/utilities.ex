@@ -165,6 +165,9 @@ defmodule ExcyteWeb.Helpers.Utilities do
     """
   end
 
+
+  def get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5)
+
   def key_to_atom(map) do
     Enum.reduce(map, %{}, fn
       # String.to_existing_atom saves us from overloading the VM by

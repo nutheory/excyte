@@ -1,10 +1,14 @@
 <div>
-  <%= f = form_for @changeset, "#", [phx_change: "validate", phx_submit: "save", phx_target: @myself] %>
+  <%= f = form_for @changeset, "#",
+    id: "profile_form",
+    phx_change: "validate",
+    phx_submit: "save"
+  %>
     <div class="shadow-md bg-white rounded-md p-4 relative">
       <h3 class="text-lg leading-none font-extrabold text-gray-900">
         <%= if @action === :edit, do: "Edit profile", else: "Create a new profile" %>
       </h3>
-      <div class="w-28 h-28 absolute top-2 right-4 bg-blue-200 rounded-full p-1" phx-drop-target="<%= @uploads.photo.ref %>">
+      <div class="w-24 h-24 md:w-28 md:h-28 absolute top-4 md:top-2 right-4 bg-teal-500 rounded-full p-1" phx-drop-target="<%= @uploads.photo.ref %>">
         <%= for {_ref, err} <- @uploads.photo.errors do %>
           <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
         <% end %>
@@ -12,7 +16,13 @@
           <%= live_img_preview entry, width: 90, class: "w-full h-full rounded-full" %>
         <% end %>
         <%= live_file_input @uploads.photo, class: "opacity-0 h-full w-full cursor-pointer absolute top-1 left-1" %>
-        <img src="<%= @profile.photo_url %>" class="w-full h-full rounded-full" />
+        <%= if @profile.photo_url do %>
+          <img src="<%= @profile.photo_url %>" class="w-full h-full rounded-full" />
+        <% else %>
+          <%= if length(@uploads.photo.entries) === 0 do %>
+            <div class="w-full h-full rounded-full text-bgray-100 bg-gray-800 flex items-center justify-center text-center ">Upload<br />photo</div>
+          <% end %>
+        <% end %>
       </div>
       <div class="mt-4 w-3/4">
         <%= label f, :name %>
@@ -29,48 +39,29 @@
         <%= textarea f, :bio, class: "textarea", phx_debounce: "blur" %>
         <%= error_tag f, :bio %>
       </div>
-      <div class="sub-form">
+      <div class=" mt-4 sub-form">
         <h2>Contacts</h2>
-        <%= inputs_for f, :contacts, fn fc -> %>
-          <div class="mt-2 -mx-1">
-            <div class="flex content-start items-start">
-              <div class="px-1 flex-1">
-                <%= label fc, :name, class: "text-xs" %>
-                <%= text_input fc, :name, class: "text-field w-full", placeholder: "Mobile phone, Slack etc.", phx_debounce: "blur" %>
-                <%= error_tag fc, :name %>
-              </div>
-              <div class="px-1 flex-1">
-                <%= label fc, :content, class: "text-xs" %>
-                <%= text_input fc, :content, class: "text-field", placeholder: "(555) 555-5555" %>
-                <%= error_tag fc, :content %>
-              </div>
-              <div class="px-1">
-                <%= if is_nil(fc.data.temp_id) do %>
-                  <%= checkbox fc, :delete %>
-                <% else %>
-                  <%= hidden_input fc, :temp_id %>
-                  <a href="#" class="delete-button mt-5 " phx-click="remove_contact" phx-value-remove="<%= fc.data.temp_id %>">
-                    <span class="material-icons text-sm leading-none">clear</span>
-                  </a>
-                <% end %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-        <a href="#" class="subtle-button mt-2" phx-click="add_contact">Add a Contact</a>
+        <%= live_component @socket, ContactForm,
+          form: f,
+          id: :profile_contacts
+        %>
       </div>
-      <%= if @default do %>
-        <%= hidden_input f, :default, value: true %>
-      <% else %>
-        <div>
-          <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-            <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-            <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-          </div>
-          <label for="toggle" class="text-gray-700">Set as default</label>
+      <%#= live_component @socket, Toggle,
+        form: f,
+        c_type: :small,
+        input_name: :default,
+        label: "Default",
+        id: "#{@socket.id}_default",
+        callback: "return"
+      %>
+      <%# <div>
+        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+          <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+          <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
         </div>
-      <% end %>
-      <button type="submit" class="submit mt-4 w-full">Create profile</button>
+        <label for="toggle" class="text-gray-700">Set as default</label>
+      </div> %>
+      <%= submit "Create profile", class: "submit mt-4 w-full", phx_disable_with: "Creating..." %>
     </div>
   </form>
 </div>

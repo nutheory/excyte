@@ -5,21 +5,16 @@ defmodule Excyte.Agents do
 
   alias Excyte.Agents.{Contact, Profile}
 
-  def get_profile!(id) do
-    Repo.get!(Profile, id)
-    |> Repo.preload(contacts: from(c in Contact, order_by: c.id))
-  end
-
   def get_default_profile(aid) do
     Repo.get_by(Profile, %{agent_id: aid, default: true})
   end
 
-  def get_agent_profile(aid) do
+  def get_agent_profile!(aid) do
     Repo.get_by(Profile, %{agent_id: aid} )
     |> Repo.preload(contacts: from(c in Contact, order_by: c.id))
   end
 
-  def get_profile(_profile_id), do: %Profile{contacts: []}
+  def get_agent_profile(_agent_id), do: %Profile{contacts: []}
 
   def change_profile(%Profile{} = profile, attrs \\ %{}) do
     Profile.changeset(profile, attrs)

@@ -18,6 +18,11 @@
   }
 }
 
+input:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: #48bb78;
+}
+
 form,
 .form {
   @apply text-gray-700 text-sm;
@@ -35,11 +40,11 @@ form,
   }
 
   & label {
-    @apply block text-sm mb-1;
+    @apply block text-sm mb-0.5 pl-0.5;
   }
 
   & .sub-form {
-    @apply mt-4 bg-blue-200 rounded-md p-4;
+    @apply bg-cyan-50 text-cyan-700 border border-cyan-300 rounded-md p-4;
 
     & h2 {
       @apply text-lg leading-none font-bold text-blue-700;
@@ -57,26 +62,21 @@ form,
   }
 
   & input.text-field {
-    @apply text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
+    @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
   }
 
   & input.number-field {
     @apply text-gray-700 border bg-white border-bgray-400 rounded leading-8 pl-3 block w-full;
   }
 
-  & input.text-field:focus,
-  input.number-field:focus {
-    @apply outline-none focus:ring-1 focus:ring-offset-2;
-  }
-
   & textarea.textarea {
-    @apply shadow text-gray-700 border bg-white border-bgray-200 rounded py-2 px-4 block w-full appearance-none;
+    @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
   }
 
-  & textarea.textarea:focus {
-    outline: 2px solid transparent;
-    outline-offset: 2px;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  & input.text-field:focus,
+  input.number-field:focus,
+  textarea.textarea:focus {
+    @apply outline-none focus:ring-1 focus:ring-offset-2;
   }
 
   & button.submit {
@@ -131,12 +131,16 @@ form,
   }
 }
 
-.subtle-button {
-  @apply inline-block text-gray-600 text-xs py-2 px-4 rounded bg-white shadow transition duration-150 ease-in-out;
+.link-button {
+  @apply text-cyan-600 inline-block;
 }
 
-.subtle-button:hover {
-  @apply bg-white cursor-pointer;
+.link-button:hover {
+  @apply underline;
+}
+
+.subtle-button {
+  @apply inline-block text-gray-600 text-xs py-2 px-4 rounded bg-white shadow transition duration-150 ease-in-out cursor-pointer;
 }
 
 .delete-button {

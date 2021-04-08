@@ -7,7 +7,7 @@ defmodule Excyte.Accounts do
   alias Ecto.Multi
   alias Excyte.Repo
   alias Excyte.Accounts.{Account, Registration, User, UserNotifier, UserToken}
-  alias Excyte.Agents.{Agent}
+  alias Excyte.{Agents, Agents.Agent, Agents.Profile}
 
   alias Stripe.Customer
 
@@ -92,17 +92,27 @@ defmodule Excyte.Accounts do
     |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
     |> Multi.run(:account, __MODULE__, :create_account, [attrs])
     |> Multi.run(:agent, __MODULE__, :create_agent, [attrs])
+    |> Multi.run(:profile, __MODULE__, :create_profile, [attrs])
     |> Repo.transaction()
     |> case do
       {:ok, %{agent: agent}} -> {:ok, agent}
-      {:error, method, changeset, _} -> {:error, changeset}
+      {:error, method, changeset, _} -> {:error, %{changset: changeset, method: method}}
     end
   end
-
 
   def create_agent(_repo, %{account: acc}, attrs) do
     %User{}
     |> Agent.registration_changeset(Map.put(attrs, :account_id, acc.id))
+    |> Repo.insert()
+  end
+
+  def create_profile(_repo, %{agent: agent}, attrs) do
+    %Profile{}
+    |> Profile.registration_changeset(Map.merge(attrs, %{
+      agent_id: agent.id,
+      name: attrs.full_name,
+      contacts: [%{content: attrs.email, name: "Email", type: "email"}]
+    }))
     |> Repo.insert()
   end
 

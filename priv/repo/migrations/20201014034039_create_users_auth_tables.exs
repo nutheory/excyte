@@ -7,23 +7,24 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
     create table(:users) do
       add :account_id, references(:accounts, on_delete: :delete_all)
       add :brokerage_id, references(:brokerages)
-      add :agent_id, references(:users)
       add :full_name, :string, null: false
       add :email, :citext, null: false
       add :timezone, :string, default: "America/Los_Angeles"
-      add :can_manage_team, :boolean, default: false
-      add :excyte_role, :string
-      add :system_role, :string, default: "user"
+      add :brokerage_role, :string, default: "agent"
+      add :excyte_role, :string, default: "user"
       add :current_mls, :map, default: %{}
       add :current_avatar, :text
       add :current_account_status, :string, default: "new"
       add :completed_setup, :boolean, default: false
+      add :contact_settings, :map, default: %{}
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime
       add :last_sign_in_at, :naive_datetime
       timestamps()
     end
 
+    create index(:users, [:account_id])
+    create index(:users, [:brokerage_id])
     create unique_index(:users, [:email])
 
     create table(:users_tokens) do

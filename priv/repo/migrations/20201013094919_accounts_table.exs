@@ -9,6 +9,7 @@ defmodule Excyte.Repo.Migrations.AccountsTable do
       add :payment_method_id, :string
       add :amount, :integer
       add :status, :string, default: "new"
+      add :status_reason, :text
       timestamps()
     end
 

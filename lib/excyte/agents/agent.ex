@@ -35,6 +35,5 @@ defmodule Excyte.Agents.Agent do
     |> validate_required([:full_name])
     |> User.validate_email()
     |> User.validate_password()
-    |> put_change(:excyte_role, "agent")
   end
 end

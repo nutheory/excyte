@@ -6,7 +6,7 @@ defmodule ExcyteWeb.Agent.Profile do
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
   def mount(_params, %{"return_to" => rt, "profile_id" => pid, "user_id" =>  uid}, socket) do
-    profile = Agents.get_agent_profile(pid)
+    profile = Agents.get_agent_profile!(pid)
     contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
     action = if pid !== nil, do: :edit, else: :new
     cs =
@@ -19,6 +19,7 @@ defmodule ExcyteWeb.Agent.Profile do
         action: action,
         return_to: rt,
         current_user_id: uid,
+        photo_url: nil,
         profile: profile)
       |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
   end
@@ -34,7 +35,7 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   def handle_event("save", %{"profile" => profile_params}, socket) do
-    save_profile(socket, socket.assigns.action, filter_empty_contacts(profile_params))
+    save_profile(socket, filter_empty_contacts(profile_params))
   end
 
   def handle_event("add_contact", _, socket) do
@@ -79,33 +80,38 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   defp filter_empty_contacts(profile_params) do
-    contacts = Enum.filter(profile_params["contacts"], fn {k, v} ->
-      if v["name"] !== "" && v["content"] !== "", do: true, else: false
-    end)
+    contacts =
+      Enum.filter(profile_params["contacts"], fn {k, v} ->
+        if v["name"] !== "" && v["content"] !== "", do: true, else: false
+      end) |> Enum.map(fn {k, v} -> v end)
+
     Map.merge(profile_params, %{"contacts" => contacts})
   end
 
-  defp save_profile(socket, :new, profile_params) do
-    profile =
-      put_photo_url(socket, %Profile{})
-    uid = socket.assigns.current_user_id
-    attrs = Map.merge(profile_params, %{"agent_id" => uid})
-    with {:ok, _profile} <- Agents.create_profile(profile, attrs, &consume_photo(socket, &1)),
-         {:ok, _user} <- Accounts.update_user(uid, %{completed_setup: true}) do
-      {:noreply,
-        socket
-        |> put_flash(:info, "Profile created successfully")
-        |> push_redirect(to: socket.assigns.return_to)}
-    else
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
-      err -> {:noreply, socket}
-    end
-  end
+  # defp save_profile(socket, :new, profile_params) do
+  #   profile = put_photo_url(socket, %Profile{})
+  #   uid = socket.assigns.current_user_id
+  #   attrs = Map.merge(profile_params, %{"agent_id" => uid})
+  #   with {:ok, _profile} <- Agents.create_profile(profile, attrs, &consume_photo(socket, &1)),
+  #        {:ok, _user} <- Accounts.update_user(uid, %{completed_setup: true, current_avatar: profile.photo_url}) do
+  #         IO.inspect(profile, label: "SUCCESS")
+  #     {:noreply,
+  #       socket
+  #       |> put_flash(:info, "Profile created successfully")
+  #       |> push_redirect(to: socket.assigns.return_to)}
+  #   else
+  #     {:error, %Ecto.Changeset{} = changeset} ->
+  #       IO.inspect(changeset, label: "CS-ERR")
+  #       {:noreply, assign(socket, changeset: changeset)}
+  #     err ->
+  #       IO.inspect(err, label: "UNKWN-ERR")
+  #       {:noreply, socket}
+  #   end
+  # end
 
-  defp save_profile(socket, :edit, profile_params) do
+  defp save_profile(socket, profile_params) do
     profile = put_photo_url(socket, socket.assigns.profile)
-    case Agents.update_profile(profile, profile_params, &consume_photo(socket, &1)) do
+    case Agents.update_profile(socket.assigns.current_user_id, profile_params, &consume_photo(socket, &1)) do
       {:ok, _profile} ->
         {:noreply,
           socket
@@ -116,9 +122,11 @@ defmodule ExcyteWeb.Agent.Profile do
     end
   end
 
-  defp put_photo_url(socket, %Profile{} = profile) do
+  defp put_photo_url(%{assigns: a} = socket, %Profile{} = profile) do
     {completed, []} = uploaded_entries(socket, :photo)
-    %Profile{profile | photo_url: Path.join(s3_host(), s3_key(hd(completed), socket.assigns.current_user_id))}
+    if a.photo_url !== nil do
+      %Profile{profile | photo_url: Path.join(s3_host(), a.photo_url)}
+    end
   end
 
   @bucket "excyte"
@@ -140,7 +148,7 @@ defmodule ExcyteWeb.Agent.Profile do
       )
 
     meta = %{uploader: "S3", key: key, url: s3_host(), fields: fields}
-    {:ok, meta, socket}
+    {:ok, meta, assign(socket, photo_url: key)}
   end
 
 end

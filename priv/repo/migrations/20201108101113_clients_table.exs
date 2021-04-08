@@ -17,6 +17,7 @@ defmodule Excyte.Repo.Migrations.ClientsTable do
       add :name, :string
       add :primary_email, :string
       add :contacts, :jsonb, default: "[]"
+      add :address, :jsonb, default: "[]"
       timestamps()
     end
 

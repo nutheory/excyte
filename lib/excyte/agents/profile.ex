@@ -2,7 +2,7 @@ defmodule Excyte.Agents.Profile do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Excyte.{Accounts.User, Agents.Contact, Repo}
+  alias Excyte.{Accounts.User, Agents.Contact, Brokerages.Brokerage, Repo}
   schema "profiles" do
     field :name, :string
     field :tagline, :string
@@ -13,6 +13,7 @@ defmodule Excyte.Agents.Profile do
     field :default, :boolean
     embeds_many :contacts, Contact
     belongs_to(:agent, User)
+    belongs_to(:brokerage, Brokerage)
     timestamps()
   end
 
@@ -29,5 +30,11 @@ defmodule Excyte.Agents.Profile do
     ])
     |> cast_embed(:contacts)
     |> validate_required([:name, :agent_id])
+  end
+
+  def registration_changeset(profile, attrs) do
+    profile
+    |> cast(attrs, [:name, :agent_id, :brokerage_id])
+    |> cast_embed(:contacts)
   end
 end

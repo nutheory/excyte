@@ -12,7 +12,7 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   end
 
   def update(assigns, socket) do
-    mls_list = Mls.get_credentials(%{user_id: assigns.current_user.id})
+    mls_list = Mls.get_credentials(%{agent_id: assigns.current_user.id})
     dids = Enum.map(mls_list, fn li -> li.dataset_id end)
     opts = Enum.filter(assigns.mls_opts, fn %{val: val} ->
         !Enum.member?(dids, val)

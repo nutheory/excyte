@@ -7,25 +7,21 @@ defmodule ExcyteWeb.ProtectedHeader do
 
   def mount(_params, %{"user_token" => token}, %{assigns: assigns} = socket) do
     cu = Accounts.get_user_by_session_token(token)
-    mls_list = Mls.get_credentials(%{user_id: cu.id})
-    #TODO move avatar to to cu
-    profile = Agents.get_default_profile(cu.id)
+    mls_list = Mls.get_credentials(%{agent_id: cu.id})
 
     if Enum.empty?(cu.current_mls) do
       {:ok, assign(socket, %{
         current_user: cu,
         current_mls_id: nil,
         current_mls_name: nil,
-        mls_options: mls_list,
-        profile: profile
+        mls_options: mls_list
       })}
     else
       {:ok, assign(socket, %{
         current_user: cu,
         current_mls_id: cu.current_mls.id,
         current_mls_name: cu.current_mls.mls_name,
-        mls_options: mls_list,
-        profile: profile
+        mls_options: mls_list
       })}
     end
   end

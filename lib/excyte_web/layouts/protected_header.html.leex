@@ -95,8 +95,8 @@
       <div class="flex-1"></div>
       <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
         <div class="relative text-lg rounded-full flex items-center justify-center text-bgray-100 font-bold border-teal-500 bg-bgray-800 border-2 md:border-4 uppercase h-9 w-9 md:w-14 md:h-14 z-30 cursor-pointer avatar" @click="open = !open">
-          <%= if @profile && @profile.photo_url do %>
-            <img class="rounded-full" src="<%= @profile.photo_url %>" />
+          <%= if @current_user.current_avatar do %>
+            <img class="rounded-full" src="<%= @current_user.current_avatar %>" />
           <% else %>
             <%= String.first(@current_user.full_name) %>
           <% end %>

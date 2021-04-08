@@ -19,14 +19,14 @@ defmodule Excyte.Mls.Credential do
     field :access_token, :string
     field :default, :boolean
     field :expires_in, :integer
-    belongs_to(:user, User)
+    belongs_to(:agent, User)
     timestamps()
   end
 
   def authorization_changeset(credential, attrs) do
     credential
     |> cast(attrs, [
-      :user_id,
+      :agent_id,
       :sub,
       :agent_name,
       :mls_name,
@@ -43,7 +43,7 @@ defmodule Excyte.Mls.Credential do
       :expires_in
     ])
     |> validate_required([
-      :user_id,
+      :agent_id,
       :mls_id,
       :id_token,
       :member_key,

@@ -3,7 +3,7 @@ defmodule Excyte.Repo.Migrations.MlsCredentialsTable do
 
   def change do
     create table(:mls_credentials) do
-      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :agent_id, references(:users, on_delete: :delete_all), null: false
       add :sub, :string
       add :agent_name, :string
       add :mls_name, :string

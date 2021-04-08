@@ -20,7 +20,7 @@ token =
   end)
 Accounts.confirm_user(token)
 mls = Mls.create_credential(%{
-  user_id: agent.id,
+  agent_id: agent.id,
   access_token: "c72f9c07c32759011128b84001acb35d",
   refresh_token: "11ac9d8dad11b810ac5ed6680ef57ac3",
   id_token: "JufbUZM7YgSPn2fGSbHn",

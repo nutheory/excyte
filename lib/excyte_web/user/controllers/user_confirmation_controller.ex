@@ -51,7 +51,7 @@ defmodule ExcyteWeb.UserConfirmationController do
       with {:ok, tokens} <- OpenIDConnect.fetch_tokens(mls, params["code"]),
            {:ok, _claims} <- OpenIDConnect.verify(mls, tokens["id_token"]) do
           #  {:ok, confirmed_user} <- Accounts.confirm_user(params["excyte_confirm_token"]),
-          #  {:ok, user} <- Mls.create_credential(mls_params(confirmed_user, tokens, claims)) do
+          #  {:ok, agent} <- Mls.create_credential(mls_params(confirmed_user, tokens, claims)) do
         conn
         |> put_flash(:info, "Account confirmed successfully.")
         # |> UserAuth.log_in_user(confirmed_user)
@@ -69,13 +69,14 @@ defmodule ExcyteWeb.UserConfirmationController do
   end
 
   defp bypass_open_id(conn, params) do
-    user_id = conn.assigns.current_user.id
-    case Mls.create_credential(mls_params(user_id, %{
+    agent_id = conn.assigns.current_user.id
+    case Mls.create_credential(mls_params(agent_id, %{
            "access_token" => params["access_token"],
            "refresh_token" => params["refresh_token"],
            "id_token" => params["id_token"],
            "mls_name" => params["mls_name"],
            "member_key" => params["member_key"],
+           "office_key" => params["office_key"],
            "dataset_id" => params["dataset_id"],
            "expires_in" => params["expires_in"]
          }, %{
@@ -85,14 +86,14 @@ defmodule ExcyteWeb.UserConfirmationController do
            "username" => "nutheory",
            "zoneinfo" => "America/Chicago"
          })) do
-      {:ok, user} -> {:ok, user}
+      {:ok, agent} -> {:ok, agent}
       {:error, err} -> {:error, err}
     end
   end
 
-  defp mls_params(user_id, tokens, claims) do
+  defp mls_params(agent_id, tokens, claims) do
     %{
-      user_id: user_id,
+      agent_id: agent_id,
       access_token: tokens["access_token"],
       refresh_token: tokens["refresh_token"],
       id_token: tokens["id_token"],
@@ -100,6 +101,7 @@ defmodule ExcyteWeb.UserConfirmationController do
       dataset_id: tokens["dataset_id"],
       mls_name: tokens["mls_name"],
       member_key: tokens["member_key"],
+      office_key: tokens["office_key"],
       mls_id: claims["mls_id"],
       agent_name: claims["agent_name"],
       sub: claims["sub"],

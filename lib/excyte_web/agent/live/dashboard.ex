@@ -8,7 +8,11 @@ defmodule ExcyteWeb.Agent.Dashboard do
   def mount(_params,  %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if cu.completed_setup === false do
-      {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
+      if cu.brokerage_id do
+        {:ok, push_redirect(socket, to: "/brokerage/getting-started", current_user: cu)}
+      else
+        {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
+      end
     else
       mls = cu.current_mls
       {:ok, agent_listings} = ResoApi.get_listings_by_agent(mls, %{list_agent_key: mls.member_key})

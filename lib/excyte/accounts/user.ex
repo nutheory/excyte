@@ -17,9 +17,12 @@ defmodule Excyte.Accounts.User do
   schema "users" do
     field :full_name, :string
     field :email, :string
+    field :timezone, :string
+    field :brokerage_role, :string
     field :excyte_role, :string
     field :password, :string, virtual: true
     field :current_account_status, :string
+    field :contact_settings, MapType
     field :current_mls, MapType
     field :current_avatar, :string
     field :hashed_password, :string

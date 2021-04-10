@@ -80,8 +80,8 @@ defmodule Mls.MockServer do
   get "/o/oauth2/v2/:dataset" do
     at =
       case dataset do
-        "actris_ref" -> "access_token=c72f9c07c32759011128b84001acb35d&member_key=77c4b2f3ec218c88bd7e41617ef63489"
-        "test" -> "access_token=6baca547742c6f96a6ff71b138424f21&member_key=M_5dba1fa4a2a50c5b81f082d9"
+        "actris_ref" -> "access_token=c72f9c07c32759011128b84001acb35d&member_key=e76e47e5a909f6f6a283644795c3f42b&office_key=15180c7764a1dafc1d90da4b8399a674"
+        "test" -> "access_token=6baca547742c6f96a6ff71b138424f21&member_key=M_5dba1fa4a2a50c5b81f082d9&office_key=O_5af6019c75f1043ad481d99a"
         _ -> "oops"
       end
 

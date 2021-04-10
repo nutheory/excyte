@@ -9,7 +9,7 @@
       <p class="text-xs text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
     </div>
     <%= if @payment_success do %>
-      <%= live_patch to: Routes.live_path(@socket, GettingStartedLive, step: "profile"), replace: false do %>
+      <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false do %>
         <div class="action-button bg-green-600">Payment succeeded... Continue</div>
       <% end %>
     <% else %>

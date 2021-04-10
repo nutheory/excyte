@@ -11,7 +11,8 @@ defmodule Excyte.Agents.Agent do
   schema "users" do
     field :full_name, :string
     field :email, :string
-    field :excyte_role, :string
+    field :brokerage_name, :string, virtual: true
+    field :phone, :string, virtual: true
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :completed_setup, :boolean
@@ -21,7 +22,7 @@ defmodule Excyte.Agents.Agent do
     timestamps()
   end
 
-  def pre_register(agent, attrs) do
+  def pre_register_agent(agent, attrs) do
     agent
     |> cast(attrs, [:full_name, :email, :password])
     |> validate_required([:full_name])
@@ -29,9 +30,18 @@ defmodule Excyte.Agents.Agent do
     |> User.validate_password()
   end
 
+  def pre_register_brokerage(agent, attrs) do
+    agent
+    |> cast(attrs, [:full_name, :email, :phone, :brokerage_name, :password])
+    |> validate_required([:full_name, :phone, :brokerage_name])
+    |> validate_format(:phone, ~r/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, message: "Phone number not valid")
+    |> User.validate_email()
+    |> User.validate_password()
+  end
+
   def registration_changeset(agent, attrs) do
     agent
-    |> cast(attrs, [:full_name, :email, :password, :account_id])
+    |> cast(attrs, [:full_name, :email, :password, :account_id, :brokerage_id])
     |> validate_required([:full_name])
     |> User.validate_email()
     |> User.validate_password()

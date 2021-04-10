@@ -43,7 +43,7 @@ defmodule Excyte.MixProject do
       {:phoenix_live_view, "~> 0.15.4", override: true},
       {:crawly, "~> 0.13.0"},
       {:floki, ">= 0.27.0"},
-      {:faker, "~> 0.16", only: :test},
+      {:faker, "~> 0.16", only: [:dev, :test]},
       {:ex_machina, "~> 2.4", only: :test},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

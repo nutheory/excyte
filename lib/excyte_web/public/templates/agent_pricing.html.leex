@@ -1,5 +1,5 @@
 <div class="grid grid-cols-3 gap-4">
   <%= for plan <- @plans do %>
-    <%= live_component @socket, ExcyteWeb.PricingLive.Plan, id: plan.plan_id, plan: plan, current_user: @current_user %>
+    <%= live_component @socket, ExcyteWeb.AgentPricingPlan, id: plan.plan_id, plan: plan, current_user: @current_user %>
   <% end %>
 <div>

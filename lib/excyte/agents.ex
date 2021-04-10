@@ -3,11 +3,10 @@ defmodule Excyte.Agents do
   alias Ecto.Multi
   alias Excyte.Repo
 
-  alias Excyte.Agents.{Contact, Profile}
+  alias Excyte.{Utils.Contact, Agents.Profile}
 
   def get_agent_profile!(aid) do
-    Repo.get_by(Profile, %{agent_id: aid} )
-    |> Repo.preload(contacts: from(c in Contact, order_by: c.id))
+    Repo.get_by(Profile, %{agent_id: aid})
   end
 
   def get_agent_profile(_agent_id), do: %Profile{contacts: []}

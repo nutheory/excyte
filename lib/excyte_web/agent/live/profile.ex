@@ -1,14 +1,13 @@
 defmodule ExcyteWeb.Agent.Profile do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Agents, Agents.Contact, Agents.Profile}
+  alias Excyte.{Accounts, Agents, Utils.Contact, Agents.Profile}
   alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, AgentView}
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
-  def mount(_params, %{"return_to" => rt, "profile_id" => pid, "user_id" =>  uid}, socket) do
-    profile = Agents.get_agent_profile!(pid)
+  def mount(_params, %{"return_to" => rt, "user_id" =>  uid}, socket) do
+    profile = Agents.get_agent_profile!(uid)
     contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
-    action = if pid !== nil, do: :edit, else: :new
     cs =
       Agents.change_profile(profile)
       |> Ecto.Changeset.put_embed(:contacts, contacts)
@@ -16,7 +15,6 @@ defmodule ExcyteWeb.Agent.Profile do
     {:ok,
       assign(socket,
         changeset: cs,
-        action: action,
         return_to: rt,
         current_user_id: uid,
         photo_url: nil,

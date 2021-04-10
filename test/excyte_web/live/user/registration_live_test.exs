@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.AgentRegistrationLiveTest do
+defmodule ExcyteWeb.AgentRegistrationTest do
   use ExcyteWeb.ConnCase
   use Bamboo.Test
   import Phoenix.LiveViewTest

@@ -6,8 +6,8 @@ defmodule Excyte.Accounts do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Excyte.Repo
-  alias Excyte.Accounts.{Account, Registration, User, UserNotifier, UserToken}
-  alias Excyte.{Agents, Agents.Agent, Agents.Profile}
+  alias Excyte.Accounts.{Account, User, UserNotifier, UserToken}
+  alias Excyte.{Agents, Brokerages, Agents.Agent, Brokerages.Brokerage}
 
   alias Stripe.Customer
 
@@ -87,17 +87,80 @@ defmodule Excyte.Accounts do
 
   """
 
+  def register_brokerage(attrs) do
+    Multi.new()
+    |> Multi.run(:pre_check, __MODULE__, :change_brokerage_registration, [attrs])
+    |> Multi.run(:account, __MODULE__, :create_account, [attrs])
+    |> Multi.run(:brokerage, __MODULE__, :create_brokerage, [attrs])
+    |> Multi.run(:agent, __MODULE__, :create_brokerage_owner, [attrs])
+    |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
+    |> Multi.run(:brokerage_profile, __MODULE__, :create_brokerage_profile, [attrs])
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{agent: agent}} -> {:ok, agent}
+      {:error, _method, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  def register_brokerage_agent(attrs) do
+    Multi.new()
+    |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
+    |> Multi.run(:agent, __MODULE__, :create_brokerage_agent, [attrs])
+    |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{agent: agent}} -> {:ok, agent}
+      {:error, _method, changeset, _} -> {:error, changeset}
+    end
+  end
+
   def register_agent(attrs) do
     Multi.new()
     |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
     |> Multi.run(:account, __MODULE__, :create_account, [attrs])
     |> Multi.run(:agent, __MODULE__, :create_agent, [attrs])
-    |> Multi.run(:profile, __MODULE__, :create_profile, [attrs])
+    |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
     |> Repo.transaction()
     |> case do
       {:ok, %{agent: agent}} -> {:ok, agent}
-      {:error, method, changeset, _} -> {:error, %{changset: changeset, method: method}}
+      {:error, _method, changeset, _} -> {:error, changeset}
     end
+  end
+
+  def create_brokerage(_repo, %{account: acc}, attrs) do
+    %Brokerage{}
+    |> Brokerage.registration_changeset(Map.merge(attrs, %{
+      account_id: acc.id,
+      name: attrs.brokerage_name,
+      contact_settings: %{
+        point_of_contact: %{
+          name: attrs.full_name,
+          email: attrs.email,
+          phone_number: attrs.phone
+        },
+        send_text_alerts: true
+      }
+    }))
+    |> Repo.insert()
+  end
+
+  def create_brokerage_owner(_repo, %{brokerage: bk, account: acc}, attrs) do
+    %User{}
+    |> Agent.registration_changeset(Map.merge(attrs, %{
+      brokerage_id: bk.id,
+      account_id: acc.id,
+      brokerage_role: "owner"
+    }))
+    |> Repo.insert()
+  end
+
+  def create_brokerage_agent(_repo, _changes, %{brokerage_id: bkid, account_id: accid} = attrs) do
+    %User{}
+    |> Agent.registration_changeset(Map.merge(attrs, %{
+      brokerage_id: bkid,
+      account_id: accid
+    }))
+    |> Repo.insert()
   end
 
   def create_agent(_repo, %{account: acc}, attrs) do
@@ -106,11 +169,21 @@ defmodule Excyte.Accounts do
     |> Repo.insert()
   end
 
-  def create_profile(_repo, %{agent: agent}, attrs) do
-    %Profile{}
-    |> Profile.registration_changeset(Map.merge(attrs, %{
+  def create_agent_profile(_repo, %{agent: agent}, attrs) do
+    %Agents.Profile{}
+    |> Agents.Profile.registration_changeset(Map.merge(attrs, %{
       agent_id: agent.id,
       name: attrs.full_name,
+      contacts: [%{content: attrs.email, name: "Email", type: "email"}]
+    }))
+    |> Repo.insert()
+  end
+
+  def create_brokerage_profile(_repo, %{brokerage: bk}, attrs) do
+    %Brokerages.Profile{}
+    |> Brokerages.Profile.registration_changeset(Map.merge(attrs, %{
+      brokerage_id: bk.id,
+      company_name: attrs.brokerage_name,
       contacts: [%{content: attrs.email, name: "Email", type: "email"}]
     }))
     |> Repo.insert()
@@ -143,7 +216,17 @@ defmodule Excyte.Accounts do
 
   """
   def change_agent_registration(_repo, _changes, attrs \\ %{}) do
-    reg = Agent.pre_register(%User{}, attrs)
+    reg = Agent.pre_register_agent(%Agent{}, attrs)
+
+    if reg.valid? do
+      {:ok, reg}
+    else
+      {:error, Map.put(reg, :action, :insert)}
+    end
+  end
+
+  def change_brokerage_registration(_repo, _changes, attrs \\ %{}) do
+    reg = Agent.pre_register_brokerage(%Agent{}, attrs)
 
     if reg.valid? do
       {:ok, reg}

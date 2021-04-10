@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.AgentRegistrationLive do
+defmodule ExcyteWeb.AgentRegistration do
   use ExcyteWeb, :live_auth_view
   alias Excyte.{Accounts, Accounts.User, Agents.Agent}
   alias ExcyteWeb.{UserView, Helpers.Utilities}
@@ -6,7 +6,7 @@ defmodule ExcyteWeb.AgentRegistrationLive do
   def render(assigns), do: UserView.render("agent_registration.html", assigns)
 
   def mount(params, _sesh, socket) do
-    cs = Agent.pre_register(%Agent{}, %{})
+    cs = Agent.pre_register_agent(%Agent{}, %{})
     sp = Enum.find(Application.get_env(:excyte, :pricing_items), fn x ->
       x.friendly_name === params["plan"]
     end)
@@ -30,7 +30,6 @@ defmodule ExcyteWeb.AgentRegistrationLive do
         {"password", "show password"}
       end
       val = socket.assigns.changeset.changes.password
-      IO.inspect(socket, label: "VAL")
     {:noreply, assign(socket,
       password_type: type,
       show_text: text,
@@ -39,7 +38,7 @@ defmodule ExcyteWeb.AgentRegistrationLive do
   end
 
   def handle_event("validate", %{"agent" => attrs}, socket) do
-    cs = Agent.pre_register(%Agent{}, attrs)
+    cs = Agent.pre_register_agent(%Agent{}, attrs)
     {:noreply, assign(socket, changeset: cs)}
   end
 

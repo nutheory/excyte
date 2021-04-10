@@ -10,5 +10,5 @@ defmodule ExcyteWeb.AgentView do
   }
   alias ExcyteWeb.Components.{ContactForm, Toggle}
   alias ExcyteWeb.Insight.{CreateLive}
-  alias ExcyteWeb.Settings.{Payment}
+  alias ExcyteWeb.{Settings, Settings.Payment}
 end

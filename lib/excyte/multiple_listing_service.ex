@@ -12,14 +12,14 @@ defmodule Excyte.Mls do
   def create_credential(attrs) do
     Multi.new()
     |> Multi.run(:pre_check, __MODULE__, :change_cred_registration, [attrs])
-    |> Multi.run(:maybe_merge, __MODULE__, :merge_default?, [attrs])
+    |> Multi.run(:maybe_set_default, __MODULE__, :merge_default?, [attrs])
     |> Multi.run(:save, __MODULE__, :save_credential, [attrs])
-    |> Multi.run(:count, __MODULE__, :get_credential_count, [attrs])
     |> Multi.run(:update_user, __MODULE__, :update_current_mls, [attrs])
+    # |> Multi.run(:maybe_setup_brokerage, __MODULE__, :setup_brokerage?, [attrs])
     |> Repo.transaction()
     |> case do
       {:ok, res} -> {:ok, res}
-      {:error, method, changeset, _} -> {:error, changeset}
+      {:error, _method, changeset, _} -> {:error, changeset}
     end
   end
 
@@ -34,19 +34,10 @@ defmodule Excyte.Mls do
       id: changes.save.id,
       dataset_id: changes.save.dataset_id,
       member_key: changes.save.member_key,
+      office_key: changes.save.office_key,
       access_token: changes.save.access_token,
-      mls_name: changes.save.mls_name,
-      count: changes.count
+      mls_name: changes.save.mls_name
     }})
-  end
-
-  def get_credential_count(_repo, _changes, %{agent_id: agent_id}) do
-    query =
-      from c in Credential,
-      where: c.agent_id == ^agent_id,
-      select: count()
-
-    {:ok, hd(Repo.all(query))}
   end
 
   def destroy_credential(%{agent_id: agent_id, cred_id: cred_id}) do
@@ -91,19 +82,20 @@ defmodule Excyte.Mls do
 
   defp reset_after_destroy(%{agent_id: agent_id}) do
     creds = get_credentials(%{agent_id: agent_id})
-    user =
-      if length(creds) > 0 do
-        Accounts.update_user(agent_id, %{current_mls: %{
-          id: hd(creds).id,
-          dataset_id: hd(creds).dataset_id,
-          access_token: hd(creds).access_token,
-          member_key: hd(creds).member_key,
-          mls_name: hd(creds).mls_name,
-          count: length(creds)
-        }})
-      else
-        Accounts.update_user(agent_id, %{current_mls: nil})
-      end
+
+    if length(creds) > 0 do
+      Accounts.update_user(agent_id, %{current_mls: %{
+        id: hd(creds).id,
+        dataset_id: hd(creds).dataset_id,
+        access_token: hd(creds).access_token,
+        member_key: hd(creds).member_key,
+        mls_name: hd(creds).mls_name,
+        count: length(creds)
+      }})
+    else
+      Accounts.update_user(agent_id, %{current_mls: nil})
+    end
+
     creds
   end
 end

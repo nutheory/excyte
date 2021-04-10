@@ -14,6 +14,7 @@ defmodule Excyte.Repo.Migrations.MlsCredentialsTable do
       add :username, :string
       add :dataset_id, :string
       add :member_key, :string
+      add :office_key, :string
       add :id_token, :text
       add :refresh_token, :text
       add :access_token, :text

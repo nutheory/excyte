@@ -43,8 +43,8 @@ defmodule Excyte.Mls.ResoApi do
   # uncomment middleware above
 
   def get_listings_by_agent(mls, %{list_agent_key: lak}) do
-    # ListAgentKet: "e01c0c36ad4a8e406770f2a56522ef91"
-    # ListAgentKet: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
+    # ListAgentKey: "e01c0c36ad4a8e406770f2a56522ef91"
+    # ListAgentKey: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
     query = get_expanded(mls)
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
       <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="

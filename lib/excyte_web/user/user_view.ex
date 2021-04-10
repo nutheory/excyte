@@ -1,11 +1,12 @@
 defmodule ExcyteWeb.UserView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/user/templates", path: ""]}
   alias ExcyteWeb.{
-    Agent.GettingStartedLive,
+    Agent.GettingStarted,
     Agent.Profile,
     Agent.MlsAuth,
-    PricingLive,
-    Settings.DashboardLive,
+    AgentPricing,
+    BrokeragePricing,
+    Settings.Dashboard,
     Settings.Account,
     Settings.Payment
   }

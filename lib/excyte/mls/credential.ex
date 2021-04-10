@@ -11,6 +11,7 @@ defmodule Excyte.Mls.Credential do
     field :email, :string
     field :mls_id, :string
     field :member_key, :string
+    field :office_key, :string
     field :dataset_id, :string
     field :zone_info, :string
     field :username, :string
@@ -33,6 +34,7 @@ defmodule Excyte.Mls.Credential do
       :email,
       :mls_id,
       :member_key,
+      :office_key,
       :dataset_id,
       :zone_info,
       :username,
@@ -52,7 +54,4 @@ defmodule Excyte.Mls.Credential do
       :access_token
     ])
   end
-
-
-
 end

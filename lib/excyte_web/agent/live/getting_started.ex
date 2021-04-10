@@ -24,7 +24,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
       cond do
         params["step"] !== nil -> params["step"]
         length(a.mls_list) === 0 -> "mls"
-        a.current_user.current_account_status !== "active" -> "payment"
+        a.current_user.current_account_status !== "new" -> "payment"
         a.profile.inserted_at !== a.profile.updated_at -> "profile"
         true -> "completed"
       end

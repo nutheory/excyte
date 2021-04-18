@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Brokerage.GettingStarted do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Agents, Mls}
+  alias Excyte.{Accounts, Agents, Brokerages, Mls}
   alias ExcyteWeb.BrokerageView
 
   def render(assigns), do: BrokerageView.render("getting_started.html", assigns)
@@ -9,12 +9,14 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
     cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
+    bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     profile = Agents.get_agent_profile(cu.id)
-
+    IO.inspect(socket, label: "SOCK", limit: 200)
     {:ok, assign(socket,
       current_user: cu,
       account: account,
       mls_list: mls_list,
+      brokerage_profile: bk_profile,
       profile: profile
     )}
   end
@@ -25,7 +27,8 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
         params["step"] !== nil -> params["step"]
         length(a.mls_list) === 0 -> "mls"
         a.current_user.current_account_status !== "active" -> "payment"
-        a.profile.inserted_at !== a.profile.updated_at -> "profile"
+        a.brokerage_profile.updated_by_user === false -> "brokerage_profile"
+        a.profile.updated_by_user === false -> "agent_profile"
         true -> "completed"
       end
 

@@ -4,6 +4,8 @@ defmodule Excyte.Mls.Credential do
 
   alias Excyte.Accounts.{User}
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "mls_credentials" do
     field :sub, :string
     field :agent_name, :string

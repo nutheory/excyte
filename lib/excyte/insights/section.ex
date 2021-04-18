@@ -6,6 +6,8 @@ defmodule Excyte.Insights.Section do
     Accounts.User
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "sections" do
     field :title, :string, null: false
     field :content, {:array, :map}

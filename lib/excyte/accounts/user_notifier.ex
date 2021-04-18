@@ -47,6 +47,10 @@ defmodule Excyte.Accounts.UserNotifier do
     deliver(user.email, "Please confirm your account", text_body, html_body)
   end
 
+  def deliver_invitation_instructions(user, url) do
+
+  end
+
   @doc """
   Deliver instructions to reset a user password.
   """

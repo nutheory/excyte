@@ -8,6 +8,8 @@ defmodule Excyte.Agents.Profile do
     Utils.Contact
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "profiles" do
     field :name, :string
     field :slug, :string
@@ -20,7 +22,7 @@ defmodule Excyte.Agents.Profile do
     field :intro_video_url, :string
     field :updated_by_user, :boolean
     embeds_many(:addresses, Address)
-    embeds_many(:contacts, Contact)
+    embeds_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:agent, User)
     timestamps()
   end

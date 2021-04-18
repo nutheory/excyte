@@ -7,6 +7,8 @@ defmodule Excyte.Brokerages.Brokerage do
     Utils.MapType,
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "brokerages" do
     field :owner_id, :integer
     field :name, :string

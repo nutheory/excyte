@@ -1,0 +1,57 @@
+<div>
+  <%= f = form_for @changeset, "#",
+    id: "profile_form",
+    phx_change: "validate",
+    phx_submit: "save"
+  %>
+    <div class="shadow-md bg-white rounded-md p-4">
+      <h3 class="text-lg leading-none font-extrabold text-gray-900" phx-click="toggle-logo-delete">Complete Brokerage Profile</h3>
+      <div class="flex flex-wrap my-4 -mx-3">
+        <div class="w-full lg:w-2/5">
+          <div class="px-3">
+            <div class="relative w-full h-24" phx-drop-target="<%= @uploads.logo.ref %>">
+              <%= for {_ref, err} <- @uploads.logo.errors do %>
+                <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
+              <% end %>
+              <%= for entry <- @uploads.logo.entries do %>
+                <%= live_img_preview entry, width: 90, class: "w-full h-full rounded" %>
+              <% end %>
+              <%= live_file_input @uploads.logo, class: "opacity-0 h-full w-full cursor-pointer absolute" %>
+              <%= if @profile.logo_url && length(@uploads.logo.entries) === 0 do %>
+                <img src="<%= @profile.logo_url %>" class="w-full h-full rounded-full" />
+              <% else %>
+                <%= if length(@uploads.logo.entries) === 0 do %>
+                  <div class="w-full h-full rounded border-dashed border-4 border-gray-700 text-bgray-700 bg-gray-200 flex items-center justify-center text-center ">Upload logo</div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4">
+        <%= label f, :company_name %>
+        <%= text_input f, :company_name, class: "text-field", phx_debounce: "blur" %>
+        <%= error_tag f, :company_name %>
+      </div>
+      <div class="mt-4">
+        <%= label f, :tagline %>
+        <%= text_input f, :tagline, class: "text-field", phx_debounce: "blur" %>
+        <%= error_tag f, :tagline %>
+      </div>
+      <div class="mt-4">
+        <%= label f, :description %>
+        <%= textarea f, :description, class: "textarea", phx_debounce: "blur" %>
+        <%= error_tag f, :description %>
+      </div>
+      <div class=" mt-4 sub-form">
+        <h2>Contacts</h2>
+        <p class="text-xs mt-1">Add <strong>public</strong> contact information such as email addresses, phone numbers, links, or any other method of staying connected.</p>
+        <%= live_component @socket, ContactForm,
+          form: f,
+          id: :profile_contacts
+        %>
+      </div>
+      <%= submit "Update brokerage profile", class: "submit mt-4 w-full", phx_disable_with: "Updating..." %>
+    </div>
+  </form>
+</div>

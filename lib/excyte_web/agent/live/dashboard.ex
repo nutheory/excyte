@@ -16,7 +16,6 @@ defmodule ExcyteWeb.Agent.Dashboard do
     else
       mls = cu.current_mls
       {:ok, agent_listings} = ResoApi.get_listings_by_agent(mls, %{list_agent_key: mls.member_key})
-      IO.inspect(agent_listings, label: "AG")
       {:ok, assign(socket, current_user: cu, recents: agent_listings.listings)}
     end
   end

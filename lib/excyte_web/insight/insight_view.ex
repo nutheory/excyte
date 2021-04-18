@@ -3,9 +3,9 @@ defmodule ExcyteWeb.InsightView do
   import Number.{Delimit}
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Insight.{
-    CreateLive,
-    BuilderLive,
-    EditorLive,
+    Create,
+    Builder,
+    Editor,
     EditorMenuBubble,
     EditorMenuFloat,
     FilterListings,

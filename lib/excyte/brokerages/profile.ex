@@ -8,6 +8,8 @@ defmodule Excyte.Brokerages.Profile do
     Utils.Contact
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "profiles" do
     field :slug, :string
     field :tagline, :string
@@ -18,7 +20,7 @@ defmodule Excyte.Brokerages.Profile do
     field :intro_video_url, :string
     field :updated_by_user, :boolean
     embeds_many(:addresses, Address)
-    embeds_many(:contacts, Contact)
+    embeds_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:brokerage, Brokerage)
     timestamps()
   end

@@ -8,6 +8,8 @@ defmodule Excyte.Agents.Agent do
     Repo
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "users" do
     field :full_name, :string
     field :email, :string
@@ -16,7 +18,7 @@ defmodule Excyte.Agents.Agent do
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :completed_setup, :boolean
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime
     belongs_to(:account, Account)
     has_many(:mls_credentials, Credential)
     timestamps()
@@ -41,8 +43,23 @@ defmodule Excyte.Agents.Agent do
 
   def registration_changeset(agent, attrs) do
     agent
-    |> cast(attrs, [:full_name, :email, :password, :account_id, :brokerage_id])
-    |> validate_required([:full_name])
+    |> cast(attrs, [:full_name, :email, :password, :account_id])
+    |> validate_required([:full_name, :account_id])
+    |> User.validate_email()
+    |> User.validate_password()
+  end
+
+  def brokerage_registration_changeset(agent, attrs) do
+    agent
+    |> cast(attrs, [
+      :full_name,
+      :email,
+      :password,
+      :account_id,
+      :brokerage_id
+    ])
+    |> validate_required([:full_name, :email, :account_id, :brokerage_id])
+    |> put_change(:brokerage_role, "owner")
     |> User.validate_email()
     |> User.validate_password()
   end

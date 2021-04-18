@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Insight.ReviewLive do
+defmodule ExcyteWeb.Insight.Review do
   use ExcyteWeb, :live_view
 
   alias Excyte.{

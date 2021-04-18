@@ -10,6 +10,8 @@ defmodule Excyte.Properties.Property do
     Utils.MapType
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   @cast_opts [
       :agent_id,
       :foreign_id,
@@ -98,7 +100,7 @@ defmodule Excyte.Properties.Property do
     field :lotsize_sqft, :integer
     field :lotsize_preference, :string
     field :close_date, :string
-    field :pending_timestamp, :naive_datetime
+    field :pending_timestamp, :utc_datetime
     field :distance_from_subject, :string
     field :list_price, :string
     field :stories, :integer
@@ -107,7 +109,7 @@ defmodule Excyte.Properties.Property do
     field :listing_key, :string
     field :listing_id, :string
     field :features, {:array, :map}
-    field :last_modified, :naive_datetime
+    field :last_modified, :utc_datetime
     field :dirty_info, {:array, :map}
     field :history, MapType
     field :public_records, MapType

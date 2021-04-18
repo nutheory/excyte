@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Insight.CreateLive do
+defmodule ExcyteWeb.Insight.Create do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Insights, Insights.Insight, Mls.ResoApi, Properties}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}

@@ -41,10 +41,5 @@
         </li>
       <% end %>
     </ul>
-    <%= if length(@mls_list) > 0 do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "payment"), replace: false do %>
-            <div class="action-button my-6">Continue...</div>
-          <% end %>
-        <% end %>
   <% end %>
 </div>

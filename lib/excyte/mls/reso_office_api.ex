@@ -1,4 +1,4 @@
-defmodule Excyte.Mls.ResoMemberApi do
+defmodule Excyte.Mls.ResoOfficeApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
   alias Excyte.Mls.{MetaCache}
@@ -9,21 +9,19 @@ defmodule Excyte.Mls.ResoMemberApi do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  def getMemberDetails(mls) do
-    get("#{mls.dataset_id}/Member(%27#{mls.member_key}%27)?access_token=#{mls.access_token}")
+  def getOfficeDetails(mls) do
+    get("#{mls.dataset_id}/Office(%27#{mls.office_key}%27)?access_token=#{mls.access_token}")
     |> format_response()
     |> case do
       {:ok, md} ->
         %{
-          company_name: md["OfficeName"],
-          job_title: md["JobTitle"],
           contacts: process_contacts(md),
           address: [%{
-            address_one: md["MemberAddress1"],
-            address_two: md["MemberAddress2"],
-            zip: md["MemberPostalCode"],
-            city: md["MemberCity"],
-            state: md["MemberStateOrProvince"]
+            address_one: md["OfficeAddress1"],
+            address_two: md["OfficeAddress2"],
+            zip: md["OfficePostalCode"],
+            city: md["OfficeCity"],
+            state: md["OfficeStateOrProvince"]
           }]
         }
       {:error, err} -> {:error, err}
@@ -31,7 +29,7 @@ defmodule Excyte.Mls.ResoMemberApi do
   end
 
   defp process_contacts(member) do
-    fields = ["MemberMobilePhone", "MemberHomePhone", "MemberOfficePhone", "MemberTollFreePhone", "MemberTollFreePhone", "MemberVoiceMail"]
+    fields = ["OfficeEmail", "OfficeFax", "OfficePhone"]
     Enum.reduce(fields, [], fn md, acc ->
       if member[md] !== nil do
         [%{ name: split_name_by_case(md), content: member[md] } | acc]
@@ -43,7 +41,7 @@ defmodule Excyte.Mls.ResoMemberApi do
   end
 
   def split_name_by_case(str) do
-    tl(String.split(str, "Member"))
+    tl(String.split(str, "Office"))
     |> hd()
     |> String.split(~r/(?=[A-Z])/)
     |> tl()

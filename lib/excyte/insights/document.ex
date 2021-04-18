@@ -10,6 +10,8 @@ defmodule Excyte.Insights.Document do
     Utils.MapType
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "documents" do
     field :title, :string, null: false
     field :description, :string

@@ -8,6 +8,8 @@ defmodule Excyte.Insights.DocumentTemplate do
     Insights.Template
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "document_templates" do
     belongs_to(:templates, Template)
     belongs_to(:documents, Document)

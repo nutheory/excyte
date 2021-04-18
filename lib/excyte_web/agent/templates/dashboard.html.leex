@@ -2,7 +2,7 @@
   <div class="flex mt-6">
     <h1 class="flex-1">Dashboard</h1>
     <div class="flex">
-      <%= live_redirect to: Routes.live_path(@socket, CreateLive, "cma") do %>
+      <%= live_redirect to: Routes.live_path(@socket, Create, "cma") do %>
         <button class="py-2 px-4 h-full mr-0.5 capitalize tracking-wide bg-bgray-600 text-white rounded hover:bg-gray-500 focus:outline-none focus:bg-gray-700">Create a CMA</button>
       <% end %>
       <div x-data="{ dropdownOpen: false }" x-cloak class="relative">

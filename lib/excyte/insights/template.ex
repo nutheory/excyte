@@ -8,6 +8,8 @@ defmodule Excyte.Insights.Template do
     Utils.MapType
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "templates" do
     field :name, :string
     field :description, :string

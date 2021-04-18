@@ -32,7 +32,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :lotsize_sqft, :integer
       add :lotsize_preference, :string, default: "sqft"
       add :close_date, :string
-      add :pending_timestamp, :naive_datetime
+      add :pending_timestamp, :utc_datetime
       add :distance_from_subject, :string
       add :list_price, :string
       add :est_price, :integer
@@ -41,7 +41,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :listing_key, :string
       add :listing_id, :string
       add :features, :jsonb, default: "[]"
-      add :last_modified, :naive_datetime
+      add :last_modified, :utc_datetime
       add :dirty_info, :jsonb, default: "[]"
       add :history, :map, default: %{}
       add :public_records, :map, default: %{}

@@ -42,7 +42,7 @@ defmodule Excyte.MlsFixtures do
       Map.from_struct(user)
       |> Enum.into(%{
         agent_id: user.id,
-        access_token: "c72f9c07c32759011128b84001acb35d",
+        access_token: "6baca547742c6f96a6ff71b138424f21",
         refresh_token: "11ac9d8dad11b810ac5ed6680ef57ac3",
         id_token: "JufbUZM7YgSPn2fGSbHn",
         expires_in: 3600,

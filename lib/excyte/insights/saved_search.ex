@@ -6,6 +6,8 @@ defmodule Excyte.Insights.SavedSearch do
     Utils.MapType
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "saved_searches" do
     field :subject_foreign_url, :string
     field :query, :string

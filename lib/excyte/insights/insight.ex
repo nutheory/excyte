@@ -10,6 +10,8 @@ defmodule Excyte.Insights.Insight do
     Utils.MapType
   }
 
+  @timestamps_opts [type: :utc_datetime]
+
   schema "insights" do
     field :type, :string
     field :mls, :string

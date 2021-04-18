@@ -25,9 +25,15 @@ defmodule Excyte.Agents do
     |> Repo.insert()
   end
 
-  def update_profile(%Profile{} = profile, attrs) do
+  def update_profile(%Profile{} = profile, attrs, after_save \\ &{:ok, &1}) do
     profile
     |> Profile.changeset(attrs)
     |> Repo.update()
+    |> after_save(after_save)
   end
+
+  defp after_save({:ok, profile}, func) do
+    {:ok, _profile} = func.(profile)
+  end
+  defp after_save(error, _func), do: error
 end

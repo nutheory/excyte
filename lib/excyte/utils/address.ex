@@ -2,6 +2,8 @@ defmodule Excyte.Utils.Address do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @timestamps_opts [type: :utc_datetime]
+
   embedded_schema do
     field :temp_id, :string, virtual: true
     field :delete, :boolean, virtual: true

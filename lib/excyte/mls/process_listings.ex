@@ -10,6 +10,10 @@ defmodule Excyte.Mls.ProcessListings do
     {:ok, Map.merge(resp, %{listings: new_dataset})}
   end
 
+  def simple_process({:error, :timeout}) do
+    {:error, %{errors: [%{message: "MLS Server timing out."}]}}
+  end
+
   def process_init({:ok, %{listings: listings} = resp}, subject) do
     new_dataset =
       Enum.map(listings, fn listing ->
@@ -105,20 +109,6 @@ defmodule Excyte.Mls.ProcessListings do
       }
     }
   end
-
-  # defp to_f(str) do
-  #   if "#{str}" !== "" do
-  #     if String.contains?("#{str}", ".") do
-  #       String.replace("#{str}", ~r/[^0-9.]/, "")
-  #       |> String.to_float()
-  #     else
-  #       String.replace("#{str}" <> ".0", ~r/[^0-9.]/, "")
-  #       |> String.to_float()
-  #     end
-  #   else
-  #     0.0
-  #   end
-  # end
 
   defp main_photo(media) do
     Enum.find(media, fn m ->

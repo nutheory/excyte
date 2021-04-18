@@ -3,6 +3,7 @@ defmodule Excyte.Accounts.User do
   import Ecto.Changeset
   import Ecto.Query
 
+
   alias Excyte.{
     Accounts.Account,
     Agents.Profile,
@@ -13,6 +14,7 @@ defmodule Excyte.Accounts.User do
   }
 
   @derive {Inspect, except: [:password]}
+  @timestamps_opts [type: :utc_datetime]
 
   schema "users" do
     field :full_name, :string
@@ -27,7 +29,7 @@ defmodule Excyte.Accounts.User do
     field :current_avatar, :string
     field :hashed_password, :string
     field :completed_setup, :boolean
-    field :confirmed_at, :naive_datetime
+    field :confirmed_at, :utc_datetime
     belongs_to(:account, Account)
     belongs_to(:brokerage, Brokerage)
     has_many(:mls_credentials, Credential)

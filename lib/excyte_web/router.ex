@@ -105,6 +105,8 @@ defmodule ExcyteWeb.Router do
     pipe_through [:app_browser, :redirect_if_user_is_authenticated, :auth]
     live "/agent/registration", AgentRegistration
     live "/brokerage/registration", BrokerageRegistration
+    get "/brokerage/invite/:token", UserInvitationController, :accept
+    put "/brokerage/invite/:token/:id/invite_update", UserInvitationController, :update_user
     get "/log_in", UserSessionController, :new
     post "/log_in", UserSessionController, :create
     get "/reset_password", UserResetPasswordController, :new

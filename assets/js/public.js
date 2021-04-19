@@ -4,29 +4,50 @@ import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
+import {validatePassword, toggleShowPassword} from "./auth"
 import topbar from "topbar"
 
-const left = document.querySelector(".left")
-const right = document.querySelector(".right")
-const container = document.querySelector(".p-container")
+const regPassword = document.querySelector("#invite_password")
+const showPassword = document.querySelector("#show_password_txt")
 
-left.addEventListener('mouseenter', () => {
-  container.classList.add('hover-left')
-})
-
-left.addEventListener('mouseleave', () => {
-  container.classList.remove('hover-left')
-})
-
-right.addEventListener('mouseenter', () => {
-  container.classList.add('hover-right')
-})
-
-right.addEventListener('mouseleave', () => {
-  container.classList.remove('hover-right')
-})
+if (regPassword) {
+  regPassword.addEventListener('keyup', validatePassword)
+  showPassword.addEventListener('click', (e) => toggleShowPassword(e, regPassword, showPassword))
+}
 
 let Hooks = {}
+
+Hooks.HomeSplit = {
+  mount(){
+    const left = document.querySelector(".left")
+    const right = document.querySelector(".right")
+    const container = document.querySelector(".p-container")
+
+
+    left.addEventListener('mouseenter', () => {
+      container.classList.add('hover-left')
+    })
+
+    left.addEventListener('mouseleave', () => {
+      container.classList.remove('hover-left')
+    })
+
+    right.addEventListener('mouseenter', () => {
+      container.classList.add('hover-right')
+    })
+
+    right.addEventListener('mouseleave', () => {
+      container.classList.remove('hover-right')
+    })
+  }
+}
+
+Hooks.RegistrationPassword = {
+  mounted(){
+    this.el.addEventListener('keyup', validatePassword)
+  }
+}
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {

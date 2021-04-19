@@ -21,7 +21,6 @@ import {ViewportResize} from "./viewport_resize"
 import {InitEditor} from "./editor"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
-import {validatePassword, toggleShowPassword} from "./auth"
 import topbar from "topbar"
 
 let Hooks = {}
@@ -32,13 +31,6 @@ Hooks.InitCheckout = InitCheckout
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
-
-Hooks.RegistrationPassword = {
-  mounted(){
-    this.el.addEventListener('keyup', validatePassword)
-  }
-}
-
 
 Hooks.DistanceSelector = {
   mounted(){

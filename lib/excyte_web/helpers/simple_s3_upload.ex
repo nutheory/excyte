@@ -77,7 +77,7 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
 
   defp amz_date(time) do
     time
-    |> NaiveDateTime.to_iso8601()
+    |> DateTime.to_iso8601()
     |> String.split(".")
     |> List.first()
     |> String.replace("-", "")

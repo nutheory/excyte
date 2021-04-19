@@ -7,6 +7,7 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
     create table(:users) do
       add :account_id, references(:accounts, on_delete: :delete_all)
       add :brokerage_id, references(:brokerages)
+      add :invited_by_id, references(:users)
       add :full_name, :string, null: false
       add :email, :citext, null: false
       add :timezone, :string, default: "America/Los_Angeles"
@@ -18,7 +19,7 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
       add :current_account_status, :string, default: "new"
       add :completed_setup, :boolean, default: false
       add :contact_settings, :map, default: %{}
-      add :hashed_password, :string, null: false
+      add :hashed_password, :string
       add :confirmed_at, :utc_datetime
       add :last_sign_in_at, :utc_datetime
       timestamps()

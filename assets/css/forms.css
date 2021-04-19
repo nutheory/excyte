@@ -70,7 +70,7 @@ form,
   }
 
   & textarea.textarea {
-    @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
+    @apply text-gray-700 h-24 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
   }
 
   & input.text-field:focus,
@@ -132,7 +132,7 @@ form,
 }
 
 .link-button {
-  @apply text-cyan-600 inline-block;
+  @apply text-cyan-600 inline-block cursor-pointer;
 }
 
 .link-button:hover {

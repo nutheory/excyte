@@ -3,8 +3,8 @@ defmodule Excyte.Brokerages do
   alias Ecto.Multi
   alias Excyte.Repo
 
-  alias Excyte.Brokerages.{Brokerage, Profile, Invitation}
-  alias Excyte.{Utils.Contact}
+  alias Excyte.Brokerages.{Brokerage, Profile}
+  alias Excyte.{Accounts.User, Utils.Contact}
 
   def create_brokerage(attrs) do
     %Brokerage{}
@@ -18,16 +18,16 @@ defmodule Excyte.Brokerages do
 
   def get_brokerage_profile(_brokerage_id), do: %Profile{contacts: []}
 
-  def get_invitations(brokerage_id) do
-    Repo.get_by(Invitation, %{brokerage_id: brokerage_id})
+  def get_invitations(bk_id) do
+    query =
+      from(u in User,
+        where: u.brokerage_id == ^bk_id and not(is_nil(u.invited_by_id))
+      )
+    Repo.all(query)
   end
 
   def verify_invitation(%{email: email, token: token}) do
 
-  end
-
-  def change_invitation(%Invitation{} = invite, attrs \\ %{}) do
-    Invitation.changeset(invite, attrs)
   end
 
   def change_profile(%Profile{} = profile, attrs \\ %{}) do
@@ -41,12 +41,6 @@ defmodule Excyte.Brokerages do
   def create_profile(%Profile{} = profile, attrs) do
     profile
     |> Profile.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def create_invitation(attrs) do
-    %Invitation{}
-    |> Invitation.changeset(attrs)
     |> Repo.insert()
   end
 

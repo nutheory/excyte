@@ -10,10 +10,7 @@ defmodule Excyte.Brokerages.Brokerage do
   @timestamps_opts [type: :utc_datetime]
 
   schema "brokerages" do
-    field :owner_id, :integer
     field :name, :string
-    field :office_broker_key, :string
-    field :office_key, :string
     field :agent_limit, :integer
     field :contact_settings, MapType
     field :legal_link, :string
@@ -28,9 +25,6 @@ defmodule Excyte.Brokerages.Brokerage do
       :name,
       :contact_settings,
       :account_id,
-      :owner_id,
-      :office_broker_key,
-      :office_key,
       :agent_limit,
       :legal_link,
       :legal_text

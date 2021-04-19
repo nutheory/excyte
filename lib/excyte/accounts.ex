@@ -102,17 +102,17 @@ defmodule Excyte.Accounts do
     end
   end
 
-  def register_brokerage_agent(attrs) do
-    Multi.new()
-    |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
-    |> Multi.run(:agent, __MODULE__, :create_brokerage_agent, [attrs])
-    |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{agent: agent}} -> {:ok, agent}
-      {:error, _method, changeset, _} -> {:error, changeset}
-    end
-  end
+  # def register_brokerage_agent(attrs) do
+  #   Multi.new()
+  #   |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
+  #   |> Multi.run(:agent, __MODULE__, :create_brokerage_agent, [attrs])
+  #   |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
+  #   |> Repo.transaction()
+  #   |> case do
+  #     {:ok, %{agent: agent}} -> {:ok, agent}
+  #     {:error, _method, changeset, _} -> {:error, changeset}
+  #   end
+  # end
 
   def register_agent(attrs) do
     Multi.new()
@@ -153,14 +153,14 @@ defmodule Excyte.Accounts do
     |> Repo.insert()
   end
 
-  def create_brokerage_agent(_repo, _changes, %{brokerage_id: bkid, account_id: accid} = attrs) do
-    %User{}
-    |> Agent.registration_changeset(Map.merge(attrs, %{
-      brokerage_id: bkid,
-      account_id: accid
-    }))
-    |> Repo.insert()
-  end
+  # def create_brokerage_agent(_repo, _changes, %{brokerage_id: bkid, account_id: accid} = attrs) do
+  #   %User{}
+  #   |> Agent.registration_changeset(Map.merge(attrs, %{
+  #     brokerage_id: bkid,
+  #     account_id: accid
+  #   }))
+  #   |> Repo.insert()
+  # end
 
   def create_agent(_repo, %{account: acc}, attrs) do
     %User{}
@@ -505,6 +505,12 @@ defmodule Excyte.Accounts do
     User.invitation_changeset(user, attrs)
   end
 
+  def create_brokerage_invitation(attrs) do
+    %User{}
+    |> User.invitation_changeset(attrs)
+    |> Repo.insert()
+  end
+
   def deliver_user_invitation_instructions(%User{} = user, invitation_url_fun)
       when is_function(invitation_url_fun, 1) do
     if user.confirmed_at do
@@ -518,7 +524,7 @@ defmodule Excyte.Accounts do
 
   def fetch_user_from_invitation(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "invitation"),
-         %User{} = user <- Repo.one(query) do
+         %User{} = user <- Repo.one(query) |> Repo.preload(:brokerage) do
       {:ok, user}
     else
       _ -> :error

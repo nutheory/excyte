@@ -6,6 +6,7 @@ defmodule Excyte.Accounts.User do
 
   alias Excyte.{
     Accounts.Account,
+    Accounts.User,
     Agents.Profile,
     Brokerages.Brokerage,
     Mls.Credential,
@@ -20,6 +21,7 @@ defmodule Excyte.Accounts.User do
     field :full_name, :string
     field :email, :string
     field :timezone, :string
+    field :invite_message, :string
     field :brokerage_role, :string
     field :excyte_role, :string
     field :password, :string, virtual: true
@@ -32,6 +34,7 @@ defmodule Excyte.Accounts.User do
     field :confirmed_at, :utc_datetime
     belongs_to(:account, Account)
     belongs_to(:brokerage, Brokerage)
+    belongs_to(:invited_by, User)
     has_many(:mls_credentials, Credential)
     has_many(:profiles, Profile)
     timestamps()
@@ -62,6 +65,28 @@ defmodule Excyte.Accounts.User do
     |> validate_email()
     |> validate_password()
     |> put_change(:excyte_role, "client")
+  end
+
+  def invitation_changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :full_name,
+      :email,
+      :account_id,
+      :invite_message,
+      :brokerage_role,
+      :brokerage_id,
+      :invited_by_id
+    ])
+    |> validate_required([
+      :full_name,
+      :invite_message,
+      :account_id,
+      :brokerage_role,
+      :brokerage_id,
+      :invited_by_id
+    ])
+    |> validate_email()
   end
 
   def validate_email(changeset) do
@@ -122,7 +147,17 @@ defmodule Excyte.Accounts.User do
   Confirms the account by setting `confirmed_at`.
   """
   def confirm_changeset(user) do
-    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    change(user, confirmed_at: now)
+  end
+
+  def accept_invitation_changeset(user, attrs) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    user
+    |> cast(attrs, [:full_name, :email, :password])
+    |> validate_required([:full_name])
+    |> validate_email()
+    |> validate_password()
     change(user, confirmed_at: now)
   end
 

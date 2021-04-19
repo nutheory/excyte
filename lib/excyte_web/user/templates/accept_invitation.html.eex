@@ -1,0 +1,39 @@
+<div class="py-6">
+  <div class="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
+    <div class="w-full p-8 lg:w-1/2">
+      <h2 class="text-2xl leading-none font-extrabold text-gray-900">
+        Welcome to Excyte.io
+      </h2>
+      <p class="rounded p-2 bg-green-200 text-green-700">
+
+      </p>
+      <%= form_for @changeset, Routes.user_invitation_path(@conn, :update_user, @token, @user.id), [method: :put], fn f -> %>
+        <div class="mt-4">
+          <%= label f, :full_name %>
+          <%= text_input f, :full_name, class: "text-field", phx_debounce: "blur" %>
+          <%= error_tag f, :full_name %>
+        </div>
+        <div class="mt-4">
+          <%= label f, :email %>
+          <%= email_input f, :email, class: "text-field", phx_debounce: "blur" %>
+          <%= error_tag f, :email %>
+        </div>
+        <div class="mt-4 relative">
+          <div id="show_password_txt" class="absolute top-0 right-0 pt-1 cursor-pointer text-xs" phx-click="togglePassword"><%= @show_text %></div>
+          <%= label f, :password %>
+          <%= error_tag f, :password %>
+          <input type="<%= @password_type %>" id="invite_password" phx-debounce="2000" value="<%= @password_value %>" name="agent[password]" class="text-field pr-12" />
+        </div>
+        <ul class="text-xs text-gray-700 mt-1">
+          <li id="pw_length">Must be at least 8 characters</li>
+          <li id="pw_case">Must contain uppercase and lowercase letters</li>
+          <li id="pw_special">Must contain at least one number or special character</li>
+        </ul>
+        <div class="mt-4">
+          <%= submit "Create Account", class: "submit w-full block", phx_disable_with: "Creating" %>
+        </div>
+      <% end %>
+    </div>
+    <div class="hidden lg:block lg:w-1/2 bg-cover" style="background-image:url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')"></div>
+  </div>
+</div>

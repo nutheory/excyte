@@ -84,12 +84,18 @@ defmodule ExcyteWeb.Agent.Profile do
     if profile.updated_by_user === false && mls.member_key do
       mls_details = ResoMemberApi.getMemberDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
-        %Contact{temp_id: Utilities.get_temp_id(), name: cnt.name, content: cnt.content}
+        %Contact{
+          temp_id: Utilities.get_temp_id(),
+          name: cnt.name,
+          content: cnt.content,
+          type: Utilities.assign_contact_type(cnt.content)
+        }
       end)
 
       contacts = profile.contacts ++ mls_contacts
-      Agents.change_profile(Map.merge(profile, mls_details))
+      Agents.change_profile(profile, mls_details)
       |> Ecto.Changeset.put_embed(:contacts, contacts)
+      |> Map.put(:action, :validate)
     else
       contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
       Agents.change_profile(profile)

@@ -34,7 +34,7 @@
           <div id="show_password_txt" class="absolute top-0 right-0 pt-1 cursor-pointer text-xs" phx-click="togglePassword"><%= @show_text %></div>
           <%= label f, :password %>
           <%= error_tag f, :password %>
-          <input type="<%= @password_type %>" id="user_password" phx-debounce="2000" value="<%= @password_value %>" name="agent[password]" class="text-field pr-12" phx-hook="RegistrationPassword" />
+          <input type="<%= @password_type %>" id="user_password" phx-debounce="2000" value="<%= @password_value %>" name="agent[password]" class="text-field pr-12" phx-hook="Registration" />
         </div>
           <ul class="text-xs text-gray-700 mt-1">
             <li id="pw_length">Must be at least 8 characters</li>

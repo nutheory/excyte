@@ -36,7 +36,7 @@ window.setupEditor = function (content) {
   // updatedAt is to force Alpine to rerender on selection change
   return {
     updatedAt: Date.now(),
-    content: content,
+    content: '<div><div class="prose max-w-full" id="5dba1fc04aa4055b9f298357"><div class="mx-6"><h2>114 Tianna Expressway Streets</h2></div><div class="image-scroller h-32 lg:h-48 xl:h-64 my-6"><div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/33.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/29.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/26.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/05.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/03.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/18.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/25.jpg"> </div> </div> <br> </div></div>',
     inFocus: true,
     linkInput: null,
     menuLinkVisible: false,
@@ -142,6 +142,8 @@ export const InitEditor = {
       .setAttribute("style",`height:${window.innerHeight - editorOffsetHeight}px`)
     // let c = "Initializing..."
     // let editor
+
+    // const content = ()[0].outerHTML
 
     this.handleEvent("loadContentFromDb", ({content}) => {
       console.log("CONTENT", content)

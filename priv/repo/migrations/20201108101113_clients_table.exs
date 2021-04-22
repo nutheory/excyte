@@ -6,9 +6,9 @@ defmodule Excyte.Repo.Migrations.ClientsTable do
       add :agent_id, references(:users)
       add :assigned_to_id, references(:users)
       add :brokerage_id, references(:brokerages)
-      add :shared, :boolean, default: false
+      add :is_shared, :boolean, default: false
       add :is_lead, :boolean, default: false
-      add :archive, :boolean, default: false
+      add :is_archived, :boolean, default: false
       add :status, :string, default: "new"
       add :position_x, :integer, default: 3
       add :position_y, :integer, default: 0

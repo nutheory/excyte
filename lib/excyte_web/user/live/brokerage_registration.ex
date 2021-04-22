@@ -1,5 +1,5 @@
 defmodule ExcyteWeb.BrokerageRegistration do
-  use ExcyteWeb, :live_auth_view
+  use ExcyteWeb, :live_public_view
   alias Excyte.{Accounts, Accounts.User, Agents.Agent}
   alias ExcyteWeb.{UserView, Helpers.Utilities}
 

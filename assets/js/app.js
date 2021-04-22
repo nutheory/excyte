@@ -16,7 +16,7 @@ import "../css/app.css"
 import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
-import {LiveSocket} from "phoenix_live_view"
+import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
 import {InitEditor} from "./editor"
 import {InitCheckout} from "./init_checkout"

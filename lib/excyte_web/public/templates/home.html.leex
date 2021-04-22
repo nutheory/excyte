@@ -1,8 +1,10 @@
-<div class="p-container" phx-hook="HomeSplit">
-  <div class="split left flex items-center justify-center">
-    <h1 class="absolute z-40"><%= live_redirect "Agents", to: Routes.live_path(@socket, ExcyteWeb.AgentRegistration) %></h1>
-  </div>
-  <div class="split right flex items-center justify-center">
-    <h1 class="absolute z-40"><%= live_redirect "Brokerages", to: Routes.live_path(@socket, ExcyteWeb.BrokerageRegistration) %></h1>
+<div id="home_split" phx-hook="HomeSplit">
+  <div class="p-container">
+    <div class="split left flex items-center justify-center">
+      <h1 class="absolute z-40"><%= live_redirect "Agents", to: Routes.live_path(@socket, ExcyteWeb.AgentRegistration) %></h1>
+    </div>
+    <div class="split right flex items-center justify-center">
+      <h1 class="absolute z-40"><%= live_redirect "Brokerages", to: Routes.live_path(@socket, ExcyteWeb.BrokerageRegistration) %></h1>
+    </div>
   </div>
 </div>

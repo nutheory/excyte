@@ -81,19 +81,16 @@ body {
 
 /* Alerts and form errors */
 .alert {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  margin-left: 1.5rem;
-  padding: 10px;
+  @apply mt-3 py-3 px-8;
+
   border: 1px solid transparent;
   border-radius: 4px;
 }
 
 .alert-info {
   color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+  background-color: #afe2fb;
+  border-color: #31708f;
 }
 
 .alert-warning {
@@ -107,4 +104,8 @@ body {
   background-color: #f2dede;
   border-color: #ebccd1;
   font-size: 0.85rem !important;
+}
+
+.alert:empty {
+  display: none;
 }

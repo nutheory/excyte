@@ -3,7 +3,7 @@ import "../css/public.css"
 import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
-import {LiveSocket} from "phoenix_live_view"
+import LiveSocket from "phoenix_live_view"
 import {validatePassword, toggleShowPassword} from "./auth"
 import topbar from "topbar"
 
@@ -18,11 +18,10 @@ if (regPassword) {
 let Hooks = {}
 
 Hooks.HomeSplit = {
-  mount(){
-    const left = document.querySelector(".left")
-    const right = document.querySelector(".right")
-    const container = document.querySelector(".p-container")
-
+  mounted(){
+    const left = this.el.querySelector(".left")
+    const right = this.el.querySelector(".right")
+    const container = this.el.querySelector(".p-container")
 
     left.addEventListener('mouseenter', () => {
       container.classList.add('hover-left')
@@ -42,7 +41,7 @@ Hooks.HomeSplit = {
   }
 }
 
-Hooks.RegistrationPassword = {
+Hooks.Registration = {
   mounted(){
     this.el.addEventListener('keyup', validatePassword)
   }

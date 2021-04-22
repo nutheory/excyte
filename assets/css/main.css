@@ -98,18 +98,15 @@ nav {
 /* Alerts and form errors */
 .alert {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  margin-left: 1.5rem;
-  padding: 10px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+  top: 0;
+  right: 0;
+  border-bottom: 1px solid transparent;
 }
 
 .alert-info {
   color: #31708f;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+  background-color: #afe2fb;
+  border-color: #31708f;
 }
 
 .alert-warning {
@@ -125,8 +122,8 @@ nav {
   font-size: 0.85rem !important;
 }
 
-.alert p {
-  margin-bottom: 0;
+.alert p.inner {
+  @apply max-w-screen-xl py-3 px-8 mx-auto;
 }
 
 .alert:empty {

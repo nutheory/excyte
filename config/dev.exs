@@ -2,7 +2,7 @@ use Mix.Config
 
 import_config "dev_open_id_providers.exs"
 import_config "pricing.exs"
-import_config "proxies.exs"
+# import_config "proxies.exs"
 config :excyte, env: :dev
 
 # Configure your database

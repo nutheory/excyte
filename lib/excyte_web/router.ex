@@ -22,8 +22,6 @@ defmodule ExcyteWeb.Router do
     plug :put_secure_browser_headers
   end
 
-
-
   pipeline :auth do
     plug :put_layout, {ExcyteWeb.LayoutView, "auth.html"}
   end
@@ -102,13 +100,14 @@ defmodule ExcyteWeb.Router do
   end
 
   scope "/", ExcyteWeb do
-    pipe_through [:app_browser, :redirect_if_user_is_authenticated, :auth]
-    live "/agent/registration", AgentRegistration
-    live "/brokerage/registration", BrokerageRegistration
+    pipe_through [:public, :redirect_if_user_is_authenticated, :auth]
     get "/brokerage/invite/:token", UserInvitationController, :accept
     put "/brokerage/invite/:token/:id/invite_update", UserInvitationController, :update_user
-    get "/log_in", UserSessionController, :new
-    post "/log_in", UserSessionController, :create
+    get "/confirm", UserConfirmationController, :new
+    post "/confirm", UserConfirmationController, :create
+    get "/confirm/:token", UserConfirmationController, :confirm
+    get "/login", UserSessionController, :new
+    post "/login", UserSessionController, :create
     get "/reset_password", UserResetPasswordController, :new
     post "/reset_password", UserResetPasswordController, :create
     get "/reset_password/:token", UserResetPasswordController, :edit
@@ -117,13 +116,12 @@ defmodule ExcyteWeb.Router do
 
   scope "/", ExcyteWeb do
     pipe_through [:public]
-    get "/confirm", UserConfirmationController, :new
-    post "/confirm", UserConfirmationController, :create
-    get "/confirm/:token", UserConfirmationController, :confirm
     live "/", Home
     live "/agents", AgentsMarketing
     live "/agents/pricing", AgentPricing
+    live "/agent/registration", AgentRegistration
     live "/brokerages", BrokeragesMarketing
     live "/brokerages/pricing", BrokeragePricing
+    live "/brokerage/registration", BrokerageRegistration
   end
 end

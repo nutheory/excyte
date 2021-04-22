@@ -1,7 +1,7 @@
 const path = require('path');
 const glob = require('glob');
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development'
@@ -10,7 +10,10 @@ module.exports = {
   mode: mode,
   optimization: {
     minimizer: [
-      new TerserPlugin({ cache: true, parallel: true }),
+      new ESBuildMinifyPlugin({
+        target: 'esnext',
+        css: true
+      })
     ]
   },
   entry: {
@@ -19,6 +22,7 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
+    chunkFilename: "[name].bundle.js",
     path: path.resolve(__dirname, '../priv/static/js'),
     publicPath: '/js/'
   },
@@ -28,11 +32,10 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: require.resolve('babel-loader')
-          }
-        ]
+        loader: 'esbuild-loader',
+        options: {
+          target: 'esnext'
+        },
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -44,14 +47,23 @@ module.exports = {
         ],
       },
       {
-        test: /\.[s]?css$/,
+        test: /(\.css)$/,
+        include: /node_modules/,
         use: [
           MiniCssExtractPlugin.loader,
-          require.resolve('css-loader'),
-          require.resolve('sass-loader'),
-          require.resolve('postcss-loader')
+          { loader: 'css-loader', options: { url: false } }
         ],
-      }
+      },
+      {
+        test: /(\.css)$/,
+        exclude: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { url: false } },
+          'sass-loader',
+          'postcss-loader',
+        ],
+      },
     ]
   },
   plugins: [

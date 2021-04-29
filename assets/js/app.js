@@ -23,25 +23,23 @@ import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
 
-let Hooks = {}
 let Uploaders = {}
-
-
-Hooks.InitCheckout = InitCheckout
-Hooks.AutocompleteLocation = AutocompleteLocation
-Hooks.ViewportResize = ViewportResize
-Hooks.InitEditor = InitEditor
-
-Hooks.DistanceSelector = {
-  mounted(){
-    const add = this.el.querySelector('.add-distance')
-    const minus = this.el.querySelector('.minus-distance')
-    add.addEventListener("click", () => {
-      this.pushEventTo("#distance-selector", "update", "add", reply => {})  
-    })
-    minus.addEventListener("click", () => {
-      this.pushEventTo("#distance-selector", "update", "minus", reply => {})  
-    })
+let Hooks = {
+  InitCheckout: InitCheckout,
+  AutocompleteLocation: AutocompleteLocation,
+  ViewportResize: ViewportResize,
+  InitEditor: InitEditor,
+  DistanceSelector: {
+    mounted(){
+      const add = this.el.querySelector('.add-distance')
+      const minus = this.el.querySelector('.minus-distance')
+      add.addEventListener("click", () => {
+        this.pushEventTo("#distance-selector", "update", "add", reply => {})  
+      })
+      minus.addEventListener("click", () => {
+        this.pushEventTo("#distance-selector", "update", "minus", reply => {})  
+      })
+    }
   }
 }
 

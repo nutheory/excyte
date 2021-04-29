@@ -9,7 +9,7 @@ defmodule ExcyteWeb.Insight.Builder do
     cu = Accounts.get_user_by_session_token(token)
     case Insights.get_insight(id, cu.id) do
       %Insight{} = ins ->
-        if length(ins.documents) === 0, do: send self(), {:build_new, ins}
+        # if length(ins.documents) === 0, do: send self(), {:build_new, ins}
         {:ok, assign(socket, current_user: cu, insight: ins, content: nil)}
       _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end

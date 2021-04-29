@@ -7,6 +7,7 @@ defmodule ExcyteWeb.InsightView do
     Builder,
     Editor,
     EditorMenuBubble,
+    EditorMenuCommands,
     EditorMenuFloat,
     FilterListings,
     Listings,

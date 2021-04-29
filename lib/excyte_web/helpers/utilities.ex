@@ -77,7 +77,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       },
       # TODO switch to live make statuses ["closed", "pending"]
       selected_statuses: [%{value: "active", name: "Active"}],
-      status_updated: -24,
+      status_updated: %{value: 24, text: "Past 2 years"},
       distance: 200.0
     }
   end

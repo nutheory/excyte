@@ -6,10 +6,12 @@ defmodule Excyte.Repo.Migrations.SectionTemplates do
       add :created_by_id, references(:users)
       add :brokerage_id, references(:brokerages)
       add :document_template_id, references(:document_templates)
-      add :document_type, :string
+      add :is_excyte_made, :boolean, default: false
+      add :section_type, :string
       add :name, :string, null: false
       add :json_content, :map, default: %{}
       add :is_shared, :boolean, default: false
+      add :is_public, :boolean, default: false
       add :position, :integer
 
       timestamps()

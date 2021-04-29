@@ -2,25 +2,24 @@ defmodule Excyte.Insights do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Excyte.{Properties, Repo}
-  alias Excyte.Insights.{Insight, Document, Template, SavedSearch}
+  alias Excyte.Insights.{
+    Insight,
+    Document,
+    DocumentTemplate,
+    Section,
+    SectionTemplate
+  }
 
   def create_insight(attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
     |> Multi.run(:create_subject, __MODULE__, :create_subject, [attrs])
-    |> Multi.run(:search, __MODULE__, :create_saved_search, [attrs])
     |> Repo.transaction()
   end
 
   def create_insight(_repo, _changes, %{insight: ins}) do
     %Insight{}
     |> Insight.changeset(ins)
-    |> Repo.insert()
-  end
-
-  def create_saved_search(_repo, changes, %{search: srch}) do
-    %SavedSearch{}
-    |> SavedSearch.changeset(Map.merge(srch, %{insight_id: changes.insight.id}))
     |> Repo.insert()
   end
 
@@ -38,18 +37,16 @@ defmodule Excyte.Insights do
     end
   end
 
-  def update_saved_search(ins_id, filter_criteria) do
-    ss = Repo.get(SavedSearch, ins_id)
-    if ss do
-      SavedSearch.changeset(ss, %{criteria: filter_criteria})
-      |> Repo.update()
-    else
-      {:error, %{message: "Search could not be found."}}
-    end
+  def get_document_templates(usr) do
+    DocumentTemplate
+    |> DocumentTemplate.by_creator(usr.id)
+    |> DocumentTemplate.by_brokerage(usr.brokerage_id)
+    |> DocumentTemplate.by_public()
+    |> Repo.all()
   end
 
   def get_initial_insight(uid, iid) do
-    Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload([:subject, :saved_search])
+    Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload([:subject])
   end
 
   def get_review_insight(uid, iid) do
@@ -57,18 +54,24 @@ defmodule Excyte.Insights do
   end
 
   def get_insight(uuid, uid) do
-    Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid}) |> Repo.preload([:subject, :documents])
+    Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid}) |> Repo.preload([:subject])
   end
 
-  def create_template(attrs) do
-    %Template{}
-    |> Template.changeset(attrs)
+  def create_document_template(attrs) do
+    %DocumentTemplate{}
+    |> DocumentTemplate.changeset(attrs)
     |> Repo.insert()
   end
 
-  def create_document(attrs) do
-    %Document{}
-    |> Document.changeset(attrs)
+  def create_section_template(attrs) do
+    %SectionTemplate{}
+    |> SectionTemplate.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_section(attrs) do
+    %Section{}
+    |> Section.changeset(attrs)
     |> Repo.insert()
   end
 

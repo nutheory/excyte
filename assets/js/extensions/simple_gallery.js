@@ -1,5 +1,5 @@
 import { Node, mergeAttributes } from '@tiptap/core'
-import BigPicture from 'bigpicture'
+import Glightbox from 'glightbox'
 
 export default Node.create({
   name: 'simpleGallery',
@@ -22,6 +22,11 @@ export default Node.create({
 
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
+      console.log("Editor", editor)
+      console.log("node", node)
+      console.log("HTMLAttributes", HTMLAttributes)
+      console.log("decorations", decorations)
+
       // Markup
       /*
         <div class="node-view">
@@ -34,6 +39,11 @@ export default Node.create({
       const dom = document.createElement('div')
       dom.classList.add('simple-gallery')
 
+      const img = document.createElement('img')
+      img.src = 'https://media.geeksforgeeks.org/wp-content/uploads/20190529122828/bs21.png'
+      img.dataset.bp = 'https://media.geeksforgeeks.org/wp-content/uploads/20190529122828/bs21.png'
+      dom.appendChild(img)
+
       const label = document.createElement('span')
       label.classList.add('label')
       label.innerHTML = 'Node view'
@@ -43,6 +53,11 @@ export default Node.create({
       content.classList.add('content')
 
       dom.append(label, content)
+
+      // BigPicture({
+      //   el: document.querySelector('.simple-gallery'),
+      //   gallery: '.simple-gallery',
+      // })
 
       return {
         dom,

@@ -10,9 +10,11 @@ defmodule Excyte.Repo.Migrations.Insights do
       add :type, :string
       add :mls, :string
       add :uuid, :string
-      add :title, :string, null: false
+      add :name, :string, null: false
       add :selected_listing_ids, :jsonb, default: "[]"
       add :document_attributes, :map, default: %{}
+      add :content, :map, default: %{}
+      add :saved_search, :map, default: %{}
       add :published, :boolean, default: false
       timestamps()
     end

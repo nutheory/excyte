@@ -17,17 +17,27 @@ defmodule ExcyteWeb.Insight.Review do
     cu = Accounts.get_user_by_session_token(token)
     with %Insight{} = ins <- Insights.get_review_insight(cu.id, id),
          {:ok, comps} <- ResoApi.get_by_listing_ids(cu.current_mls,
-                    ins.selected_listing_ids, ins.subject) do
+                    ins.selected_listing_ids, ins.subject),
+         templates <- Insights.get_document_templates(cu) do
       {:ok, assign(socket,
         current_user: cu,
         subject: ins.subject,
         insight_uuid: id,
+        templates: templates,
+        selected_tmpl: Enum.find(templates, fn tmpl -> tmpl.type_default === true end),
         listings: comps.listings,
         selected_comps: Adjustments.process_init(comps.listings, ins.subject)
       )}
     else
       _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
+  end
+
+  def handle_info({:template_callback, %{template: template}}, %{assigns: a} = socket) do
+    IO.inspect(template, label: "TEMP")
+    sel = Enum.find(a.templates, fn t -> t.id === template.value end)
+    IO.inspect(sel, label: "SEL")
+    {:noreply, assign(socket, selected_tmpl: sel)}
   end
 
   def handle_event("adjust-comp", %{"adjustment" => adj, "listing-id" => id}, %{assigns: a} = socket) do
@@ -48,7 +58,9 @@ defmodule ExcyteWeb.Insight.Review do
 
   def handle_event("save-review", _, %{assigns: a}  = socket) do
     case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
-      content: %{comps: a.selected_comps}
+      content: %{comps: a.selected_comps},
+      document_attributes: a.selected_tmpl.attributes,
+      document_template_id: a.selected_tmpl.id
     }) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.insight_uuid}/builder")}
       {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}

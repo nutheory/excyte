@@ -8,35 +8,24 @@ import Highlight from '@tiptap/extension-highlight'
 import TextAlign from '@tiptap/extension-text-align'
 import FontFamily from '@tiptap/extension-font-family'
 import Underline from '@tiptap/extension-underline'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import Gapcursor from '@tiptap/extension-gapcursor'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableHeader from '@tiptap/extension-table-header'
 import TableCell from '@tiptap/extension-table-cell'
-import { verifyLink } from "./utilities"
-
-const floatOffsetHeight = () => {
-  let intViewportWidth = window.innerWidth
-  if (intViewportWidth <= 640) {
-    return 55
-  } else if (intViewportWidth <= 768) {
-    return 56
-  } else if (intViewportWidth <= 1024) {
-    return 88
-  } else if (intViewportWidth <= 1280) {
-    return 88
-  } else if (intViewportWidth <= 1536) {
-    return 90
-  } else {
-    return 92
-  }
-}
+import Commands from './extensions/commands'
+import tippy from 'tippy.js'
+import { verifyLink } from './utilities'
 
 window.setupEditor = function (content) {
   console.log("loaded")
   // updatedAt is to force Alpine to rerender on selection change
   return {
     updatedAt: Date.now(),
-    content: '<div><div class="prose max-w-full" id="5dba1fc04aa4055b9f298357"><div class="mx-6"><h2>114 Tianna Expressway Streets</h2></div><div class="image-scroller h-32 lg:h-48 xl:h-64 my-6"><div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/33.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/29.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/26.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/05.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/03.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/18.jpg"> </div> <div> <img class="h-full block" src="https://s3.amazonaws.com/retsly-importd-production/test_data/listings/25.jpg"> </div> </div> <br> </div></div>',
+    content: `
+      <div><simple-gallery>booger</simple-gallery></div>
+    `,
     inFocus: true,
     linkInput: null,
     menuLinkVisible: false,
@@ -54,6 +43,45 @@ window.setupEditor = function (content) {
           Underline, 
           FontFamily,
           TextAlign,
+          Gapcursor,
+          Table.configure({
+            resizable: true,
+          }),
+          TableRow,
+          TableHeader,
+          TableCell,
+          Commands.configure({
+            suggestion: {
+              render: () => {
+                let component = document.querySelector('#commandsMenu') 
+                let popup
+                return {
+                  onStart: props => {
+                    popup = tippy('body', {
+                      getReferenceClientRect: props.clientRect,
+                      appendTo: () => document.body,
+                      content: component,
+                      showOnCreate: true,
+                      interactive: true,
+                      trigger: 'manual',
+                      placement: 'bottom-start',
+                    })
+                  },
+                  onUpdate(props) {
+                    popup[0].setProps({
+                      getReferenceClientRect: props.clientRect,
+                    })
+                  },
+                  onKeyDown(props) {
+                    return component.ref?.onKeyDown(props)
+                  },
+                  onExit() {
+                    popup[0].destroy()
+                  },
+                }
+              }
+            }
+          }),
           BubbleMenu.configure({
             element: document.querySelector('#bubbleMenu'),
           }),
@@ -84,6 +112,10 @@ window.setupEditor = function (content) {
       })
 
       this.editor = editor
+    },
+
+    saveEditorContent() {
+      console.log("CCCCCCC", this.content)
     },
 
     linkKeydownCallback(ev) {
@@ -150,29 +182,15 @@ export const InitEditor = {
       // editor.commands.setContent(content)
     })
 
-    // this.editor = new TipTap({
-    //   element: el,
-    //   extensions: [
-    //     ...defaultExtensions(),
-    //     Link,
-    //     BubbleMenu.configure({
-    //       element: bubbleMenu,
-    //     }),
-    //     FloatingMenu.configure({
-    //       element: floatingMenu,
-    //     })
-    //   ],
-    //   content: c,
-    //   editorProps: {
-    //     attributes: {
-    //       class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl focus:outline-none"
-    //     }
-    //   },
-    // })
-
-    // console.log("mount", editor)
-
-    // window.editor = editor
-
   }
+
 }
+
+// window.saveEditorContent = function (content) {
+
+//   return {
+//     showMessage() {
+//       console.log("CCCCCCC")
+//     }
+//   }
+// }

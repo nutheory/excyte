@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Insight.Create do
 
   def render(assigns), do: InsightView.render("create.html", assigns)
 
-  def mount(params, %{"user_token" => token}, socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if connected?(socket), do: Accounts.subscribe(cu.id)
     {:ok, assign(socket,
@@ -19,11 +19,10 @@ defmodule ExcyteWeb.Insight.Create do
   end
 
   def handle_info({:update_features, val}, %{assigns: a} = socket) do
-    IO.inspect(val, label: "NEW_VAL")
     {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
   end
 
-  def handle_info({:init_subject, %{address: addr}}, %{assigns: a} = socket) do
+  def handle_info({:init_subject, %{address: addr}}, socket) do
     send self(), :setup_subject
     {:noreply, assign(socket, address: addr, fetching: true)}
   end
@@ -67,17 +66,17 @@ defmodule ExcyteWeb.Insight.Create do
       insight: %{
         uuid: key,
         type: "cma",
-        title: "draft",
+        name: "draft",
         created_by_id: a.current_user.id,
         published: false,
         mls: a.current_user.current_mls.dataset_id,
-        selected_listing_ids: []
-      },
-      search: %{
-        query: "",
-        coords: subject_attrs.coords,
-        zip: subject_attrs.zip,
-        criteria: Utilities.default_filter(subject_attrs)
+        selected_listing_ids: [],
+        saved_search: %{
+          query: "",
+          coords: subject_attrs.coords,
+          zip: subject_attrs.zip,
+          criteria: Utilities.default_filter(subject_attrs)
+        }
       },
       subject: subject_attrs
     }

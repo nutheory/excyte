@@ -94,11 +94,12 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("review-cma", _,  %{assigns: a} = socket) do
-    update = %{selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end)}
-    with {:ok, updated} <- Insights.update_insight(a.key, a.current_user.id, update),
-          {:ok, saved} <- Insights.update_saved_search(updated.id, a.filters) do
-      {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
-    else
+    update = %{
+      selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end),
+      saved_search: %{criteria: a.filters}
+    }
+    case Insights.update_insight(a.key, a.current_user.id, update) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

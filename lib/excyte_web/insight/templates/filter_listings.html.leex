@@ -108,8 +108,12 @@
               %{value: 3, text: "Past 3 months"},
               %{value: 6, text: "Past 6 months"},
               %{value: 9, text: "Past 9 months"},
-              %{value: 12, text: "Past 12 months"}
+              %{value: 12, text: "Past year"},
+              %{value: 24, text: "Past 2 years"}
             ],
+            selected: @filters.status_updated,
+            attr: :status_updated,
+            callback: :update_filter,
             label: "Status updated",
             id: :status_updated
           %>

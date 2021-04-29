@@ -10,6 +10,15 @@
         x-init="() => init($refs.editor)"
         x-on:click.away="inFocus = false"
       >
+        <div class="fixed z-40 inset-0 flex-none h-full bg-black bg-opacity-25 w-full lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block hidden">
+          <h1>Tooling</h1>
+          <button
+            class="bg-indigo-500 mt-6 text-white rounded px-3 py-1"
+            @click="saveEditorContent"
+          >
+            Save
+          </button>
+        </div>
         <div class="relative">
           <div id="bubbleMenu">
             <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
@@ -20,15 +29,21 @@
             <%= live_component @socket, EditorMenuFloat, id: :editor_menu_float %>
           </div>
         </div>
+        <div class="absolute -left-96">
+          <div id="commandsMenu">
+            <%= live_component @socket, EditorMenuCommands, id: :editor_menu_commands %>
+          </div>
+        </div>
         <div x-ref="editor" class="w-full p-4 lg:p-6 xl:p-10 h-full bg-white shadow rounded-md"></div>
-        <div class="blackout" :class="{ 'block': imagePanelVisible }"></div>
+        <%# <div class="blackout" :class="{ 'block': imagePanelVisible }"></div> %>
         <div
           :class="{ 'right-0': imagePanelVisible }"
           class="panel-slidein bg-gray-100"
           id="image-panel"
+          @click.away=""
         >
           <div class="mt-6 flex">
-            <div class="pr-2 mr-3 flex md:hidden border-r border-gray-400 justify-center items-center cursor-pointer" phx-click="remove-preview">
+            <div class="pr-2 mr-3 flex lg:hidden border-r border-gray-400 justify-center items-center cursor-pointer" @click="toggleAddImage()">
               <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -48,14 +63,5 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="fixed z-40 inset-0 flex-none h-full bg-black bg-opacity-25 w-full lg:static lg:h-auto lg:overflow-y-visible lg:pt-0 lg:w-60 xl:w-72 lg:block hidden">
-    <h1>Tooling</h1>
-    <button
-      class="bg-indigo-500 mt-6 text-white rounded px-3 py-1"
-      @click="console.log(content)"
-    >
-      Save
-    </button>
   </div>
 </div>

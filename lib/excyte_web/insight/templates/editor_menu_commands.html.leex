@@ -1,0 +1,27 @@
+<template x-if="editor">
+  <div class="rounded border border-bgray-300 shadow bg-white p-2">
+    <h4 class="mb-1">Insert...</h4>
+    <div class="flex p-2 rounded cursor-pointer hover:bg-cyan-800 hover:text-white" @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()">
+      <div class="-mt-1.5">
+        <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="ml-2">
+        <h4>Data Table</h4>
+        <p class="text-sm">Create a table for data.</p>
+      </div>
+    </div>
+    <div class="flex p-2 rounded cursor-pointer hover:bg-cyan-600 hover:text-white" @click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()">
+      <div class="-mt-1.5">
+        <svg class="w-12 h-12" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div class="ml-2">
+        <h4>Structural Table</h4>
+        <p class="text-sm">Create a table for structure.</p>
+      </div>
+    </div>
+  </div>
+</template>

@@ -7,9 +7,11 @@ defmodule Excyte.Repo.Migrations.DocumentTemplates do
       add :brokerage_id, references(:brokerages)
       add :attributes, :map, default: %{}
       add :type_default, :boolean, default: false
+      add :is_excyte_made, :boolean, default: false
       add :insight_type, :string
       add :name, :string
       add :is_shared, :boolean, default: false
+      add :is_public, :boolean, default: false
       timestamps()
     end
 

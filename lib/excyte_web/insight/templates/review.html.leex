@@ -76,6 +76,17 @@
       </div>
     <% end %>
     <div class="p-4 bg-cyan-50 rounded-lg shadow form">
+      <% IO.inspect(@selected_tmpl) %>
+      <div>
+        <%= live_component @socket, Dropdown,
+          options:  Enum.map(@templates, fn tmpl -> %{value: tmpl.id, text: tmpl.name} end),
+          label: "Select a Template",
+          attr: :template,
+          selected: %{value: @selected_tmpl.id, text: @selected_tmpl.name},
+          callback: :template_callback,
+          id: :template_select
+        %>
+      </div>
       <p class="pb-3">
         <strong>Next step:</strong> Continue to organize and preview your final document.
       </p>

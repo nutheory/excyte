@@ -1,7 +1,7 @@
 defmodule Excyte.AccountsFixtures do
   @moduledoc """
-  This module defines test helpers for creating
-  entities via the `Excyte.Accounts` context.
+    This module defines test helpers for creating
+    entities via the `Excyte.Accounts` context.
   """
 
   alias Excyte.Accounts

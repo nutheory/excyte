@@ -4,8 +4,9 @@ defmodule Excyte.Insights.Insight do
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
+    Insights.DocumentTemplate,
     Insights.SavedSearch,
-    Insights.Document,
+    Insights.Section,
     Properties.Property,
     Utils.MapType
   }
@@ -17,12 +18,14 @@ defmodule Excyte.Insights.Insight do
     field :mls, :string
     field :uuid, :string
     field :selected_listing_ids, {:array, :string}
-    field :title, :string, null: false
+    field :name, :string, null: false
+    field :document_attributes, MapType
     field :content, MapType
     field :published, :boolean
+    embeds_one(:saved_search, SavedSearch, on_replace: :update)
     has_one(:subject, Property, foreign_key: :insight_id)
-    has_one(:saved_search, SavedSearch)
-    has_many(:documents, Document)
+    has_many(:sections, Section)
+    belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
     timestamps()
@@ -33,13 +36,16 @@ defmodule Excyte.Insights.Insight do
     |> cast(attrs, [
       :type,
       :mls,
-      :title,
+      :name,
       :uuid,
       :selected_listing_ids,
+      :document_attributes,
       :content,
       :published,
+      :document_template_id,
       :brokerage_id,
       :created_by_id
     ])
+    |>cast_embed(:saved_search)
   end
 end

@@ -10,7 +10,7 @@ defmodule Excyte.MlsFixtures do
   def live_member_key, do: "e76e47e5a909f6f6a283644795c3f42b"
   def live_office_key, do: "15180c7764a1dafc1d90da4b8399a674"
   def test_member_key, do: "M_5dba1fa4a2a50c5b81f082d9"
-  def test_office_key, do: "O_5af6019c75f1043ad481d99a"
+  def test_office_key, do: "O_5dba1f95cf17cd5b43eb026d"
 
 
   def add_live_mls(user) do

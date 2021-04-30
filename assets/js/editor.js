@@ -18,7 +18,7 @@ import Commands from './extensions/commands'
 import tippy from 'tippy.js'
 import { verifyLink } from './utilities'
 
-window.setupEditor = function (content) {
+window.currentEditor = function (content) {
   console.log("loaded")
   // updatedAt is to force Alpine to rerender on selection change
   return {
@@ -44,9 +44,7 @@ window.setupEditor = function (content) {
           FontFamily,
           TextAlign,
           Gapcursor,
-          Table.configure({
-            resizable: true,
-          }),
+          Table.configure({ resizable: true }),
           TableRow,
           TableHeader,
           TableCell,
@@ -95,27 +93,12 @@ window.setupEditor = function (content) {
             class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl focus:outline-none"
           }
         },
-      })
-
-      editor.on("update", ({ editor }) => {
-        // this.content = this.editor.getHTML()
-        this.updatedAt = Date.now()
-      })
-
-      editor.on("focus", () => {
-        this.inFocus = true
-        this.updatedAt = Date.now()
-      })
-
-      editor.on("selectionUpdate", ({ editor }) => {
-        this.updatedAt = Date.now()
+        onUpdate: ({ editor }) => {
+          this.content = editor.getHTML()
+        },
       })
 
       this.editor = editor
-    },
-
-    saveEditorContent() {
-      console.log("CCCCCCC", this.content)
     },
 
     linkKeydownCallback(ev) {
@@ -161,36 +144,22 @@ window.setupEditor = function (content) {
     addImage() {
       // this.editor.chain().focus().setImage({ src: url }).run()
     },
+
   }
 }
 
 export const InitEditor = {
   mounted() {
-    const editorOffsetHeight = window.innerWidth <= 768 ? 84 : 116
-    // let el = this.el.querySelector('#editor')
-    // const bubbleMenu = document.querySelector('#bubbleMenu')
-    // const floatingMenu = document.querySelector('#floatingMenu')
-    const editorWrapper = document.querySelector('#editorWrapper')
-      .setAttribute("style",`height:${window.innerHeight - editorOffsetHeight}px`)
-    // let c = "Initializing..."
-    // let editor
-
-    // const content = ()[0].outerHTML
-
-    this.handleEvent("loadContentFromDb", ({content}) => {
-      console.log("CONTENT", content)
-      // editor.commands.setContent(content)
-    })
-
-  }
-
+    window.editorHook = this
+  },
+  destroyed() {
+     window.editorHook = null
+     window.currentEditor = null
+  },
+  saveSectionHTML(editor) {
+    this.pushEvent('save_section', { html: editor.getHTML() })
+  },
+  saveSectionTemplateHTML(editor) {
+    this.pushEvent('save_section_template', { html: editor.getHTML() })
+  },
 }
-
-// window.saveEditorContent = function (content) {
-
-//   return {
-//     showMessage() {
-//       console.log("CCCCCCC")
-//     }
-//   }
-// }

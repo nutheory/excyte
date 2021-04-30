@@ -50,7 +50,7 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    section_type: "profile",
+    section_type: "brokerage_profile",
     name: "Brokerage Profile",
     json_content: %{},
     is_public: true,
@@ -59,7 +59,7 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    section_type: "profile",
+    section_type: "agent_profile",
     name: "Agent Profile",
     json_content: %{},
     is_public: true,
@@ -77,7 +77,7 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    section_type: "comps",
+    section_type: "comp",
     name: "Comparable Listings",
     json_content: %{},
     is_public: true,

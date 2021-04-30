@@ -9,7 +9,6 @@ defmodule Excyte.Repo.Migrations.Sections do
       add :foreign_id, :string
       add :name, :string, null: false
       add :html_content, :text
-      add :is_shared, :boolean, default: false
       add :position, :integer
 
       timestamps()

@@ -1,6 +1,7 @@
 defmodule Excyte.Insights.Insight do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
@@ -47,5 +48,11 @@ defmodule Excyte.Insights.Insight do
       :created_by_id
     ])
     |>cast_embed(:saved_search)
+  end
+
+  def minimal_insight(uuid, uid) do
+    from ins in __MODULE__,
+    where: ins.uuid == ^uuid and ins.created_by_id == ^uid,
+    select: struct(ins, [:id, :published, :uuid])
   end
 end

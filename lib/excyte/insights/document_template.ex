@@ -4,7 +4,8 @@ defmodule Excyte.Insights.DocumentTemplate do
   import Ecto.Query
   alias Excyte.{
     Accounts.User,
-    Brokerages.Brokerage
+    Brokerages.Brokerage,
+    Insights.SectionTemplate
   }
 
   @timestamps_opts [type: :utc_datetime]
@@ -19,6 +20,7 @@ defmodule Excyte.Insights.DocumentTemplate do
     field :name, :string
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
+    has_many(:section_templates, SectionTemplate)
     timestamps()
   end
 

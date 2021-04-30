@@ -9,7 +9,7 @@ defmodule Excyte.Repo.Migrations.SectionTemplates do
       add :is_excyte_made, :boolean, default: false
       add :section_type, :string
       add :name, :string, null: false
-      add :json_content, :map, default: %{}
+      add :html_content, :text
       add :is_shared, :boolean, default: false
       add :is_public, :boolean, default: false
       add :position, :integer

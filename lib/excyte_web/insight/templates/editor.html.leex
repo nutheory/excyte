@@ -1,4 +1,4 @@
-<div class="max-w-screen-xl lg:flex mt-16 md:mt-24 mx-auto" id="editorWrapper" phx-hook="InitEditor">
+<div class="max-w-screen-xl lg:flex mt-16 md:mt-24 mx-auto" id="editorWrapper" phx-hook="InitEditor" x-data="{editor: currentEditor('<p>My content goes here</p>')}">
   <div class="flex-1 mx-4 md:mx-6 h-full" phx-update="ignore">
     <div class="header flex">
       <%# Title (Editable) %><%# Save %>
@@ -6,7 +6,7 @@
     <div id="documentEditor" class="h-full">
       <div
         class="h-full"
-        x-data="setupEditor('<p>My content goes here</p>')"
+        x-data="currentEditor('<p>My content goes here</p>')"
         x-init="() => init($refs.editor)"
         x-on:click.away="inFocus = false"
       >
@@ -14,7 +14,7 @@
           <h1>Tooling</h1>
           <button
             class="bg-indigo-500 mt-6 text-white rounded px-3 py-1"
-            @click="saveEditorContent"
+            @click="editorHook.saveEditorHTML(editor)"
           >
             Save
           </button>

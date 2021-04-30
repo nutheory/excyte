@@ -4,7 +4,6 @@
       <h1 class="">CMA Builder</h1>
       <h3 class="mt-6">Contents</h3>
       <ul class="toc">
- %>
         <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
           <h4>Introduction</h4>
           <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
@@ -12,6 +11,7 @@
           </div>
         </li>
       </ul>
+
       <%= live_redirect to: "/insights/cma/#{@insight.uuid}/editor/new", replace: false do %>
         <button class="action-button w-full my-6">Add a section</button>
       <% end %>
@@ -27,21 +27,23 @@
         </div>
         <div class="" id="subject-property">
         </div> %>
-        <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
-        <%= for comp <- @insight.content.comps do %>
-          <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
-            <div class="mx-6">
-              <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
+        <%= if @insight.content do %>
+          <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
+          <%= for comp <- @insight.content.comps do %>
+            <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
+              <div class="mx-6">
+                <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
+              </div>
+              <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
+                <%= for image <- comp["media"] do %>
+                  <div>
+                    <img class="h-full block" src="<%= image["media_url"] %>" />
+                  </div>
+                <% end %>
+              </div>
+              <br />
             </div>
-            <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
-              <%= for image <- comp["media"] do %>
-                <div>
-                  <img class="h-full block" src="<%= image["media_url"] %>" />
-                </div>
-              <% end %>
-            </div>
-            <br />
-          </div>
+          <% end %>
         <% end %>
       </div>
     </div>

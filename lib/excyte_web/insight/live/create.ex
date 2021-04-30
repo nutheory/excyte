@@ -68,6 +68,7 @@ defmodule ExcyteWeb.Insight.Create do
         type: "cma",
         name: "draft",
         created_by_id: a.current_user.id,
+        brkerage_id: a.current_user.brokerage_id,
         published: false,
         mls: a.current_user.current_mls.dataset_id,
         selected_listing_ids: [],

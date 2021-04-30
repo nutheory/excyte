@@ -23,6 +23,15 @@ defmodule ExcyteWeb.Insight.Editor do
     {:noreply, push_event(socket, "loadContentFromDb", %{content: "Hello from phoenix"})}
   end
 
+  def handle_event("section_save", %{html: html}, %{assigns: a} = socket) do
+    IO.inspect(html, label: "html")
+    # case Insights. do
+    #   {:ok, section} ->
+    #   {:error, err} ->
+    # end
+    {:noreply, socket}
+  end
+
   # def handle_event("toggle-image-panel", _, %{assigns: a} = socket) do
   #   {:noreply, assign(socket, image_panel: !a.image_panel)}
   # end

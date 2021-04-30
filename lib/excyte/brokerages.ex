@@ -16,8 +16,6 @@ defmodule Excyte.Brokerages do
     Repo.get_by(Profile, %{brokerage_id: bid})
   end
 
-  def get_brokerage_profile(_brokerage_id), do: %Profile{contacts: []}
-
   def get_invitations(bk_id) do
     query =
       from(u in User,

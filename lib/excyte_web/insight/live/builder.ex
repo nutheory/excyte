@@ -1,22 +1,31 @@
 defmodule ExcyteWeb.Insight.Builder do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Insights.Insight, Insights.Template, Insights.Section}
+  alias Excyte.{Accounts, Insights, Insights.Insight}
   alias ExcyteWeb.InsightView
 
   def render(assigns), do: InsightView.render("builder.html", assigns)
 
-  def mount(%{"insight_id" => id}, %{"user_token" => token}, %{assigns: a} = socket) do
+  def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    case Insights.get_insight(id, cu.id) do
+    case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
-        # if length(ins.documents) === 0, do: send self(), {:build_new, ins}
-        {:ok, assign(socket, current_user: cu, insight: ins, content: nil)}
-      _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
+        send self(), {:get_sections, %{usr: cu, insight: ins}}
+        {:ok, assign(socket, usr: cu, insight: ins)}
+      err ->
+        IO.inspect(err, label: "OOPS")
+        {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
   end
 
-  def handle_info({:build_new, ins}, %{assigns: a} = socket) do
-    {:noreply, socket}
+  def handle_info({:get_sections, %{usr: cu, insight: ins}}, %{assigns: a} = socket) do
+    if ins.published do
+
+    else
+      case Insights.build_from_templates(cu.id, ins.id) do
+        {:ok, res} -> {:noreply, socket}
+        {:error, err} -> err
+      end
+    end
   end
 
   # def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do

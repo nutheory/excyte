@@ -7,7 +7,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    brokerage_profile = Brokerages.get_brokerage_profile!(cu.brokerage_id)
+    brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = maybe_attempt_prefill?(brokerage_profile, cu.current_mls)
     {:ok,
       assign(socket,

@@ -7,7 +7,7 @@ defmodule ExcyteWeb.Brokerage.InviteTeam do
 
   def mount(_params, %{"user_token" => token}, %{assigns: a} = socket) do
     cu = Accounts.get_user_by_session_token(token)
-    bp = Brokerages.get_brokerage_profile!(cu.brokerage_id)
+    bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})
     ivts = Brokerages.get_invitations(cu.brokerage_id)
 

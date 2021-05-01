@@ -143,11 +143,9 @@ defmodule Excyte.Insights do
 
   defp maybe_brokerage(%{brokerage_id: bid, sections: st}) do
     if bid do
-      %{brokerage: Brokerages.get_brokerage_profile!(bid), sections: st}
+      %{brokerage: Brokerages.get_brokerage_profile(bid), sections: st}
     else
       %{brokerage: nil, sections: Enum.filter(st, fn s -> s.section_type !== "brokerage_profile" end)}
     end
   end
-
-
 end

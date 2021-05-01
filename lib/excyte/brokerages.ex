@@ -12,7 +12,7 @@ defmodule Excyte.Brokerages do
     |> Repo.insert()
   end
 
-  def get_brokerage_profile!(bid) do
+  def get_brokerage_profile(bid) do
     Repo.get_by(Profile, %{brokerage_id: bid})
   end
 

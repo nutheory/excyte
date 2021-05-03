@@ -37,6 +37,7 @@
     "@tiptap/extension-table-row": "*",
     "@tiptap/extension-text": "*",
     "@tiptap/extension-text-align": "*",
+    "@tiptap/extension-text-style": "*",
     "@tiptap/extension-underline": "*",
     "@tiptap/suggestion": "*",
     "alpinejs": "^2.7.3",

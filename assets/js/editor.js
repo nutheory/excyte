@@ -1,7 +1,19 @@
 import { Editor as TipTap } from "@tiptap/core"
-import { defaultExtensions } from "@tiptap/starter-kit"
+
+import Italic from '@tiptap/extension-italic'
+import Bold from '@tiptap/extension-bold'
 import Link from '@tiptap/extension-link'
 import Image from '@tiptap/extension-image'
+import Strike from '@tiptap/extension-strike'
+import Document from '@tiptap/extension-document'
+import History from '@tiptap/extension-history'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+import Heading from '@tiptap/extension-heading'
+import HardBreak from '@tiptap/extension-hard-break'
+import Text from '@tiptap/extension-text'
+import Paragraph from '@tiptap/extension-paragraph'
 import BubbleMenu from '@tiptap/extension-bubble-menu'
 import FloatingMenu from '@tiptap/extension-floating-menu'
 import Highlight from '@tiptap/extension-highlight'
@@ -36,7 +48,18 @@ window.currentEditor = function (content) {
       let editor = new TipTap({
         element: el,
         extensions: [        
-          ...defaultExtensions(),
+          Italic,
+          Bold,
+          Strike,
+          Document,
+          History,
+          BulletList,
+          OrderedList,
+          ListItem,
+          Heading,
+          HardBreak,
+          Text,
+          Paragraph,
           Link,
           Image,
           Highlight,

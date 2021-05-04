@@ -127,13 +127,22 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   defp save_profile(%{assigns: a} = socket, profile_params) do
-    avatar = if a.photo_url, do: Path.join(s3_host(), a.photo_url), else: nil
+    avatar = photo_url(socket)
     attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "photo_url" => avatar })
     with {:ok, _profile} <- Agents.update_profile(a.profile, attrs, &consume_photo(socket, &1)),
          {:ok, _agent} <- Accounts.update_user(a.cu_id, %{completed_setup: true, current_avatar: avatar}) do
       {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
     else
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
+    end
+  end
+
+  defp photo_url(%{assigns: a} = socket) do
+    if a.photo_url do
+      key = String.replace(a.photo_url, s3_host(), "")
+      Path.join(s3_host(), key)
+    else
+      nil
     end
   end
 end

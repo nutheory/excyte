@@ -126,12 +126,21 @@ defmodule ExcyteWeb.Brokerage.Profile do
   end
 
   defp save_profile(%{assigns: a} = socket, profile_params) do
-    avatar = if a.logo_url, do: Path.join(s3_host(), a.logo_url), else: nil
-    attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "logo_url" => avatar })
+    logo = logo_url(socket)
+    attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "logo_url" => logo })
     case Brokerages.update_profile(a.profile, attrs, &consume_logo(socket, &1)) do
       {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
                                     |> push_redirect(to: a.return_to)}
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
+    end
+  end
+
+  defp logo_url(%{assigns: a} = socket) do
+    if a.logo_url do
+      key = String.replace(a.logo_url, s3_host(), "")
+      Path.join(s3_host(), key)
+    else
+      nil
     end
   end
 end

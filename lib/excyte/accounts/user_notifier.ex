@@ -2,6 +2,7 @@ defmodule Excyte.Accounts.UserNotifier do
   import Bamboo.Email
   alias Excyte.Mailer
 
+  @base_url Application.get_env(:excyte, :base_url)
   @from_address "no-reply@excyte.io"
   @html_signature """
     Excyte.io<br/>
@@ -35,7 +36,7 @@ defmodule Excyte.Accounts.UserNotifier do
 
     You can confirm your account by visiting the url below:
 
-    #{url}
+    #{@base_url}#{url}
 
     If you didn't create an account with us, please ignore this.
 
@@ -45,8 +46,9 @@ defmodule Excyte.Accounts.UserNotifier do
     html_body = """
     Hi #{user.email},<br/></br/>
     You can confirm your account by visiting the url below:<br/></br/>
-    <a href="#{url}" target="_blank">#{url}</a><br/></br/>
-    If you didn't create an account with us, please ignore this.
+    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
+    If you didn't create an account with us, please ignore this.<br/></br/>
+    #{@html_signature}
     """
 
     deliver(user.email, "Please confirm your account", text_body, html_body)
@@ -63,7 +65,7 @@ defmodule Excyte.Accounts.UserNotifier do
 
     You can accept your invitation by visiting the url below:
 
-    #{url}
+    #{@base_url}#{url}
 
     If you didn't create an account with us, please ignore this.
 
@@ -73,7 +75,7 @@ defmodule Excyte.Accounts.UserNotifier do
     html_body = """
     #{user.invite_message}<br/></br/>
     You can accept your invitation by visiting the url below:<br/></br/>
-    <a href="#{url}" target="_blank">#{url}</a><br/></br/>
+    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
     #{@html_signature}
     """
 
@@ -92,7 +94,7 @@ defmodule Excyte.Accounts.UserNotifier do
 
     You can reset your password by visiting the url below:
 
-    #{url}
+    #{@base_url}#{url}
 
     If you didn't request this change, please ignore this.
 
@@ -102,7 +104,7 @@ defmodule Excyte.Accounts.UserNotifier do
     html_body = """
     Hi #{user.email},<br/></br/>
     You can reset your password by visiting the url below:<br/></br/>
-    <a href="#{url}" target="_blank">#{url}</a><br/></br/>
+    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
     If you didn't request this change, please ignore this.
     """
 
@@ -121,7 +123,7 @@ defmodule Excyte.Accounts.UserNotifier do
 
     You can change your e-mail by visiting the url below:
 
-    #{url}
+    #{@base_url}#{url}
 
     If you didn't request this change, please ignore this.
 
@@ -131,7 +133,7 @@ defmodule Excyte.Accounts.UserNotifier do
     html_body = """
     Hi #{user.email},<br/></br/>
     You can change your e-mail by visiting the url below:<br/></br/>
-    <a href="#{url}" target="_blank">#{url}</a><br/></br/>
+    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
     If you didn't request this change, please ignore this.
     """
 

@@ -9,7 +9,7 @@ defmodule ExcyteWeb.ProtectedHeader do
     cu = Accounts.get_user_by_session_token(token)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
 
-    if cu.current_mls === nil do
+    if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
       {:ok, assign(socket, %{
         current_user: cu,
         current_mls_id: nil,

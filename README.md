@@ -23,6 +23,8 @@ Section
 
 [https://www.youtube.com/watch?v=DhSylrNr81k](Render deploy)
 
+Migrate cmd $ _build/prod/rel/excyte/bin/excyte eval "Excyte.Release.migrate"
+
 To start your Phoenix server:
 
 * Install dependencies with `mix deps.get`

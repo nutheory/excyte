@@ -17,7 +17,20 @@ config :excyte, ExcyteWeb.Endpoint,
   url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
+
+config :excyte, Excyte.Mailer,
+  adapter: Bamboo.SendGridAdapter,
+  api_key: {:system, "SENDGRID_API_KEY"},
+  hackney_opts: [
+    recv_timeout: :timer.minutes(1)
+  ]
+
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
+config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")
+config :excyte, :base_url, System.get_env("EXCYTE_DEV_URL")
 config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
+config :excyte, :bridge_server_api_key, System.get_env("BRIDGE_SERVER_KEY")
 
 # Do not print debug messages in production
 config :logger, level: :info

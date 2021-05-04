@@ -43,7 +43,6 @@ defmodule ExcyteWeb.BrokerageRegistration do
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
-    IO.inspect(attrs, label: "FORM")
     case Accounts.register_brokerage(Utilities.key_to_atom(attrs)) do
       {:ok, user} ->
         {:ok, _} =

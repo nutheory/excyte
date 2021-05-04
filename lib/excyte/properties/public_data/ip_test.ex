@@ -13,7 +13,6 @@ defmodule Excyte.PublicData.TestComparables do
   def parse_item(response) do
     {:ok, document} = Floki.parse_document(response.body)
     result = Floki.text(Floki.find(document, "#ipv4 a"))
-    IO.inspect(result, label: "IPV4")
 
     %{
       :requests => [],

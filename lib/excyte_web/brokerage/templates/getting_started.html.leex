@@ -48,7 +48,7 @@
             <h2 class="text-gray-600 font-bold pb-2">Step 3 of 5</h2>
           </div>
         </div>
-        <%= live_render @socket, Brokerage.Profile, session: %{"user_id" => @current_user.id}, id: "brokerage_profile_form" %>
+        <%= live_render @socket, Brokerage.Profile, session: %{"return_to" => "/brokerage/getting-started?step=invite_team", "user_id" => @current_user.id}, id: "brokerage_profile_form" %>
       </div>
 
     <% "invite_team" -> %>
@@ -73,7 +73,7 @@
             <% end %>
           </div>
         </div>
-        <%= live_render @socket, Agent.Profile, session: %{"user_id" => @current_user.id}, id: "agent_profile_form" %>
+        <%= live_render @socket, Agent.Profile, session: %{"return_to" => "/brokerage/dash", "user_id" => @current_user.id}, id: "agent_profile_form" %>
       </div>
   <% end %>
 </div>

@@ -37,12 +37,10 @@ defmodule ExcyteWeb.Insight.Editor do
   # end
 
   # def handle_event("editor-update", params, socket) do
-  #   IO.inspect(params, label: "INP")
   #   {:noreply, assign(socket, doc: params)}
   # end
 
   # def handle_event("editor-save", params, socket) do
-  #   IO.inspect(socket, label: "SAVE")
   #   {:ok, _} = Insights.create_document(%{
   #     "content" => [params],
   #     "title" => "CMA Cover",

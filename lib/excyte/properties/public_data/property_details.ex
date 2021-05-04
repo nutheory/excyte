@@ -18,8 +18,6 @@ defmodule Excyte.PublicData.PropertyDetails do
     neighbor = process_neighbor(start)
     overview = process_overview(Floki.text(Floki.find(start, "#ldp-detail-romance")))
 
-    # IO.inspect(document, label: "DOCCCC")
-
     %Crawly.ParsedItem{
       requests: [],
       items: [%{

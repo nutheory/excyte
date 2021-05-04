@@ -11,7 +11,6 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     profile = Agents.get_agent_profile(cu.id)
-    IO.inspect(socket, label: "SOCK", limit: 200)
     {:ok, assign(socket,
       current_user: cu,
       account: account,

@@ -55,9 +55,7 @@ defmodule Excyte.Accounts.UserNotifier do
   end
 
   def deliver_invitation_instructions(user, url) do
-    IO.inspect(user, label: "USERRR")
-    IO.inspect(url, label: "URLLL")
-        text_body = """
+    text_body = """
 
     ==============================
 

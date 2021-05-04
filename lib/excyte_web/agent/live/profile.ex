@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Agent.Profile do
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
+  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     profile = Agents.get_agent_profile!(cu.id)
       cs = maybe_attempt_prefill?(profile, cu.current_mls)
@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Agent.Profile do
         changeset: cs,
         cu_id: cu.id,
         photo_url: profile.photo_url,
+        return_to: rt,
         profile: profile)
       |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
   end

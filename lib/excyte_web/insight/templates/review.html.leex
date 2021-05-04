@@ -76,7 +76,6 @@
       </div>
     <% end %>
     <div class="p-4 bg-cyan-50 rounded-lg shadow form">
-      <% IO.inspect(@selected_tmpl) %>
       <div>
         <%= live_component @socket, Dropdown,
           options:  Enum.map(@templates, fn tmpl -> %{value: tmpl.id, text: tmpl.name} end),

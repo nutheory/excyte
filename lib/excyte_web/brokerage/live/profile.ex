@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
 
   def render(assigns), do: BrokerageView.render("profile.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
+  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = maybe_attempt_prefill?(brokerage_profile, cu.current_mls)
@@ -13,6 +13,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
       assign(socket,
         changeset: cs,
         cu_id: cu.id,
+        return_to: rt,
         logo_url: brokerage_profile.logo_url,
         profile: brokerage_profile)
       |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
@@ -129,7 +130,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "logo_url" => avatar })
     case Brokerages.update_profile(a.profile, attrs, &consume_logo(socket, &1)) do
       {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
-                                    |> push_redirect(to: Routes.live_path(socket, ExcyteWeb.Brokerage.GettingStarted, step: "invite_team"))}
+                                    |> push_redirect(to: a.return_to))}
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
     end
   end

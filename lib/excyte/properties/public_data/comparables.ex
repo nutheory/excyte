@@ -22,9 +22,6 @@ defmodule Excyte.PublicData.TestComparables do
   end
 
   defp parse_item_card(card) do
-    IO.inspect(card, label: "CARD")
-    %{
-
-    }
+    %{}
   end
 end

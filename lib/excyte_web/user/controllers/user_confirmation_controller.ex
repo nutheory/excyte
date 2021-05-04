@@ -45,7 +45,6 @@ defmodule ExcyteWeb.UserConfirmationController do
   end
 
   def confirm_mls(conn, %{"mls" => incoming_mls} = params) do
-    IO.inspect(params, label: "PARAM")
     mls = String.to_atom(incoming_mls)
     if Application.get_env(:excyte, :env) === :prod do
       with {:ok, tokens} <- OpenIDConnect.fetch_tokens(mls, params["code"]),

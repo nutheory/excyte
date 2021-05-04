@@ -78,16 +78,12 @@ defmodule Excyte.Insights do
       transpile_template(comp_template, %{"listing" => stringify_keys(comp)})
     end)
 
-    IO.inspect(ins.subject, label: "Subject")
-    IO.inspect(hd(ins.content.comps), label: "listing")
-
     subject = stringify_keys(ins.subject)
     brokerage = stringify_keys(brp)
     listings = stringify_keys(ins.content.comps)
 
     pages =
       comps ++ sections
-      |> IO.inspect(label: "BOOM")
       |> Enum.map(fn st ->
         cond do
           st.section_type === "cover" -> transpile_template(st, %{"agent" => agent, "brokerage" => brokerage, "subject" => subject})

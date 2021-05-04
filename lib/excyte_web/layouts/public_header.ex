@@ -6,7 +6,6 @@ defmodule ExcyteWeb.PublicHeader do
   def render(assigns), do: LayoutView.render("public_header.html", assigns)
 
   def mount(_params, _session, socket) do
-    IO.inspect(label: "loaded")
     {:ok, assign(socket, content: nil)}
   end
 

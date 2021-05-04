@@ -14,12 +14,10 @@ defmodule Excyte.Properties do
 
   def fetch_subject_details(mpr_id, aid) do
     # subscribe(mpr_id)
-    IO.inspect(mpr_id, label: "foreign_id")
     case PublicDataApi.get_subject_by_foreign_id(mpr_id) do
       {:ok, res} -> {:ok, res}
       {:error, err} ->
         # LOG error
-        IO.inspect(err, label: "OOPS2")
         {:error, err}
     end
   end
@@ -89,7 +87,6 @@ defmodule Excyte.Properties do
 
   # def notify_subscribers({:ok, result}, event) do
   #   Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})
-  #   IO.inspect(result, label: "NOTIFY foreign_id")
   #   Phoenix.PubSub.broadcast(
   #     Excyte.PubSub,
   #     @topic <> "#{result.foreign_id}",

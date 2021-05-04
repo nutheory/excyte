@@ -50,8 +50,6 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
-    IO.inspect(form, label: "FORM")
-    IO.inspect(a.filters, label: "FILT")
     filters = Map.merge(a.filters, %{
       baths: %{low: to_i(form["baths_min"]), high: to_i(form["baths_max"])},
       beds: %{low: to_i(form["beds_min"]), high: to_i(form["beds_max"])},
@@ -66,7 +64,6 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("toggle-filters", _, %{assigns: a} = socket) do
-    IO.inspect(a.show_filters, label: "filters")
     {:noreply, assign(socket, show_filters: !a.show_filters)}
   end
 

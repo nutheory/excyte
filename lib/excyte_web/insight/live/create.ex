@@ -53,7 +53,6 @@ defmodule ExcyteWeb.Insight.Create do
          <> "postal_code%2Cneighborhood%2Caddress%2Cstreet%2Cbuilding%2Cmlsid%2Cbuilding%2Cschool%2C"
          <> "school_district%2Cuniversity%2Cpark%2Cstate&limit=10"),
          %{mpr_id: mpr_id} <- hd(Utilities.format_str_json(body).autocomplete) do
-          IO.inspect(body, label: "BODY")
       {:ok, mpr_id}
     else
       {:error, err} -> err

@@ -8,7 +8,6 @@ defmodule Excyte.DbPipeline do
         # insert successful, carry on with pipeline
         {item, state}
       {:error, err} ->
-        IO.inspect(err, label: "Error")
         # insert not successful, drop from pipeline
         {false, state}
     end

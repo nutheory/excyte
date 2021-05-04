@@ -268,7 +268,6 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp format_response({:error, error}) do
-    IO.inspect(error, label: "ERR")
     {:error, error}
   end
 

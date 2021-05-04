@@ -18,7 +18,6 @@ defmodule ExcyteWeb.Components.Toggle do
   end
 
   def handle_event("toggle-select", val, %{assigns: a} = socket) do
-    IO.inspect(val, label: "VALUE")
     send self(), {a.callback, val}
     {:noreply, socket}
   end

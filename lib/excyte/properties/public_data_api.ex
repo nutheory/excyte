@@ -51,7 +51,6 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   defp process_subject(response) do
-    IO.inspect(response, label: "Fail")
   end
 
   defp process_features(feats) do

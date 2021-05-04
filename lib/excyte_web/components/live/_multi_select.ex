@@ -23,7 +23,6 @@ defmodule ExcyteWeb.Components.MultiSelect do
   def handle_event("add-selection", %{"val" => val}, %{assigns: a} = socket) do
     selection = Enum.find(a.options, fn opt -> opt.value === val end)
     new_selected = [ selection | a.selected ]
-    IO.inspect(new_selected, label: "New Selected")
     send self(), {a.callback, Map.put(%{}, a.key, new_selected)}
     {:noreply, socket}
   end
@@ -31,7 +30,6 @@ defmodule ExcyteWeb.Components.MultiSelect do
   def handle_event("remove-selection", %{"val" => val}, %{assigns: a} = socket) do
     # selection = Enum.find(a.options, fn opt -> opt.value === val end)
     new_selected = Enum.filter(a.selected, fn opt -> opt.value !== val end)
-    IO.inspect(new_selected, label: "New Selected")
     send self(), {a.callback, Map.put(%{}, a.key, new_selected)}
     {:noreply, socket}
   end

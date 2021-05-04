@@ -34,9 +34,7 @@ defmodule ExcyteWeb.Insight.Review do
   end
 
   def handle_info({:template_callback, %{template: template}}, %{assigns: a} = socket) do
-    IO.inspect(template, label: "TEMP")
     sel = Enum.find(a.templates, fn t -> t.id === template.value end)
-    IO.inspect(sel, label: "SEL")
     {:noreply, assign(socket, selected_tmpl: sel)}
   end
 

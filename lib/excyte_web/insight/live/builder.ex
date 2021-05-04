@@ -12,7 +12,6 @@ defmodule ExcyteWeb.Insight.Builder do
         send self(), {:get_sections, %{usr: cu, insight: ins}}
         {:ok, assign(socket, usr: cu, insight: ins)}
       err ->
-        IO.inspect(err, label: "OOPS")
         {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
   end
@@ -68,7 +67,6 @@ defmodule ExcyteWeb.Insight.Builder do
   # end
 
   # def handle_info({:initial_build, _}, socket) do
-  #   IO.inspect(label: "Dont GOT-IT")
   #   {:noreply, socket}
   # end
 

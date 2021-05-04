@@ -26,12 +26,10 @@ defmodule ExcyteWeb.Components.OldEditorLive do
   end
 
   def handle_event("editor-update", params, socket) do
-    IO.inspect(params, label: "INP")
     {:noreply, assign(socket, doc: params)}
   end
 
   def handle_event("editor-save", params, socket) do
-    IO.inspect(params, label: "SAVE")
     {:ok, res} = Insights.create_document(%{
       "content" => [params],
       "title" => "CMA Cover",
@@ -45,10 +43,8 @@ defmodule ExcyteWeb.Components.OldEditorLive do
   end
 
   def handle_event("save_photo", params, socket) do
-    IO.inspect(params, label: "HERE")
     uploaded_files =
       consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end)
-    IO.inspect(uploaded_files, label: "UPPED")
     # {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
     {:noreply, socket}
   end

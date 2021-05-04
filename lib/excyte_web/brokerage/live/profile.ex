@@ -130,7 +130,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "logo_url" => avatar })
     case Brokerages.update_profile(a.profile, attrs, &consume_logo(socket, &1)) do
       {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
-                                    |> push_redirect(to: a.return_to))}
+                                    |> push_redirect(to: a.return_to)}
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
     end
   end

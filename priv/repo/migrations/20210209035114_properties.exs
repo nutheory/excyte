@@ -65,7 +65,5 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :tax_year, :string
       timestamps()
     end
-
-    create unique_index(:properties, [:foreign_id, :agent_id])
   end
 end

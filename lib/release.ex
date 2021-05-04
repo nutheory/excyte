@@ -1,9 +1,9 @@
-defmodule Render.Release do
+defmodule Excyte.Release do
   @moduledoc """
   Responsible for custom release commands
   """
 
-  @app :render
+  @app :excyte
 
   def migrate do
     for repo <- repos() do

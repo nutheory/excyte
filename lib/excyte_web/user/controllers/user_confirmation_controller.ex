@@ -68,8 +68,9 @@ defmodule ExcyteWeb.UserConfirmationController do
 
   end
 
-  defp bypass_open_id(conn, params) do
-    agent_id = conn.assigns.current_user.id
+  #c hanged first param from conn to agent_id to call directly
+  def bypass_open_id(agent_id, params) do
+    # agent_id = conn.assigns.current_user.id
     case Mls.create_credential(mls_params(agent_id, %{
            "access_token" => params["access_token"],
            "refresh_token" => params["refresh_token"],

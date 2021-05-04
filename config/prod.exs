@@ -17,7 +17,12 @@ config :excyte, ExcyteWeb.Endpoint,
   url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
-config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
+config :excyte, :aws, %{
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  host: "s3.amazonaws.com",
+  region: "us-west-1"
+}
 
 config :excyte, Excyte.Mailer,
   adapter: Bamboo.SendGridAdapter,
@@ -28,7 +33,7 @@ config :excyte, Excyte.Mailer,
 
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")
-config :excyte, :base_url, System.get_env("EXCYTE_DEV_URL")
+config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
 config :excyte, :bridge_server_api_key, System.get_env("BRIDGE_SERVER_KEY")
 

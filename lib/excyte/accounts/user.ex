@@ -35,7 +35,7 @@ defmodule Excyte.Accounts.User do
     belongs_to(:account, Account)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:invited_by, User)
-    has_many(:mls_credentials, Credential)
+    has_many(:mls_credentials, Credential, foreign_key: :agent_id)
     has_many(:profiles, Profile)
     timestamps()
   end
@@ -191,7 +191,7 @@ defmodule Excyte.Accounts.User do
   def with_mls(query) do
     from [_, user] in query,
     join: cred in Credential,
-    on: cred.user_id == user.id,
+    on: cred.agent_id == user.id,
     preload: [user: {user, [mls_credentials: cred]}]
   end
 

@@ -22,7 +22,7 @@ defmodule Excyte.Mls.Credential do
     field :access_token, :string
     field :default, :boolean
     field :expires_in, :integer
-    belongs_to(:agent, User)
+    belongs_to(:agent, User, foreign_key: :agent_id)
     timestamps()
   end
 

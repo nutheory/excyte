@@ -4,11 +4,11 @@
     <div class="mt-2 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div>
         <%= label f, :beds %>
-        <%= number_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= number_input f, :beds, class: "number-field", step: "0.5", phx_debounce: "blur" %>
       </div>
       <div>
         <%= label f, :baths %>
-        <%= number_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= number_input f, :baths, class: "number-field",  step: "0.25", phx_debounce: "blur" %>
       </div>
       <div>
         <%= label f, :sqft %>
@@ -16,15 +16,19 @@
       </div>
       <div>
         <%= label f, :stories %>
-        <%= number_input f, :stories, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= number_input f, :stories, class: "number-field",  step: "0.5", phx_debounce: "blur" %>
       </div>
       <div>
         <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit" phx-target="<%= @myself %>"><%= @lotsize_unit %></span>)</label>
-        <%= number_input f, :lotsize_value, step: "any", value: @lotsize_value, class: "number-field", inputmode: "numeric", phx_debounce: "blur" %>
+        <%= number_input f, :lotsize_value, step: "any", value: @lotsize_value, class: "number-field", phx_debounce: "blur" %>
       </div>
       <div>
         <%= label f, :year_built %>
-        <%= number_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= number_input f, :year_built, class: "number-field",  step: "1", phx_debounce: "blur" %>
+      </div>
+      <div class="col-span-2">
+        <%= label f, :est_price, "Estimated price" %>
+        <%= number_input f, :est_price, class: "number-field", step: "1000", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
       </div>
     </div>
     <div class="w-full mt-6">

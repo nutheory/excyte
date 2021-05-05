@@ -26,13 +26,14 @@ defmodule ExcyteWeb.Insight.SubjectForm do
       else
         round(String.to_integer(form["lotsize_value"]))
       end
-
-    {:noreply, assign(socket, lotsize_value: ls_val)}
+    cs = Properties.change_property(form)
+    {:noreply, assign(socket, changeset: cs, lotsize_value: ls_val)}
   end
 
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
     subject_attrs =
       Map.merge(a.subject, %{
+        est_price: String.to_integer(form["est_price"]),
         beds: String.to_integer(form["beds"]),
         baths: String.to_float(form["baths"]),
         sqft: String.to_integer(form["sqft"]),

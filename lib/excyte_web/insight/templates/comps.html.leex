@@ -30,10 +30,7 @@
           <% end %>
         </div>
       <% else %>
-        <div
-          :class="{ 'right-0': <%= if @preview || @show_panel, do: true, else: false %> }"
-          class="panel-slidein bg-gray-100"
-        >
+        <div class="panel-slidein bg-gray-100 <%= if @preview || @show_panel, do: 'right-0', else: '' %>">
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,

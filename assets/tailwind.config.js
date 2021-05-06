@@ -26,27 +26,8 @@ module.exports = {
       white: "#FFFFFF",
     },
     extend: {
-      top: {
-        '18': '4.5rem',
-      },
       height: {
         '18': '4.5rem',
-      },
-      fontSize: {
-        'tiny': '.65rem',
-      },
-      spacing: {
-        '2/3': '66.666667%'
-      },
-      maxWidth: {
-        '8xl': '90rem',
-      },
-      keyframes: {
-      },
-      animations: {
-        ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
-        select: 'select 2s cubic-bezier(0, 0, 0.2, 1)',
-        deselect: 'deselect 2s cubic-bezier(0, 0, 0.2, 1)',
       }
     }
   },

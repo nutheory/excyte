@@ -1,9 +1,6 @@
 <div>
   <div class="mb-4 bg-white shadow rounded-md p-4">
-    <h3 class="text-lg leading-none font-extrabold text-gray-900">
-      MLS authorization
-    </h3>
-    <p class="text-xs text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
+    <p class="text-sm text-gray-700 leading-4 mt-1">In order to use this product we need to be able to authorize you through your MLS.</p>
     <div class="mt-2">
       <form phx-submit="authorize" phx-target="<%= @myself %>">
         <input type="hidden" name="page" value="<%= @return_to %>">

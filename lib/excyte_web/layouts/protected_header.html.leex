@@ -26,19 +26,19 @@
           <div class="flex flex-col pb-2">
             <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
               <div class="p-4 hover:bg-bgray-700">
-                <h3 class="text-lg font-bold leading-5 text-blue-600">Dash</h3>
+                <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
                 <p class="text-xs text-bgray-400">Overview</p>
               </div>
             <% end %>
             <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.Create, "cma"), class: "block" do %>
               <div class="p-4 hover:bg-bgray-700">
-                <h3 class="text-lg font-bold leading-5 text-cyan-600">Insights</h3>
+                <h3 class="text-lg font-bold leading-5 text-cyan-600 mb-0">Insights</h3>
                 <p class="text-xs text-bgray-400">CMA's etc.</p>
               </div>
             <% end %>
             <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
               <div class="p-4 hover:bg-bgray-700">
-                <h3 class="text-lg font-bold leading-5 text-teal-600">Clients</h3>
+                <h3 class="text-lg font-bold leading-5 text-teal-600 mb-0">Clients</h3>
                 <p class="text-xs text-bgray-400">Leads etc.</p>
               </div>
             <% end %>
@@ -71,19 +71,19 @@
         <div class="flex">
           <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
             <div class="ml-4">
-              <h3 class="text-lg font-bold leading-5 text-blue-600">Dash</h3>
+              <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
               <p class="text-xs text-bgray-400">Overview</p>
             </div>
           <% end %>
           <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.Create, "cma"), class: "block" do %>
             <div class="ml-8">
-              <h3 class="text-lg font-bold leading-5 text-cyan-600">Insights</h3>
+              <h3 class="text-lg font-bold leading-5 text-cyan-600 mb-0">Insights</h3>
               <p class="text-xs text-bgray-400">CMA's etc.</p>
             </div>
           <% end %>
           <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
             <div class="ml-8">
-              <h3 class="text-lg font-bold leading-5 text-teal-600">Clients</h3>
+              <h3 class="text-lg font-bold leading-5 text-teal-600 mb-0">Clients</h3>
               <p class="text-xs text-bgray-400">Leads etc.</p>
             </div>
           <% end %>

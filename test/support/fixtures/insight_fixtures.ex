@@ -12,6 +12,7 @@ defmodule Excyte.InsightFixtures do
         |> Enum.into(%{
           insight_type: "cma",
           is_excyte_made: true,
+          type_default: true,
           name: "Excyte Basic CMA",
           is_public: true,
           attributes: %{

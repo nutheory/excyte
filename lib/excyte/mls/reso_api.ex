@@ -92,7 +92,6 @@ defmodule Excyte.Mls.ResoApi do
       <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "%20and%20#{status(opts.selected_statuses)}"
       # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
-
     )
     |> format_response()
     |> ProcessListings.process_init(subject)
@@ -111,9 +110,13 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp get_listings_by_price(mls, %{price: price}) do
-    "#{get_attr_by_range(mls, %{attr: "ListPrice", low: price.low, high: price.high})}%20or%20"
-    <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: price.low, high: price.high})}%20or%20"
-    |> String.trim_trailing("%20or%20")
+    if price === nil || price === 0 || Enum.empty?(price) do
+      ""
+    else
+      "#{get_attr_by_range(mls, %{attr: "ListPrice", low: price.low, high: price.high})}%20or%20"
+      <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: price.low, high: price.high})}%20or%20"
+      |> String.trim_trailing("%20or%20")
+    end
   end
 
   defp get_by_months_back(%{selected_statuses: statuses, status_updated: updated}) do

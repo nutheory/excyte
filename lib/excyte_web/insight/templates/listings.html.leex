@@ -13,7 +13,7 @@
       </div>
       <div class="text-right pr-4 border-r border-gray-300">
         <h2 class="text-xl leading-none lg:text-2xl lg:leading-none text-gray-500">
-          <%= if Map.has_key?(@subject, :est_price) do %>
+          <%= if @subject.est_price !== nil do %>
             <span class="font-light inline-block text-lg align-top -mt-1 mr-0.5">$</span><%= number_to_delimited(@subject.est_price, precision: 0) %>
           <% else %>
             N/A
@@ -37,7 +37,7 @@
       <div class="flex">
         <div
           phx-click="toggle-filters"
-          class="flex-1 flex rounded px-4 py-2 my-2 border cursor-pointer border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600"
+          class="flex-1 flex rounded px-4 py-2 mt-2 border cursor-pointer border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600"
         >
           <div class="flex-1">
             <svg class="h-5 w-5 inline-block -mt-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,7 +67,7 @@
         <% end %>
       </div>
       <div class="<%= if !@show_filters, do: 'hidden' %>">
-        <div class="rounded px-4 lg:px-6 py-4 border border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600">
+        <div class="rounded mt-1 px-4 lg:px-6 py-4 border border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600">
           <%= live_component @socket, FilterListings,
             subject: @subject,
             filters: @filters,
@@ -75,7 +75,7 @@
           %>
         </div>
       </div>
-      <div class="hidden lg:block h-6 mt-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
+      <div class="hidden lg:block h-4 mt-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
     </div>
   </div>
   <%= if length(@comps) > 0 do %>

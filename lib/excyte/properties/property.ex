@@ -143,7 +143,6 @@ defmodule Excyte.Properties.Property do
     |> validate_required([:agent_id, :internal_type, :beds, :baths, :est_price])
     |> validate_number(:beds, greater_than: 0)
     |> validate_number(:baths, greater_than: 0)
-    |> validate_number(:est_price, greater_than: 10)
   end
 
 end

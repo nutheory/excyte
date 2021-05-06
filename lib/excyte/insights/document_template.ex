@@ -31,6 +31,8 @@ defmodule Excyte.Insights.DocumentTemplate do
       :created_by_id,
       :is_excyte_made,
       :is_shared,
+      :is_public,
+      :type_default,
       :attributes,
       :insight_type,
       :name

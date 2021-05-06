@@ -50,7 +50,7 @@ defmodule Excyte.Properties.PublicDataApi do
     {:ok, property}
   end
 
-  defp process_subject(response) do
+  defp process_est_price(est) do
   end
 
   defp process_features(feats) do

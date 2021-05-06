@@ -4,13 +4,13 @@
       <div class="flex-1 mt-2 px-2 md:px-4">
         <%= live_component @socket, RangeSlider, opts: %{
           min: round(@filters.price_min * 0.6),
-          max: round(@filters.price_min * 1.6),
+          max: round(@filters.price_max * 1.6),
           low: @filters.price_min,
           high: @filters.price_max,
           money: true,
           type: Integer,
           label: "Close/List Price",
-          interval: (if Map.has_key?(@subject, :est_price), do: round(@subject.est_price * 0.005), else: 3000),
+          interval: (if @subject.est_price !== nil, do: round(@subject.est_price * 0.005), else: 3000),
           buffer: 5
         }, callback: :update_filter, id: :price_filter %>
       </div>
@@ -21,6 +21,7 @@
             <%= number_input f, :distance,
               class: "number-field",
               step: "0.5",
+              inputmode: "numeric",
               placeholder: "Radius",
               value: @filters.distance,
               phx_debounce: "blur" %>

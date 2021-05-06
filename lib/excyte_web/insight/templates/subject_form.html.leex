@@ -26,10 +26,6 @@
         <%= label f, :year_built %>
         <%= number_input f, :year_built, class: "number-field",  step: "1", phx_debounce: "blur" %>
       </div>
-      <div class="col-span-2">
-        <%= label f, :est_price, "Estimated price" %>
-        <%= number_input f, :est_price, class: "number-field", step: "1000", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-      </div>
     </div>
     <div class="w-full mt-6">
       <h4>Features</h4>

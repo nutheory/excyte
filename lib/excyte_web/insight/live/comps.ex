@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Insight.Comps do
       filters: %{},
       client_info: assign_client_info(socket),
       subject: nil,
+      sort_by: "ranking",
       key: params["insight_id"],
       fetching: (if params["insight_id"], do: true, else: false),
       comparables: nil,
@@ -113,14 +114,55 @@ defmodule ExcyteWeb.Insight.Comps do
 
   defp query_mls(%{subject: subject, filters: filters, selected: sids},  %{assigns: a} = socket) do
     case ResoApi.comparable_properties(a.current_user.current_mls, subject, filters) do
-      {:ok, c} -> {:noreply, assign(socket, comparables: c.listings, fetching: false,
-                  filters: c.filters, subject: subject, comp_count: c.count,
-                  selected_comps: Enum.map(sids, fn s ->
+      {:ok, c} ->
+        %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, subject, filters, socket)
+        {:noreply, assign(socket, comparables: ls, fetching: false, filters: fs, subject: ns,
+         comp_count: c.count, selected_comps: Enum.map(sids, fn s ->
                     Enum.find(c.listings, fn l -> s == l.listing_id
                   end) end))}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
                         subject: subject)}
     end
+  end
+
+  defp sort_by(listings, subj, filters, %{assigns: a} = socket) do
+    cond do
+      a.sort_by === "ranking" ->
+        sorted = Enum.sort_by(listings, &(&1.excyte_ranking.score))
+        price =
+          if subj.est_price === nil || subj.est_price === 0 do
+            Enum.reduce(sorted, [], fn l, acc ->
+              cond do
+                l.close_price !== nil -> [l.close_price | acc]
+                l.list_price !== nil -> [l.list_price | acc]
+                true -> acc
+              end
+            end)
+            |> Enum.take(10)
+            |> average()
+          else
+            subj.est_price
+          end
+        price_filters = setup_price_filter(price)
+        %{listings: sorted,
+          subject: Map.merge(subj, %{est_price: price}),
+          filters: Map.merge(filters, price_filters)}
+      true -> %{listings: listings, subject: subj, filters: filters}
+    end
+  end
+
+  defp setup_price_filter(price) do
+    filters =
+      if price !== nil && price !== 0 do
+        %{ price_min: round(price * 0.95), price_max: round(price * 1.05),
+           price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
+      else
+        %{ price_min: 0, price_max: 10_000_000, price: %{ type: Integer, low: 0, high: 10_000_000 }}
+      end
+  end
+
+  defp average(nums) do
+    if length(nums) > 0, do: Enum.sum(nums) / length(nums), else: nil
   end
 
   defp to_i(str) do

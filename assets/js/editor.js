@@ -1,48 +1,45 @@
 import { Editor as TipTap } from "@tiptap/core"
-
-import Italic from '@tiptap/extension-italic'
+import Blockquote from '@tiptap/extension-blockquote'
 import Bold from '@tiptap/extension-bold'
-import Link from '@tiptap/extension-link'
-import Image from '@tiptap/extension-image'
-import Strike from '@tiptap/extension-strike'
-import Document from '@tiptap/extension-document'
-import History from '@tiptap/extension-history'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import ListItem from '@tiptap/extension-list-item'
-import Heading from '@tiptap/extension-heading'
-import HardBreak from '@tiptap/extension-hard-break'
-import Text from '@tiptap/extension-text'
-import Paragraph from '@tiptap/extension-paragraph'
 import BubbleMenu from '@tiptap/extension-bubble-menu'
-import FloatingMenu from '@tiptap/extension-floating-menu'
-import Highlight from '@tiptap/extension-highlight'
-import TextAlign from '@tiptap/extension-text-align'
-import FontFamily from '@tiptap/extension-font-family'
-import Underline from '@tiptap/extension-underline'
+import BulletList from '@tiptap/extension-bullet-list'
+import Commands from './extensions/commands'
+import Document from '@tiptap/extension-document'
 import Dropcursor from '@tiptap/extension-dropcursor'
+import FloatingMenu from '@tiptap/extension-floating-menu'
+import FontFamily from '@tiptap/extension-font-family'
 import Gapcursor from '@tiptap/extension-gapcursor'
+import HardBreak from '@tiptap/extension-hard-break'
+import Heading from '@tiptap/extension-heading'
+import Highlight from '@tiptap/extension-highlight'
+import History from '@tiptap/extension-history'
+import Image from '@tiptap/extension-image'
+import Italic from '@tiptap/extension-italic'
+import Link from '@tiptap/extension-link'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
+import Paragraph from '@tiptap/extension-paragraph'
+import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableHeader from '@tiptap/extension-table-header'
 import TableCell from '@tiptap/extension-table-cell'
-import Commands from './extensions/commands'
+import Text from '@tiptap/extension-text'
+import TextAlign from '@tiptap/extension-text-align'
+import Underline from '@tiptap/extension-underline'
 import tippy from 'tippy.js'
 import { verifyLink } from './utilities'
 
+window.editorHook = {}
 window.currentEditor = function (content) {
   console.log("loaded")
-  // updatedAt is to force Alpine to rerender on selection change
+  
   return {
-    updatedAt: Date.now(),
-    content: `
-      <div><simple-gallery>booger</simple-gallery></div>
-    `,
-    inFocus: true,
+    content: content,
+    editor: null,
     linkInput: null,
     menuLinkVisible: false,
     imagePanelVisible: false,
-    editor: null,
 
     init(el) {
       let editor = new TipTap({
@@ -50,6 +47,7 @@ window.currentEditor = function (content) {
         extensions: [        
           Italic,
           Bold,
+          Blockquote,
           Strike,
           Document,
           History,
@@ -59,7 +57,11 @@ window.currentEditor = function (content) {
           Heading,
           HardBreak,
           Text,
-          Paragraph,
+          Paragraph.configure({
+            HTMLAttributes: {
+              class: 'my-custom-paragraph',
+            },
+          }),
           Link,
           Image,
           Highlight,
@@ -122,6 +124,7 @@ window.currentEditor = function (content) {
       })
 
       this.editor = editor
+      window.editorHook.currentEditor = this
     },
 
     linkKeydownCallback(ev) {
@@ -173,7 +176,12 @@ window.currentEditor = function (content) {
 
 export const InitEditor = {
   mounted() {
-    window.editorHook = this
+    window.editorHook.base = this
+    // console.log("THIS", window.editorHook.currentEditor.editor)
+    this.handleEvent("loadContent", ({ content }) => {
+      window.editorHook.currentEditor.editor.commands.setContent(content)
+      console.log("CONT", window.editorHook.currentEditor.editor.commands)
+    })
   },
   destroyed() {
      window.editorHook = null

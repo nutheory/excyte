@@ -24,7 +24,7 @@ defmodule Excyte.Insights.Insight do
     field :content, MapType
     field :published, :boolean
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
-    has_one(:subject, Property, foreign_key: :insight_id)
+    has_one(:property, Property, foreign_key: :insight_id)
     has_many(:sections, Section)
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)

@@ -3,6 +3,7 @@ const glob = require('glob');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = (env, options) => {
   const devMode = options.mode !== 'production';
@@ -11,6 +12,7 @@ module.exports = (env, options) => {
     devtool: devMode ? 'source-map' : undefined,
     optimization: {
       minimizer: [
+        new TerserPlugin(),
         new CssMinimizerPlugin()
       ]
     },
@@ -24,49 +26,42 @@ module.exports = (env, options) => {
       path: path.resolve(__dirname, '../priv/static/js'),
       publicPath: '/js/'
     },
+    watchOptions: {
+      poll: (process.env.WEBPACK_WATCHER_POLL || 'false') === 'true'
+    },
     module: {
       rules: [
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
-        },
-        {
-          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
           use: [
-            {
-              loader: require.resolve('file-loader'),
-              options: { name: '[name].[ext]', outputPath: '../fonts' }
-            },
-          ],
+            {loader: 'babel-loader'}
+          ]
         },
         {
           test: /(\.css)$/,
-          include: /node_modules/,
           use: [
             MiniCssExtractPlugin.loader,
-            { loader: 'css-loader', options: { url: false } }
-          ],
-        },
-        {
-          test: /(\.css)$/,
-          exclude: /node_modules/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            { loader: 'css-loader', options: { url: false } },
-            'sass-loader',
+            'css-loader',
             'postcss-loader',
           ],
+        },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'fonts/[name][ext]'
+          }
         },
       ]
     },
     plugins: [
       new MiniCssExtractPlugin({ filename: '../css/[name].css' }),
-      new CopyWebpackPlugin({
-        patterns: [
-          { from: 'static/', to: '../' }
-        ]
-      }),
+      new CopyWebpackPlugin({patterns: [{ from: 'static/' }]}),
     ]
   }
 };

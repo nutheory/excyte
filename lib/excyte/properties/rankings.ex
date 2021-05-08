@@ -55,7 +55,6 @@ defmodule Excyte.Properties.Rankings do
       |> sanitize_attrs()
       |> average_with_weight()
       |> ranking_summary()
-      |> IO.inspect(label: "RANK")
 
     Map.merge(listing, %{excyte_ranking: ranks})
   end

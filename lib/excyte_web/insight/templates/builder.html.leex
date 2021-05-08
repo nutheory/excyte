@@ -1,51 +1,47 @@
 <div class="mt-24 mx-auto">
-  <div class="flex -mx-4">
-    <div class="px-4 w-64 lg:sticky lg:top-0 -mt-24 pt-24 h-screen">
-      <h2 class="">CMA Builder</h2>
-      <h3 class="mt-6">Contents</h3>
-      <ul class="toc">
-        <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
-          <h4>Introduction</h4>
-          <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
-            hey you
-          </div>
-        </li>
-      </ul>
-
-      <%= live_redirect to: "/insights/cma/#{@insight.uuid}/editor/new", replace: false do %>
-        <button class="action-button w-full my-6">Add a section</button>
-      <% end %>
-    </div>
-    <div class="flex-1 px-4">
-      <h2 class="pr-1 text-right">Preview</h2>
-      <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200">
-        <%# <div class="" id="cover">
+    <%= if @editing_key === nil do %>
+      <div class="flex -mx-4">
+        <div class="px-4 w-64 lg:sticky lg:top-0 -mt-24 pt-24 h-screen">
+          <h2 class="">CMA Builder</h2>
+          <h3 class="mt-6">Contents</h3>
+          <ul class="toc">
+            <%= for section <- @sections do %>
+              <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
+                <h4><%= section.name %></h4>
+                <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
+                  <button type="button" phx-click="edit-section" phx-value-section-id="<%= section.id %>">edit</button>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+          <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
         </div>
-        <div class="" id="intro">
-        </div>
-        <div class="" id="your-agent">
-        </div>
-        <div class="" id="subject-property">
-        </div> %>
-        <%= if @insight.content do %>
-          <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
-          <%= for comp <- @insight.content.comps do %>
-            <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
-              <div class="mx-6">
-                <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
-              </div>
-              <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
-                <%= for image <- comp["media"] do %>
-                  <div>
-                    <img class="h-full block" src="<%= image["media_url"] %>" />
+        <div class="flex-1 px-4">
+          <h2 class="pr-1 text-right">Preview</h2>
+          <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200">
+            <%= if @insight.content do %>
+              <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
+              <%= for comp <- @insight.content.comps do %>
+                <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
+                  <div class="mx-6">
+                    <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
                   </div>
-                <% end %>
-              </div>
-              <br />
-            </div>
-          <% end %>
-        <% end %>
+                  <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
+                    <%= for image <- comp["media"] do %>
+                      <div>
+                        <img class="h-full block" src="<%= image["media_url"] %>" />
+                      </div>
+                    <% end %>
+                  </div>
+                  <br />
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
       </div>
-    </div>
+    <% else %>
+      <%= live_render @socket, Editor, session: %{"content_id" => @editing_key}, id: "editor_view" %>
+    <% end %>
   </div>
 </div>

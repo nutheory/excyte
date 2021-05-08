@@ -1,4 +1,4 @@
-defmodule Excyte.Logger.ErrorLog do
+defmodule Excyte.Activities.ErrorLog do
   @moduledoc """
     Error Logger schema
   """

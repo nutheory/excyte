@@ -40,7 +40,7 @@ defmodule ExcyteWeb.Insight.Create do
   def handle_info({:create_subject, attrs}, %{assigns: a} = socket) do
     key = "cma#{a.current_user.id}#{System.os_time(:second)}"
     case Insights.create_insight(insight_data(attrs, key, a)) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{key}/comparables")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/comparables")}
       {:error, method, changeset, _} ->
           # TODO Log Error
           {:noreply, put_flash(socket, :error, "Something went wrong.")}

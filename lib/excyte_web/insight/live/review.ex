@@ -17,16 +17,16 @@ defmodule ExcyteWeb.Insight.Review do
     cu = Accounts.get_user_by_session_token(token)
     with %Insight{} = ins <- Insights.get_review_insight(cu.id, id),
          {:ok, comps} <- ResoApi.get_by_listing_ids(cu.current_mls,
-                    ins.selected_listing_ids, ins.subject),
+                    ins.selected_listing_ids, ins.property),
          templates <- Insights.get_document_templates(cu) do
       {:ok, assign(socket,
         current_user: cu,
-        subject: ins.subject,
+        subject: ins.property,
         insight_uuid: id,
         templates: templates,
         selected_tmpl: Enum.find(templates, fn tmpl -> tmpl.type_default === true end),
         listings: comps.listings,
-        selected_comps: Adjustments.process_init(comps.listings, ins.subject)
+        selected_comps: Adjustments.process_init(comps.listings, ins.property)
       )}
     else
       _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
@@ -60,7 +60,7 @@ defmodule ExcyteWeb.Insight.Review do
       document_attributes: a.selected_tmpl.attributes,
       document_template_id: a.selected_tmpl.id
     }) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.insight_uuid}/builder")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/builder")}
       {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

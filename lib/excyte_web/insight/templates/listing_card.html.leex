@@ -56,7 +56,7 @@
   </div>
   <div class="hidden sm:block ml-6 w-1/4">
     <%= if @listing.main_photo_url do %>
-      <div class="rounded relative overflow-hidden pb-2/3">
+      <div class="rounded relative h-full overflow-hidden pb-2/3">
         <img src="<%= @listing.main_photo_url %>" alt="" class="absolute h-full w-full object-cover" />
       </div>
     <% end %>

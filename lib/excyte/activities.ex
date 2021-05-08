@@ -1,10 +1,10 @@
-defmodule Excyte.Logger do
+defmodule Excyte.Activities do
   @moduledoc """
-    Error Logger api
+    Activites api
   """
 
   import Ecto.Query, only: [from: 2]
-  alias Excyte.{Repo, Logger.ErrorLog}
+  alias Excyte.{Repo, Activities.ErrorLog}
 
   def handle_errors(err, func_name, opts \\ []) do
     IO.inspect(err, label: "ERR")

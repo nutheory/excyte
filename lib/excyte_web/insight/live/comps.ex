@@ -28,7 +28,7 @@ defmodule ExcyteWeb.Insight.Comps do
   def handle_info({:load_from_store, id}, %{assigns: a} = socket) do
     case Insights.get_initial_insight(a.current_user.id, id) do
       %Insight{} = ins -> query_mls(%{
-        subject: ins.subject,
+        subject: ins.property,
         selected: ins.selected_listing_ids,
         filters: Utilities.format_quoted_json(ins.saved_search.criteria)}, socket)
       nil -> {:noreply, assign(socket, fetching: false, errors: [%{message: "cannot locate #{id}."}])}
@@ -98,7 +98,7 @@ defmodule ExcyteWeb.Insight.Comps do
       saved_search: %{criteria: a.filters}
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/cma/#{a.key}/review")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/review")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

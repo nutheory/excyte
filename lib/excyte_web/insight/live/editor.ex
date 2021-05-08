@@ -6,21 +6,26 @@ defmodule ExcyteWeb.Insight.Editor do
 
   def render(assigns), do: InsightView.render("editor.html", assigns)
 
-  def mount(%{"doc_id" => did}, %{"user_token" => token}, socket) when did !== "new" do
+  def mount(_params, %{"content_id" => cid, "user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    doc = Insights.get_document(did)
-    # send self(), {:load_document, %{doc: hd(doc.content)}}
-    {:ok, assign(socket, current_user: cu, doc: doc.content)}
+    IO.inspect(cid, label: "CID")
+    case Cachex.get(:editor_cache, cid) do
+      {:ok, content} -> send self(), {:setup_editor, content}
+      {:error, err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
+    end
+    {:ok, assign(socket, current_user: cu)}
   end
 
-  def mount(_, %{"user_token" => token}, socket) do
+  def mount(_, %{"user_token" => token} = sesh, socket) do
+    IO.inspect(sesh, label: "SESH")
     cu = Accounts.get_user_by_session_token(token)
     send self(), {:load_document, ""}
     {:ok, assign(socket, current_user: cu)}
   end
 
-  def handle_info({:load_document, _}, socket) do
-    {:noreply, push_event(socket, "loadContentFromDb", %{content: "Hello from phoenix"})}
+  def handle_info({:setup_editor, %{section: section, data: data}}, socket) do
+    IO.inspect(data, label: "HERE")
+    {:noreply, push_event(socket, "loadContent", %{content: section.html_content})}
   end
 
   def handle_event("section_save", %{html: html}, %{assigns: a} = socket) do

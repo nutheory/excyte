@@ -21,7 +21,7 @@ defmodule ExcyteWeb.InsightView do
   alias ExcyteWeb.Components.{
     AddressAutocomplete,
     DistanceSelector,
-    RangeSlider,
+    RangeInputs,
     Calendar,
     Dropdown,
     Gallery,

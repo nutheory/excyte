@@ -36,25 +36,29 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
-    {:noreply, assign(socket, filters: Map.merge(a.filters, val))}
-  end
-
-  def handle_event("distance-filter-update", %{"d" => %{"distance" => d}},  %{assigns: a} = socket) do
-    if d === "" do
-      {:noreply, assign(socket, filters: Map.merge(a.filters, %{distance: 50.0}))}
-    else
-      case Float.parse(d) do
-        {fl, _} -> {:noreply, assign(socket, filters: Map.merge(a.filters, %{distance: fl}))}
-        :error -> {:noreply, assign(socket, filters: a.filters)}
+    filters =
+      if Map.has_key?(val, :price) do
+        low = val.price.low * 1000
+        high = val.price.high * 1000
+        Map.merge(a.filters, %{price: %{low: low, high: high, type: Integer}})
+      else
+        Map.merge(a.filters, val)
       end
-    end
+    {:noreply, assign(socket, filters: filters)}
   end
 
   def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
+    distance =
+      if form["distance"] === "" do
+        50.0
+      else
+        case Float.parse(form["distance"]) do
+          {fl, _} -> fl
+          :error -> 50.0
+        end
+      end
     filters = Map.merge(a.filters, %{
-      baths: %{low: to_i(form["baths_min"]), high: to_i(form["baths_max"])},
-      beds: %{low: to_i(form["beds_min"]), high: to_i(form["beds_max"])},
-      sqft: %{low: to_i(form["sqft_min"]), high: to_i(form["sqft_max"])},
+      distance: distance,
       selected_statuses: a.filters.selected_statuses
     })
     query_mls(%{subject: a.subject, filters: filters, selected: []}, socket)
@@ -126,6 +130,7 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   defp sort_by(listings, subj, filters, %{assigns: a} = socket) do
+    show_filters = if length(listings) === 0, do: true, else: false
     cond do
       a.sort_by === "ranking" ->
         sorted = Enum.sort_by(listings, &(&1.excyte_ranking.score))
@@ -146,18 +151,18 @@ defmodule ExcyteWeb.Insight.Comps do
         price_filters = setup_price_filter(price)
         %{listings: sorted,
           subject: Map.merge(subj, %{est_price: price}),
-          filters: Map.merge(filters, price_filters)}
-      true -> %{listings: listings, subject: subj, filters: filters}
+          filters: Map.merge(filters, price_filters),
+          show_filters: show_filters}
+      true -> %{listings: listings, subject: subj, filters: filters, show_filters: show_filters}
     end
   end
 
   defp setup_price_filter(price) do
     filters =
       if price !== nil && price !== 0 do
-        %{ price_min: round(price * 0.95), price_max: round(price * 1.05),
-           price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
+        %{ price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
       else
-        %{ price_min: 0, price_max: 10_000_000, price: %{ type: Integer, low: 0, high: 10_000_000 }}
+        %{ price: %{ type: Integer, low: 0, high: 10_000_000 }}
       end
   end
 

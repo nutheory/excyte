@@ -2,7 +2,7 @@ import { Editor as TipTap } from "@tiptap/core"
 import Blockquote from '@tiptap/extension-blockquote'
 import Bold from '@tiptap/extension-bold'
 import BubbleMenu from '@tiptap/extension-bubble-menu'
-import BulletList from '@tiptap/extension-bullet-list'
+// import BulletList from '@tiptap/extension-bullet-list'
 import Commands from './extensions/commands'
 import Document from '@tiptap/extension-document'
 import Dropcursor from '@tiptap/extension-dropcursor'
@@ -16,8 +16,8 @@ import History from '@tiptap/extension-history'
 import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
 import Link from '@tiptap/extension-link'
-import ListItem from '@tiptap/extension-list-item'
-import OrderedList from '@tiptap/extension-ordered-list'
+// import ListItem from '@tiptap/extension-list-item'
+// import OrderedList from '@tiptap/extension-ordered-list'
 import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
@@ -51,9 +51,9 @@ window.currentEditor = function (content) {
           Strike,
           Document,
           History,
-          BulletList,
-          OrderedList,
-          ListItem,
+          // BulletList,
+          // OrderedList,
+          // ListItem,
           Heading,
           HardBreak,
           Text,

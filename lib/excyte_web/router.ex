@@ -22,8 +22,18 @@ defmodule ExcyteWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :published_insights do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {ExcyteWeb.LayoutView, :published}
+    plug :put_layout, {ExcyteWeb.LayoutView, :empty}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
   pipeline :auth do
-    plug :put_layout, {ExcyteWeb.LayoutView, "auth.html"}
+    plug :put_layout, {ExcyteWeb.LayoutView, :auth}
   end
 
   pipeline :api do
@@ -97,6 +107,13 @@ defmodule ExcyteWeb.Router do
     pipe_through [:app_browser, :require_authenticated_user]
     get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
     delete "/log_out", UserSessionController, :delete
+  end
+
+  ## Public routes
+
+  scope "/pub", ExcyteWeb do
+    pipe_through [:published_insights]
+    get "/:insight_id", PublishedInsights, :viewer
   end
 
   scope "/", ExcyteWeb do

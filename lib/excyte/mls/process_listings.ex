@@ -91,7 +91,7 @@ defmodule Excyte.Mls.ProcessListings do
         listing_id: l["ListingId"],
         features: process_features(l),
         last_modified: l["ModificationTimestamp"],
-        dirty_info: Map.delete(l, "Media"),
+        # dirty_info: Map.delete(l, "Media"),
         pool: l["PoolYN"],
         spa: l["SpaYN"],
         schools: %{

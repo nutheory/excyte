@@ -18,7 +18,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
-import {InitEditor} from "./editor"
+import {InitEditor, InitViewer} from "./editor"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
@@ -30,6 +30,7 @@ Hooks.InitCheckout = InitCheckout
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
+Hooks.InitViewer = InitViewer
 Hooks.DistanceSelector = {
   mounted(){
     const add = this.el.querySelector('.add-distance')

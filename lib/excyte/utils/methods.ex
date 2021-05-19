@@ -6,7 +6,13 @@ defmodule Excyte.Utils.Methods do
 
   def stringify_keys(map = %{}) do
     map
-    |> Enum.map(fn {k, v} -> {stringify_keys(k), stringify_keys(v)} end)
+    |> Enum.map(fn {k, v} ->
+      if is_map(v) || is_list(v) do
+        {stringify_keys(k), Jason.encode!(v)}
+      else
+        {stringify_keys(k), stringify_keys(v)}
+      end
+    end)
     |> Enum.into(%{})
   end
 

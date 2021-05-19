@@ -12,7 +12,8 @@ defmodule Excyte.Insights.SectionTemplate do
   schema "section_templates" do
     field :html_content, :string
     field :is_shared, :boolean, default: false
-    field :section_type, :string
+    field :component_name, :string
+    field :component_data_types, {:array, :string}
     field :name, :string
     field :position, :integer
     belongs_to(:document_template, DocumentTemplate)
@@ -28,7 +29,8 @@ defmodule Excyte.Insights.SectionTemplate do
       :is_shared,
       :name,
       :position,
-      :section_type,
+      :component_name,
+      :component_data_types,
       :document_template_id,
       :brokerage_id,
       :created_by_id

@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Insight.Builder do
           current_user: cu,
           insight: ins,
           sections: [],
+          preview: "",
           editing_key: nil,
           loading: true
         )}
@@ -29,14 +30,19 @@ defmodule ExcyteWeb.Insight.Builder do
     else
       case Insights.build_from_templates(a.current_user.id, ins.id) do
         {:ok, res} ->
+          send self(), {:load_preview, %{sections: res.sections}}
           {:noreply, assign(socket,
             sections: res.sections,
-            data: res.data,
             loading: false
           )}
         {:error, err} -> err
       end
     end
+  end
+
+  def handle_info({:load_preview, %{sections: sections}}, %{assigns: a} = socket) do
+    IO.inspect(sections, label: "FIN")
+    {:noreply, push_event(socket, "loadPreview", %{content: stitch_preview(sections)})}
   end
 
   def handle_event("new-section", _, %{assigns: a} = socket) do
@@ -51,6 +57,12 @@ defmodule ExcyteWeb.Insight.Builder do
     section = Enum.find(a.sections, fn s -> s.id === String.to_integer(sid) end)
     Cachex.put!(:editor_cache, key, %{data: a.data, section: section})
     {:noreply, assign(socket, editing_key: key)}
+  end
+
+  defp stitch_preview(sections) do
+    Enum.reduce(sections, "", fn section, acc ->
+      acc = acc <> section.html_content
+    end)
   end
 
   # def handle_info({:initial_build, %{"template" => t} = params}, socket) do

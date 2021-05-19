@@ -16,27 +16,17 @@
           </ul>
           <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
         </div>
-        <div class="flex-1 px-4">
+        <div class="flex-1 px-4" id="viewerWrapper" phx-hook="InitViewer">
           <h2 class="pr-1 text-right">Preview</h2>
-          <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200">
-            <%= if @insight.content do %>
-              <% IO.inspect(hd(@insight.content.comps), label: "LISTING") %>
-              <%= for comp <- @insight.content.comps do %>
-                <div class="prose max-w-full" id="<%= comp["listing_id"] %>">
-                  <div class="mx-6">
-                    <h2 ><%= comp["street_number"] %> <%= comp["street_name"] %></h2>
-                  </div>
-                  <div class="image-scroller h-32 lg:h-48 xl:h-64 my-6">
-                    <%= for image <- comp["media"] do %>
-                      <div>
-                        <img class="h-full block" src="<%= image["media_url"] %>" />
-                      </div>
-                    <% end %>
-                  </div>
-                  <br />
-                </div>
-              <% end %>
-            <% end %>
+          <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200" phx-update="ignore">
+            <div
+              class="h-full"
+              x-data="currentViewer('')"
+              x-init="() => init($refs.viewer)"
+              x-on:click.away="inFocus = false"
+            >
+              <div x-ref="viewer" class="w-full p-4 lg:p-6 xl:p-10 h-full"></div>
+            </div>
           </div>
         </div>
       </div>

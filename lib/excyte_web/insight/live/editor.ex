@@ -8,7 +8,6 @@ defmodule ExcyteWeb.Insight.Editor do
 
   def mount(_params, %{"content_id" => cid, "user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    IO.inspect(cid, label: "CID")
     case Cachex.get(:editor_cache, cid) do
       {:ok, content} -> send self(), {:setup_editor, content}
       {:error, err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
@@ -17,14 +16,14 @@ defmodule ExcyteWeb.Insight.Editor do
   end
 
   def mount(_, %{"user_token" => token} = sesh, socket) do
-    IO.inspect(sesh, label: "SESH")
+
     cu = Accounts.get_user_by_session_token(token)
     send self(), {:load_document, ""}
-    {:ok, assign(socket, current_user: cu)}
+    {:ok, assign(socket, current_user: cu, booger: "Hello")}
   end
 
   def handle_info({:setup_editor, %{section: section, data: data}}, socket) do
-    IO.inspect(data, label: "HERE")
+    # Push Content to JS
     {:noreply, push_event(socket, "loadContent", %{content: section.html_content})}
   end
 

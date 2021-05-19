@@ -3,6 +3,7 @@ defmodule Excyte.Utils.Contact do
   import Ecto.Changeset
 
   @timestamps_opts [type: :utc_datetime]
+  @derive {Jason.Encoder, only: [:type, :name, :content, :textable]}
 
   embedded_schema do
     field :temp_id, :string, virtual: true

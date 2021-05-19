@@ -41,58 +41,94 @@ template = excyte_document_template(%{})
 sections = [
   %{
     document_template_id: template.id,
-    section_type: "cover",
+    component_name: "cover",
+    component_data_types: ["subject"],
     name: "Cover Page",
-    json_content: %{},
     is_public: true,
     is_excyte_made: true,
     position: 0
   },
   %{
     document_template_id: template.id,
-    section_type: "brokerage_profile",
-    name: "Brokerage Profile",
-    json_content: %{},
+    component_name: "what_is_a_cma",
+    component_data_types: [],
+    name: "What is a CMA",
     is_public: true,
     is_excyte_made: true,
     position: 1
   },
   %{
     document_template_id: template.id,
-    section_type: "agent_profile",
-    name: "Agent Profile",
-    json_content: %{},
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
     is_public: true,
     is_excyte_made: true,
     position: 2
   },
   %{
     document_template_id: template.id,
-    section_type: "subject",
-    name: "Subject Property",
-    json_content: %{},
+    component_name: "what_is_a_cma",
+    component_data_types: [],
+    name: "What is a CMA",
     is_public: true,
     is_excyte_made: true,
     position: 3
   },
   %{
     document_template_id: template.id,
-    section_type: "comp",
-    name: "Comparable Listings",
-    json_content: %{},
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
     is_public: true,
     is_excyte_made: true,
     position: 4
   },
-    %{
+  %{
     document_template_id: template.id,
-    section_type: "synopsis",
-    name: "Synopsis",
-    json_content: %{},
+    component_name: "subject",
+    component_data_types: ["subject"],
+    name: "Subject Property",
     is_public: true,
     is_excyte_made: true,
     position: 5
-  }
+  },
+  %{
+    document_template_id: template.id,
+    component_name: "comparable",
+    component_data_types: ["listing"],
+    name: "Comparable Listings",
+    is_public: true,
+    is_excyte_made: true,
+    position: 6
+  },
+  %{
+    document_template_id: template.id,
+    component_name: "synopsis",
+    component_data_types: ["subject", "listings"],
+    name: "Synopsis",
+    is_public: true,
+    is_excyte_made: true,
+    position: 60
+  },
+  %{
+    document_template_id: template.id,
+    component_name: "pricing_stategy",
+    component_data_types: [],
+    name: "Pricing Strategy",
+    is_public: true,
+    is_excyte_made: true,
+    position: 60
+  },
+  %{
+    document_template_id: template.id,
+    component_name: "commission_distribution",
+    component_data_types: [],
+    name: "Commission Distribution",
+    is_public: true,
+    is_excyte_made: true,
+    position: 61
+  },
 ]
 
 Enum.each(sections, fn s ->

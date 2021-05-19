@@ -27,13 +27,82 @@ import TableCell from '@tiptap/extension-table-cell'
 import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
+import SimpleGallery from './extensions/simple_gallery'
+import CompDetails from './extensions/comp_details'
+import Struct from './extensions/struct'
 import tippy from 'tippy.js'
+import Glightbox from 'glightbox'
 import { verifyLink } from './utilities'
 
 window.editorHook = {}
-window.currentEditor = function (content) {
-  console.log("loaded")
+window.viewerHook = {}
+
+window.currentViewer = function (content) {
   
+  return {
+    content: content,
+    viewer: null,
+    toc_visible: false,
+
+    init(el) {
+      let viewer = new TipTap({
+        element: el,
+        editable: false,
+        extensions: [
+          Italic,
+          Bold,
+          Blockquote,
+          Strike,
+          Document,
+          History,
+          CompDetails,
+          // BulletList,
+          // OrderedList,
+          // ListItem,
+          Heading,
+          HardBreak,
+          Text,
+          Paragraph,
+          Link,
+          Image,
+          Highlight,
+          Underline, 
+          FontFamily,
+          TextAlign,
+          Table,
+          TableRow,
+          TableHeader,
+          TableCell,
+          Struct,
+          SimpleGallery,
+        ],
+        content: this.content,
+        // onUpdate: ({ editor }) => {
+        //   console.log("EDIT", editor)
+        //   this.content = editor.getHTML()
+        // },
+      })
+
+      this.viewer = viewer
+      window.viewerHook.currentViewer = this
+    },
+  }
+}
+
+export const InitViewer = {
+  mounted() {
+    window.viewerHook.base = this
+    this.handleEvent("loadViewer", ({ content }) => {
+      window.viewerHook.currentViewer.viewer.commands.setContent(content)     
+    })
+  },
+  destroyed() {
+     window.viewerHook = null
+     window.currentViewer = null
+  },
+}
+
+window.currentEditor = function (content) {
   return {
     content: content,
     editor: null,
@@ -57,11 +126,7 @@ window.currentEditor = function (content) {
           Heading,
           HardBreak,
           Text,
-          Paragraph.configure({
-            HTMLAttributes: {
-              class: 'my-custom-paragraph',
-            },
-          }),
+          Paragraph,
           Link,
           Image,
           Highlight,
@@ -73,6 +138,8 @@ window.currentEditor = function (content) {
           TableRow,
           TableHeader,
           TableCell,
+          Struct,
+          SimpleGallery,
           Commands.configure({
             suggestion: {
               render: () => {
@@ -115,7 +182,7 @@ window.currentEditor = function (content) {
         content: this.content,
         editorProps: {
           attributes: {
-            class: "prose prose-sm sm:prose lg:prose-lg xl:prose-xl 2xl:prose-2xl focus:outline-none"
+            class: ""
           }
         },
         onUpdate: ({ editor }) => {

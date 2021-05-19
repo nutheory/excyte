@@ -6,63 +6,84 @@ export default Node.create({
 
   group: 'block',
 
-  content: 'inline*',
+  content: 'block+',
+
+  addAttributes() {
+    return {
+      images: {
+        default: null,
+        parseHTML: element => {
+          return {
+            images: element.getAttribute('data-media-json')
+          }
+        }
+      }
+    }
+  },
 
   parseHTML() {
     return [
       {
-        tag: 'simple-gallery',
+        tag: 'div[data-type="simple-gallery"]',
       },
     ]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['simple-gallery', mergeAttributes(HTMLAttributes), 0]
+    return ['div', mergeAttributes(HTMLAttributes, {'data-type': 'simple-gallery'}), 0]
   },
 
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
-      console.log("Editor", editor)
-      console.log("node", node)
-      console.log("HTMLAttributes", HTMLAttributes)
-      console.log("decorations", decorations)
-
-      // Markup
-      /*
-        <div class="node-view">
-          <span class="label">Node view</span>
-
-          <div class="content"></div>
-        </div>
-      */
+      if (HTMLAttributes.images === "{{ listing.media }}") {return true}
+      console.log("JSON", HTMLAttributes.images)
+      const images = JSON.parse(HTMLAttributes.images)
 
       const dom = document.createElement('div')
-      dom.classList.add('simple-gallery')
+      dom.classList.add("simple-gallery", "w-full")
 
-      const img = document.createElement('img')
-      img.src = 'https://media.geeksforgeeks.org/wp-content/uploads/20190529122828/bs21.png'
-      img.dataset.bp = 'https://media.geeksforgeeks.org/wp-content/uploads/20190529122828/bs21.png'
-      dom.appendChild(img)
+      const init = images.map((imag, idx) => {
+        let link = document.createElement('a')
+        link.setAttribute("href", imag.media_url)
+        link.setAttribute("data-gallery", "gallery")
+        link.setAttribute("data-description", imag.short_description)
+        link.classList.add("glightbox")
 
-      const label = document.createElement('span')
-      label.classList.add('label')
-      label.innerHTML = 'Node view'
-      label.contentEditable = false
+        let img = document.createElement('img')
+        img.setAttribute("src", imag.media_url)
+        img.setAttribute("alt", "image")
 
-      const content = document.createElement('div')
-      content.classList.add('content')
-
-      dom.append(label, content)
-
-      // BigPicture({
-      //   el: document.querySelector('.simple-gallery'),
-      //   gallery: '.simple-gallery',
-      // })
+        if (idx === 0) {
+          const main = document.createElement('div')
+          main.classList.add('col-span-4')
+          link.append(img)
+          main.append(link)
+          dom.append(main)
+        } else if (idx > 0 && idx < 5) {
+          const gridItem = document.createElement('div')
+          link.append(img)
+          gridItem.append(link)
+          dom.append(gridItem)
+        } else {
+          const hiddenItem = document.createElement('div')
+          hiddenItem.classList.add('hidden')
+          link.append(img)
+          hiddenItem.append(link)
+          dom.append(hiddenItem)
+        }
+      })
 
       return {
         dom,
-        contentDOM: content,
       }
     }
   },
+  onFocus({ editor, event }) {
+    let lightbox = Glightbox({
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true,
+      selector: ".glightbox"
+    })
+  }
 })

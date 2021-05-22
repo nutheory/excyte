@@ -38,6 +38,10 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 ## Links
 
+[https://heroicons.com](Hero Icons)
+
+[https://remixicon.com](Remix Icons)
+
 [https://next.tiptap.dev/](TipTap 2)
 
 [https://bridgedataoutput.com/](Bridge RESO)

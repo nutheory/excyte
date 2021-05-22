@@ -50,7 +50,7 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    component_name: "what_is_a_cma",
+    component_name: "whats_cma",
     component_data_types: [],
     name: "What is a CMA",
     is_public: true,
@@ -68,9 +68,9 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    component_name: "what_is_a_cma",
+    component_name: "why_an_agent",
     component_data_types: [],
-    name: "What is a CMA",
+    name: "Why do I need a Agent",
     is_public: true,
     is_excyte_made: true,
     position: 3

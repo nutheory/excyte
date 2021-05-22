@@ -2,7 +2,7 @@ defmodule Excyte.Accounts.Billing do
   @moduledoc """
     Methods for interacting with Stripes API
   """
-  alias Excyte.{Logger, Accounts}
+  alias Excyte.{Accounts, Activities}
   alias Stripe.{Customer, PaymentMethod, Subscription, Plan, Invoice}
 
   def get_invoice_history(customer_id, limit) do
@@ -43,10 +43,10 @@ defmodule Excyte.Accounts.Billing do
       {:ok, subscription}
     else
       {:error, err} ->
-        Logger.handle_errors(err, "Billing.create_stripe_subscription catch_with")
+        Activities.handle_errors(err, "Billing.create_stripe_subscription catch_with")
 
       err ->
-        Logger.handle_errors(err, "Billing.create_stripe_subscription catch_with... no error")
+        Activities.handle_errors(err, "Billing.create_stripe_subscription catch_with... no error")
     end
   end
 
@@ -95,7 +95,7 @@ defmodule Excyte.Accounts.Billing do
       {:ok, updated}
     else
       {:error, cancel_err} ->
-        Logger.handle_errors(cancel_err, "Billing.cancel_subscription")
+        Activities.handle_errors(cancel_err, "Billing.cancel_subscription")
     end
   end
 
@@ -106,7 +106,7 @@ defmodule Excyte.Accounts.Billing do
         {:ok, payment}
 
       {:error, pay_err} ->
-        Logger.handle_errors(pay_err, "Billing.create_subscription/PaymentMethod.attach")
+        Activities.handle_errors(pay_err, "Billing.create_subscription/PaymentMethod.attach")
     end
   end
 
@@ -116,7 +116,7 @@ defmodule Excyte.Accounts.Billing do
         {:ok, cust_id}
 
       {:error, default_err} ->
-        Logger.handle_errors(default_err, "Billing.create_subscription/Customer.update")
+        Activities.handle_errors(default_err, "Billing.create_subscription/Customer.update")
     end
   end
 
@@ -132,7 +132,7 @@ defmodule Excyte.Accounts.Billing do
         {:ok, sub}
 
       {:error, sub_err} ->
-        Logger.handle_errors(sub_err, "Billing.create_subscription/Subscription.create")
+        Activities.handle_errors(sub_err, "Billing.create_subscription/Subscription.create")
     end
   end
 

@@ -1,7 +1,64 @@
 /* editor styles */
 
+ul.section-nav {
+  @apply mt-4;
+
+  & li.section {
+    @apply mb-2;
+
+    & .title {
+      @apply text-bgray-800 text-base font-extrabold;
+    }
+
+    & .sub-title {
+      @apply text-bgray-800 text-base;
+    }
+
+    & .actions {
+      @apply text-sm;
+    }
+  }
+}
+
 body {
-  @apply p-0 m-0;
+  @apply focus:outline-none p-0 m-0;
+}
+
+blockquote {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: gray;
+  font-family: Georgia, serif;
+  font-size: 1.5em;
+  font-style: italic;
+  line-height: 1.4 !important;
+  position: relative;
+  text-shadow: 0 1px white;
+  z-index: 600;
+}
+
+blockquote * {
+  box-sizing: border-box;
+}
+
+blockquote p {
+  color: #75808a;
+  line-height: 1.4 !important;
+}
+
+blockquote p:first-child::before {
+  content: '\201C';
+  color: #81bedb;
+  font-size: 7.5em;
+  font-weight: 700;
+  opacity: 0.3;
+  position: absolute;
+  top: -0.4em;
+  left: -0.2em;
+  text-shadow: none;
+  z-index: -300;
 }
 
 a.fancy {
@@ -39,33 +96,39 @@ mark {
   @apply bg-yellow-200;
 }
 
-table {
-  .selectedCell::after {
-    z-index: 2;
-    position: absolute;
-    content: "";
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: rgba(200, 200, 255, 0.4);
-    pointer-events: none;
-  }
-
-  .column-resize-handle {
-    position: absolute;
-    right: -2px;
-    top: 0;
-    bottom: -2px;
-    width: 4px;
-    background-color: #adf;
-    pointer-events: none;
-  }
-}
-
 .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
+}
+
+.command-button {
+  @apply text-white fill-current cursor-pointer p-2 rounded h-full w-full flex items-center justify-center;
+}
+
+div.editor-wrapper {
+  & .section {
+    @apply w-full flex items-center justify-center;
+
+    & .body {
+      @apply flex flex-wrap w-full md:w-4/5 lg:w-3/4 xl:w-2/3 my-32;
+    }
+
+    & .data-grid {
+      @apply flex flex-wrap h-48 min-h-full;
+    }
+
+    & .fifty {
+      @apply flex-1 h-full;
+    }
+
+    & .minor {
+      @apply mx-4 h-full;
+    }
+
+    & .major {
+      @apply flex-1 mx-4 h-full;
+    }
+  }
 }
 
 .simple-gallery {

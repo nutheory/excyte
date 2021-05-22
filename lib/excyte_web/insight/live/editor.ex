@@ -22,7 +22,7 @@ defmodule ExcyteWeb.Insight.Editor do
     {:ok, assign(socket, current_user: cu, booger: "Hello")}
   end
 
-  def handle_info({:setup_editor, %{section: section, data: data}}, socket) do
+  def handle_info({:setup_editor, %{section: section}}, socket) do
     # Push Content to JS
     {:noreply, push_event(socket, "loadContent", %{content: section.html_content})}
   end

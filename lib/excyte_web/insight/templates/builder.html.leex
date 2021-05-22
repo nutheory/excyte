@@ -2,23 +2,22 @@
     <%= if @editing_key === nil do %>
       <div class="flex -mx-4">
         <div class="px-4 w-64 lg:sticky lg:top-0 -mt-24 pt-24 h-screen">
-          <h2 class="">CMA Builder</h2>
-          <h3 class="mt-6">Contents</h3>
-          <ul class="toc">
+          <h2 class="">Builder</h2>
+          <ul class="section-nav">
             <%= for section <- @sections do %>
               <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
-                <h4><%= section.name %></h4>
+                <h5 class="title"><%= section.name %></h5>
                 <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
-                  <button type="button" phx-click="edit-section" phx-value-section-id="<%= section.id %>">edit</button>
+                  <button type="button" phx-click="edit-section" phx-value-section-pos="<%= section.position %>">edit</button>
                 </div>
               </li>
             <% end %>
           </ul>
           <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
         </div>
-        <div class="flex-1 px-4" id="viewerWrapper" phx-hook="InitViewer">
+        <div class="editor-wrapper flex-1 px-4" id="viewerWrapper" phx-hook="InitViewer">
           <h2 class="pr-1 text-right">Preview</h2>
-          <div class="py-6 mt-2 shadow-md bg-white rounded-md border border-gray-200" phx-update="ignore">
+          <div class="py-6 mt-2 rounded-md" phx-update="ignore">
             <div
               class="h-full"
               x-data="currentViewer('')"

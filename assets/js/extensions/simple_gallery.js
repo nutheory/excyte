@@ -2,6 +2,7 @@ import { Node, mergeAttributes } from '@tiptap/core'
 import Glightbox from 'glightbox'
 
 export default Node.create({
+
   name: 'simpleGallery',
 
   group: 'block',
@@ -24,19 +25,18 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="simple-gallery"]',
+        tag: 'div[data-type="simpleGallery"]',
       },
     ]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(HTMLAttributes, {'data-type': 'simple-gallery'}), 0]
+    return ['div', mergeAttributes(HTMLAttributes, {'data-type': 'simpleGallery'}), 0]
   },
 
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
-      if (HTMLAttributes.images === "{{ listing.media }}") {return true}
-      console.log("JSON", HTMLAttributes.images)
+      if (HTMLAttributes.images === null) {return true}
       const images = JSON.parse(HTMLAttributes.images)
 
       const dom = document.createElement('div')

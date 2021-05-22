@@ -2,7 +2,7 @@ import { Editor as TipTap } from "@tiptap/core"
 import Blockquote from '@tiptap/extension-blockquote'
 import Bold from '@tiptap/extension-bold'
 import BubbleMenu from '@tiptap/extension-bubble-menu'
-// import BulletList from '@tiptap/extension-bullet-list'
+import BulletList from '@tiptap/extension-bullet-list'
 import Commands from './extensions/commands'
 import Document from '@tiptap/extension-document'
 import Dropcursor from '@tiptap/extension-dropcursor'
@@ -16,8 +16,8 @@ import History from '@tiptap/extension-history'
 import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
 import Link from '@tiptap/extension-link'
-// import ListItem from '@tiptap/extension-list-item'
-// import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+import OrderedList from '@tiptap/extension-ordered-list'
 import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
@@ -27,8 +27,9 @@ import TableCell from '@tiptap/extension-table-cell'
 import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
+import { actions } from './extensions/actions'
 import SimpleGallery from './extensions/simple_gallery'
-import CompDetails from './extensions/comp_details'
+import Comparable from './extensions/comparable'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -36,6 +37,19 @@ import { verifyLink } from './utilities'
 
 window.editorHook = {}
 window.viewerHook = {}
+
+window.actionComponent = { 
+  
+  selectAction(index) {
+    const item = this.items[index]
+
+    if (item) {
+      this.command(item)
+    }
+  },
+
+  
+}
 
 window.currentViewer = function (content) {
   
@@ -55,10 +69,9 @@ window.currentViewer = function (content) {
           Strike,
           Document,
           History,
-          CompDetails,
-          // BulletList,
-          // OrderedList,
-          // ListItem,
+          BulletList,
+          OrderedList,
+          ListItem,
           Heading,
           HardBreak,
           Text,
@@ -69,18 +82,11 @@ window.currentViewer = function (content) {
           Underline, 
           FontFamily,
           TextAlign,
-          Table,
-          TableRow,
-          TableHeader,
-          TableCell,
-          Struct,
           SimpleGallery,
+          Struct,
+          Comparable,
         ],
         content: this.content,
-        // onUpdate: ({ editor }) => {
-        //   console.log("EDIT", editor)
-        //   this.content = editor.getHTML()
-        // },
       })
 
       this.viewer = viewer
@@ -105,8 +111,9 @@ export const InitViewer = {
 window.currentEditor = function (content) {
   return {
     content: content,
-    editor: null,
+    editor: null, 
     linkInput: null,
+    commandProps: null,
     menuLinkVisible: false,
     imagePanelVisible: false,
 
@@ -120,9 +127,9 @@ window.currentEditor = function (content) {
           Strike,
           Document,
           History,
-          // BulletList,
-          // OrderedList,
-          // ListItem,
+          BulletList,
+          OrderedList,
+          ListItem,
           Heading,
           HardBreak,
           Text,
@@ -133,20 +140,21 @@ window.currentEditor = function (content) {
           Underline, 
           FontFamily,
           TextAlign,
-          Gapcursor,
-          Table.configure({ resizable: true }),
-          TableRow,
-          TableHeader,
-          TableCell,
-          Struct,
           SimpleGallery,
+          Gapcursor,
+          Struct,
+          Comparable,
           Commands.configure({
             suggestion: {
+              items: query => {
+                return actions
+              },
               render: () => {
                 let component = document.querySelector('#commandsMenu') 
                 let popup
                 return {
                   onStart: props => {
+                    this.commandProps = props
                     popup = tippy('body', {
                       getReferenceClientRect: props.clientRect,
                       appendTo: () => document.body,
@@ -174,9 +182,6 @@ window.currentEditor = function (content) {
           }),
           BubbleMenu.configure({
             element: document.querySelector('#bubbleMenu'),
-          }),
-          FloatingMenu.configure({
-            element: document.querySelector('#floatingMenu'),
           }),
         ],
         content: this.content,
@@ -238,6 +243,11 @@ window.currentEditor = function (content) {
       // this.editor.chain().focus().setImage({ src: url }).run()
     },
 
+    actionComponent(id, editor) {
+      const action = this.commandProps.items.find(act => act.id === id)
+      this.commandProps.command(action)
+      this.commandProps = null
+    },
   }
 }
 

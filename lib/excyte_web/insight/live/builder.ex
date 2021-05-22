@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Insight.Builder do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Insights.Insight}
-  alias ExcyteWeb.InsightView
+  alias Excyte.{Accounts, Activities, Insights, Insights.Insight}
+  alias ExcyteWeb.{InsightView, Helpers.Templates}
   alias ExcyteWeb.Router.Helpers, as: Routes
 
   def render(assigns), do: InsightView.render("builder.html", assigns)
@@ -19,7 +19,7 @@ defmodule ExcyteWeb.Insight.Builder do
           editing_key: nil,
           loading: true
         )}
-      err ->
+      err -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
         {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
   end
@@ -30,9 +30,10 @@ defmodule ExcyteWeb.Insight.Builder do
     else
       case Insights.build_from_templates(a.current_user.id, ins.id) do
         {:ok, res} ->
-          send self(), {:load_preview, %{sections: res.sections}}
+          sections = with_html_sections(res.sections)
+          send self(), {:load_preview, %{sections: sections}}
           {:noreply, assign(socket,
-            sections: res.sections,
+            sections: sections,
             loading: false
           )}
         {:error, err} -> err
@@ -40,9 +41,9 @@ defmodule ExcyteWeb.Insight.Builder do
     end
   end
 
-  def handle_info({:load_preview, %{sections: sections}}, %{assigns: a} = socket) do
-    IO.inspect(sections, label: "FIN")
-    {:noreply, push_event(socket, "loadPreview", %{content: stitch_preview(sections)})}
+  def handle_info({:load_preview, %{sections: sections}}, socket) do
+    doc = stitch_preview(sections)
+    {:noreply, push_event(socket, "loadViewer", %{content: doc})}
   end
 
   def handle_event("new-section", _, %{assigns: a} = socket) do
@@ -52,44 +53,38 @@ defmodule ExcyteWeb.Insight.Builder do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
-  def handle_event("edit-section", %{"section-id" => sid}, %{assigns: a} = socket) do
-    key = "usr-#{a.current_user.id}_section-#{sid}_#{System.os_time(:second)}"
-    section = Enum.find(a.sections, fn s -> s.id === String.to_integer(sid) end)
-    Cachex.put!(:editor_cache, key, %{data: a.data, section: section})
+  def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
+    key = "usr-#{a.current_user.id}_section-#{pos}_#{System.os_time(:second)}"
+    section = Enum.find(a.sections, fn s -> s.position === String.to_integer(pos) end)
+    Cachex.put!(:editor_cache, key, %{section: section})
     {:noreply, assign(socket, editing_key: key)}
+  end
+
+  defp with_html_sections(sections) do
+    Enum.map(sections, fn s ->
+      if s.html_content === nil, do: Map.put(s, :html_content, get_editor_templates(s))
+    end)
+  end
+
+  defp get_editor_templates(%{component_name: component} = comp) do
+    case component do
+      "agent_profile" -> Templates.agent_profile(%{agent_profile: comp.data})
+      "brokerage_profile" -> Templates.brokerage_profile(%{brokerage: comp.data})
+      "comparable" -> Templates.comparable(%{listing: comp.data})
+      "commission_distribution" -> Templates.commission_distribution()
+      "cover" -> Templates.cover(%{subject: comp.data})
+      "pricing_strategy" -> Templates.pricing_strategy()
+      "subject" -> Templates.subject(%{subject: comp.data})
+      "synopsis" -> Templates.synopsis(%{subject: comp.data})
+      "whats_cma" -> Templates.whats_cma()
+      "why_an_agent" -> Templates.why_an_agent(%{agent_profile: comp.data})
+      _ -> comp.html_content
+    end
   end
 
   defp stitch_preview(sections) do
     Enum.reduce(sections, "", fn section, acc ->
-      acc = acc <> section.html_content
+      acc <> section.html_content
     end)
   end
-
-  # def handle_info({:initial_build, %{"template" => t} = params}, socket) do
-  #   tmpl = Enum.find(params.templates, fn pt -> pt.id === t end)
-  #   if tmpl do
-  #     sections =
-  #       Enum.map(tmpl.sections, fn ts ->
-  #         if Map.has_key?(ts, :func) do
-  #           apply(Template, ts[:func], [params])
-  #         else
-  #           case Insights.get_section(ts[:id]) do
-  #             %Section{} = res -> Map.merge(ts, res)
-  #              _ -> ts
-  #           end
-  #         end
-  #       end)
-  #     {:noreply, assign(socket, sections: sections)}
-  #   else
-  #     {:noreply, socket}
-  #   end
-  # end
-
-  # def handle_info({:initial_build, _}, socket) do
-  #   {:noreply, socket}
-  # end
-
-  # def handle_event("create-section", params, socket) do
-  #   {:noreply, socket}
-  # end
 end

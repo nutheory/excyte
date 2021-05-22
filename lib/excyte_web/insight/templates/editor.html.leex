@@ -3,7 +3,7 @@
     <div class="header flex">
       <%# Title (Editable) %><%# Save %>
     </div>
-    <div id="documentEditor" class="h-full">
+    <div id="documentEditor" class="editor-wrapper h-full">
       <div
         class="h-full"
         x-data="currentEditor('')"
@@ -22,11 +22,6 @@
         <div class="relative">
           <div id="bubbleMenu">
             <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
-          </div>
-        </div>
-        <div class="relative">
-          <div id="floatingMenu">
-            <%= live_component @socket, EditorMenuFloat, id: :editor_menu_float %>
           </div>
         </div>
         <div class="absolute -left-96">

@@ -31,11 +31,9 @@ defmodule ExcyteWeb.Insight.Builder do
       case Insights.build_from_templates(a.current_user.id, ins.id) do
         {:ok, res} ->
           sections = with_html_sections(res.sections)
+          # IO.inspect(sections, label: "SECTIONS")
           send self(), {:load_preview, %{sections: sections}}
-          {:noreply, assign(socket,
-            sections: sections,
-            loading: false
-          )}
+          {:noreply, assign(socket, sections: sections, loading: false)}
         {:error, err} -> err
       end
     end
@@ -53,11 +51,49 @@ defmodule ExcyteWeb.Insight.Builder do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
+  def handle_event("sort", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
+    rearranged =
+      Enum.map(sections, fn %{"id" => id, "sections_id" => sections_id, "position" => pos} ->
+        Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
+        |> Map.put(:position, pos)
+      end)
+    doc = stitch_preview(rearranged)
+    {:noreply, push_event(socket, "loadViewer", %{content: doc}) |> assign(socket, sections: rearranged)}
+  end
+
   def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
     key = "usr-#{a.current_user.id}_section-#{pos}_#{System.os_time(:second)}"
     section = Enum.find(a.sections, fn s -> s.position === String.to_integer(pos) end)
     Cachex.put!(:editor_cache, key, %{section: section})
     {:noreply, assign(socket, editing_key: key)}
+  end
+
+  def handle_event("toggle-enabled", %{"id" => id}, %{assigns: a} = socket) do
+    sections =
+      Enum.map(a.sections, fn st ->
+        if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
+      end)
+    doc = stitch_preview(sections)
+    {:noreply, socket |> push_event("loadViewer", %{content: doc}) |> assign(sections: sections)}
+  end
+
+  def handle_event("publish", %{"name" => name}, %{assigns: a} = socket) do
+    published =
+      case Insights.publish_insight(%{
+        sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
+        insight: %{
+          id: a.insight.id,
+          name: name,
+          published: true
+        }}) do
+          {:ok, pub} -> pub
+          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
+      end
+
+    {:noreply,
+      socket
+      |> put_flash(:info, "#{String.upcase(published.insight.type)} was created and published successfully.")
+      |> push_redirect(to: "/agent/dash")}
   end
 
   defp with_html_sections(sections) do
@@ -84,7 +120,11 @@ defmodule ExcyteWeb.Insight.Builder do
 
   defp stitch_preview(sections) do
     Enum.reduce(sections, "", fn section, acc ->
-      acc <> section.html_content
+      if section.enabled === true do
+        acc <> section.html_content
+      else
+        acc
+      end
     end)
   end
 end

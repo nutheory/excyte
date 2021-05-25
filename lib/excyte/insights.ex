@@ -17,6 +17,13 @@ defmodule Excyte.Insights do
     SectionTemplate
   }
 
+  def publish_insight(%{sections: sections, insight: insight}) do
+    Multi.new()
+    |> Multi.run(:update_insight, __MODULE__, :update_insight, [insight])
+    |> Multi.run(:create_sections, __MODULE__, :create_sections, [sections])
+    |> Repo.transaction()
+  end
+
   def create_insight(attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
@@ -32,6 +39,16 @@ defmodule Excyte.Insights do
 
   def create_subject(_repo, %{insight: ins}, %{subject: sub}) do
     Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
+  end
+
+  def update_insight(_repo, _changes, %{id: id} = insight) do
+    ins = Repo.get!(Insignt, id)
+    if ins do
+      Insight.changeset(ins, insight)
+      |> Repo.update()
+    else
+      {:error, %{message: "Insight could not be found."}}
+    end
   end
 
   def update_insight(uuid, uid, attrs) do
@@ -54,6 +71,10 @@ defmodule Excyte.Insights do
     %SectionTemplate{}
     |> SectionTemplate.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def create_sections(_repo, _changes, sections_arr) do
+
   end
 
   def create_section(attrs) do
@@ -116,7 +137,10 @@ defmodule Excyte.Insights do
           end)
         Map.from_struct(st) |> Map.merge(%{data: data})
       end)
-      |> Enum.concat(comps) |> Enum.sort(fn a, b -> a.position <= b.position end)
+      |> Enum.concat(comps)
+      |> Enum.sort(fn a, b -> a.position <= b.position end)
+      |> Enum.with_index()
+      |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
 
     {:ok, %{sections: pages}}
   end

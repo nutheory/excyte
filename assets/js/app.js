@@ -18,6 +18,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
+import {InitSortable} from "./sorting"
 import {InitEditor, InitViewer} from "./editor"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
@@ -27,6 +28,7 @@ let Uploaders = {}
 let Hooks = {}
 
 Hooks.InitCheckout = InitCheckout
+Hooks.InitSortable = InitSortable
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor

@@ -97,7 +97,7 @@ sections = [
     document_template_id: template.id,
     component_name: "comparable",
     component_data_types: ["listing"],
-    name: "Comparable Listings",
+    name: "Comparable Listing",
     is_public: true,
     is_excyte_made: true,
     position: 6
@@ -118,7 +118,7 @@ sections = [
     name: "Pricing Strategy",
     is_public: true,
     is_excyte_made: true,
-    position: 60
+    position: 61
   },
   %{
     document_template_id: template.id,
@@ -127,7 +127,7 @@ sections = [
     name: "Commission Distribution",
     is_public: true,
     is_excyte_made: true,
-    position: 61
+    position: 62
   },
 ]
 

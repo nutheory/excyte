@@ -36,13 +36,12 @@ export default Node.create({
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       const dom = document.createElement('div')
-      dom.classList.add("relative", "w-full", "lg:ml-6", "lg:flex-1")
 
       const content = document.createElement('div')
       dom.append(content)
 
       return {
-        dom,
+        content,
         contentDOM: content,
       }
     }

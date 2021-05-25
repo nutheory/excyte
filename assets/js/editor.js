@@ -10,7 +10,6 @@ import FloatingMenu from '@tiptap/extension-floating-menu'
 import FontFamily from '@tiptap/extension-font-family'
 import Gapcursor from '@tiptap/extension-gapcursor'
 import HardBreak from '@tiptap/extension-hard-break'
-import Heading from '@tiptap/extension-heading'
 import Highlight from '@tiptap/extension-highlight'
 import History from '@tiptap/extension-history'
 import Image from '@tiptap/extension-image'
@@ -28,6 +27,10 @@ import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { actions } from './extensions/actions'
+import { 
+  ExcyteHeading,
+  ExcyteParagraph 
+} from './extensions/modified_extensions'
 import SimpleGallery from './extensions/simple_gallery'
 import Comparable from './extensions/comparable'
 import Struct from './extensions/struct'
@@ -72,10 +75,10 @@ window.currentViewer = function (content) {
           BulletList,
           OrderedList,
           ListItem,
-          Heading,
+          ExcyteHeading,
           HardBreak,
           Text,
-          Paragraph,
+          ExcyteParagraph,
           Link,
           Image,
           Highlight,
@@ -130,10 +133,10 @@ window.currentEditor = function (content) {
           BulletList,
           OrderedList,
           ListItem,
-          Heading,
+          ExcyteHeading,
           HardBreak,
           Text,
-          Paragraph,
+          ExcyteParagraph,
           Link,
           Image,
           Highlight,

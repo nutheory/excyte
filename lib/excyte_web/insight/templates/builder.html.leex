@@ -1,36 +1,77 @@
-<div class="mt-24 mx-auto">
-    <%= if @editing_key === nil do %>
-      <div class="flex -mx-4">
-        <div class="px-4 w-64 lg:sticky lg:top-0 -mt-24 pt-24 h-screen">
+<div id="builder" class="h-screen mx-auto">
+  <%= if @editing_key === nil do %>
+    <div class="lg:flex">
+      <div class="h-screen w-full lg:w-80 xl:w-96 lg:flex lg:flex-col hidden">
+        <div class="w-full h-18 lg:block hidden"></div>
+        <div class="overflow-y-scroll flex-1 scrolling-touch sticky overflow-hidden pr-6">
           <h2 class="">Builder</h2>
-          <ul class="section-nav">
+          <ul class="section-nav" phx-hook="InitSortable" id="sections" data-target-id="#builder" data-sections-id="sections">
             <%= for section <- @sections do %>
-              <li class="section" x-data="{actions: false}" @mouseover="actions = true" @mouseover.away="actions = false">
-                <h5 class="title"><%= section.name %></h5>
-                <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
-                  <button type="button" phx-click="edit-section" phx-value-section-pos="<%= section.position %>">edit</button>
+              <li
+                class="section flex cursor-move" x-data="{actions: false}"
+                @mouseover="actions = true"
+                data-sortable-id="<%= section.temp_id %>"
+                @mouseover.away="actions = false"
+              >
+                <div class="flex-1">
+                  <%= if section.component_name === "comparable" do %>
+                    <h4 class="title"><%= section.data["street_number"] %> <%= section.data["street_name"] %></h4>
+                    <h5 class="sub-title"><%= section.name %></h5>
+                  <% else %>
+                    <h5 class="title"><%= section.name %></h5>
+                  <% end %>
+                  <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
+                    <button class="action" type="button" phx-click="edit-section" phx-value-section-pos="<%= section.position %>">edit</button>
+                  </div>
+                </div>
+                <div class="" phx-click="toggle-enabled" phx-value-id="<%= section.temp_id %>">
+                  <%= if section.enabled === true do %>
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <% else %>
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <% end %>
                 </div>
               </li>
             <% end %>
           </ul>
           <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
         </div>
-        <div class="editor-wrapper flex-1 px-4" id="viewerWrapper" phx-hook="InitViewer">
-          <h2 class="pr-1 text-right">Preview</h2>
-          <div class="py-6 mt-2 rounded-md" phx-update="ignore">
-            <div
-              class="h-full"
-              x-data="currentViewer('')"
-              x-init="() => init($refs.viewer)"
-              x-on:click.away="inFocus = false"
-            >
-              <div x-ref="viewer" class="w-full p-4 lg:p-6 xl:p-10 h-full"></div>
-            </div>
+      </div>
+      <div class="preview-wrapper min-w-0 w-full h-screen flex flex-col lg:static lg:overflow-visible" id="viewerWrapper" phx-hook="InitViewer">
+        <div class="w-full h-12 lg:h-18"></div>
+        <div class="py-8 rounded-md flex-1 overflow-y-scroll" phx-update="ignore">
+          <div
+            class="h-full"
+            x-data="currentViewer('')"
+            x-init="() => init($refs.viewer)"
+            x-on:click.away="inFocus = false"
+          >
+            <div x-ref="viewer" class="w-full p-4 lg:px-6 xl:px-10 h-full"></div>
+          </div>
+        </div>
+        <div class="w-full flex h-16 z-40 border-t border-wgray-300 form">
+          <div class="flex-1 mt-3">
+            <form phx-submit="publish">
+              <div class="flex">
+                <div class="flex-1"></div>
+                <div class="flex-1 mr-3">
+                  <input
+                    type="text"
+                    name="name"
+                    class="fake-text-field py-1.5 px-2 w-full lg:w-64 float-right"
+                    placeholder="Name"
+                  />
+                </div>
+                <div class="lg:w-36">
+                  <button class="submit w-full py-2.5" type="submit">Publish</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    <% else %>
-      <%= live_render @socket, Editor, session: %{"content_id" => @editing_key}, id: "editor_view" %>
-    <% end %>
-  </div>
+    </div>
+  <% else %>
+    <%= live_render @socket, Editor, session: %{"content_id" => @editing_key}, id: "editor_view" %>
+  <% end %>
 </div>

@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from '@tiptap/core'
+import { Node } from '@tiptap/core'
 
 export default Node.create({
   name: 'structure',
@@ -39,11 +39,4 @@ export default Node.create({
   renderHTML({ HTMLAttributes }) {
     return ['div', HTMLAttributes, 0]
   },
-
-  // addNodeView() {
-  //   return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
-  //     console.log("HTMLAttributes", HTMLAttributes)
-  //     console.log("Node", node)
-  //   }
-  // }
 })

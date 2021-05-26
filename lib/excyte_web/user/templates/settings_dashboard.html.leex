@@ -1,41 +1,50 @@
 <div class="p-4 md:px-8 mt-16 lg:mt-20 w-full mx-auto flex flex-wrap">
   <div class="w-full md:w-56 md:mr-6">
-    <div class="rounded border border-gray-400">
+    <div class="rounded border border-gray-300 bg-white">
       <h5 class="leading-none font-bold text-gray-700 px-3 py-2">Account Settings</h5>
       <ul>
         <%= if @section === "profile" do %>
-          <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
+          <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
             <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "profile") %>
           </li>
         <% else %>
-          <li class="px-3 py-2 border-t border-gray-300 hover:underline">
+          <li class="px-3 py-2 border-t border-gray-100 hover:underline">
             <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "profile") %>
           </li>
         <% end %>
+        <%= if @section === "theme" do %>
+          <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
+            <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme") %>
+          </li>
+        <% else %>
+          <li class="px-3 py-2 border-t border-gray-100 hover:underline">
+            <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme") %>
+          </li>
+        <% end %>
         <%= if @section === "mls_auth" do %>
-          <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
+          <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
             <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
           </li>
         <% else %>
-          <li class="px-3 py-2 border-t border-gray-300 hover:underline">
+          <li class="px-3 py-2 border-t border-gray-100 hover:underline">
             <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
           </li>
         <% end %>
         <%= if @section === "account" do %>
-          <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
+          <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
             <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
           </li>
         <% else %>
-          <li class="px-3 py-2 border-t border-gray-300 hover:underline">
+          <li class="px-3 py-2 border-t border-gray-100 hover:underline">
             <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
           </li>
         <% end %>
         <%= if @section === "payment" do %>
-          <li class="px-3 py-2 border-t border-gray-300 font-bold bg-bgray-200">
+          <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
             <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
           </li>
         <% else %>
-          <li class="px-3 py-2 border-t border-gray-300 hover:underline">
+          <li class="px-3 py-2 border-t border-gray-100 hover:underline">
             <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
           </li>
         <% end %>
@@ -45,9 +54,12 @@
   <div class="flex-1">
     <%= case @section do %>
       <% "profile" -> %>
-        <div class="w-full lg:w-2/3 xl:w-1/2">
-          <%= live_component @socket, Profile, current_user: @current_user, return_to: "/settings?section=account", id: :profile %>
+        <div class="w-full lg:w-2/3 xl:w-3/4">
+          <% IO.inspect(@socket, label: "SEGGG") %>
+          <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :profile %>
         </div>
+      <% "theme" -> %>
+
       <% "mls_auth" -> %>
         <div class="w-full md:w-3/5 lg:w-1/2 xl:w-1/3">
           <%= live_component @socket, MlsAuth,
@@ -62,7 +74,7 @@
           <%= live_component @socket, Account, current_user: @current_user, id: :account_settings %>
         </div>
       <% _ -> %>
-        <div class="w-full lg:w-1/2">
+        <div class="w-full lg:w-2/3">
           <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment Settings</h2>
           <%= live_component @socket, Payment, current_user: @current_user, id: :payment %>
         </div>

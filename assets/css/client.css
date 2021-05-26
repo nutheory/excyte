@@ -1,0 +1,14 @@
+@import "./editor.css";
+@import "../node_modules/glightbox/dist/css/glightbox.min.css";
+
+@tailwind base;
+@tailwind components;
+
+/* Client styles */
+@layer base {
+  body {
+    @apply bg-bgray-600;
+  }
+}
+
+@tailwind utilities;

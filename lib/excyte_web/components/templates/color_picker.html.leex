@@ -1,0 +1,9 @@
+<div
+  class="color-picker rounded w-full h-full"
+  style="background-color: <%= @color %>;"
+  id="<%= @instance_id %>"
+  phx-hook="InitColorPicker"
+  phx-target="<%= @myself %>"
+>
+  <div class="pickr"></div>
+</div>

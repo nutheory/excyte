@@ -70,6 +70,15 @@ defmodule ExcyteWeb do
     end
   end
 
+  def live_client_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {ExcyteWeb.LayoutView, "client.html"}
+
+      unquote(view_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent

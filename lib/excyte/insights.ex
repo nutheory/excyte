@@ -107,6 +107,12 @@ defmodule Excyte.Insights do
     Insight.minimal_insight(uuid, uid) |> Repo.one()
   end
 
+  def get_published_insight(uuid) do
+    ins = Repo.get_by(Insight, %{uuid: uuid, published: true})
+          |> Repo.preload([:sections])
+    {:ok, ins}
+  end
+
   def get_full_insight(uid, insid) do
     ins = Repo.get_by(Insight, %{created_by_id: uid, id: insid})
           |> Repo.preload([:property, document_template: :section_templates])

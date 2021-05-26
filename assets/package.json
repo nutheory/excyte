@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.13.10",
+    "@simonwep/pickr": "^1.8.1",
     "@tailwindcss/typography": "^0.4.0",
     "@tiptap/core": "*",
     "@tiptap/extension-blockquote": "*",

@@ -1,0 +1,6 @@
+<%= live_component @socket, Header, id: :report_header %>
+<div class="max-w-screen-xl mx-auto">
+  <%= for section <- @sections do %>
+    <%= section.html_content %>
+  <% end %>
+</div>

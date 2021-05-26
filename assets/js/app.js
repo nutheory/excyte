@@ -19,7 +19,9 @@ import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
 import {InitSortable} from "./sorting"
-import {InitEditor, InitViewer} from "./editor"
+import {InitColorPicker} from "./theme"
+import {InitEditor} from "./editor"
+import {InitViewer} from "./viewer"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
@@ -29,6 +31,7 @@ let Hooks = {}
 
 Hooks.InitCheckout = InitCheckout
 Hooks.InitSortable = InitSortable
+Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor

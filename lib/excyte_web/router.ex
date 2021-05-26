@@ -26,8 +26,7 @@ defmodule ExcyteWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {ExcyteWeb.LayoutView, :published}
-    plug :put_layout, {ExcyteWeb.LayoutView, :empty}
+    plug :put_root_layout, {ExcyteWeb.LayoutView, :client_root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -111,9 +110,9 @@ defmodule ExcyteWeb.Router do
 
   ## Public routes
 
-  scope "/pub", ExcyteWeb do
+  scope "/client", ExcyteWeb.Client do
     pipe_through [:published_insights]
-    get "/:insight_id", PublishedInsights, :viewer
+    live "/:insight_id", Viewer
   end
 
   scope "/", ExcyteWeb do

@@ -18,6 +18,7 @@ defmodule Excyte.Repo.Migrations.ProfilesTable do
       add :urls, :jsonb, default: "[]"
       add :contacts, :jsonb, default: "[]"
       add :addresses, :jsonb, default: "[]"
+      add :theme_settings, :map, default: %{}
       add :updated_by_user, :boolean, default: false
       timestamps()
     end

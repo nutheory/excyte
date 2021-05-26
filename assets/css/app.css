@@ -3,6 +3,7 @@
 @import "./lists.css";
 @import "./editor.css";
 @import "../node_modules/glightbox/dist/css/glightbox.min.css";
+@import '@simonwep/pickr/dist/themes/nano.min.css';
 
 @tailwind base;
 @tailwind components;

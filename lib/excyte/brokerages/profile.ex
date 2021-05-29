@@ -11,8 +11,10 @@ defmodule Excyte.Brokerages.Profile do
 
   @timestamps_opts [type: :utc_datetime]
   @default_theme %{
+    font: "Didot, Didot LT STD, Hoefler Text, Garamond, Calisto MT, Times New Roman, serif",
     background: "#F3F4F6",
     header_text: "#04293A",
+    sub_header_text: "#04293A",
     accent: "#0E7490",
     highlight_background: "#FEF08A",
     highlight_text: "#475569",

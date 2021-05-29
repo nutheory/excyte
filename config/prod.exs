@@ -31,11 +31,17 @@ config :excyte, Excyte.Mailer,
     recv_timeout: :timer.minutes(1)
   ]
 
+config :ex_twilio,
+  account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
+  api_key: System.get_env("TWILIO_API_KEY"),
+  api_secret: System.get_env("TWILIO_API_SECRET")
+
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
 config :excyte, :bridge_server_api_key, System.get_env("BRIDGE_SERVER_KEY")
+config :excyte, :twilio_numbers, System.get_env("TWILIO_NUMBERS") |> File.read!()
 
 # Do not print debug messages in production
 config :logger, level: :info

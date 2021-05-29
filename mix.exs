@@ -69,7 +69,8 @@ defmodule Excyte.MixProject do
       {:money, "~> 1.8"},
       {:bamboo, "~> 1.6"},
       {:stripity_stripe, "~> 2.9.0"},
-      {:openid_connect, "~> 0.2.2"}
+      {:openid_connect, "~> 0.2.2"},
+      {:ex_twilio, github: "nutheory/ex_twilio"}
     ]
   end
 

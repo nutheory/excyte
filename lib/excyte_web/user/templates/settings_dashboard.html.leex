@@ -1,4 +1,4 @@
-<div class="p-4 md:px-8 mt-16 lg:mt-20 w-full mx-auto flex flex-wrap">
+<div class="p-4 mt-16 lg:mt-20 w-full mx-auto flex flex-wrap">
   <div class="w-full md:w-56 md:mr-6">
     <div class="rounded border border-gray-300 bg-white">
       <h5 class="leading-none font-bold text-gray-700 px-3 py-2">Account Settings</h5>
@@ -55,11 +55,12 @@
     <%= case @section do %>
       <% "profile" -> %>
         <div class="w-full lg:w-2/3 xl:w-3/4">
-          <% IO.inspect(@socket, label: "SEGGG") %>
           <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :profile %>
         </div>
       <% "theme" -> %>
-
+        <div class="w-full lg:w-2/3 xl:w-3/4">
+          <%= live_render @socket, ExcyteWeb.Brokerage.Theme, session: %{"return_to" =>  "/settings?section=account"}, id: :theme %>
+        </div>
       <% "mls_auth" -> %>
         <div class="w-full md:w-3/5 lg:w-1/2 xl:w-1/3">
           <%= live_component @socket, MlsAuth,

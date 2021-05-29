@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Insight.Editor do
   use ExcyteWeb, :live_view
 
-  alias Excyte.{Accounts, Insights}
+  alias Excyte.{Accounts, Insights, ApiServeces}
   alias ExcyteWeb.{InsightView}
 
   def render(assigns), do: InsightView.render("editor.html", assigns)
@@ -12,7 +12,11 @@ defmodule ExcyteWeb.Insight.Editor do
       {:ok, content} -> send self(), {:setup_editor, content}
       {:error, err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
     end
-    {:ok, assign(socket, current_user: cu)}
+    {:ok, assign(socket,
+      current_user: cu,
+      search_term: nil,
+
+    )}
   end
 
   def mount(_, %{"user_token" => token} = sesh, socket) do
@@ -33,6 +37,16 @@ defmodule ExcyteWeb.Insight.Editor do
     #   {:ok, section} ->
     #   {:error, err} ->
     # end
+    {:noreply, socket}
+  end
+
+  def handle_event("search-pexel-images", %{"term" => term}, %{assigns: a} = socket) do
+    ApiServices.pexel_image_search(term, 20, 0)
+    {:noreply, socket}
+  end
+
+  def fetch_pexel_images("load-pexel-images", %{"page-url" => url}, %{assigns: a} = socket) do
+    ApiServices.pexel_image_next(url)
     {:noreply, socket}
   end
 

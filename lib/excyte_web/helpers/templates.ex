@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def commission_distribution() do
+  def commission_distribution(_) do
     """
 
     """
@@ -91,7 +91,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def pricing_strategy() do
+  def pricing_strategy(_) do
     """
       <h2>What Pricing Startegy Works for you?</h2>
       <p>Currently its a Sellers Market and its never been more important
@@ -146,7 +146,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def whats_cma() do
+  def whats_cma(_) do
     """
       <h1>What is a CMA?</h1>
       <p><strong>A CMA is</strong> a comparison of the most recent Active, Sold

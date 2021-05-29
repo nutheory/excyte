@@ -42,7 +42,7 @@ defmodule Excyte.Insights do
   end
 
   def update_insight(_repo, _changes, %{id: id} = insight) do
-    ins = Repo.get!(Insignt, id)
+    ins = Repo.get!(Insight, id)
     if ins do
       Insight.changeset(ins, insight)
       |> Repo.update()
@@ -74,7 +74,11 @@ defmodule Excyte.Insights do
   end
 
   def create_sections(_repo, _changes, sections_arr) do
-
+    sects=
+      Enum.map(sections_arr, fn s ->
+        create_section(s)
+      end)
+    {:ok, sects}
   end
 
   def create_section(attrs) do
@@ -138,17 +142,23 @@ defmodule Excyte.Insights do
 
     pages = Enum.filter(r["sections"], fn sec -> sec.component_name !== "comparable" end)
       |> Enum.map(fn st ->
-        data = Enum.reduce(st.component_data_types, %{}, fn dt, acc ->
-            Map.put(acc, dt, r[dt])
-          end)
-        Map.from_struct(st) |> Map.merge(%{data: data})
+        Map.from_struct(st)
       end)
       |> Enum.concat(comps)
       |> Enum.sort(fn a, b -> a.position <= b.position end)
       |> Enum.with_index()
       |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
 
-    {:ok, %{sections: pages}}
+    IO.inspect(r["brokerage"], label: "WHO")
+    {:ok, %{
+      sections: pages,
+      data: %{
+        insight: r["insight"],
+        agent_profile: r["agent_profile"],
+        brokerage: r["brokerage"],
+        subject: r["subject"]
+      }
+    }}
   end
 
 

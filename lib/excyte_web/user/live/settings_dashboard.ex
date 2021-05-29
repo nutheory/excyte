@@ -7,7 +7,6 @@ defmodule ExcyteWeb.Settings.Dashboard do
 
   def mount(_params,  %{"user_token" => token} = sesh, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    IO.inspect(sesh, label: "SESH")
     {:ok, assign(socket,
       current_user: cu,
       section: "profile",

@@ -3,9 +3,10 @@ defmodule Excyte.Repo.Migrations.ClientsTable do
 
   def change do
     create table(:clients) do
-      add :agent_id, references(:users)
+      add :created_by_id, references(:users)
       add :assigned_to_id, references(:users)
       add :brokerage_id, references(:brokerages)
+      add :referring_insight_id, :integer
       add :is_shared, :boolean, default: false
       add :is_lead, :boolean, default: false
       add :is_archived, :boolean, default: false
@@ -17,11 +18,11 @@ defmodule Excyte.Repo.Migrations.ClientsTable do
       add :name, :string
       add :primary_email, :string
       add :contacts, :jsonb, default: "[]"
-      add :address, :jsonb, default: "[]"
+      add :addresses, :jsonb, default: "[]"
       timestamps()
     end
 
-    create index(:clients, [:agent_id])
+    create index(:clients, [:created_by_id])
     create index(:clients, [:brokerage_id])
     create index(:clients, [:assigned_to_id])
   end

@@ -11,6 +11,11 @@ defmodule ExcyteWeb.BrokerageView do
     Brokerage.GettingStarted,
     Brokerage.InviteTeam,
   }
-  alias ExcyteWeb.Components.{ContactForm, Toggle}
+  alias ExcyteWeb.Components.{
+    ColorPicker,
+    ContactForm,
+    SuperSelect,
+    Toggle
+  }
   alias ExcyteWeb.{Settings, Settings.Payment}
 end

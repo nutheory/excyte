@@ -1,9 +1,14 @@
 <div
-  class="color-picker rounded w-full h-full"
-  style="background-color: <%= @color %>;"
   id="<%= @instance_id %>"
+  data-id="<%= @instance_id %>"
+  data-color="<%= @color %>"
   phx-hook="InitColorPicker"
+  phx-update="ignore"
   phx-target="<%= @myself %>"
+  class="rounded-full"
 >
-  <div class="pickr"></div>
+  <div
+    style="background-color: <%= @color %>;"
+    class="color-picker rounded-full w-full h-full"
+  ></div>
 </div>

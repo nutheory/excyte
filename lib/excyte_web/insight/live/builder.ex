@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Insight.Builder do
           current_user: cu,
           insight: ins,
           sections: [],
+          data: nil,
           preview: "",
           editing_key: nil,
           loading: true
@@ -25,18 +26,22 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   def handle_info({:get_sections, %{insight: ins}}, %{assigns: a} = socket) do
-    if ins.published do
-
-    else
+    # if ins.published do
+    #   # repull data
+    # else
       case Insights.build_from_templates(a.current_user.id, ins.id) do
         {:ok, res} ->
-          sections = with_html_sections(res.sections)
-          # IO.inspect(sections, label: "SECTIONS")
+          sections = with_html_sections(res.sections, res.data)
+          insight = merge_theme(res.data)
           send self(), {:load_preview, %{sections: sections}}
-          {:noreply, assign(socket, sections: sections, loading: false)}
+          {:noreply, assign(socket,
+            sections: sections,
+            insight: insight,
+            data: res.data,
+            loading: false)}
         {:error, err} -> err
       end
-    end
+    # end
   end
 
   def handle_info({:load_preview, %{sections: sections}}, socket) do
@@ -78,6 +83,7 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   def handle_event("publish", %{"name" => name}, %{assigns: a} = socket) do
+    IO.inspect(a.data, label: "BK")
     published =
       case Insights.publish_insight(%{
         sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
@@ -96,35 +102,36 @@ defmodule ExcyteWeb.Insight.Builder do
       |> push_redirect(to: "/agent/dash")}
   end
 
-  defp with_html_sections(sections) do
+  defp with_html_sections(sections, data) do
     Enum.map(sections, fn s ->
-      if s.html_content === nil, do: Map.put(s, :html_content, get_editor_templates(s))
+      if s.html_content === nil, do: Map.put(s, :html_content, get_editor_templates(s, data))
     end)
   end
 
-  defp get_editor_templates(%{component_name: component} = comp) do
+  defp get_editor_templates(%{component_name: component} = comp, data) do
     case component do
-      "agent_profile" -> Templates.agent_profile(%{agent_profile: comp.data})
-      "brokerage_profile" -> Templates.brokerage_profile(%{brokerage: comp.data})
       "comparable" -> Templates.comparable(%{listing: comp.data})
-      "commission_distribution" -> Templates.commission_distribution()
-      "cover" -> Templates.cover(%{subject: comp.data})
-      "pricing_strategy" -> Templates.pricing_strategy()
-      "subject" -> Templates.subject(%{subject: comp.data})
-      "synopsis" -> Templates.synopsis(%{subject: comp.data})
-      "whats_cma" -> Templates.whats_cma()
-      "why_an_agent" -> Templates.why_an_agent(%{agent_profile: comp.data})
-      _ -> comp.html_content
+      _ -> apply(Templates, String.to_existing_atom(component), [data])
     end
   end
 
   defp stitch_preview(sections) do
     Enum.reduce(sections, "", fn section, acc ->
-      if section.enabled === true do
+      if section.enabled === true && section.html_content !== nil do
         acc <> section.html_content
       else
         acc
       end
     end)
+  end
+
+  defp merge_theme(%{brokerage: bk, insight: ins}) do
+    Map.merge(ins, %{
+      document_attributes: bk.theme_settings
+    })
+  end
+
+  defp merge_theme(%{agent_profile: ag, insight: ins}) do
+    Map.merge(ins, %{document_attributes: ag.theme_settings})
   end
 end

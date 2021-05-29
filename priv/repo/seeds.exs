@@ -113,7 +113,7 @@ sections = [
   },
   %{
     document_template_id: template.id,
-    component_name: "pricing_stategy",
+    component_name: "pricing_strategy",
     component_data_types: [],
     name: "Pricing Strategy",
     is_public: true,

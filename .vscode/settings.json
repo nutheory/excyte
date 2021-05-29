@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "Excyte Dev",
+      "database": "excyte_dev",
+      "username": "postgres",
+      "password": "postgres"
+    }
+  ]
+}

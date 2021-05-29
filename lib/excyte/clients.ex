@@ -6,7 +6,7 @@ defmodule Excyte.Clients do
   alias ExTwilio.JWT.AccessToken
   alias Excyte.{Repo, Activities, Clients.Conversation, Clients.Client, Logger}
 
-  @proxies Jason.decode!(Application.get_env(:excyte, :twilio_numbers))
+  @proxies []
 
   def create_insight_conversation(%{insight: ins, agent: ag}) do
     # Enum.find textable phone #

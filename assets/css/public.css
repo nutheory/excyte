@@ -22,7 +22,7 @@
   }
 
   h2 {
-    @apply text-2xl leading-none font-bold;
+    @apply text-4xl leading-none font-bold;
   }
 
   h3 {

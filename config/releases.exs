@@ -28,7 +28,20 @@ config :excyte, ExcyteWeb.Endpoint,
     port: String.to_integer(System.get_env("PORT") || "4000"),
     transport_options: [socket_opts: [:inet6]]
   ],
-  secret_key_base: secret_key_base
+  url: [
+    scheme: "https",
+    host: "excyte.io",
+    port: 443
+  ],
+  server: true,
+  check_origin: [
+    "//excyte.io",
+    "//www.excyte.io",
+    "//excyte-re.onrender.com",
+    "https://localhost:4000"
+  ],
+  secret_key_base: secret_key_base,
+  pubsub_server: Excyte.PubSub
 
 config :excyte, Excyte.Mailer,
   adapter: Bamboo.SendGridAdapter,
@@ -53,8 +66,7 @@ config :excyte, :bridge_server_api_key, System.get_env("BRIDGE_SERVER_KEY")
 #
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start each relevant endpoint:
-#
-  config :excyte, ExcyteWeb.Endpoint, server: true
+
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.

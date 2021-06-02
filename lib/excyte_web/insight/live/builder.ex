@@ -33,7 +33,7 @@ defmodule ExcyteWeb.Insight.Builder do
         {:ok, res} ->
           sections = with_html_sections(res.sections, res.data)
           insight = merge_theme(res.data)
-          send self(), {:load_preview, %{sections: sections}}
+          send self(), {:load_preview, %{sections: sections, theme: insight.document_attributes }}
           {:noreply, assign(socket,
             sections: sections,
             insight: insight,
@@ -44,9 +44,9 @@ defmodule ExcyteWeb.Insight.Builder do
     # end
   end
 
-  def handle_info({:load_preview, %{sections: sections}}, socket) do
+  def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
     doc = stitch_preview(sections)
-    {:noreply, push_event(socket, "loadViewer", %{content: doc})}
+    {:noreply, push_event(socket, "loadViewer", %{content: doc, theme: theme})}
   end
 
   def handle_event("new-section", _, %{assigns: a} = socket) do
@@ -83,7 +83,6 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   def handle_event("publish", %{"name" => name}, %{assigns: a} = socket) do
-    IO.inspect(a.data, label: "BK")
     published =
       case Insights.publish_insight(%{
         sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
@@ -126,12 +125,10 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   defp merge_theme(%{brokerage: bk, insight: ins}) do
-    Map.merge(ins, %{
-      document_attributes: bk.theme_settings
-    })
+    Map.merge(ins, %{document_attributes: bk["theme_settings"]})
   end
 
   defp merge_theme(%{agent_profile: ag, insight: ins}) do
-    Map.merge(ins, %{document_attributes: ag.theme_settings})
+    Map.merge(ins, %{document_attributes: ag["theme_settings"]})
   end
 end

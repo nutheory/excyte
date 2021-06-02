@@ -3,7 +3,7 @@
     <div class="lg:flex">
       <div class="h-screen w-full lg:w-80 xl:w-96 lg:flex lg:flex-col hidden">
         <div class="w-full h-18 lg:block hidden"></div>
-        <div class="overflow-y-scroll flex-1 scrolling-touch sticky overflow-hidden pr-6">
+        <div class="overflow-y-scroll lg:w-80 scrolling-touch fixed top-0 bottom-0 overflow-hidden pt-20 pr-6">
           <h2 class="">Builder</h2>
           <ul class="section-nav" phx-hook="InitSortable" id="sections" data-target-id="#builder" data-sections-id="sections">
             <%= for section <- @sections do %>
@@ -37,9 +37,8 @@
           <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
         </div>
       </div>
-      <div class="preview-wrapper min-w-0 w-full h-screen flex flex-col lg:static lg:overflow-visible" id="viewerWrapper" phx-hook="InitViewer">
-        <div class="w-full h-12 lg:h-18"></div>
-        <div class="py-8 rounded-md flex-1 overflow-y-scroll" phx-update="ignore">
+      <div class="preview-wrapper ml-6 mt-24" id="viewerWrapper" phx-hook="InitViewer">
+        <div class="overflow-y-scroll" phx-update="ignore">
           <div
             class="h-full"
             x-data="currentViewer('')"
@@ -47,26 +46,6 @@
             x-on:click.away="inFocus = false"
           >
             <div x-ref="viewer" class="w-full p-4 lg:px-6 xl:px-10 h-full"></div>
-          </div>
-        </div>
-        <div class="w-full flex h-16 z-40 border-t border-wgray-300 form">
-          <div class="flex-1 mt-3">
-            <form phx-submit="publish">
-              <div class="flex">
-                <div class="flex-1"></div>
-                <div class="flex-1 mr-3">
-                  <input
-                    type="text"
-                    name="name"
-                    class="fake-text-field py-1.5 px-2 w-full lg:w-64 float-right"
-                    placeholder="Name"
-                  />
-                </div>
-                <div class="lg:w-36">
-                  <button class="submit w-full py-2.5" type="submit">Publish</button>
-                </div>
-              </div>
-            </form>
           </div>
         </div>
       </div>

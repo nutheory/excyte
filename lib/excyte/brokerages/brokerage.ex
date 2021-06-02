@@ -8,6 +8,16 @@ defmodule Excyte.Brokerages.Brokerage do
   }
 
   @timestamps_opts [type: :utc_datetime]
+  defimpl Jason.Encoder, for: [Excyte.Brokerages.Brokerage] do
+    def encode(struct, opts) do
+      Enum.reduce(Map.from_struct(struct), %{}, fn
+        ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({:__meta__, _}, acc) -> acc
+        ({k, v}, acc) -> Map.put(acc, k, v)
+      end)
+      |> Jason.Encode.map(opts)
+    end
+  end
 
   schema "brokerages" do
     field :name, :string

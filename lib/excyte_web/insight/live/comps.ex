@@ -73,7 +73,6 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, socket) do
-    IO.inspect(selected_lk, label: "HELLO")
     sel = Enum.find(socket.assigns.comparables, fn lk -> lk.listing_key === selected_lk end)
     {:noreply, assign(socket, preview: sel, show_panel: true)}
   end

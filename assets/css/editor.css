@@ -77,7 +77,7 @@ a.fancy {
   shape-outside: circle();
 }
 
-p {
+/* p {
   @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 lg:leading-7;
 }
 
@@ -95,7 +95,7 @@ h3 {
 
 h4 {
   @apply md:mb-2 text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
-}
+} */
 
 mark {
   @apply bg-yellow-200;
@@ -111,7 +111,7 @@ mark {
 }
 
 div.webpack {
-  @apply text-bgray-200;
+  @apply text-bgray-200 w-48 h-48 lg:w-48 lg:h-48;
 }
 
 div.editor-wrapper {
@@ -141,19 +141,21 @@ div.editor-wrapper {
 }
 
 div.preview-wrapper {
+  @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
+
   & .section {
     @apply w-full flex items-center justify-center;
 
     & .body {
-      @apply flex flex-wrap w-full lg:w-4/5 my-32;
+      @apply w-full my-12 lg:my-20;
     }
 
     & .data-grid {
       @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
     }
 
-    & .fifty {
-      @apply h-full;
+    & .data-grid-fifty {
+      @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
     }
 
     & .minor {
@@ -161,7 +163,11 @@ div.preview-wrapper {
     }
 
     & .major {
-      @apply col-span-2;
+      @apply lg:col-span-2;
+    }
+
+    & img {
+      @apply rounded-md;
     }
 
     & h1 {
@@ -169,15 +175,19 @@ div.preview-wrapper {
     }
 
     & h2 {
-      @apply md:mb-2 text-bgray-800 text-xl md:text-2xl lg:text-3xl font-extrabold;
+      @apply md:mb-2 text-bgray-800 text-lg md:text-2xl lg:text-3xl font-extrabold;
     }
 
     & h3 {
-      @apply md:mb-2 text-bgray-800 text-lg md:text-xl lg:text-2xl font-extrabold;
+      @apply text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
     }
 
     & h4 {
-      @apply md:mb-2 text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
+      @apply text-bgray-800 text-sm md:text-base lg:text-lg font-extrabold;
+    }
+
+    & p {
+      @apply mb-4;
     }
   }
 }

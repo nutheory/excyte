@@ -17,6 +17,14 @@ export default Node.create({
           }
         }
       },
+      style: {
+        default: null,
+        parseHTML: element => {
+          return {
+            style: element.getAttribute('style')
+          }
+        }
+      },
       id: {
         default: null,
         parseHTML: element => {

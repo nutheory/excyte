@@ -4,7 +4,6 @@
 
       <div class="flex -mx-2 md:-mx-4">
         <div class="lg:w-3/5 px-2 md:px-4">
-          <% IO.inspect(@filters, label: "FILT") %>
           <%= live_component @socket, RangeInputs,
             prefix: "$",
             suffix: "K",

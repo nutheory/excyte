@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
       return_to: rt,
       agent_profile: agent_profile,
       brokerage_profile: brokerage_profile,
-      theme_settings: brokerage_profile.theme_settings,
+      theme_settings: Map.from_struct(brokerage_profile.theme_settings),
       fonts: @fonts
     )}
   end

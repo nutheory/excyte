@@ -1,6 +1,6 @@
 defmodule Excyte.Insights do
   import Ecto.Query, warn: false
-  import Excyte.Utils.Methods
+  alias Excyte.Utils.Methods
   alias Ecto.Multi
   alias Excyte.{
     Activities,
@@ -148,19 +148,25 @@ defmodule Excyte.Insights do
       |> Enum.sort(fn a, b -> a.position <= b.position end)
       |> Enum.with_index()
       |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
-
-    IO.inspect(r["brokerage"], label: "WHO")
     {:ok, %{
       sections: pages,
       data: %{
-        insight: r["insight"],
-        agent_profile: r["agent_profile"],
-        brokerage: r["brokerage"],
-        subject: r["subject"]
+        insight: sanitize_data(Map.delete(r["insight"], :saved_search)),
+        agent_profile: sanitize_data(r["agent_profile"]),
+        brokerage: sanitize_data(r["brokerage"]),
+        subject: sanitize_data(r["subject"])
       }
     }}
   end
 
+  defp sanitize_data(struct) do
+    Enum.reduce(Map.from_struct(struct), %{}, fn
+      ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+      ({:__meta__, _}, acc) -> acc
+      ({k, v}, acc) -> Map.put(acc, k, v)
+    end)
+    |> Excyte.Utils.Methods.stringify_keys()
+  end
 
   defp maybe_brokerage(%{brokerage_id: bid, sections: st}) do
     if bid do

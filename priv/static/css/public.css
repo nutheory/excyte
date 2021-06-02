@@ -2073,12 +2073,12 @@ h4 {
   margin-left: 0.75rem;
 }
 
-.mt-3 {
-  margin-top: 0.75rem;
-}
-
 .mt-36 {
   margin-top: 9rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
 }
 
 .mb-1 {
@@ -2143,6 +2143,10 @@ h4 {
 
 .mt-24 {
   margin-top: 6rem;
+}
+
+.mb-16 {
+  margin-bottom: 4rem;
 }
 
 .-ml-4 {
@@ -3048,6 +3052,10 @@ h4 {
   padding-right: 0.25rem;
 }
 
+.pt-20 {
+  padding-top: 5rem;
+}
+
 .pr-6 {
   padding-right: 1.5rem;
 }
@@ -3062,10 +3070,6 @@ h4 {
 
 .pr-4 {
   padding-right: 1rem;
-}
-
-.pt-20 {
-  padding-top: 5rem;
 }
 
 .pb-6 {
@@ -3693,12 +3697,12 @@ h4 {
 
 @media (min-width: 1024px) {
 
-  .lg\:static {
-    position: static;
-  }
-
   .lg\:sticky {
     position: sticky;
+  }
+
+  .lg\:static {
+    position: static;
   }
 
   .lg\:top-0 {
@@ -3730,12 +3734,12 @@ h4 {
     margin-top: 7rem;
   }
 
-  .lg\:mb-6 {
-    margin-bottom: 1.5rem;
+  .lg\:ml-80 {
+    margin-left: 20rem;
   }
 
-  .lg\:mt-48 {
-    margin-top: 12rem;
+  .lg\:mb-6 {
+    margin-bottom: 1.5rem;
   }
 
   .lg\:mt-20 {
@@ -3850,10 +3854,6 @@ h4 {
     flex-direction: column;
   }
 
-  .lg\:overflow-visible {
-    overflow: visible;
-  }
-
   .lg\:overflow-y-visible {
     overflow-y: visible;
   }
@@ -3923,6 +3923,10 @@ h4 {
   .xl\:my-24 {
     margin-top: 6rem;
     margin-bottom: 6rem;
+  }
+
+  .xl\:ml-96 {
+    margin-left: 24rem;
   }
 
   .xl\:mb-8 {

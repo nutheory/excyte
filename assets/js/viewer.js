@@ -76,12 +76,28 @@ window.currentViewer = function (content) {
 export const InitViewer = {
   mounted() {
     window.viewerHook.base = this
-    this.handleEvent("loadViewer", ({ content }) => {
-      window.viewerHook.currentViewer.viewer.commands.setContent(content)     
+    this.handleEvent("loadViewer", ({ content, theme }) => {
+      window.viewerHook.currentViewer.viewer.commands.setContent(content)
+      console.log("THEME", theme) 
+      let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
+          rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
+          rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
+          rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
+          rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
+          rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+      addCss(rule)
     })
   },
   destroyed() {
      window.viewerHook = null
      window.currentViewer = null
   },
+}
+
+const addCss = (rule) => {
+  let css = document.createElement('style');
+  css.type = 'text/css';
+  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
+  else css.appendChild(document.createTextNode(rule)); // Support for the rest
+  document.getElementsByTagName("head")[0].appendChild(css);
 }

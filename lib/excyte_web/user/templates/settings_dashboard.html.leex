@@ -12,6 +12,17 @@
             <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "profile") %>
           </li>
         <% end %>
+        <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
+          <%= if @section === "brokerage_profile" do %>
+            <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
+              <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
+            </li>
+          <% else %>
+            <li class="px-3 py-2 border-t border-gray-100 hover:underline">
+              <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
+            </li>
+          <% end %>
+        <% end %>
         <%= if @section === "theme" do %>
           <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
             <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme") %>
@@ -55,8 +66,15 @@
     <%= case @section do %>
       <% "profile" -> %>
         <div class="w-full lg:w-2/3 xl:w-3/4">
-          <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :profile %>
+          <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :_agent_profile %>
         </div>
+      <% "brokerage_profile" -> %>
+        <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
+          <div class="w-full lg:w-2/3 xl:w-3/4">
+            <%= live_render @socket, ExcyteWeb.Brokerage.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :brokerage_profile %>
+          </div>
+        <% else %>
+        <% end %>
       <% "theme" -> %>
         <div class="w-full lg:w-2/3 xl:w-3/4">
           <%= live_render @socket, ExcyteWeb.Brokerage.Theme, session: %{"return_to" =>  "/settings?section=account"}, id: :theme %>
@@ -74,7 +92,7 @@
           <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Account Settings</h2>
           <%= live_component @socket, Account, current_user: @current_user, id: :account_settings %>
         </div>
-      <% _ -> %>
+      <% "payment" -> %>
         <div class="w-full lg:w-2/3">
           <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment Settings</h2>
           <%= live_component @socket, Payment, current_user: @current_user, id: :payment %>

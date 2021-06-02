@@ -72,11 +72,11 @@ defmodule Excyte.Properties.PublicDataScrape do
   end
 
   defp process_subject({:error, :closed} = response) do
-    IO.inspect(response, label: "ERROR CLOSED")
+    #log this
   end
 
   defp process_subject({:error, :etimedout} = response) do
-    IO.inspect(response, label: "ERROR TIMEOUT")
+    # log this
   end
 
 

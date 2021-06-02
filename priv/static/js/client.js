@@ -12925,6 +12925,14 @@ __webpack_require__.r(__webpack_exports__);
           };
         }
       },
+      style: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            style: element.getAttribute('style')
+          };
+        }
+      },
       id: {
         "default": null,
         parseHTML: function parseHTML(element) {
@@ -13037,14 +13045,32 @@ var InitViewer = {
   mounted: function mounted() {
     window.viewerHook.base = this;
     this.handleEvent("loadViewer", function (_ref) {
-      var content = _ref.content;
+      var content = _ref.content,
+          theme = _ref.theme;
       window.viewerHook.currentViewer.viewer.commands.setContent(content);
+      console.log("THEME", theme);
+      var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
+      rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
+      rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
+      rule += "div.preview-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+      rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
+      rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
+      addCss(rule);
     });
   },
   destroyed: function destroyed() {
     window.viewerHook = null;
     window.currentViewer = null;
   }
+};
+
+var addCss = function addCss(rule) {
+  var css = document.createElement('style');
+  css.type = 'text/css';
+  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
+  else css.appendChild(document.createTextNode(rule)); // Support for the rest
+
+  document.getElementsByTagName("head")[0].appendChild(css);
 };
 
 /***/ }),

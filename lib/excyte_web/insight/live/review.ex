@@ -19,6 +19,8 @@ defmodule ExcyteWeb.Insight.Review do
          {:ok, comps} <- ResoApi.get_by_listing_ids(cu.current_mls,
                     ins.selected_listing_ids, ins.property),
          templates <- Insights.get_document_templates(cu) do
+          s_comps = Adjustments.process_init(comps.listings, ins.property)
+          min_max = Enum.min_max_by(s_comps, &(&1.excyte_suggested_price))
       {:ok, assign(socket,
         current_user: cu,
         subject: ins.property,
@@ -26,7 +28,8 @@ defmodule ExcyteWeb.Insight.Review do
         templates: templates,
         selected_tmpl: Enum.find(templates, fn tmpl -> tmpl.type_default === true end),
         listings: comps.listings,
-        selected_comps: Adjustments.process_init(comps.listings, ins.property)
+        suggested_range: %{min: elem(min_max, 0).excyte_suggested_price, max: elem(min_max, 1).excyte_suggested_price},
+        selected_comps: Enum.sort_by(s_comps, &(&1.excyte_suggested_price), :asc)
       )}
     else
       _ -> {:ok, push_redirect(socket, to: "/insights/cma/create")}
@@ -36,6 +39,10 @@ defmodule ExcyteWeb.Insight.Review do
   def handle_info({:template_callback, %{template: template}}, %{assigns: a} = socket) do
     sel = Enum.find(a.templates, fn t -> t.id === template.value end)
     {:noreply, assign(socket, selected_tmpl: sel)}
+  end
+
+  def handle_info({:update_suggested_price, %{suggested_price: sp}}, %{assigns: a} = socket) do
+    {:noreply, assign(socket, suggested_range: %{min: sp.min, max: sp.max})}
   end
 
   def handle_event("adjust-comp", %{"adjustment" => adj, "listing-id" => id}, %{assigns: a} = socket) do
@@ -56,7 +63,7 @@ defmodule ExcyteWeb.Insight.Review do
 
   def handle_event("save-review", _, %{assigns: a}  = socket) do
     case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
-      content: %{comps: a.selected_comps},
+      content: %{comps: a.selected_comps, suggested_subject_price: a.suggested_range},
       document_attributes: a.selected_tmpl.attributes,
       document_template_id: a.selected_tmpl.id
     }) do

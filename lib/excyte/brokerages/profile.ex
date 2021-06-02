@@ -6,21 +6,21 @@ defmodule Excyte.Brokerages.Profile do
     Brokerages.Brokerage,
     Utils.Address,
     Utils.Contact,
-    Utils.MapType
+    Utils.MapType,
+    Utils.Theme
   }
 
   @timestamps_opts [type: :utc_datetime]
-  @default_theme %{
-    font: "Didot, Didot LT STD, Hoefler Text, Garamond, Calisto MT, Times New Roman, serif",
-    background: "#F3F4F6",
-    header_text: "#04293A",
-    sub_header_text: "#04293A",
-    accent: "#0E7490",
-    highlight_background: "#FEF08A",
-    highlight_text: "#475569",
-    text: "#475569",
-    muted_text: "#CBD5E1"
-  }
+  defimpl Jason.Encoder, for: [Excyte.Brokerages.Profile] do
+    def encode(struct, opts) do
+      Enum.reduce(Map.from_struct(struct), %{}, fn
+        ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({:__meta__, _}, acc) -> acc
+        ({k, v}, acc) -> Map.put(acc, k, v)
+      end)
+      |> Jason.Encode.map(opts)
+    end
+  end
 
   schema "profiles" do
     field :slug, :string
@@ -31,7 +31,7 @@ defmodule Excyte.Brokerages.Profile do
     field :description, :string
     field :intro_video_url, :string
     field :updated_by_user, :boolean
-    field :theme_settings, MapType, default: @default_theme
+    embeds_one(:theme_settings, Theme, on_replace: :delete)
     embeds_many(:addresses, Address)
     embeds_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:brokerage, Brokerage)
@@ -49,8 +49,8 @@ defmodule Excyte.Brokerages.Profile do
       :logo_url,
       :intro_video_url,
       :updated_by_user,
-      :theme_settings
     ])
+    |> cast_embed(:theme_settings)
     |> cast_embed(:addresses)
     |> cast_embed(:contacts)
   end

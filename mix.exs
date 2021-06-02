@@ -52,6 +52,7 @@ defmodule Excyte.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:tesla, "~> 1.4"},
+      {:key_convert, "~> 0.5.0"},
       {:hackney, "~> 1.17"},
       {:inflex, "~> 2.0.0"},
       {:number, "~> 1.0.1"},

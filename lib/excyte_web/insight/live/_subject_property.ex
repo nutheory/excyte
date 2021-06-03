@@ -9,8 +9,7 @@ defmodule ExcyteWeb.Insight.SubjectProperty do
       current_user: assigns.current_user,
       errors: assigns.errors,
       mls: assigns.current_user.current_mls,
-      subject: assigns.subject,
-      possible_subject_properties: assigns.possible_subject_properties
+      subject: assigns.subject
     )}
   end
 end

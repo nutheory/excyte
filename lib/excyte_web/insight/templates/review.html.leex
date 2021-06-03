@@ -44,7 +44,7 @@
         <div class="px-4 pb-2">
           <%= if Map.has_key?(comp.adjustments, :sqft) do %>
             <h4 class="font-bold text-sm">Auto Adjustments</h4>
-            <p class="text-sm"><%= Utilities.summarize_auto_adjust(comp.adjustments.sqft) %></p>
+            <p class="text-sm mb-2"><%= Utilities.summarize_auto_adjust(comp.adjustments.sqft) %></p>
           <% end %>
           <form class="range-form" phx-change="adjust-comp">
             <input type="hidden" name="listing-id" value="<%= comp.listing_id %>">
@@ -76,6 +76,7 @@
       </div>
     <% end %>
     <div class="p-4 bg-cyan-50 rounded-lg shadow form flex flex-col">
+      <h2>Final details...</h2>
       <div class="flex-1">
         <div class="mb-4">
           <%= live_component @socket, RangeInputs,
@@ -101,9 +102,12 @@
             id: :template_select
           %>
         </div>
-        <form phx-change="" phx-submit="">
+        <form phx-change="" phx-submit="save-review">
           <div class="mb-4">
             <label>Name this CMA</label>
+            <%= if @error do %>
+              <label class="text-red-600 font-bold"><%= @error %></label>
+            <% end %>
             <input
               type="text"
               name="name"
@@ -113,11 +117,16 @@
           </div>
         </div>
         <div>
-          <p class="pb-3">
-            <strong>Next step:</strong> Continue to organize and preview your final document.
+          <p class="pb-3 text-sm">
+            <strong>Next step:</strong> Continue to organize and preview your final document or publish now with smart settings.
           </p>
-          <div class="text-right">
-            <button type="submit" class="submit" phx-click="save-review">Continue</button>
+          <div class="flex">
+            <div class="flex-1">
+              <button type="submit" name="button" class="submit w-full" value="publish">Publish now</button>
+            </div>
+            <div class="ml-4">
+              <button type="submit" name="button" class="submit" value="continue">Continue</button>
+            </div>
           </div>
         </form>
       </div>

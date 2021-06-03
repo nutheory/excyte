@@ -15,7 +15,7 @@ defmodule Excyte.Activities.ErrorLog do
     field(:type, :string)
     field(:location, :string)
     field(:fixed, :boolean)
-    field(:error, {:array, :map})
+    field(:error, {:array, :map}, default: [%{}])
     timestamps()
   end
 

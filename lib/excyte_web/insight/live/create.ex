@@ -10,11 +10,10 @@ defmodule ExcyteWeb.Insight.Create do
     if connected?(socket), do: Accounts.subscribe(cu.id)
     {:ok, assign(socket,
       current_user: cu,
-      address: nil,
+      prop_id: nil,
       subject: nil,
       errors: nil,
-      fetching: false,
-      possible_subject_properties: []
+      fetching: false
     )}
   end
 
@@ -22,16 +21,14 @@ defmodule ExcyteWeb.Insight.Create do
     {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
   end
 
-  def handle_info({:init_subject, %{address: addr}}, socket) do
-    send self(), :setup_subject
-    {:noreply, assign(socket, address: addr, fetching: true)}
+  def handle_info({:init_subject, %{prop_id: prop_id}}, socket) do
+    send self(), {:setup_subject, %{prop_id: prop_id}}
+    {:noreply, assign(socket, prop_id: prop_id, fetching: true)}
   end
 
-  def handle_info(:setup_subject, %{assigns: a} = socket) do
-    with {:ok, prop_id} <- get_subject_property_id(a.address),
-         {:ok, subject} <- Properties.fetch_subject_details(prop_id, a.current_user.id) do
-      {:noreply, assign(socket, subject: Map.merge(a.address, subject), fetching: false)}
-    else
+  def handle_info({:setup_subject, %{prop_id: prop_id}}, %{assigns: a} = socket) do
+    case Properties.fetch_subject_details(prop_id, a.current_user.id) do
+      {:ok, subject} -> {:noreply, assign(socket, subject: subject, fetching: false)}
       {:error, err} -> {:noreply, assign(socket, error: err, fetching: false)}
       _ -> {:noreply, assign(socket, error: "unkown", fetching: false)}
     end
@@ -44,19 +41,6 @@ defmodule ExcyteWeb.Insight.Create do
       {:error, method, changeset, _} ->
           # TODO Log Error
           {:noreply, put_flash(socket, :error, "Something went wrong.")}
-    end
-  end
-
-  defp get_subject_property_id(loc) do
-    with {:ok, %{body: body}} <- HTTPoison.get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input="
-         <> "#{loc.street_number}%20#{URI.encode(loc.street_name)}%20#{loc.zip}&area_types=state%2Ccity%2Ccounty%2C"
-         <> "postal_code%2Cneighborhood%2Caddress%2Cstreet%2Cbuilding%2Cmlsid%2Cbuilding%2Cschool%2C"
-         <> "school_district%2Cuniversity%2Cpark%2Cstate&limit=10"),
-         %{mpr_id: mpr_id} <- hd(Utilities.format_str_json(body).autocomplete) do
-      {:ok, mpr_id}
-    else
-      {:error, err} -> err
-      _ -> {:error, "unknown error from property id"}
     end
   end
 

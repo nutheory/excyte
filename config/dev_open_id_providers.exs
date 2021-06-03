@@ -3,6 +3,7 @@ use Mix.Config
 config :excyte,
        :mls_auth_options, [
          %{val: "actris_ref", name: "ACTRIS"},
+         %{val: "miamire", name: "MIAMIRE"},
          %{val: "test", name: "Test"}
         ]
 

@@ -64,10 +64,6 @@
   </div>
   <div class="flex-1">
     <%= case @section do %>
-      <% "profile" -> %>
-        <div class="w-full lg:w-2/3 xl:w-3/4">
-          <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :_agent_profile %>
-        </div>
       <% "brokerage_profile" -> %>
         <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
           <div class="w-full lg:w-2/3 xl:w-3/4">
@@ -96,6 +92,10 @@
         <div class="w-full lg:w-2/3">
           <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment Settings</h2>
           <%= live_component @socket, Payment, current_user: @current_user, id: :payment %>
+        </div>
+      <% _ -> %>
+        <div class="w-full lg:w-2/3 xl:w-3/4">
+          <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings?section=account"}, id: :_agent_profile %>
         </div>
     <% end %>
   </div>

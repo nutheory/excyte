@@ -6,10 +6,11 @@ defmodule ExcyteWeb.Insight.Builder do
 
   def render(assigns), do: InsightView.render("builder.html", assigns)
 
-  def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
+  def mount(%{"insight_id" => id, "builder" => builder}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
+        IO.inspect(ins, label: "INS")
         send self(), {:get_sections, %{insight: ins}}
         {:ok, assign(socket,
           current_user: cu,
@@ -17,36 +18,56 @@ defmodule ExcyteWeb.Insight.Builder do
           sections: [],
           data: nil,
           preview: "",
+          auto_publish: (if builder === "auto", do: true, else: false),
           editing_key: nil,
           loading: true
         )}
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
       err -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
         {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
   end
 
   def handle_info({:get_sections, %{insight: ins}}, %{assigns: a} = socket) do
-    # if ins.published do
-    #   # repull data
-    # else
-      case Insights.build_from_templates(a.current_user.id, ins.id) do
-        {:ok, res} ->
-          sections = with_html_sections(res.sections, res.data)
-          insight = merge_theme(res.data)
+    case Insights.build_from_templates(a.current_user.id, ins.id) do
+      {:ok, res} ->
+        sections = with_html_sections(res.sections, res.data)
+        insight = merge_theme(res.data)
+        if a.auto_publish do
+          send self(), :publish
+        else
           send self(), {:load_preview, %{sections: sections, theme: insight.document_attributes }}
-          {:noreply, assign(socket,
-            sections: sections,
-            insight: insight,
-            data: res.data,
-            loading: false)}
-        {:error, err} -> err
-      end
-    # end
+        end
+        {:noreply, assign(socket,
+          sections: sections,
+          insight: insight,
+          data: res.data,
+          loading: false)}
+      {:error, err} -> err
+    end
   end
 
   def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
     doc = stitch_preview(sections)
     {:noreply, push_event(socket, "loadViewer", %{content: doc, theme: theme})}
+  end
+
+  def handle_info(:publish, %{assigns: a} = socket) do
+    published =
+      case Insights.publish_insight(%{
+        sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
+        insight: %{
+          id: a.insight["id"],
+          cover_photo_url: a.data.subject["main_photo_url"],
+          published: true
+        }}) do
+          {:ok, pub} -> pub
+          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
+      end
+    {:noreply,
+      socket
+      |> put_flash(:info, "#{String.upcase(published.update_insight.type)} was created and published successfully.")
+      |> push_redirect(to: "/agent/dash")}
   end
 
   def handle_event("new-section", _, %{assigns: a} = socket) do
@@ -82,28 +103,18 @@ defmodule ExcyteWeb.Insight.Builder do
     {:noreply, socket |> push_event("loadViewer", %{content: doc}) |> assign(sections: sections)}
   end
 
-  def handle_event("publish", %{"name" => name}, %{assigns: a} = socket) do
-    published =
-      case Insights.publish_insight(%{
-        sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
-        insight: %{
-          id: a.insight.id,
-          name: name,
-          published: true
-        }}) do
-          {:ok, pub} -> pub
-          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
-      end
-
-    {:noreply,
-      socket
-      |> put_flash(:info, "#{String.upcase(published.insight.type)} was created and published successfully.")
-      |> push_redirect(to: "/agent/dash")}
+  def handle_event("publish", %{assigns: a} = socket) do
   end
 
   defp with_html_sections(sections, data) do
     Enum.map(sections, fn s ->
-      if s.html_content === nil, do: Map.put(s, :html_content, get_editor_templates(s, data))
+      html = if s.html_content === nil, do: get_editor_templates(s, data), else: s.html_content
+      Map.merge(s, %{
+        created_by_id: data.agent_profile["id"],
+        insight_id: data.insight["id"],
+        section_template_id: s.id,
+        html_content: html
+      })
     end)
   end
 
@@ -125,10 +136,10 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   defp merge_theme(%{brokerage: bk, insight: ins}) do
-    Map.merge(ins, %{document_attributes: bk["theme_settings"]})
+    Map.merge(ins, %{"document_attributes" => bk["theme_settings"]})
   end
 
   defp merge_theme(%{agent_profile: ag, insight: ins}) do
-    Map.merge(ins, %{document_attributes: ag["theme_settings"]})
+    Map.merge(ins, %{"document_attributes" => ag["theme_settings"]})
   end
 end

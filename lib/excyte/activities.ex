@@ -31,7 +31,7 @@ defmodule Excyte.Activities do
         })
 
       unknown_err ->
-        IO.inspect(unknown_err)
+        unknown_err = if unknown_err === nil, do: %{}, else: unknown_err
 
         __MODULE__.log_error(%{
           error: [unknown_err],
@@ -72,6 +72,7 @@ defmodule Excyte.Activities do
   def get_errors(), do: __MODULE__.get_errors(nil)
 
   def log_error(params) do
+    IO.inspect(params, label: "ERR")
     {:ok, res} =
       %ErrorLog{}
       |> ErrorLog.changeset(params)

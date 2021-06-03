@@ -6,19 +6,11 @@ defmodule Excyte.Agents.Profile do
     Accounts.User,
     Utils.Address,
     Utils.Contact,
-    Utils.MapType
+    Utils.Theme
   }
 
   @timestamps_opts [type: :utc_datetime]
-  @default_theme %{
-    background: "#F3F4F6",
-    header_text: "#04293A",
-    accent: "#0E7490",
-    highlight_background: "#FEF08A",
-    highlight_text: "#475569",
-    text: "#475569",
-    muted_text: "#CBD5E1"
-  }
+
   defimpl Jason.Encoder, for: [Excyte.Agents.Profile] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
@@ -41,7 +33,7 @@ defmodule Excyte.Agents.Profile do
     field :job_title, :string
     field :intro_video_url, :string
     field :updated_by_user, :boolean
-    field :theme_settings, MapType, default: @default_theme
+    embeds_one :theme_settings, Theme, on_replace: :update
     embeds_many(:addresses, Address)
     embeds_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:agent, User)
@@ -60,9 +52,9 @@ defmodule Excyte.Agents.Profile do
       :intro_video_url,
       :job_title,
       :company_name,
-      :updated_by_user,
-      :theme_settings
+      :updated_by_user
     ])
+    |> cast_embed(:theme_settings)
     |> cast_embed(:addresses)
     |> cast_embed(:contacts)
   end
@@ -71,6 +63,7 @@ defmodule Excyte.Agents.Profile do
     profile
     |> cast(attrs, [:name, :agent_id])
     |> cast_embed(:contacts)
+    |> cast_embed(:theme_settings)
     |> validate_required([:name, :agent_id])
   end
 end

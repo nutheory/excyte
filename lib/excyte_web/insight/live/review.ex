@@ -25,10 +25,14 @@ defmodule ExcyteWeb.Insight.Review do
         current_user: cu,
         subject: ins.property,
         insight_uuid: id,
+        error: nil,
         templates: templates,
         selected_tmpl: Enum.find(templates, fn tmpl -> tmpl.type_default === true end),
         listings: comps.listings,
-        suggested_range: %{min: elem(min_max, 0).excyte_suggested_price, max: elem(min_max, 1).excyte_suggested_price},
+        suggested_range: %{
+          min: Integer.floor_div(elem(min_max, 0).excyte_suggested_price, 1000)*1000,
+          max: Integer.floor_div(elem(min_max, 1).excyte_suggested_price, 1000)*1000
+        },
         selected_comps: Enum.sort_by(s_comps, &(&1.excyte_suggested_price), :asc)
       )}
     else
@@ -61,14 +65,23 @@ defmodule ExcyteWeb.Insight.Review do
     {:noreply, assign(socket, selected_comps: comps)}
   end
 
-  def handle_event("save-review", _, %{assigns: a}  = socket) do
-    case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
-      content: %{comps: a.selected_comps, suggested_subject_price: a.suggested_range},
-      document_attributes: a.selected_tmpl.attributes,
-      document_template_id: a.selected_tmpl.id
-    }) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/builder")}
-      {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+
+
+  def handle_event("save-review", %{"button" => choice, "name" => name}, %{assigns: a}  = socket) do
+    redirect = if choice === "publish", do: "auto", else: "builder"
+    IO.inspect(redirect, label: "BOOM")
+    if String.length(name) > 0 do
+      case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
+        content: %{comps: a.selected_comps, suggested_subject_price: a.suggested_range},
+        document_attributes: a.selected_tmpl.attributes,
+        document_template_id: a.selected_tmpl.id,
+        name: name
+      }) do
+        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/#{redirect}")}
+        {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+      end
+    else
+      {:noreply, assign(socket, error: "Please enter a name")}
     end
   end
 end

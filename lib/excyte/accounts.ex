@@ -13,6 +13,16 @@ defmodule Excyte.Accounts do
 
   @topic inspect(__MODULE__)
 
+  @default_theme %{
+    font: "Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif",
+    background: "#F3F4F6",
+    header_text: "#04293A",
+    accent: "#0E7490",
+    highlight_background: "#FEF08A",
+    highlight_text: "#475569",
+    text: "#475569",
+    muted_text: "#CBD5E1"
+  }
 
   def subscribe(user_id) do
     Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{user_id}")
@@ -173,6 +183,7 @@ defmodule Excyte.Accounts do
     |> Agents.Profile.registration_changeset(Map.merge(attrs, %{
       agent_id: agent.id,
       name: attrs.full_name,
+      theme_settings: @default_theme,
       contacts: [%{content: attrs.email, name: "Email", type: "email"}]
     }))
     |> Repo.insert()
@@ -183,6 +194,7 @@ defmodule Excyte.Accounts do
     |> Brokerages.Profile.registration_changeset(Map.merge(attrs, %{
       brokerage_id: bk.id,
       company_name: attrs.brokerage_name,
+      theme_settings: @default_theme,
       contacts: [%{content: attrs.email, name: "Email", type: "email"}]
     }))
     |> Repo.insert()

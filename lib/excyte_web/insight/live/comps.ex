@@ -110,8 +110,7 @@ defmodule ExcyteWeb.Insight.Comps do
     {:noreply, assign(socket,
       comparables: nil,
       selected_comps: [],
-      subject: nil,
-      possible_subject_properties: nil
+      subject: nil
     )}
   end
 

@@ -34,9 +34,9 @@ defmodule ExcyteWeb.Insight.SubjectForm do
     subject_attrs =
       Map.merge(a.subject, %{
         beds: String.to_integer(form["beds"]),
-        baths: String.to_float(form["baths"]),
+        baths: elem(Float.parse(form["baths"]), 0),
         sqft: String.to_integer(form["sqft"]),
-        stories: String.to_integer(form["stories"]),
+        stories: elem(Float.parse(form["stories"]), 0),
         year_built: String.to_integer(form["year_built"]),
       })
       |> Map.merge(sanitize_lotsize(%{

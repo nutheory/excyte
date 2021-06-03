@@ -31,7 +31,7 @@ defmodule Excyte.Brokerages.Profile do
     field :description, :string
     field :intro_video_url, :string
     field :updated_by_user, :boolean
-    embeds_one(:theme_settings, Theme, on_replace: :delete)
+    embeds_one(:theme_settings, Theme, on_replace: :update)
     embeds_many(:addresses, Address)
     embeds_many(:contacts, Contact, on_replace: :delete)
     belongs_to(:brokerage, Brokerage)
@@ -59,6 +59,7 @@ defmodule Excyte.Brokerages.Profile do
     profile
     |> cast(attrs, [:company_name, :brokerage_id])
     |> cast_embed(:contacts)
+    |> cast_embed(:theme_settings)
     |> validate_required([:company_name, :brokerage_id])
   end
 end

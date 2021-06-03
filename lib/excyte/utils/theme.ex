@@ -2,11 +2,10 @@ defmodule Excyte.Utils.Theme do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @fields [:font, :text, :muted_text, :accent, :background, :header_text, :sub_header_text, :highlight_background, :highlight_text]
+  @fields [:id, :font, :text, :muted_text, :accent, :background, :header_text, :sub_header_text, :highlight_background, :highlight_text]
 
   @derive {Jason.Encoder, only: @fields}
 
-  @primary_key false
   embedded_schema do
     field :font, :string, default: "Didot, Didot LT STD, Hoefler Text, Garamond, Calisto MT, Times New Roman, serif"
     field :background, :string, default: "#F3F4F6"

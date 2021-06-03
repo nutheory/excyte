@@ -11,7 +11,7 @@
   <% else %>
     <div class="mt-32">
       <h2 class="text-center pb-2 mt-32">Create a CMA</h2>
-      <%= if @address === nil do %>
+      <%= if @prop_id === nil do %>
         <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
         <div class="lg:w-2/5 md:w-2/3 mx-auto">
           <%= live_component @socket, AddressAutocomplete, id: :subject_location %>
@@ -21,7 +21,6 @@
             current_user: @current_user,
             subject: @subject,
             errors: @errors,
-            possible_subject_properties: @possible_subject_properties,
             id: :subject_property
           %>
       <% end %>

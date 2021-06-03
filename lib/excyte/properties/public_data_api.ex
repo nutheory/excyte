@@ -27,8 +27,17 @@ defmodule Excyte.Properties.PublicDataApi do
 
   defp process_subject({:ok, %Tesla.Env{:body => body} = response}) do
     prop = hd(body["properties"])
+    street = String.split(prop["address"]["line"], " ", parts: 2)
     property = %{
       internal_type: "subject",
+      street_number: List.first(street),
+      street_name: List.last(street),
+      city: prop["address"]["city"],
+      zip: prop["address"]["postal_code"],
+      state: prop["address"]["state_code"],
+      unit: prop["address"]["unit_value"],
+      county: prop["address"]["county"],
+      coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
       foreign_id: prop["property_id"],
       main_photo_url: hd(prop["photos"])["href"],
       est_price: prop["price"],

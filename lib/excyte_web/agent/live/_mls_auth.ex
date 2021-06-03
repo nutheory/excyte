@@ -38,12 +38,15 @@ defmodule ExcyteWeb.Agent.MlsAuth do
 
     UserConfirmationController.bypass_open_id(socket.assigns.current_user.id, %{
       "access_token" => "6baca547742c6f96a6ff71b138424f21",
+      # "access_token" => "c72f9c07c32759011128b84001acb35d",
       "member_key" => "M_5dba1fa4a2a50c5b81f082d9",
       "office_key" => "O_5dba1f95cf17cd5b43eb0255",
       "refresh_token" => "3o0iipzrpiknijyxtjrugkt29",
       "code" => "5465c65",
       "mls_name" => "TEST",
       "dataset_id" => "test",
+      # "mls_name" => "MIAMIRE",
+      # "dataset_id" => "miamire",
       "id_token" => "eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazci",
       "expires_in" => "3600"
     })

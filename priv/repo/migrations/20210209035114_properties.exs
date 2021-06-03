@@ -36,7 +36,7 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :distance_from_subject, :string
       add :list_price, :string
       add :est_price, :integer
-      add :stories, :integer
+      add :stories, :float
       add :walkscore, :integer
       add :listing_key, :string
       add :listing_id, :string

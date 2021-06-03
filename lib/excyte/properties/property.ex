@@ -114,7 +114,7 @@ defmodule Excyte.Properties.Property do
     field :pending_timestamp, :utc_datetime
     field :distance_from_subject, :string
     field :list_price, :string
-    field :stories, :integer
+    field :stories, :float
     field :walkscore, :integer
     field :est_price, :integer
     field :listing_key, :string

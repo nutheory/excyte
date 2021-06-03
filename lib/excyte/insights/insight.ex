@@ -9,7 +9,8 @@ defmodule Excyte.Insights.Insight do
     Insights.SavedSearch,
     Insights.Section,
     Properties.Property,
-    Utils.MapType
+    Utils.MapType,
+    Utils.Theme
   }
 
   @timestamps_opts [type: :utc_datetime]
@@ -30,9 +31,10 @@ defmodule Excyte.Insights.Insight do
     field :uuid, :string
     field :selected_listing_ids, {:array, :string}
     field :name, :string, null: false
-    field :document_attributes, MapType
     field :content, MapType
     field :published, :boolean
+    field :cover_photo_url, :string
+    embeds_one(:document_attributes, Theme, on_replace: :update)
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
     has_one(:property, Property, foreign_key: :insight_id)
     has_many(:sections, Section)
@@ -50,14 +52,15 @@ defmodule Excyte.Insights.Insight do
       :name,
       :uuid,
       :selected_listing_ids,
-      :document_attributes,
+      :cover_photo_url,
       :content,
       :published,
       :document_template_id,
       :brokerage_id,
       :created_by_id
     ])
-    |>cast_embed(:saved_search)
+    |> cast_embed(:document_attributes)
+    |> cast_embed(:saved_search)
   end
 
   def minimal_insight(uuid, uid) do

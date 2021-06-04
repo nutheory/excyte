@@ -25,14 +25,12 @@ defmodule ExcyteWeb.Insight.Review do
         current_user: cu,
         subject: ins.property,
         insight_uuid: id,
+        insight_name: ins.name,
         error: nil,
         templates: templates,
         selected_tmpl: Enum.find(templates, fn tmpl -> tmpl.type_default === true end),
         listings: comps.listings,
-        suggested_range: %{
-          min: Integer.floor_div(elem(min_max, 0).excyte_suggested_price, 1000)*1000,
-          max: Integer.floor_div(elem(min_max, 1).excyte_suggested_price, 1000)*1000
-        },
+        suggested_range: get_suggested_range(min_max, ins.content),
         selected_comps: Enum.sort_by(s_comps, &(&1.excyte_suggested_price), :asc)
       )}
     else
@@ -46,7 +44,7 @@ defmodule ExcyteWeb.Insight.Review do
   end
 
   def handle_info({:update_suggested_price, %{suggested_price: sp}}, %{assigns: a} = socket) do
-    {:noreply, assign(socket, suggested_range: %{min: sp.min, max: sp.max})}
+    {:noreply, assign(socket, suggested_range: %{"min" => sp.low, "max" => sp.high})}
   end
 
   def handle_event("adjust-comp", %{"adjustment" => adj, "listing-id" => id}, %{assigns: a} = socket) do
@@ -65,15 +63,18 @@ defmodule ExcyteWeb.Insight.Review do
     {:noreply, assign(socket, selected_comps: comps)}
   end
 
+  def handle_event("form-change", %{"name" => name}, %{assigns: a}  = socket) do
+    {:noreply, assign(socket, insight_name: name)}
+  end
+
   def handle_event("save-review", %{"button" => choice, "name" => name}, %{assigns: a}  = socket) do
     path = if choice === "publish", do: "auto", else: "builder"
-    IO.inspect(name, label: "BOOM")
-    if String.length(name) > 0 do
+    if String.length(a.insight_name) > 0 do
       case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
         content: %{comps: a.selected_comps, suggested_subject_price: a.suggested_range},
         document_attributes: a.selected_tmpl.attributes,
         document_template_id: a.selected_tmpl.id,
-        name: name
+        name: a.insight_name
       }) do
         {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/#{path}")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
@@ -82,4 +83,16 @@ defmodule ExcyteWeb.Insight.Review do
       {:noreply, assign(socket, error: "Please enter a name")}
     end
   end
+
+  defp get_suggested_range(min_max, insight_content) do
+    if Map.has_key?(insight_content, :suggested_subject_price) do
+      insight_content.suggested_subject_price
+    else
+      %{
+        "min" => Integer.floor_div(elem(min_max, 0).excyte_suggested_price, 1000)*1000,
+        "max" => Integer.floor_div(elem(min_max, 1).excyte_suggested_price, 1000)*1000
+      }
+    end
+  end
+
 end

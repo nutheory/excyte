@@ -47,15 +47,19 @@
             <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
           </div>
         </div>
-        <div class="preview-wrapper ml-6 mt-24" id="previewWrapper" phx-hook="InitPreview">
-          <div class="overflow-y-scroll" phx-update="ignore">
+        <div class="preview-wrapper" id="previewWrapper" phx-hook="InitPreview">
+          <div class="antialiased" phx-update="ignore">
             <div
               class="h-full"
               x-data="currentPreview('')"
               x-init="() => init($refs.preview)"
               x-on:click.away="inFocus = false"
             >
-              <div x-ref="preview" class="w-full p-4 lg:px-6 xl:px-10 h-full"></div>
+              <div class="px-4 py-10 max-w-3xl mx-auto sm:px-6 sm:py-12 lg:max-w-4xl lg:py-16 lg:px-8 xl:max-w-6xl">
+                <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto">
+                  <div x-ref="preview"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

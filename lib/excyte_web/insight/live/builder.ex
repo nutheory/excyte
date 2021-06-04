@@ -2,7 +2,7 @@ defmodule ExcyteWeb.Insight.Builder do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Activities, Insights, Insights.Insight}
   alias ExcyteWeb.{InsightView, Helpers.Templates}
-  alias ExcyteWeb.Router.Helpers, as: Routes
+
 
   def render(assigns), do: InsightView.render("builder.html", assigns)
 
@@ -48,7 +48,7 @@ defmodule ExcyteWeb.Insight.Builder do
 
   def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
     doc = stitch_preview(sections)
-    {:noreply, push_event(socket, "loadViewer", %{content: doc, theme: theme})}
+    {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
   end
 
   def handle_info(:publish, %{assigns: a} = socket) do
@@ -78,12 +78,12 @@ defmodule ExcyteWeb.Insight.Builder do
 
   def handle_event("sort", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
     rearranged =
-      Enum.map(sections, fn %{"id" => id, "sections_id" => sections_id, "position" => pos} ->
+      Enum.map(sections, fn %{"id" => id, "position" => pos} ->
         Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)
     doc = stitch_preview(rearranged)
-    {:noreply, push_event(socket, "loadViewer", %{content: doc}) |> assign(socket, sections: rearranged)}
+    {:noreply, push_event(socket, "loadPreview", %{content: doc}) |> assign(socket, sections: rearranged)}
   end
 
   def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
@@ -99,15 +99,17 @@ defmodule ExcyteWeb.Insight.Builder do
         if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
       end)
     doc = stitch_preview(sections)
-    {:noreply, socket |> push_event("loadViewer", %{content: doc}) |> assign(sections: sections)}
+    {:noreply, socket |> push_event("loadPreview", %{content: doc}) |> assign(sections: sections)}
   end
 
-  def handle_event("publish", %{assigns: a} = socket) do
-
+  def handle_event("publish", socket) do
+    send self(), :publish
+    {:noreply, socket}
   end
 
-  def handle_event("republish", %{assigns: a} = socket) do
-
+  def handle_event("republish", socket) do
+    # send self(), :publish
+    {:noreply, socket}
   end
 
   defp with_html_sections(sections, data) do

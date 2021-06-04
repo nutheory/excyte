@@ -69,8 +69,11 @@
             <label class="text-gray-600 text-sm block">Step <strong>4</strong> of 5</label>
             <h3 class="text-lg leading-none font-extrabold text-bgray-800">Invite team members</h3>
           </div>
+          <div class="flex items-end">
+            <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "agent_profile") %>
+          </div>
         </div>
-        <%= live_render @socket, InviteTeam, session: %{"user_id" => @current_user.id}, id: "profile_form" %>
+        <%= live_render @socket, InviteTeam, session: %{"user_id" => @current_user.id}, id: "invite_team_form" %>
       </div>
 
     <% "agent_profile" -> %>

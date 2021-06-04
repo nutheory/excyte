@@ -60,6 +60,10 @@ window.currentPreview = function (content) {
           Highlight,
           Underline, 
           TextAlign,
+          Table,
+          TableHeader,
+          TableRow,
+          TableCell,
           SimpleGallery,
           Struct,
           Comparable,
@@ -83,6 +87,7 @@ export const InitPreview = {
           rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
           rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
           rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
+           rule += `div.preview-wrapper tr {border-bottom-color: ${theme.accent}}`
           rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
           rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
       addCss(rule)

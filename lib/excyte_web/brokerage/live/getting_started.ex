@@ -37,7 +37,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
           {:noreply,
             socket
             |> put_flash(:info, "Profile created successfully")
-            |> push_redirect(to: "/brokerage/dash")}
+            |> push_redirect(to: "/agent/dash")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
       end
     else

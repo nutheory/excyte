@@ -11,7 +11,7 @@
     <script defer src="https://maps.googleapis.com/maps/api/js?key=<%= Application.get_env(:excyte, :gcp_places) %>&libraries=places"></script>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
-  <body>
+  <body class="antialiased">
     <%= @inner_content %>
   </body>
 </html>

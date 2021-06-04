@@ -82,8 +82,8 @@
           <%= live_component @socket, RangeInputs,
             prefix: "$",
             suffix: "",
-            min: @suggested_range.min,
-            max: @suggested_range.max,
+            min: @suggested_range["min"],
+            max: @suggested_range["max"],
             attribute: :suggested_price,
             type: Integer,
             step: 3000,
@@ -102,7 +102,7 @@
             id: :template_select
           %>
         </div>
-        <form phx-submit="save-review">
+        <form phx-change="form-change" phx-submit="save-review">
           <div class="mb-4">
             <label>Name this CMA</label>
             <%= if @error do %>
@@ -113,6 +113,7 @@
               name="name"
               class="text-field w-full"
               placeholder="Name"
+              value="<%= @insight_name %>"
             />
           </div>
         </div>

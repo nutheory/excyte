@@ -8,6 +8,90 @@
   body {
     @apply bg-gray-100;
   }
+
+  div.preview-wrapper {
+    @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
+
+    & .cover-wrapper {
+      @apply w-full my-20 lg:my-36;
+    }
+
+    & .comp {
+      & p {
+        @apply my-0;
+      }
+    }
+
+    & .subject {
+      & img {
+      
+      }
+    }
+
+    & .agent {
+      & img {
+        @apply my-0;
+      }
+    }
+
+    & .section {
+      @apply w-full my-20 lg:my-36;
+
+      & .data-grid {
+        @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+      }
+
+      & .data-grid-fifty {
+        @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+      }
+
+      & .minor {
+        @apply h-full;
+      }
+
+      & .major {
+        @apply lg:col-span-2;
+      }
+
+      & img {
+        @apply rounded-md;
+      }
+
+      & .cover-agent {
+        @apply absolute -left-8 -bottom-6 rounded-full h-20 w-20 bg-cover border-4;
+      }
+
+      & h1.cover-header {
+        @apply mb-4;
+      }
+
+      & .cover-address {
+        @apply my-2 lg:my-4;
+      }
+
+      & .cover-name {
+        @apply mt-4 mb-20;
+      }
+
+      & .why-agent-photo {
+        @apply float-left mr-8 my-4 rounded-full bg-cover border-4 w-32 h-32 lg:w-40 lg:h-40;
+      }
+
+      & .simple-gallery {
+        @apply grid grid-cols-4 gap-1;
+
+        & img {
+          @apply my-0;
+        }
+      }
+
+      & table {
+        & p {
+          @apply my-0;
+        }
+      }
+    }
+  }
 }
 
 @tailwind utilities;

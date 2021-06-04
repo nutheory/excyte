@@ -66,6 +66,30 @@ defmodule Excyte.Insights.Insight do
   def minimal_insight(uuid, uid) do
     from ins in __MODULE__,
     where: ins.uuid == ^uuid and ins.created_by_id == ^uid,
-    select: struct(ins, [:id, :published, :uuid])
+    select: struct(ins, [:id, :published, :uuid, :type])
+  end
+
+  def published_agent_insights(uid) do
+    from ins in __MODULE__,
+    where: ins.created_by_id == ^uid and ins.published == true,
+    select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
+  end
+
+  def all_agent_insights(uid) do
+    from ins in __MODULE__,
+    where: ins.created_by_id == ^uid,
+    select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
+  end
+
+  def published_brokerage_insights(uid) do
+    from ins in __MODULE__,
+    where: ins.brokerage_id == ^uid and ins.published == true,
+    select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
+  end
+
+  def all_brokerage_insights(uid) do
+    from ins in __MODULE__,
+    where: ins.brokerage_id == ^uid,
+    select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
   end
 end

@@ -24,6 +24,14 @@ defmodule Excyte.Insights do
     |> Repo.transaction()
   end
 
+    def republish_insight(%{sections: sections, insight: insight}) do
+    Multi.new()
+    |> Multi.run(:update_insight, __MODULE__, :update_insight, [insight])
+    |> Multi.run(:destroy_current_sections, __MODULE__, :destroy_sections, [])
+    |> Multi.run(:create_sections, __MODULE__, :create_sections, [sections])
+    |> Repo.transaction()
+  end
+
   def create_insight(attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
@@ -87,6 +95,10 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
+  def destroy_sections(_repo, %{update_insight: ins} , _) do
+    Repo.delete_all(from(s in Section, where: s.insight_id == ^ins.id))
+  end
+
   def get_document(id) do
     Repo.get(Document, id)
   end
@@ -115,6 +127,10 @@ defmodule Excyte.Insights do
     ins = Repo.get_by(Insight, %{uuid: uuid, published: true})
           |> Repo.preload([:sections])
     {:ok, ins}
+  end
+
+  def get_published_agent_insights(uid) do
+    Insight.published_agent_insights(uid) |> Repo.all()
   end
 
   def get_full_insight(uid, insid) do

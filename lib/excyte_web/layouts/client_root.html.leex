@@ -10,7 +10,12 @@
     <script defer src="https://maps.googleapis.com/maps/api/js?key=<%= Application.get_env(:excyte, :gcp_places) %>&libraries=places"></script>
     <link phx-track-static rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/client.css") %>"/>
     <style type="text/css">
-
+       div.preview-wrapper {background-color: <%= @theme.background %>; color: <%= @theme.text %>; font-family: <%= @theme.font %>}
+       div.preview-wrapper .header-color {color: <%= @theme.sub_header_text %>}
+       div.preview-wrapper .sub-header-color {color: <%= @theme.sub_header_text %>}
+       div.preview-wrapper .accent-color {border-color: <%= @theme.accent %>}
+       div.preview-wrapper .muted-color {color: <%= @theme.muted_text %>}
+       div.preview-wrapper mark {background-color: <%= @theme.highlight_background %>; color: <%= @theme.highlight_text %>}
     </style>
   </head>
   <body>

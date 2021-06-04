@@ -3,7 +3,7 @@ defmodule ExcyteWeb.AgentView do
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Agent.{
     Dashboard,
-    DashListing,
+    InsightCard,
     GettingStarted,
     MlsAuth,
     Profile

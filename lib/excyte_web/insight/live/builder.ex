@@ -10,7 +10,6 @@ defmodule ExcyteWeb.Insight.Builder do
     cu = Accounts.get_user_by_session_token(token)
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
-        IO.inspect(ins, label: "INS")
         send self(), {:get_sections, %{insight: ins}}
         {:ok, assign(socket,
           current_user: cu,
@@ -36,7 +35,7 @@ defmodule ExcyteWeb.Insight.Builder do
         if a.auto_publish do
           send self(), :publish
         else
-          send self(), {:load_preview, %{sections: sections, theme: insight.document_attributes }}
+          send self(), {:load_preview, %{sections: sections, theme: insight["document_attributes"] }}
         end
         {:noreply, assign(socket,
           sections: sections,
@@ -104,6 +103,11 @@ defmodule ExcyteWeb.Insight.Builder do
   end
 
   def handle_event("publish", %{assigns: a} = socket) do
+
+  end
+
+  def handle_event("republish", %{assigns: a} = socket) do
+
   end
 
   defp with_html_sections(sections, data) do

@@ -1,6 +1,6 @@
-<div class="px-4 sm:px-6 xl:px-8 pt-16 lg:pt-24">
+<div class="pt-16 lg:pt-24">
   <h1 class="text-center">Create a...</h1>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full md:w-4/5 lg:w-3/4 mx-auto">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full md:w-4/5 lg:w-3/4 mx-auto">
     <div class="super-large-button h-24">
       <%= live_redirect to: Routes.live_path(@socket, Create, "cma") do %>
         <button class="blue font-extrabold text-4xl">CMA</button>
@@ -11,12 +11,17 @@
         <button class="teal font-extrabold text-3xl">Showcase</button>
       <% end %>
     </div>
+    <div class="super-large-button h-24">
+      <%= live_redirect to: Routes.live_path(@socket, Create, "showcase") do %>
+        <button class="teal font-extrabold text-3xl">Buyer Tour</button>
+      <% end %>
+    </div>
   </div>
   <div class="mt-16">
     <h2>Recent Activity</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-      <%= for listing <- @recents do %>
-        <%= live_component @socket, DashListing, listing: listing, id: "listing_id_#{listing["ListingId"]}" %>
+      <%= for insight <- @insights do %>
+        <%= live_component @socket, InsightCard, insight: insight, id: "insight_id_#{insight.id}" %>
       <% end %>
     </div>
   </div>

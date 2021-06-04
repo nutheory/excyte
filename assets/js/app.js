@@ -21,6 +21,7 @@ import {ViewportResize} from "./viewport_resize"
 import {InitSortable} from "./sorting"
 import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
+import {InitPreview} from "./preview"
 import {InitViewer} from "./viewer"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
@@ -35,6 +36,7 @@ Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
+Hooks.InitPreview = InitPreview
 Hooks.InitViewer = InitViewer
 Hooks.DistanceSelector = {
   mounted(){

@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Agent.Dashboard do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Mls.ResoApi}
+  alias Excyte.{Accounts, Mls.ResoApi, Insights}
   alias ExcyteWeb.AgentView
 
   def render(assigns), do: AgentView.render("dashboard.html", assigns)
@@ -15,9 +15,8 @@ defmodule ExcyteWeb.Agent.Dashboard do
       end
     else
       mls = cu.current_mls
-      {:ok, agent_listings} = ResoApi.get_listings_by_agent(mls, %{list_agent_key: mls.member_key})
-      {:ok, assign(socket, current_user: cu, recents: agent_listings.listings)}
+      agent_insights = Insights.get_published_agent_insights(cu.id)
+      {:ok, assign(socket, current_user: cu, insights: agent_insights)}
     end
   end
-
 end

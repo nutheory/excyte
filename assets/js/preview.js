@@ -29,9 +29,9 @@ import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
 
-window.viewerHook = {}
+window.previewHook = {}
 
-window.currentViewer = function (content) {
+window.currentPreview = function (content) {
   
   return {
     content: content,
@@ -39,7 +39,7 @@ window.currentViewer = function (content) {
     toc_visible: false,
 
     init(el) {
-      let viewer = new TipTap({
+      let preview = new TipTap({
         element: el,
         editable: false,
         extensions: [
@@ -67,21 +67,37 @@ window.currentViewer = function (content) {
         content: this.content,
       })
 
-      this.viewer = viewer
-      window.viewerHook.currentViewer = this
+      this.preview = preview
+      window.previewHook.currentPreview = this
     },
   }
 }
 
-export const InitViewer = {
+export const InitPreview = {
   mounted() {
-    window.viewerHook.base = this
-    this.handleEvent("loadViewer", ({ content, theme }) => {
-      window.viewerHook.currentViewer.viewer.commands.setContent(content)
+    window.previewHook.base = this
+    this.handleEvent("loadPreview", ({ content, theme }) => {
+      window.previewHook.currentPreview.preview.commands.setContent(content)
+
+      let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
+          rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
+          rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
+          rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
+          rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
+          rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+      addCss(rule)
     })
   },
   destroyed() {
-     window.viewerHook = null
-     window.currentViewer = null
+     window.previewHook = null
+     window.currentPreview = null
   },
+}
+
+const addCss = (rule) => {
+  let css = document.createElement('style');
+  css.type = 'text/css';
+  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
+  else css.appendChild(document.createTextNode(rule)); // Support for the rest
+  document.getElementsByTagName("head")[0].appendChild(css);
 }

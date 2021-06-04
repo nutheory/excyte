@@ -1,6 +1,11 @@
-<%= live_component @socket, Header, id: :report_header %>
-<div class="max-w-screen-xl mx-auto">
-  <%= for section <- @sections do %>
-    <%= section.html_content %>
-  <% end %>
+<div class="preview-wrapper" id="viewerWrapper" phx-hook="InitViewer">
+  <%= live_component @socket, Header, id: :report_header %>
+  <div
+    class="max-w-screen-xl mx-auto"
+    x-data="currentViewer('')"
+    x-init="() => init($refs.viewer)"
+    x-on:click.away="inFocus = false"
+  >
+    <div x-ref="viewer" class=""></div>
+  </div>
 </div>

@@ -19447,6 +19447,124 @@ var AutocompleteLocation = {
 
 /***/ }),
 
+/***/ "./js/preview.js":
+/*!***********************!*\
+  !*** ./js/preview.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "InitPreview": () => (/* binding */ InitPreview)
+/* harmony export */ });
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+/* harmony import */ var _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tiptap/extension-blockquote */ "./node_modules/@tiptap/extension-blockquote/dist/tiptap-extension-blockquote.esm.js");
+/* harmony import */ var _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @tiptap/extension-bold */ "./node_modules/@tiptap/extension-bold/dist/tiptap-extension-bold.esm.js");
+/* harmony import */ var _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @tiptap/extension-bullet-list */ "./node_modules/@tiptap/extension-bullet-list/dist/tiptap-extension-bullet-list.esm.js");
+/* harmony import */ var _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @tiptap/extension-document */ "./node_modules/@tiptap/extension-document/dist/tiptap-extension-document.esm.js");
+/* harmony import */ var _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @tiptap/extension-hard-break */ "./node_modules/@tiptap/extension-hard-break/dist/tiptap-extension-hard-break.esm.js");
+/* harmony import */ var _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @tiptap/extension-highlight */ "./node_modules/@tiptap/extension-highlight/dist/tiptap-extension-highlight.esm.js");
+/* harmony import */ var _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @tiptap/extension-image */ "./node_modules/@tiptap/extension-image/dist/tiptap-extension-image.esm.js");
+/* harmony import */ var _tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @tiptap/extension-italic */ "./node_modules/@tiptap/extension-italic/dist/tiptap-extension-italic.esm.js");
+/* harmony import */ var _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @tiptap/extension-link */ "./node_modules/@tiptap/extension-link/dist/tiptap-extension-link.esm.js");
+/* harmony import */ var _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @tiptap/extension-list-item */ "./node_modules/@tiptap/extension-list-item/dist/tiptap-extension-list-item.esm.js");
+/* harmony import */ var _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @tiptap/extension-ordered-list */ "./node_modules/@tiptap/extension-ordered-list/dist/tiptap-extension-ordered-list.esm.js");
+/* harmony import */ var _tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @tiptap/extension-paragraph */ "./node_modules/@tiptap/extension-paragraph/dist/tiptap-extension-paragraph.esm.js");
+/* harmony import */ var _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @tiptap/extension-strike */ "./node_modules/@tiptap/extension-strike/dist/tiptap-extension-strike.esm.js");
+/* harmony import */ var _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @tiptap/extension-table */ "./node_modules/@tiptap/extension-table/dist/tiptap-extension-table.esm.js");
+/* harmony import */ var _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @tiptap/extension-table-row */ "./node_modules/@tiptap/extension-table-row/dist/tiptap-extension-table-row.esm.js");
+/* harmony import */ var _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @tiptap/extension-table-header */ "./node_modules/@tiptap/extension-table-header/dist/tiptap-extension-table-header.esm.js");
+/* harmony import */ var _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @tiptap/extension-table-cell */ "./node_modules/@tiptap/extension-table-cell/dist/tiptap-extension-table-cell.esm.js");
+/* harmony import */ var _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @tiptap/extension-text */ "./node_modules/@tiptap/extension-text/dist/tiptap-extension-text.esm.js");
+/* harmony import */ var _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @tiptap/extension-text-align */ "./node_modules/@tiptap/extension-text-align/dist/tiptap-extension-text-align.esm.js");
+/* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
+/* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
+/* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
+/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_25__);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.previewHook = {};
+
+window.currentPreview = function (content) {
+  return {
+    content: content,
+    viewer: null,
+    toc_visible: false,
+    init: function init(el) {
+      var preview = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
+        element: el,
+        editable: false,
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_23__.default],
+        content: this.content
+      });
+      this.preview = preview;
+      window.previewHook.currentPreview = this;
+    }
+  };
+};
+
+var InitPreview = {
+  mounted: function mounted() {
+    window.previewHook.base = this;
+    this.handleEvent("loadPreview", function (_ref) {
+      var content = _ref.content,
+          theme = _ref.theme;
+      window.previewHook.currentPreview.preview.commands.setContent(content);
+      var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
+      rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
+      rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
+      rule += "div.preview-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+      rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
+      rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
+      addCss(rule);
+    });
+  },
+  destroyed: function destroyed() {
+    window.previewHook = null;
+    window.currentPreview = null;
+  }
+};
+
+var addCss = function addCss(rule) {
+  var css = document.createElement('style');
+  css.type = 'text/css';
+  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
+  else css.appendChild(document.createTextNode(rule)); // Support for the rest
+
+  document.getElementsByTagName("head")[0].appendChild(css);
+};
+
+/***/ }),
+
 /***/ "./js/sorting.js":
 /*!***********************!*\
   !*** ./js/sorting.js ***!
@@ -19688,29 +19806,12 @@ var InitViewer = {
       var content = _ref.content,
           theme = _ref.theme;
       window.viewerHook.currentViewer.viewer.commands.setContent(content);
-      console.log("THEME", theme);
-      var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
-      rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
-      rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
-      rule += "div.preview-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
-      rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
-      rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
-      addCss(rule);
     });
   },
   destroyed: function destroyed() {
     window.viewerHook = null;
     window.currentViewer = null;
   }
-};
-
-var addCss = function addCss(rule) {
-  var css = document.createElement('style');
-  css.type = 'text/css';
-  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
-  else css.appendChild(document.createTextNode(rule)); // Support for the rest
-
-  document.getElementsByTagName("head")[0].appendChild(css);
 };
 
 /***/ }),
@@ -47857,11 +47958,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sorting */ "./js/sorting.js");
 /* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./theme */ "./js/theme.js");
 /* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./editor */ "./js/editor.js");
-/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
-/* harmony import */ var _init_checkout__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./init_checkout */ "./js/init_checkout.js");
-/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./location */ "./js/location.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _preview__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./preview */ "./js/preview.js");
+/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
+/* harmony import */ var _init_checkout__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./init_checkout */ "./js/init_checkout.js");
+/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./location */ "./js/location.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_14__);
 
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
@@ -47888,15 +47990,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var Uploaders = {};
 var Hooks = {};
-Hooks.InitCheckout = _init_checkout__WEBPACK_IMPORTED_MODULE_11__.InitCheckout;
+Hooks.InitCheckout = _init_checkout__WEBPACK_IMPORTED_MODULE_12__.InitCheckout;
 Hooks.InitSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSortable;
 Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_8__.InitColorPicker;
-Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_12__.AutocompleteLocation;
+Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_13__.AutocompleteLocation;
 Hooks.ViewportResize = _viewport_resize__WEBPACK_IMPORTED_MODULE_6__.ViewportResize;
 Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_9__.InitEditor;
-Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_10__.InitViewer;
+Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_10__.InitPreview;
+Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_11__.InitViewer;
 Hooks.DistanceSelector = {
   mounted: function mounted() {
     var _this = this;
@@ -47971,17 +48075,17 @@ var liveSocket = new (phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default())(
 }); // Show progress bar on live navigation and form submits
 
 var progressTimeout;
-topbar__WEBPACK_IMPORTED_MODULE_13___default().config({
+topbar__WEBPACK_IMPORTED_MODULE_14___default().config({
   barThickness: 5,
   shadowColor: "rgba(0, 0, 0, .6)"
 });
 window.addEventListener("phx:page-loading-start", function () {
   clearTimeout(progressTimeout);
-  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_13___default().show), 100);
+  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_14___default().show), 100);
 });
 window.addEventListener("phx:page-loading-stop", function () {
   clearTimeout(progressTimeout);
-  topbar__WEBPACK_IMPORTED_MODULE_13___default().hide();
+  topbar__WEBPACK_IMPORTED_MODULE_14___default().hide();
 }); // connect if there are any LiveViews on the page
 
 liveSocket.connect(); // expose liveSocket on window for web console debug logs and latency simulation:

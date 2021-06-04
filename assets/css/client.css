@@ -1,4 +1,3 @@
-@import "./editor.css";
 @import "../node_modules/glightbox/dist/css/glightbox.min.css";
 
 @tailwind base;
@@ -7,7 +6,7 @@
 /* Client styles */
 @layer base {
   body {
-    @apply bg-bgray-600;
+    @apply bg-gray-100;
   }
 }
 

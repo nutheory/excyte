@@ -65,11 +65,9 @@ defmodule ExcyteWeb.Insight.Review do
     {:noreply, assign(socket, selected_comps: comps)}
   end
 
-
-
   def handle_event("save-review", %{"button" => choice, "name" => name}, %{assigns: a}  = socket) do
-    redirect = if choice === "publish", do: "auto", else: "builder"
-    IO.inspect(redirect, label: "BOOM")
+    path = if choice === "publish", do: "auto", else: "builder"
+    IO.inspect(name, label: "BOOM")
     if String.length(name) > 0 do
       case Insights.update_insight(a.insight_uuid, a.current_user.id, %{
         content: %{comps: a.selected_comps, suggested_subject_price: a.suggested_range},
@@ -77,7 +75,7 @@ defmodule ExcyteWeb.Insight.Review do
         document_template_id: a.selected_tmpl.id,
         name: name
       }) do
-        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/#{redirect}")}
+        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.insight_uuid}/#{path}")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
       end
     else

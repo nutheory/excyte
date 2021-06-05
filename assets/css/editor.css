@@ -221,26 +221,6 @@ div.preview-wrapper {
         @apply my-0;
       }
     }
-
-    /* & h1 {
-      @apply md:mb-2 text-bgray-300 text-2xl md:text-3xl lg:text-4xl font-extrabold;
-    }
-
-    & h2 {
-      @apply md:mb-2 text-bgray-800 text-lg md:text-2xl lg:text-3xl font-extrabold;
-    }
-
-    & h3 {
-      @apply text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
-    }
-
-    & h4 {
-      @apply text-bgray-800 text-sm md:text-base lg:text-lg font-extrabold;
-    }
-
-    & p {
-      @apply mb-4;
-    } */
   }
 }
 

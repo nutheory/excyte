@@ -82,7 +82,6 @@ export const InitPreview = {
     window.previewHook.base = this
     this.handleEvent("loadPreview", ({ content, theme }) => {
       window.previewHook.currentPreview.preview.commands.setContent(content)
-
       let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
           rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
           rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`

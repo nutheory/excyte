@@ -5,7 +5,6 @@ defmodule ExcyteWeb.Insight.Comps do
     Insights,
     Insights.Insight,
     Mls.ResoApi,
-    Properties,
     Properties.Adjustments
   }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
@@ -92,7 +91,7 @@ defmodule ExcyteWeb.Insight.Comps do
       distance: distance,
       selected_statuses: a.filters.selected_statuses
     })
-    query_mls(%{subject: a.subject, filters: filters, selected: []}, socket)
+    query_mls(%{insight: a.insight, filters: filters}, socket)
   end
 
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do
@@ -139,7 +138,7 @@ defmodule ExcyteWeb.Insight.Comps do
     end
   end
 
-  defp get_theme(ins, %{assigns: a} = socket) do
+  defp get_theme(ins, %{assigns: a}) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
     templates = Insights.get_document_templates(a.current_user, ins.type)
     send self(), {:set_theme_template, %{theme_attributes: theme_attrs, template: hd(templates)}}
@@ -174,23 +173,14 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   defp setup_price_filter(price) do
-    filters =
-      if price !== nil && price !== 0 do
-        %{ price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
-      else
-        %{ price: %{ type: Integer, low: 0, high: 10_000_000 }}
-      end
+    if price !== nil && price !== 0 do
+      %{ price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
+    else
+      %{ price: %{ type: Integer, low: 0, high: 10_000_000 }}
+    end
   end
 
   defp average(nums) do
     if length(nums) > 0, do: Enum.sum(nums) / length(nums), else: nil
-  end
-
-  defp to_i(str) do
-    if str === "" do
-      nil
-    else
-      Integer.parse(str) |> elem(0)
-    end
   end
 end

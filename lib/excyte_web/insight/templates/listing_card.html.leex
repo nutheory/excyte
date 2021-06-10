@@ -25,15 +25,15 @@
         <%= @listing.status %>
       </div>
     </div>
-    <h3 class="mt-1">
+    <h4 class="mt-1">
       <%= @listing.street_number %> <%= @listing.street_name %>
       <%= if @listing.unit do %>
-        <span class="inline-block ml-1">
+        <span class="pt-1 inline-block ml-1 text-gray-400 text-base">
           <label>Unit</label>
           <%= @listing.unit %>
         </span>
       <% end %>
-    </h3>
+    </h4>
     <p class="text-sm mt-1"><%= Utilities.summarize_sale_info(@listing) %></p>
     <div class="flex mt-2 text-gray-400">
       <div class="mr-5">

@@ -2,17 +2,17 @@
   <h1 class="text-center">Create a...</h1>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full md:w-4/5 lg:w-3/4 mx-auto">
     <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, Create, "cma") do %>
+      <%= live_redirect to: Routes.live_path(@socket, CreateCma) do %>
         <button class="blue font-extrabold text-4xl">CMA</button>
       <% end %>
     </div>
     <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, Create, "showcase") do %>
+      <%= live_redirect to: Routes.live_path(@socket, CreateShowcase) do %>
         <button class="teal font-extrabold text-3xl">Showcase</button>
       <% end %>
     </div>
     <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, Create, "showcase") do %>
+      <%= live_redirect to: Routes.live_path(@socket, CreateBuyerTour) do %>
         <button class="teal font-extrabold text-3xl">Buyer Tour</button>
       <% end %>
     </div>

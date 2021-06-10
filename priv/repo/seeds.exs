@@ -36,11 +36,13 @@ brokerages = [
   }
 ]
 
-template = excyte_document_template(%{})
+cma_template = excyte_cma_template(%{})
+showcase_template = excyte_showcase_template(%{})
+buyer_tour_template = excyte_buyer_tour_template(%{})
 
 sections = [
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "cover",
     component_data_types: ["subject"],
     name: "Cover Page",
@@ -49,7 +51,7 @@ sections = [
     position: 0
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "whats_cma",
     component_data_types: [],
     name: "What is a CMA",
@@ -58,7 +60,7 @@ sections = [
     position: 1
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "brokerage_profile",
     component_data_types: ["brokerage"],
     name: "Brokerage Profile",
@@ -67,7 +69,7 @@ sections = [
     position: 2
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "why_an_agent",
     component_data_types: [],
     name: "Why do I need a Agent",
@@ -76,7 +78,7 @@ sections = [
     position: 3
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "agent_profile",
     component_data_types: ["agent"],
     name: "Agent Profile",
@@ -85,7 +87,7 @@ sections = [
     position: 4
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "subject",
     component_data_types: ["subject"],
     name: "Subject Property",
@@ -94,7 +96,7 @@ sections = [
     position: 5
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "comparable",
     component_data_types: ["listing"],
     name: "Comparable Listing",
@@ -103,7 +105,7 @@ sections = [
     position: 6
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "synopsis",
     component_data_types: ["subject", "listings"],
     name: "Synopsis",
@@ -112,7 +114,7 @@ sections = [
     position: 60
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "pricing_strategy",
     component_data_types: [],
     name: "Pricing Strategy",
@@ -121,13 +123,67 @@ sections = [
     position: 61
   },
   %{
-    document_template_id: template.id,
+    document_template_id: cma_template.id,
     component_name: "commission_distribution",
     component_data_types: [],
     name: "Commission Distribution",
     is_public: true,
     is_excyte_made: true,
     position: 62
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "showcase",
+    component_data_types: ["listing"],
+    name: "Property",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
+    is_public: true,
+    is_excyte_made: true,
+    position: 1
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
+    is_public: true,
+    is_excyte_made: true,
+    position: 2
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "showcase",
+    component_data_types: ["listing"],
+    name: "Property",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
+    is_public: true,
+    is_excyte_made: true,
+    position: 1
+  },
+  %{
+    document_template_id: showcase_template.id,
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
+    is_public: true,
+    is_excyte_made: true,
+    position: 2
   },
 ]
 

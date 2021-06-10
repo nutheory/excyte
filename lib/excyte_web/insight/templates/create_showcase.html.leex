@@ -1,0 +1,36 @@
+<div class="cma mt-16 mx-auto px-4 w-full md:max-w-md">
+  <div class="mt-32">
+    <h2 class="text-center pb-2 mt-32">Create a Showcase</h2>
+    <h3 class="text-center text-bgray-400 my-4">Enter a listing ID</h3>
+    <form phx-change="update-listing-id" phx-submit="submit-id">
+      <div class="flex w-full lg:w-72 lg:mx-auto">
+        <div class="flex-1 mr-4">
+          <input class="text-field" type="text" placeholder="Enter listing ID" name="listing_id" value="<%= @listing_id %>"/>
+        </div>
+        <div>
+          <button type="submit" class="submit">Go</button>
+        </div>
+      </div>
+    </form>
+    <h3 class="text-center text-bgray-400 my-4">or browse recent listings</h3>
+    <ul>
+      <% IO.inspect(hd(@recent.listings), label: "@RL") %>
+      <%= for recent_listing <- @recent.listings do %>
+        <li
+          class="flex mb-4 rounded shadow bg-white hover:cursor-pointer"
+          phx-click="select-recent"
+          phx-value-listing-id="<%= recent_listing["ListingKey"] %>"
+        >
+          <div
+            class="w-28 h-20 bg-cover rounded-l"
+            style="background-image: url(<%= recent_listing["MainPhotoUrl"] %>)"
+          ></div>
+          <div class="flex-1 p-2">
+            <h4 class="mb-0"><%= recent_listing["StreetNumber"] %> <%= recent_listing["StreetName"] %></h4>
+            <p class="font-bold text-sm text-bgray-400"><%= recent_listing["City"] %></p>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

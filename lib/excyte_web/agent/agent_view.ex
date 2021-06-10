@@ -9,6 +9,6 @@ defmodule ExcyteWeb.AgentView do
     Profile
   }
   alias ExcyteWeb.Components.{ContactForm, Toggle}
-  alias ExcyteWeb.Insight.{Create}
+  alias ExcyteWeb.Insight.{CreateCma, CreateShowcase, CreateBuyerTour}
   alias ExcyteWeb.{Settings, Settings.Payment}
 end

@@ -1,11 +1,11 @@
 defmodule Excyte.Properties.Adjustments do
 
-  def process_init(listings, subj) do
+  def process_init(list, subj) do
     # sale price w/ days on market and how long ago
     # compare boolean features
     subject = sanitize_nils(Map.from_struct(subj))
-    Enum.map(listings, fn li ->
-      listing = sanitize_nils(li)
+    # Enum.map(listings, fn li ->
+      listing = sanitize_nils(list)
       price = if Map.has_key?(listing, :close_price), do: :close_price, else: :list_price
 
       adj =
@@ -15,9 +15,9 @@ defmodule Excyte.Properties.Adjustments do
             stories: (if Map.has_key?(listing, :stories) && Map.has_key?(subject, :stories),
                     do: numeric_difference(subject.stories, listing.stories, "story"), else: nil),
             beds: (if Map.has_key?(listing, :beds) && Map.has_key?(subject, :beds),
-                    do: numeric_difference(subject.beds, listing.beds, "bedroom"), else: nil),
+                    do: numeric_difference(subject.beds, listing.beds, "beds"), else: nil),
             baths: (if Map.has_key?(listing, :baths) && Map.has_key?(subject, :baths),
-                    do: numeric_difference(subject.baths, listing.baths.total, "bathroom"), else: nil),
+                    do: numeric_difference(subject.baths, listing.baths.total, "baths"), else: nil),
             lotsize: calculate_lotsize(subject, listing),
             year_built: calculate_time(subject, listing, :year_built, "year")
           }
@@ -25,14 +25,14 @@ defmodule Excyte.Properties.Adjustments do
         |> sanitize_equals()
 
 
-      Map.merge(li, %{
+      Map.merge(list, %{
         adjustments: adj,
         excyte_price: (listing[price] + adj.sqft.adjustment),
         excyte_suggested_price: (listing[price] + adj.sqft.adjustment),
         min_adjustment_price: min_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10),
         max_adjustment_price: max_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10)
       })
-    end)
+    # end)
   end
 
   defp sanitize_nils(listing) do

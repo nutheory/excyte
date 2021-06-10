@@ -14,7 +14,6 @@ defmodule ExcyteWeb.Agent.Dashboard do
         {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
       end
     else
-      mls = cu.current_mls
       agent_insights = Insights.get_published_agent_insights(cu.id)
       {:ok, assign(socket, current_user: cu, insights: agent_insights)}
     end

@@ -3,7 +3,9 @@ defmodule ExcyteWeb.InsightView do
   import Number.{Delimit}
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Insight.{
-    Create,
+    CreateCma,
+    CreateShowcase,
+    CreateBuyerTour,
     Builder,
     Editor,
     EditorMenuBubble,

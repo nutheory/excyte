@@ -34,118 +34,208 @@
       </h3>
     </div>
   </div>
-  <%= if @added do %>
-    <div class="text-green-500 font-bold text-center my-8">
-      Added to Comparables
-        <span
-          class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
-          phx-click="remove-comp"
-          phx-value-key="<%= @listing.listing_key %>"
-        >remove</span>
-    </div>
-  <% else %>
-    <button
-      class="action-button my-8 mx-auto w-4/5"
-      phx-click="add-comp"
-      phx-value-key="<%= @listing.listing_key %>"
-    >
-      Add to Comparables
-    </button>
-  <% end %>
-  <div x-data="{selectedTab: 'main'}">
-    <ul class="flex border-b w-full border-gray-400 px-2">
-      <li class="-mb-px mr-1">
-        <a
-          :class="{ 'bg-gray-100 text-blue-700 border-gray-400 border-l border-t border-r' : selectedTab === 'main'}"
-          class="inline-block rounded-t py-2 px-4 border-gray-400 font-semibold hover:text-blue-800 bg-bgray-300 text-blue-700 border-l border-t border-r"
-          href="#"
-          @click.prevent="selectedTab = 'main'"
-          >Info</a
-        >
-      </li>
-      <li class="-mb-px mr-1">
-        <a
-          :class="{ 'bg-gray-100 text-blue-700 border-gray-400 border-l border-t border-r' : selectedTab === 'features'}"
-          class="inline-block rounded-t py-2 px-4 border-gray-400 font-semibold hover:text-blue-800 bg-bgray-300 text-blue-700 border-l border-t border-r"
-          href="#"
-          @click.prevent="selectedTab = 'features'"
-          >Features</a
-        >
-      </li>
-    </ul>
-    <div x-show="selectedTab === 'main'" class="flex-1 py-4 overflow-y-auto">
-      <div class="grid grid-cols-4 gap-4 text-gray-400">
-        <div class="text-center">
-          <label class="block text-right uppercase text-tiny">List price</label>
-          <p class="">$<span class="font-bold"><%= number_to_delimited(@listing.list_price, precision: 0) %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">sqft</label>
-          <p class="font-bold"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Beds</label>
-          <p class="font-bold"><%= @listing.beds %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Baths</label>
-          <p class="font-bold"><%= @listing.baths.total %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Built</label>
-          <p class="font-bold"><%= @listing.year_built %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny"><%= @listing.parking.type %></label>
-          <p class="font-bold"><%= @listing.parking.spaces %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Walkscore</label>
-          <p class="font-bold"><%= @listing.walkscore %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">MLS Status</label>
-          <p class="font-bold"><%= @listing.status %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Stories</label>
-          <p class="font-bold"><%= @listing.stories %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">Days On Market</label>
-          <p class="font-bold"><%= @listing.days_on_market %></p>
-        </div>
-        <div class="text-center">
-          <label class="block uppercase text-tiny">lot <%= @listing.lotsize_preference %></label>
-          <p class="font-bold"><%= if @listing.lotsize_preference === "sqft", do: @listing.lotsize_sqft, else: Utilities.sqft_to_acres(@listing.lotsize_sqft) %></p>
-        </div>
-        <div class="text-center col-span-2">
-          <label class="block uppercase text-tiny">Property Sub Type</label>
-          <p class="font-bold"><%= @listing.property_sub_type %></p>
-        </div>
-        <div class="text-center col-span-2">
-          <label class="block uppercase text-tiny">Subdivision</label>
-          <p class="font-bold"><%#= @listing["SubdivisionName"] %></p>
-        </div>
-        <%= if @listing["Timeline"]["OffMarketDate"] do %>
-          <div class="text-center col-span-2">
-            <label class="block uppercase text-tiny">Off Market Date</label>
-            <p class="font-bold"><%#= Utilities.simple_date_format(@listing["Timeline"]["OffMarketDate"]) %></p>
-          </div>
+  <div class="pb-8 flex-1 overflow-y-auto">
+    <div class="flex my-4 -mx-3">
+      <div class="w-2/5 p-3">
+        <%= live_component @socket, Gallery,
+          media: @listing.media,
+          gid: @listing.listing_key <> "_gallery",
+          id: @listing.listing_key <> "_gallery"
+        %>
+      </div>
+      <div class="flex-1 p-3 text-left">
+        <%= if @listing.list_price !== nil || @listing.close_price !== nil do %>
+          <%= if @listing.close_price !== nil do %>
+            <p class="leading-snug">Closed for
+            <h3 class="mb-0">$<%= number_to_delimited(@listing.close_price, precision: 0) %></h3>
+            <%= if Map.has_key?(@listing, :close_date) do %>
+              <p class="leading-snug">after <strong><%= @listing.days_on_market %> days</strong> on the market</p>
+            <% end %>
+            <p class="leading-snug"><%= Utilities.time_to_text(@listing, :close_date) %></p>
+          <% else %>
+            <p class="leading-snug">Listed for</p>
+            <h3 class="mb-0">$<%= number_to_delimited(@listing.list_price, precision: 0) %></h3>
+            <%= if Map.has_key?(@listing, :days_on_market) do %>
+              <p class="leading-snug">with <strong><%= @listing.days_on_market %> days</strong> on the market</p>
+            <% end %>
+            <p class="leading-snug"><%= Utilities.time_to_text(@listing, :on_market_date) %></p>
+          <% end %>
         <% end %>
       </div>
-      <div class="w-full my-6 rounded">
-        <%= live_component @socket, Gallery, media: @listing.media, id: @listing.listing_key <> "_gallery" %>
+    </div>
+    <div class="flex text-sm mb-6">
+      <div class="flex-col w-2/5">
+        <%= if @listing.sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sqft</label>
+            <p class="font-bold flex-1"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.lotsize_preference && @listing.lotsize_sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Lot <%= @listing.lotsize_preference %></label>
+            <p class="font-bold flex-1"><%= if @listing.lotsize_preference === "sqft", do: number_to_delimited(@listing.lotsize_sqft, precision: 0), else: Utilities.sqft_to_acres(@listing.lotsize_sqft) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.beds do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Beds</label>
+            <p class="font-bold flex-1"><%= @listing.beds %></p>
+          </div>
+        <% end %>
+        <%= if @listing.baths.total do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Baths</label>
+            <p class="font-bold flex-1"><%= @listing.baths.total %></p>
+          </div>
+        <% end %>
+        <%= if @listing.year_built do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Built</label>
+            <p class="font-bold flex-1"><%= @listing.year_built %></p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
+      </div>
+      <div class="flex-col w-3/5">
+        <%= if @listing.stories do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Stories</label>
+            <p class="font-bold flex-1"><%= @listing.stories %></p>
+          </div>
+        <% end %>
+        <%= if @listing.parking.type && @listing.parking.spaces do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end"><%= @listing.parking.type %></label>
+            <p class="font-bold flex-1"><%= @listing.parking.spaces %></p>
+          </div>
+        <% end %>
+        <%= if @listing.property_sub_type do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sub Type</label>
+            <p class="font-bold  flex-1"><%= @listing.property_sub_type %></p>
+          </div>
+        <% end %>
+        <%= if @listing.public_remarks do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Remarks</label>
+            <p
+              class="flex-1 my-1 text-sm cursor-pointer text-cyan-700 hover:underline"
+              phx-click="toggle-remarks"
+              phx-target="<%= @myself %>"
+            >Show remarks</p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
       </div>
     </div>
-    <div x-show="selectedTab === 'features'" class="flex-1 py-4 overflow-y-auto">
-      <div class="flex flex-wrap mb-4 mt-2">
-        <p class="text-sm">
-          <strong>Remarks: </strong>
-          <%= @listing.public_remarks %>
+    <%= if @show_remarks do %>
+      <p class="my-4 text-sm"><%= @listing.public_remarks %></p>
+    <% end %>
+    <div class="bg-white shadow rounded-lg p-4">
+      <h4>Adjustment considerations</h4>
+      <%= if Enum.count(@listing.adjustments) > 0 do %>
+        <table class="text-sm w-full mb-6">
+          <thead>
+            <tr class="border-b border-gray-400">
+              <th></th>
+              <th class="font-bold">Listing</th>
+              <th class="font-bold">Subject Diff.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= if Map.has_key?(@listing.adjustments, :beds) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Beds</td>
+                <td class="text-center p-2"><%= @listing.beds %></td>
+                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.beds.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :baths) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Baths</td>
+                <td class="text-center p-2"><%= @listing.baths.total %></td>
+                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.baths.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :stories) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Stories</td>
+                <td class="text-center p-2"><%= @listing.stories %></td>
+                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.stories.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :lotsize) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Lot size</td>
+                <td class="text-center p-2"><%= @listing.lotsize_sqft %></td>
+                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.lotsize.to_text) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :year_built) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Year built</td>
+                <td class="text-center p-2"><%= @listing.year_built %></td>
+                <td class="text-center p-2 font-bold"><%= @listing.adjustments.year_built.to_text %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
+        <div
+          class="flex"
+          phx-click="toggle-adj"
+          phx-target="<%= @myself %>"
+          phx-value-action="<%= if @excyte_price === @listing.excyte_suggested_price, do: "remove", else: "apply" %>"
+        >
+          <div class="flex-1">
+            <h4 class="text-sm">Auto Adjustments</h4>
+          </div>
+          <div class="text-sm cursor-pointer text-cyan-700 hover:underline">
+            <%= if @excyte_price === @listing.excyte_suggested_price, do: "Remove adjustment", else: "Apply adjustment" %>
+          </div>
+          </h4>
+        </div>
+        <p class="text-sm mb-2">
+          <%= if @excyte_price === @listing.excyte_suggested_price, do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
         </p>
-      </div>
-      <%#= Utilities.display_relevant_features(@listing.features) %>
+      <% end %>
+      <%= if @added do %>
+        <div class="text-green-500 font-bold text-center my-8">
+          Added to Comparables
+            <span
+              class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
+              phx-click="remove-comp"
+              phx-value-key="<%= @listing.listing_key %>"
+            >remove</span>
+        </div>
+      <% else %>
+        <div class="flex mt-4">
+          <div class="text-green-700 text-xl font-bold flex items-center mr-1">$</div>
+          <div class="mr-4 w-24">
+            <form phx-change="change-adj" phx-target="<%= @myself %>">
+              <input
+                type="text"
+                class="text-field"
+                name="adj"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="<%= @excyte_price %>"
+              />
+            </form>
+          </div>
+          <div class="flex-1">
+            <button
+              class="action-button mx-auto w-full"
+              phx-click="add-comp"
+              phx-target="<%= @myself %>"
+            >
+              Add to Comps
+            </button>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

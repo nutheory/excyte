@@ -1,4 +1,4 @@
-<nav class="protected-header fixed top-0 z-30 lg:z-40 w-full h-12 lg:h-16">
+<nav class="protected-header fixed top-0 z-30 lg:z-40 w-full h-12 lg:h-18">
   <div class="bg-gray-100 blur max-w-screen-xl mx-auto h-12 lg:h-18 border-b border-wgray-300 bg-opacity-95 flex">
     <div
       x-cloak
@@ -28,18 +28,6 @@
               <div class="p-4 hover:bg-bgray-700">
                 <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
                 <p class="text-xs text-bgray-400">Overview</p>
-              </div>
-            <% end %>
-            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.Create, "cma"), class: "block" do %>
-              <div class="p-4 hover:bg-bgray-700">
-                <h3 class="text-lg font-bold leading-5 text-cyan-600 mb-0">Insights</h3>
-                <p class="text-xs text-bgray-400">CMA's etc.</p>
-              </div>
-            <% end %>
-            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
-              <div class="p-4 hover:bg-bgray-700">
-                <h3 class="text-lg font-bold leading-5 text-teal-600 mb-0">Clients</h3>
-                <p class="text-xs text-bgray-400">Leads etc.</p>
               </div>
             <% end %>
           </div>
@@ -103,18 +91,6 @@
             <div class="ml-4">
               <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
               <p class="text-xs text-bgray-400">Overview</p>
-            </div>
-          <% end %>
-          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Insight.Create, "cma"), class: "block" do %>
-            <div class="ml-8">
-              <h3 class="text-lg font-bold leading-5 text-cyan-600 mb-0">Insights</h3>
-              <p class="text-xs text-bgray-400">CMA's etc.</p>
-            </div>
-          <% end %>
-          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
-            <div class="ml-8">
-              <h3 class="text-lg font-bold leading-5 text-teal-600 mb-0">Clients</h3>
-              <p class="text-xs text-bgray-400">Leads etc.</p>
             </div>
           <% end %>
         </div>

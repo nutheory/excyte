@@ -16,7 +16,6 @@ window.LocationAutocomplete = () => {
       } else {
         axios.get(`https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=${encodeURIComponent(this.query)}`)
           .then(res => {
-            console.log("called", res.data.autocomplete)
             this.suggestions = res.data.autocomplete
               .filter(loc => loc.area_type === "address")
               .map(loc => {
@@ -26,6 +25,7 @@ window.LocationAutocomplete = () => {
                   address: `${loc.line}, ${loc.city}, ${loc.state_code}, ${loc.postal_code}`
                 }
               })
+              .slice(0, 6)
           })
       }
       // this.suggestions = locs;

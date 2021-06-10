@@ -9,7 +9,7 @@
       <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
     </div>
   <% else %>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12" id="preview-gallery" phx-hook="InitGallery">
       <%= live_component @socket, Listings,
         subject: @subject,
         selected_comps: @selected_comps,
@@ -26,7 +26,11 @@
               id: :listing_preview
             %>
           <% else %>
-            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+            <%= live_component @socket, SelectedComps,
+              selected: @selected_comps,
+              name: "#{@subject.street_number} #{@subject.street_name} - CMA",
+              id: :selected_comps
+            %>
           <% end %>
         </div>
       <% else %>
@@ -38,7 +42,11 @@
               id: :listing_preview
             %>
           <% else %>
-            <%= live_component @socket, SelectedComps, selected: @selected_comps, id: :selected_comps %>
+            <%= live_component @socket, SelectedComps,
+              selected: @selected_comps,
+              name: "#{@subject.street_number} #{@subject.street_name} - CMA",
+              id: :selected_comps
+            %>
           <% end %>
         </div>
       <% end %>

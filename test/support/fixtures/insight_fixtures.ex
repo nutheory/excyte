@@ -6,7 +6,7 @@ defmodule Excyte.InsightFixtures do
 
   alias Excyte.Insights
 
-  def excyte_document_template(attrs \\ %{}) do
+  def excyte_cma_template(attrs \\ %{}) do
     {:ok, temp} =
       attrs
         |> Enum.into(%{
@@ -14,14 +14,35 @@ defmodule Excyte.InsightFixtures do
           is_excyte_made: true,
           type_default: true,
           name: "Excyte Basic CMA",
-          is_public: true,
-          attributes: %{
-            background_color: "#FFFFFF",
-            font_family: "Helvetica, Arial",
-            text_color: "#4B5563",
-            header_color: "#0E7490",
-            highlight_color: "#E0F2FE",
-          }
+          is_public: true
+        })
+        |> Insights.create_document_template()
+     temp
+  end
+
+  def excyte_showcase_template(attrs \\ %{}) do
+    {:ok, temp} =
+      attrs
+        |> Enum.into(%{
+          insight_type: "showcase",
+          is_excyte_made: true,
+          type_default: true,
+          name: "Excyte Basic Showcase",
+          is_public: true
+        })
+        |> Insights.create_document_template()
+     temp
+  end
+
+  def excyte_buyer_tour_template(attrs \\ %{}) do
+    {:ok, temp} =
+      attrs
+        |> Enum.into(%{
+          insight_type: "buyer_tour",
+          is_excyte_made: true,
+          type_default: true,
+          name: "Excyte Basic Buyer Tour",
+          is_public: true
         })
         |> Insights.create_document_template()
      temp

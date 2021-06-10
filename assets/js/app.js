@@ -19,6 +19,7 @@ import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
 import {InitSortable} from "./sorting"
+import {InitGallery} from "./gallery"
 import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {InitPreview} from "./preview"
@@ -32,6 +33,7 @@ let Hooks = {}
 
 Hooks.InitCheckout = InitCheckout
 Hooks.InitSortable = InitSortable
+Hooks.InitGallery = InitGallery
 Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize

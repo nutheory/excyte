@@ -58,6 +58,10 @@ defmodule Excyte.Mls.ResoApi do
 
   end
 
+  def get_listing_by_key(mls, %{listing_key: key}) do
+    get("#{mls.dataset_id}/Property(%27#{key}%27)?access_token=#{mls.access_token}")
+  end
+
   def property_by_address(mls, %{
     street_number: street_number,
     safe_street_name: safe_street_name,

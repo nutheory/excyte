@@ -40,6 +40,11 @@ defmodule Excyte.Insights.DocumentTemplate do
     |> validate_required([:name, :insight_type])
   end
 
+  def by_type(query, type) do
+    from dt in query,
+    where: dt.insight_type == ^type
+  end
+
   def by_public(query) do
     from dt in query,
     or_where: dt.is_public == true,

@@ -99,12 +99,24 @@ defmodule Excyte.Insights do
     Repo.delete_all(from(s in Section, where: s.insight_id == ^ins.id))
   end
 
-  def get_document(id) do
-    Repo.get(Document, id)
+  def get_theme_attributes(aid, bid) do
+    profile =
+      if bid do
+        bk = Brokerages.get_brokerage_profile(bid)
+        if bk.theme_settings.brokerage_default do
+          bk
+        else
+          Agents.get_agent_profile!(aid)
+        end
+      else
+        Agents.get_agent_profile!(aid)
+      end
+    profile.theme_settings
   end
 
-  def get_document_templates(usr) do
+  def get_document_templates(usr, type) do
     DocumentTemplate
+    |> DocumentTemplate.by_type(type)
     |> DocumentTemplate.by_creator(usr.id)
     |> DocumentTemplate.by_brokerage(usr.brokerage_id)
     |> DocumentTemplate.by_public()

@@ -19225,6 +19225,32 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./js/gallery.js":
+/*!***********************!*\
+  !*** ./js/gallery.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "InitGallery": () => (/* binding */ InitGallery)
+/* harmony export */ });
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_0__);
+
+window.lightbox = glightbox__WEBPACK_IMPORTED_MODULE_0___default()({
+  touchNavigation: true,
+  loop: true,
+  autoplayVideos: true,
+  selector: ".glightbox"
+});
+var InitGallery = {
+  mounted: function mounted() {}
+};
+
+/***/ }),
+
 /***/ "./js/init_checkout.js":
 /*!*****************************!*\
   !*** ./js/init_checkout.js ***!
@@ -19355,7 +19381,6 @@ window.LocationAutocomplete = function () {
                   this.suggestions = [];
                 } else {
                   axios__WEBPACK_IMPORTED_MODULE_2___default().get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=".concat(encodeURIComponent(this.query))).then(function (res) {
-                    console.log("called", res.data.autocomplete);
                     _this.suggestions = res.data.autocomplete.filter(function (loc) {
                       return loc.area_type === "address";
                     }).map(function (loc) {
@@ -19364,7 +19389,7 @@ window.LocationAutocomplete = function () {
                         id: loc.mpr_id,
                         address: "".concat(loc.line, ", ").concat(loc.city, ", ").concat(loc.state_code, ", ").concat(loc.postal_code)
                       };
-                    });
+                    }).slice(0, 6);
                   });
                 } // this.suggestions = locs;
 
@@ -47957,14 +47982,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(phoenix_live_view__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _viewport_resize__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./viewport_resize */ "./js/viewport_resize.js");
 /* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sorting */ "./js/sorting.js");
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./theme */ "./js/theme.js");
-/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./editor */ "./js/editor.js");
-/* harmony import */ var _preview__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./preview */ "./js/preview.js");
-/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
-/* harmony import */ var _init_checkout__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./init_checkout */ "./js/init_checkout.js");
-/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./location */ "./js/location.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var _gallery__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./gallery */ "./js/gallery.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./theme */ "./js/theme.js");
+/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./editor */ "./js/editor.js");
+/* harmony import */ var _preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./preview */ "./js/preview.js");
+/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
+/* harmony import */ var _init_checkout__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./init_checkout */ "./js/init_checkout.js");
+/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./location */ "./js/location.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_15__);
 
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
@@ -47992,16 +48018,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var Uploaders = {};
 var Hooks = {};
-Hooks.InitCheckout = _init_checkout__WEBPACK_IMPORTED_MODULE_12__.InitCheckout;
+Hooks.InitCheckout = _init_checkout__WEBPACK_IMPORTED_MODULE_13__.InitCheckout;
 Hooks.InitSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSortable;
-Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_8__.InitColorPicker;
-Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_13__.AutocompleteLocation;
+Hooks.InitGallery = _gallery__WEBPACK_IMPORTED_MODULE_8__.InitGallery;
+Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_9__.InitColorPicker;
+Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_14__.AutocompleteLocation;
 Hooks.ViewportResize = _viewport_resize__WEBPACK_IMPORTED_MODULE_6__.ViewportResize;
-Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_9__.InitEditor;
-Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_10__.InitPreview;
-Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_11__.InitViewer;
+Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_10__.InitEditor;
+Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_11__.InitPreview;
+Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_12__.InitViewer;
 Hooks.DistanceSelector = {
   mounted: function mounted() {
     var _this = this;
@@ -48076,17 +48104,17 @@ var liveSocket = new (phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default())(
 }); // Show progress bar on live navigation and form submits
 
 var progressTimeout;
-topbar__WEBPACK_IMPORTED_MODULE_14___default().config({
+topbar__WEBPACK_IMPORTED_MODULE_15___default().config({
   barThickness: 5,
   shadowColor: "rgba(0, 0, 0, .6)"
 });
 window.addEventListener("phx:page-loading-start", function () {
   clearTimeout(progressTimeout);
-  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_14___default().show), 100);
+  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_15___default().show), 100);
 });
 window.addEventListener("phx:page-loading-stop", function () {
   clearTimeout(progressTimeout);
-  topbar__WEBPACK_IMPORTED_MODULE_14___default().hide();
+  topbar__WEBPACK_IMPORTED_MODULE_15___default().hide();
 }); // connect if there are any LiveViews on the page
 
 liveSocket.connect(); // expose liveSocket on window for web console debug logs and latency simulation:

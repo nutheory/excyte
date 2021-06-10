@@ -1,13 +1,19 @@
 defmodule ExcyteWeb.Insight.Comps do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Insights.Insight, Mls.ResoApi, Properties}
+  alias Excyte.{
+    Accounts,
+    Insights,
+    Insights.Insight,
+    Mls.ResoApi,
+    Properties,
+    Properties.Adjustments
+  }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   def render(assigns), do: InsightView.render("comps.html", assigns)
 
   def mount(params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    if connected?(socket), do: Accounts.subscribe(cu.id)
     if params["insight_id"], do: send self(), {:load_from_store, params["insight_id"]}
     {:ok, assign(socket,
       current_user: cu,
@@ -15,6 +21,9 @@ defmodule ExcyteWeb.Insight.Comps do
       filters: %{},
       client_info: assign_client_info(socket),
       subject: nil,
+      insight_name: nil,
+      template_id: nil,
+      theme_attributes: nil,
       sort_by: "ranking",
       key: params["insight_id"],
       fetching: (if params["insight_id"], do: true, else: false),
@@ -28,8 +37,7 @@ defmodule ExcyteWeb.Insight.Comps do
   def handle_info({:load_from_store, id}, %{assigns: a} = socket) do
     case Insights.get_initial_insight(a.current_user.id, id) do
       %Insight{} = ins -> query_mls(%{
-        subject: ins.property,
-        selected: ins.selected_listing_ids,
+        insight: ins,
         filters: Utilities.format_quoted_json(ins.saved_search.criteria)}, socket)
       nil -> {:noreply, assign(socket, fetching: false, errors: [%{message: "cannot locate #{id}."}])}
     end
@@ -45,6 +53,29 @@ defmodule ExcyteWeb.Insight.Comps do
         Map.merge(a.filters, val)
       end
     {:noreply, assign(socket, filters: filters)}
+  end
+
+  def handle_info({:add_comp, %{listing: listing}}, %{assigns: a} = socket) do
+    {:noreply, assign(socket, selected_comps: a.selected_comps ++ [listing], preview: nil, show_panel: false)}
+  end
+
+  def handle_info({:set_theme_template, %{theme_attributes: theme, template: template}}, socket) do
+    {:noreply, assign(socket, theme_attributes: theme, template_id: template.id)}
+  end
+
+  def handle_info({:update_cma, %{suggested_price: sp, name: name}}, %{assigns: a} = socket) do
+    update = %{
+      selected_listing_ids: Enum.map(a.comparables, fn c -> c.listing_id end),
+      saved_search: %{criteria: a.filters},
+      content: %{comps: a.selected_comps, suggested_subject_price: sp},
+      document_attributes: a.theme_attributes,
+      document_template_id: a.template_id,
+      name: name
+    }
+    case Insights.update_insight(a.key, a.current_user.id, update) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/builder")}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    end
   end
 
   def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
@@ -72,38 +103,20 @@ defmodule ExcyteWeb.Insight.Comps do
     {:noreply, assign(socket, show_filters: !a.show_filters)}
   end
 
-  def handle_event("preview-property", %{"key" => selected_lk}, socket) do
-    sel = Enum.find(socket.assigns.comparables, fn lk -> lk.listing_key === selected_lk end)
-    {:noreply, assign(socket, preview: sel, show_panel: true)}
+  def handle_event("preview-property", %{"key" => selected_lk}, %{assigns: a} = socket) do
+    sel = Enum.find(a.comparables, fn lk -> lk.listing_key === selected_lk end)
+    preview = Adjustments.process_init(sel, a.subject)
+    {:noreply, assign(socket, preview: preview, show_panel: true)}
   end
 
   def handle_event("remove-preview", _, socket) do
     {:noreply, assign(socket, preview: nil, show_panel: false)}
   end
 
-  def handle_event("add-comp", %{"key" => selected_lk}, socket) do
-    s = socket.assigns
-    sel = Enum.find(s.comparables, fn lk -> lk.listing_key === selected_lk end)
-
-    {:noreply, assign(socket, selected_comps: s.selected_comps ++ [sel], preview: nil)}
-  end
-
-  def handle_event("remove-comp", %{"key" => selected_lk}, socket) do
-    s = socket.assigns
-    ret = Enum.reject(s.selected_comps, fn lk -> lk.listing_key === selected_lk end)
+  def handle_event("remove-comp", %{"key" => selected_lk}, %{assigns: a} = socket) do
+    ret = Enum.reject(a.selected_comps, fn lk -> lk.listing_key === selected_lk end)
 
     {:noreply, assign(socket, selected_comps: ret)}
-  end
-
-  def handle_event("review-cma", _,  %{assigns: a} = socket) do
-    update = %{
-      selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end),
-      saved_search: %{criteria: a.filters}
-    }
-    case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/review")}
-      {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
-    end
   end
 
   def handle_event("reset-subject", _, socket) do
@@ -114,20 +127,25 @@ defmodule ExcyteWeb.Insight.Comps do
     )}
   end
 
-  defp query_mls(%{subject: subject, filters: filters, selected: sids},  %{assigns: a} = socket) do
-    case ResoApi.comparable_properties(a.current_user.current_mls, subject, filters) do
+  defp query_mls(%{insight: ins, filters: filters},  %{assigns: a} = socket) do
+    case ResoApi.comparable_properties(a.current_user.current_mls, ins.property, filters) do
       {:ok, c} ->
-        %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, subject, filters, socket)
-        {:noreply, assign(socket, comparables: ls, fetching: false, filters: fs, subject: ns,
-         comp_count: c.count, selected_comps: Enum.map(sids, fn s ->
-                    Enum.find(c.listings, fn l -> s == l.listing_id
-                  end) end))}
+        get_theme(ins, socket)
+        %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, ins.property, filters, socket)
+        {:noreply, assign(socket, insight: ins, comparables: ls, fetching: false, filters: fs,
+          subject: ns, comp_count: c.count)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
-                        subject: subject)}
+                        subject: ins.property)}
     end
   end
 
-  defp sort_by(listings, subj, filters, %{assigns: a} = socket) do
+  defp get_theme(ins, %{assigns: a} = socket) do
+    theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
+    templates = Insights.get_document_templates(a.current_user, ins.type)
+    send self(), {:set_theme_template, %{theme_attributes: theme_attrs, template: hd(templates)}}
+  end
+
+  defp sort_by(listings, subj, filters, %{assigns: a}) do
     show_filters = if length(listings) === 0, do: true, else: false
     cond do
       a.sort_by === "ranking" ->

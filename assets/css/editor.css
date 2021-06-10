@@ -155,7 +155,7 @@ div.preview-wrapper {
 
   & .subject {
     & img {
-    
+      @apply my-0;
     }
   }
 

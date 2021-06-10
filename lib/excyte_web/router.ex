@@ -83,7 +83,9 @@ defmodule ExcyteWeb.Router do
 
   scope "/insights", ExcyteWeb.Insight do
     pipe_through [:app_browser, :require_authenticated_user]
-    live "/:type/create", Create
+    live "/cma/create", CreateCma
+    live "/buyertour/create", CreateBuyerTour
+    live "/showcase/create", CreateShowcase
     live "/:insight_id/comparables", Comps
     live "/:insight_id/review", Review
     live "/:insight_id/:builder", Builder

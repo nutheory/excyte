@@ -16,6 +16,7 @@ defmodule Excyte.Utils.Theme do
     field :highlight_text, :string, default: "#475569"
     field :muted_text, :string, default: "#CBD5E1"
     field :text, :string, default: "#475569"
+    field :brokerage_default, :boolean, default: false
   end
 
   def changeset(theme, attrs) do

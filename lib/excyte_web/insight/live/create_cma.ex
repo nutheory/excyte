@@ -1,9 +1,9 @@
-defmodule ExcyteWeb.Insight.Create do
+defmodule ExcyteWeb.Insight.CreateCma do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Insights, Insights.Insight, Mls.ResoApi, Properties}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
-  def render(assigns), do: InsightView.render("create.html", assigns)
+  def render(assigns), do: InsightView.render("create_cma.html", assigns)
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
@@ -17,9 +17,9 @@ defmodule ExcyteWeb.Insight.Create do
     )}
   end
 
-  def handle_info({:update_features, val}, %{assigns: a} = socket) do
-    {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
-  end
+  # def handle_info({:update_features, val}, %{assigns: a} = socket) do
+  #   {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
+  # end
 
   def handle_info({:init_subject, %{prop_id: prop_id}}, socket) do
     send self(), {:setup_subject, %{prop_id: prop_id}}

@@ -7,7 +7,7 @@
       @keydown.escape="navMenuOpen= false"
       @click.away="navMenuOpen = false"
     >
-      <div @click="navMenuOpen = !navMenuOpen" class="h-12 w-8 pt-3 cursor-pointer">
+      <div @click="navMenuOpen = !navMenuOpen" class="h-12 w-8 pt-2 cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
@@ -84,7 +84,7 @@
             </g>
           </g>
         </svg> %>
-        <svg class="w-18 lg:w-36 h-8 lg:h-14 mt-2 mx-auto" viewBox="0 0 353 114" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg class="w-18 lg:w-36 h-8 lg:h-14 mx-auto" viewBox="0 0 353 114" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <defs>
             <linearGradient x1="-21.0047568%" y1="136.393098%" x2="50%" y2="0%" id="linearGradient-1">
               <stop stop-color="#E0AC02" offset="0%"></stop>
@@ -132,11 +132,11 @@
         </svg>
       <% end %>
     </div>
-    <div class="lg:flex-auto h-12 lg:h-18 flex items-center justify-between px-4 lg:px-6 lg:mx-6 lg:px-0 xl:mx-8">
+    <div class="lg:flex-auto h-12 lg:h-18 flex items-center justify-between px-4 lg:px-6 lg:mx-6 lg:px-0">
       <div class="hidden lg:block w-full">
         <div class="flex">
           <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
-            <div class="ml-4">
+            <div class="mt-1">
               <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
               <p class="text-xs text-bgray-400">Overview</p>
             </div>

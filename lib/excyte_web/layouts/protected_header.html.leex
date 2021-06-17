@@ -147,7 +147,7 @@
       <div class="relative" x-data="{ open: false }" @keydown.escape="open = false" @click.away="open = false">
         <div class="relative text-lg rounded-full flex items-center justify-center text-bgray-100 font-bold border-teal-500 bg-bgray-800 border-2 lg:border-4 uppercase h-9 w-9 lg:w-14 lg:h-14 z-30 cursor-pointer avatar" @click="open = !open">
           <%= if @current_user.current_avatar do %>
-            <img class="rounded-full" src="<%= @current_user.current_avatar %>" />
+            <div class="rounded-full w-full h-full bg-cover" style="background-image: url(<%= @current_user.current_avatar %>);"></div>
           <% else %>
             <%= String.first(@current_user.full_name) %>
           <% end %>

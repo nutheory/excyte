@@ -2366,6 +2366,10 @@ h4 {
   margin-left: 0.5rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .mt-16 {
   margin-top: 4rem;
 }
@@ -2376,10 +2380,6 @@ h4 {
 
 .mt-20 {
   margin-top: 5rem;
-}
-
-.mb-6 {
-  margin-bottom: 1.5rem;
 }
 
 .mb-12 {
@@ -2574,12 +2574,12 @@ h4 {
   height: 1.5rem;
 }
 
-.h-24 {
-  height: 6rem;
-}
-
 .h-full {
   height: 100%;
+}
+
+.h-24 {
+  height: 6rem;
 }
 
 .h-32 {
@@ -3282,6 +3282,10 @@ h4 {
   --tw-bg-opacity: 0.9;
 }
 
+.bg-opacity-40 {
+  --tw-bg-opacity: 0.4;
+}
+
 .bg-opacity-25 {
   --tw-bg-opacity: 0.25;
 }
@@ -3452,16 +3456,8 @@ h4 {
   padding-right: 1.5rem;
 }
 
-.pt-6 {
-  padding-top: 1.5rem;
-}
-
 .pt-4 {
   padding-top: 1rem;
-}
-
-.pt-24 {
-  padding-top: 6rem;
 }
 
 .pb-6 {
@@ -3529,16 +3525,6 @@ h4 {
 
 .text-tiny {
   font-size: .65rem;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
 }
 
 .text-xl {
@@ -4811,6 +4797,10 @@ h4 {
     margin-top: 8rem;
   }
 
+  .lg\:mt-6 {
+    margin-top: 1.5rem;
+  }
+
   .lg\:mb-6 {
     margin-bottom: 1.5rem;
   }
@@ -4961,6 +4951,10 @@ h4 {
 
   .lg\:pt-24 {
     padding-top: 6rem;
+  }
+
+  .lg\:pt-6 {
+    padding-top: 1.5rem;
   }
 
   .lg\:pt-0 {

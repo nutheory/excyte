@@ -68,7 +68,7 @@
     </div>
   </div>
   <%= if length(@comps) > 0 do %>
-    <ul class="pt-24 pb-6">
+    <ul class="pt-16 lg:pt-24 pb-6">
       <%= for listing <- @comps do %>
         <li class="w-full py-1">
           <%= live_component @socket, ListingCard,

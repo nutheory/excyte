@@ -267,6 +267,11 @@ button.jumbo {
   background: radial-gradient(at top left, #ec4798, #ef406b);
 }
 
+.green-radial {
+  background: #bef04c;
+  background: radial-gradient(at top left, #bef04c, #11ca26);
+}
+
 .orange-radial {
   background: #faca17;
   background: radial-gradient(at top left, #faca17, #f97516);
@@ -283,7 +288,6 @@ button.jumbo {
 
   width: 95%;
   max-width: 36rem;
-  padding: 0 1rem;
   position: fixed;
   z-index: 2000;
   top: 0;

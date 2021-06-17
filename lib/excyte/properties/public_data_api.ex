@@ -1,11 +1,11 @@
 defmodule Excyte.Properties.PublicDataApi do
   use Tesla, only: [:get], docs: false
 
-  plug Tesla.Middleware.BaseUrl, "https://realtor.p.rapidapi.com/"
+  plug Tesla.Middleware.BaseUrl, "https://realty-in-us.p.rapidapi.com/"
   plug Tesla.Middleware.FollowRedirects, max_redirects: 5
   plug Tesla.Middleware.Headers, [
     {"x-rapidapi-key", Application.get_env(:excyte, :realtor_rapid_api_key)},
-    {"x-rapidapi-host", "realtor.p.rapidapi.com"},
+    {"x-rapidapi-host", "realty-in-us.p.rapidapi.com"},
     {"useQueryString", true}
   ]
   plug Tesla.Middleware.JSON
@@ -25,39 +25,43 @@ defmodule Excyte.Properties.PublicDataApi do
     |> process_subject()
   end
 
-  defp process_subject({:ok, %Tesla.Env{:body => body} = _response}) do
-    prop = hd(body["properties"])
-    street = String.split(prop["address"]["line"], " ", parts: 2)
-    property = %{
-      internal_type: "subject",
-      street_number: List.first(street),
-      street_name: List.last(street),
-      city: prop["address"]["city"],
-      zip: prop["address"]["postal_code"],
-      state: prop["address"]["state_code"],
-      unit: prop["address"]["unit_value"],
-      county: prop["address"]["county"],
-      coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
-      foreign_id: prop["property_id"],
-      main_photo_url: hd(prop["photos"])["href"],
-      est_price: prop["price"],
-      beds: prop["beds"],
-      baths: prop["baths"],
-      overview: prop["description"],
-      property_type: prop["prop_type"],
-      status: prop["prop_status"],
-      features: process_features(hd(prop["public_records"])),
-      lotsize_sqft: process_lotsize(prop["lot_size"]),
-      lotsize_preference: "sqft",
-      sqft: prop["building_size"]["size"],
-      history: %{overview: "", timeline_items: prop["property_history"]},
-      year_built: process_year_built(hd(prop["public_records"])),
-      stories: hd(prop["public_records"])["stories"],
-      public_records: hd(prop["public_records"]),
-      foreign_url: prop["rdc_web_url"]
-    }
+  defp process_subject({:ok, %Tesla.Env{:body => %{"properties" => properties}} = _response}) do
+      prop = hd(properties)
+      street = String.split(prop["address"]["line"], " ", parts: 2)
+      property = %{
+        internal_type: "subject",
+        street_number: List.first(street),
+        street_name: List.last(street),
+        city: prop["address"]["city"],
+        zip: prop["address"]["postal_code"],
+        state: prop["address"]["state_code"],
+        unit: prop["address"]["unit_value"],
+        county: prop["address"]["county"],
+        coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
+        foreign_id: prop["property_id"],
+        main_photo_url: hd(prop["photos"])["href"],
+        est_price: prop["price"],
+        beds: prop["beds"],
+        baths: prop["baths"],
+        overview: prop["description"],
+        property_type: prop["prop_type"],
+        status: prop["prop_status"],
+        features: process_features(hd(prop["public_records"])),
+        lotsize_sqft: process_lotsize(prop["lot_size"]),
+        lotsize_preference: "sqft",
+        sqft: prop["building_size"]["size"],
+        history: %{overview: "", timeline_items: prop["property_history"]},
+        year_built: process_year_built(hd(prop["public_records"])),
+        stories: hd(prop["public_records"])["stories"],
+        public_records: hd(prop["public_records"]),
+        foreign_url: prop["rdc_web_url"]
+      }
 
-    {:ok, property}
+      {:ok, property}
+  end
+
+  defp process_subject({:ok, %Tesla.Env{:body => err} = _response}) do
+    IO.inspect(err, label: "ERROR")
   end
 
   defp process_subject({:error, %Tesla.Env{:body => body} = _response}) do

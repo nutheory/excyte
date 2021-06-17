@@ -20,7 +20,7 @@
       <% IO.inspect(Map.has_key?(@client_info, :width), label: "HAS WIDTH KEY? ") %>
       <% IO.inspect(@client_info, label: "HAS CLIENT KEY? ") %>
       <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
-        <div class="lg:sticky lg:top-0 lg:col-start-8 lg:-mt-16 lg:pt-24 lg:col-span-5 h-screen <%= if @preview, do: 'animate-select'%>">
+        <div class="lg:sticky lg:top-0 lg:col-start-8 lg:-mt-16 lg:pt-24 lg:col-span-5 px-4 h-screen <%= if @preview, do: 'animate-select'%>">
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,
@@ -36,7 +36,7 @@
           <% end %>
         </div>
       <% else %>
-        <div class="panel-slidein bg-gray-100 pt-6 <%= if @preview || @show_panel, do: 'right-0', else: '' %>">
+        <div class="panel-slidein bg-gray-100 px-2 pt-2 lg:pt-6 <%= if @preview || @show_panel, do: 'right-0', else: '' %>">
           <%= if @preview do %>
             <%= live_component @socket, PreviewComp,
               listing: @preview,

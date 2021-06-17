@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Client.Viewer do
   use ExcyteWeb, :live_client_view
   alias Excyte.{Insights}
-  alias ExcyteWeb.{Helpers.Utilities, ClientView}
+  alias ExcyteWeb.{ ClientView}
 
   def render(assigns), do: ClientView.render("viewer.html", assigns)
 
@@ -9,7 +9,7 @@ defmodule ExcyteWeb.Client.Viewer do
     report =
       case Insights.get_published_insight(iid) do
         {:ok, ins} -> ins
-        {:error, err} -> err
+        # {:error, err} -> err
       end
     send self(), {:load_view, %{sections: report.sections}}
     {:ok, assign(socket,

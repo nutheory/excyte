@@ -14,7 +14,6 @@
     </form>
     <h3 class="text-center text-bgray-400 my-4">or browse recent listings</h3>
     <ul>
-      <% IO.inspect(hd(@recent.listings), label: "@RL") %>
       <%= for recent_listing <- @recent.listings do %>
         <li
           class="flex mb-4 rounded shadow bg-white hover:cursor-pointer"

@@ -1,4 +1,4 @@
-<div class="mt-6">
+<div class="px-4 h-screen overflow-y-auto flex flex-col">
   <div class="flex">
     <div class="pr-2 mr-3 flex md:hidden border-r border-gray-400 justify-center items-center cursor-pointer" phx-click="remove-preview">
       <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -15,71 +15,102 @@
       </p>
     </div>
   </div>
-  <%= if length(@selected) > 0 do %>
-    <div class="mt-4">
-      <div class="mb-4">
-        <%= live_component @socket, RangeInputs,
-          prefix: "$",
-          suffix: "",
-          min: @suggested_range_min,
-          max: @suggested_range_max,
-          attribute: :suggested_price,
-          type: Integer,
-          step: 3000,
-          label: "Suggested Subject Price",
-          callback: :update_suggested_price,
-          id: :suggested_filter
-        %>
-      </div>
-      <form phx-change="validate-cma" phx-submit="save-cma">
-        <div class="mb-4">
-          <label>Name this CMA</label>
-          <%= if @error do %>
-            <label class="text-red-600 font-bold"><%= @error %></label>
-          <% end %>
-          <input
-            type="text"
-            name="name"
-            class="text-field w-full"
-            placeholder="Name"
-            value="<%= @insight_name %>"
-          />
-        </div>
-        <button type="submit" class="submit block my-6 mx-auto w-4/5">
-          Contintue with selected
-        </button>
-      </form>
-    </div>
-    <div class="grid grid-cols-2 gap-4 py-6 overflow-y-auto">
-      <%= for listing <- @selected do %>
-        <div class="rounded border-bgray-300 shadow relative overflow-hidden pb-2/3">
-          <svg
-            class="absolute z-40 top-2 right-2 w-6 h-6 text-red-500 cursor-pointer"
-            phx-click="remove-comp"
-            phx-value-key="<%= listing.listing_key %>"
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
-          </svg>
-          <img src="<%= listing.main_photo_url %>" alt="" class="absolute h-full w-full object-cover grayscale-60" />
-          <div class="absolute flex flex-col h-full w-full z-20">
-            <div class="flex-1"></div>
-            <div class="rounded-b bg-bgray-800 bg-opacity-90 text-bgray-100">
-              <div class="flex h-full">
-                <div class="flex-1 px-4 py-2">
-                  <p class="text-sm">
-                    <%= listing.street_number %> <%= listing.street_name %>
-                    <%= if listing.unit do %>
-                      <span class="text-xs text-gray-400 inline-block">Unit <%= listing.unit %></span>
-                    <% end %>
-                  </p>
-                </div>
-              </div>
-            </div>
+  <div class="pb-24 flex-1">
+    <%= if @size > 0 do %>
+      <div class="my-8">
+        <%= for {key, val} <- @selected do %>
+          <div class="px-2 rounded status-decor-<%= String.downcase(Enum.join(tl(String.split(key, "_")), "-")) %>">
+            <h4 class="text-right text-sm py-1 status-text-<%= String.downcase(Enum.join(tl(String.split(key, "_")), "-")) %>"><%= String.capitalize(Enum.join(tl(String.split(key, "_")), " ")) %></h4>
+            <ul class="">
+              <%= for sel <- val do %>
+                <li class="flex mb-2 relative">
+                  <div
+                    class="w-24 h-16 bg-cover rounded shadow"
+                    style="background-image: url(<%= sel.main_photo_url %>)"
+                  ></div>
+                  <div class="flex-1 p-2">
+                    <h4 class="mb-0"><%= sel.street_number %> <%= sel.street_name %></h4>
+                    <p class="text-sm">
+                      <%= if sel.excyte_suggested_price === sel.excyte_price, do: "Auto priced", else: "Agent priced" %>
+                      at $<span class="font-bold"><%= number_to_delimited(sel.excyte_price, precision: 0) %></span>
+                    </p>
+                  </div>
+                  <svg
+                    class="absolute z-40 top-2 right-2 w-6 h-6 text-red-500 cursor-pointer"
+                    phx-click="remove-comp"
+                    phx-value-key="<%= sel.listing_key %>"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                  </svg>
+                </li>
+              <% end %>
+            </ul>
           </div>
-        </div>
-      <% end %>
-    </ul>
-  <% else %>
-    <p class="italic text-gray-400 mt-8">No comparable properties selected.</p>
-  <% end %>
+        <% end %>
+      </div>
+      <div class="mt-4 form bg-white shadow rounded-lg p-4">
+        <h4 class="mb-0">Suggested Subject Price<%= if @range, do: " Range", else: "" %></h4>
+        <p class="text-sm">Suggested<%= if @range, do: " range ", else: " price " %>is a recommendation determined by the average of your selected comparable properties.</p>
+        <%= if @range do %>
+          <p
+            phx-click="toggle-range"
+            phx-target="<%= @myself %>"
+            class="text-right mt-2 text-sm cursor-pointer text-cyan-700 hover:underline"
+          >
+            Optionally, you may enter a exact price instead
+          </p>
+        <% end %>
+        <%= f = form_for :suggested_price, "#", [phx_change: "range-update", phx_submit: "save-cma", phx_target: @myself] %>
+          <div class="flex my-6">
+            <div class="mr-1 pt-1 text-lg">$</div>
+            <%= if @range do %>
+              <div class="flex-1">
+                <%= text_input f, :min,
+                  class: "number-field",
+                  inputmode: "numeric",
+                  pattern: "[0-9]*",
+                  placeholder: "Min",
+                  value: @suggested_price_min,
+                  phx_debounce: "blur"
+                %>
+              </div>
+              <div class="mx-1 pt-1 font-bold"> - </div>
+              <div class="flex-1">
+                <%= text_input f, :max,
+                  class: "number-field",
+                  inputmode: "numeric",
+                  pattern: "[0-9]*",
+                  placeholder: "Max",
+                  value: @suggested_price_max,
+                  phx_debounce: "blur"
+                %>
+              </div>
+            <% else %>
+              <div class="w-28 mr-3 text-right">
+                <%= text_input f, :exact,
+                  class: "number-field",
+                  inputmode: "numeric",
+                  pattern: "[0-9]*",
+                  placeholder: "Price",
+                  value: @suggested_price,
+                  phx_debounce: "blur"
+                %>
+              </div>
+              <p class="text-sm text-right mt-1.5 flex-1"
+              >
+                <span
+                  phx-click="toggle-range"
+                  phx-target="<%= @myself %>"
+                  class="cursor-pointer text-cyan-700 hover:underline"
+                >Enter a price range instead</span>
+              </p>
+            <% end %>
+          </div>
+          <%= submit "Contintue with selected", class: "submit block w-full" %>
+        </form>
+      </div>
+    <% else %>
+      <p class="italic text-gray-400 mt-8">No comparable properties selected.</p>
+    <% end %>
+  </div>
 </div>

@@ -7,32 +7,62 @@ defmodule ExcyteWeb.Insight.SelectedComps do
   def update(assigns, socket) do
     average = average(Enum.map(assigns.selected, fn sel -> sel.excyte_price end))
     {:ok, assign(socket,
-      selected: assigns.selected,
-      suggested_price: average,
-      suggested_range_min: (if average, do: trunc(average - (average * 0.05)), else: nil),
-      suggested_range_max: (if average, do: trunc(average + (average * 0.05)), else: nil),
-      insight_name: assigns.name,
+      size: length(assigns.selected),
+      selected: sort_selected_by_status(assigns.selected),
+      suggested_price: (if average, do: trunc(average), else: nil),
+      suggested_price_min: (if average, do: trunc(average - (average * 0.05)), else: nil),
+      suggested_price_max: (if average, do: trunc(average + (average * 0.05)), else: nil),
       range: true,
       error: nil,
-      valid: true,
+      valid: true
     )}
   end
 
-  def handle_info({:update_suggested_price, %{suggested_price: sp}}, %{assigns: a} = socket) do
-    {:noreply, assign(socket, suggested_range_min: sp.low, suggested_range_max: sp.high)}
-  end
-
-  def handle_event("validate-cma", %{"suggested_price" => sp, "name"  => name}, %{assigns: a} = socket) do
-
-  end
-
-  def handle_event("save-cma", %{"suggested_price" => sp, "name"  => name}, %{assigns: a} = socket) do
-    send self(), {:update_cma, %{suggested_price: sp, name: name}}
+  def handle_event("validate-cma", %{"suggested_price" => sp}, %{assigns: a} = socket) do
     {:noreply, socket}
   end
 
-  defp validate() do
+  def handle_event("toggle-range", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, range: !a.range)}
+  end
 
+  def handle_event("range-update", %{"min" => min, "max" => max}, socket) do
+    mn =
+      case Integer.parse(min) do
+        {res, _} -> res
+        :error -> 0
+      end
+    mx =
+      case Integer.parse(max) do
+        {res, _} -> res
+        :error -> 0
+      end
+    mn = if mn >= mx, do: mx, else: mn
+    mx = if mx <= mn, do: mn, else: mx
+    {:noreply, assign(socket, suggested_price_min: mn, suggested_price_max: mx)}
+  end
+
+  def handle_event("save-cma", %{"suggested_price" => sp}, socket) do
+    send self(), {:update_cma, %{suggested_price: sp}}
+    {:noreply, socket}
+  end
+
+  defp sort_selected_by_status(comps) do
+    Enum.group_by(comps, &by_status(&1))
+    |> Enum.sort(:asc)
+  end
+
+  defp by_status(%{status: status}) do
+    cond do
+      String.contains?(String.downcase(status), "expired") -> "7_expired"
+      String.contains?(String.downcase(status), "contract") -> "3_active_under_contract"
+      String.contains?(String.downcase(status), "withdrawn") -> "6_withdrawn"
+      String.contains?(String.downcase(status), "closed") -> "1_closed"
+      String.contains?(String.downcase(status), "canceled") -> "5_canceled"
+      String.contains?(String.downcase(status), "active") -> "2_active"
+      String.contains?(String.downcase(status), "pending") -> "4_pending"
+      true -> "8_na"
+    end
   end
 
   defp average(nums) do

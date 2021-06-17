@@ -1,20 +1,14 @@
 <div class="pt-16 lg:pt-24">
-  <h1 class="text-center">Create a...</h1>
+  <h2 class="text-center mb-6">What would you like to do today?</h2>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full md:w-4/5 lg:w-3/4 mx-auto">
-    <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, CreateCma) do %>
-        <button class="blue font-extrabold text-4xl">CMA</button>
-      <% end %>
+    <div>
+      <%= live_component @socket, JumboButton, action: CreateCma, title: "CMA", text: "Create a Comparative Market Analysis report", color: "blue" %>
     </div>
-    <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, CreateShowcase) do %>
-        <button class="teal font-extrabold text-3xl">Showcase</button>
-      <% end %>
+    <div>
+      <%= live_component @socket, JumboButton, action: CreateShowcase, title: "Showcase", text: "Create a sharable, detailed, listing report", color: "pink" %>
     </div>
-    <div class="super-large-button h-24">
-      <%= live_redirect to: Routes.live_path(@socket, CreateBuyerTour) do %>
-        <button class="teal font-extrabold text-3xl">Buyer Tour</button>
-      <% end %>
+    <div>
+      <%= live_component @socket, JumboButton, action: CreateBuyerTour, title: "Buyer Tour", text: "Create a mapped route of lisings on the market", color: "orange" %>
     </div>
   </div>
   <div class="mt-16">

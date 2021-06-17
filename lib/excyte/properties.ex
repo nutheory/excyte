@@ -6,19 +6,19 @@ defmodule Excyte.Properties do
     Repo
   }
 
-  @topic inspect(__MODULE__)
+  # @topic inspect(__MODULE__)
 
   # def subscribe(id) do
   #   Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{id}")
   # end
 
-  def fetch_subject_details(mpr_id, aid) do
+  def fetch_subject_details(mpr_id, _aid) do
     # subscribe(mpr_id)
     case PublicDataApi.get_subject_by_foreign_id(mpr_id) do
       {:ok, res} -> {:ok, res}
-      {:error, err} ->
-        # LOG error
-        {:error, err}
+      # {:error, err} ->
+      #   # LOG error
+      #   {:error, err}
     end
   end
 
@@ -77,13 +77,13 @@ defmodule Excyte.Properties do
     Property.changeset(%Property{}, attrs)
   end
 
-  defp format_foreign_id(foreign_map) do
-    line = String.replace(foreign_map.line, " ", "-")
-    city = String.replace(foreign_map.city, " ", "-")
-    address = "#{line}_#{city}_#{foreign_map.state_code}_#{foreign_map.postal_code}_"
-    id = String.split(foreign_map.mpr_id, "") |> List.insert_at(6, "-") |> Enum.join("")
-    "#{address}M#{id}"
-  end
+  # defp format_foreign_id(foreign_map) do
+  #   line = String.replace(foreign_map.line, " ", "-")
+  #   city = String.replace(foreign_map.city, " ", "-")
+  #   address = "#{line}_#{city}_#{foreign_map.state_code}_#{foreign_map.postal_code}_"
+  #   id = String.split(foreign_map.mpr_id, "") |> List.insert_at(6, "-") |> Enum.join("")
+  #   "#{address}M#{id}"
+  # end
 
   # def notify_subscribers({:ok, result}, event) do
   #   Phoenix.PubSub.broadcast(Excyte.PubSub, @topic, {__MODULE__, event, result})

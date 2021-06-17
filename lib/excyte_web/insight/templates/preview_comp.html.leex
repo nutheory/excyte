@@ -8,7 +8,7 @@
     <div class="flex-1">
       <div class="flex">
         <div class="mr-1">
-          <svg class="w-5 h-5 inline <%= Utilities.status_to_color(@listing.status).text %> " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-5 h-5 inline status-text-<%= String.replace(String.downcase(@listing.status), " ", "-") %>" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -19,7 +19,7 @@
             <span class="text-xs">mi from subject property</span>
           <% end %>
         </p>
-        <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full <%= Enum.join(Map.values(Utilities.status_to_color(@listing.status)), " ") %> %>">
+        <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full status-<%= String.replace(String.downcase(@listing.status), " ", "-") %>">
           <%= @listing.status %>
         </div>
       </div>
@@ -34,7 +34,7 @@
       </h3>
     </div>
   </div>
-  <div class="pb-8 flex-1 overflow-y-auto">
+  <div class="pb-8 px-4 flex-1 overflow-y-auto">
     <div class="flex my-4 -mx-3">
       <div class="w-2/5 p-3">
         <%= live_component @socket, Gallery,
@@ -185,22 +185,91 @@
       <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
         <div
           class="flex"
-          phx-click="toggle-adj"
+          phx-click="toggle-auto-adj"
           phx-target="<%= @myself %>"
-          phx-value-action="<%= if @excyte_price === @listing.excyte_suggested_price, do: "remove", else: "apply" %>"
+          phx-value-action="<%= if @auto_adjusted, do: "remove", else: "apply" %>"
         >
           <div class="flex-1">
             <h4 class="text-sm">Auto Adjustments</h4>
           </div>
           <div class="text-sm cursor-pointer text-cyan-700 hover:underline">
-            <%= if @excyte_price === @listing.excyte_suggested_price, do: "Remove adjustment", else: "Apply adjustment" %>
+            <%= if @auto_adjusted, do: "Remove adjustment", else: "Apply adjustment" %>
           </div>
           </h4>
         </div>
         <p class="text-sm mb-2">
-          <%= if @excyte_price === @listing.excyte_suggested_price, do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
+          <%= if @auto_adjusted, do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
         </p>
       <% end %>
+      <div class="py-2">
+        <h4 class="text-sm border-b border-gray-400 pb-2 mb-0">Custom Adjustments</h4>
+        <ul class="">
+          <%= if length(@custom_adjustments) > 0 do %>
+            <%= for ca <- @custom_adjustments do %>
+              <li class="p-2 border-b border-gray-300 flex w-full text-sm">
+                <div class="flex-1 mr-4 ">
+                  <%= String.capitalize(ca.name) %>
+                </div>
+                <div class="text-right">
+                  $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
+                </div>
+                <%= if !@show_adjustment_form do %>
+                  <div class="ml-2">
+                    <svg
+                      class="w-5 h-5 text-red-500 cursor-pointer"
+                      phx-target="<%= @myself %>"
+                      phx-click="remove-adjustment-item"
+                      phx-value-adj-id="<%= ca.id %>"
+                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                    </svg>
+                  </div>
+                <% end %>
+              </li>
+            <% end %>
+          <% end %>
+          <%= if @show_adjustment_form do %>
+            <li class="p-2 border-b border-gray-300">
+              <%= f = form_for :adjustment, "#", [phx_change: "change-adjustment-item", phx_submit: "commit-adjustment-item", phx_target: @myself] %>
+                <div class="flex">
+                  <div class="mr-2 flex items-center">
+                    <svg
+                      class="w-6 h-6 text-red-500 cursor-pointer"
+                      phx-click="cancel-adjustment-item"
+                      phx-target="<%= @myself %>"
+                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                    </svg>
+                  </div>
+                  <div class="mr-2 flex-1">
+                    <%= text_input f, :adj_name,
+                      class: "text-field",
+                      value: @adj_name,
+                      placeholder: "Name"
+                    %>
+                  </div>
+                  <div class="text-lg flex items-center">$</div>
+                  <div class="ml-1 mr-2 w-24">
+                    <%= text_input f, :adj_value,
+                      class: "text-field",
+                      inputmode: "numeric",
+                      title: "Numbers only.",
+                      pattern: "^-?[0-9]*",
+                      value: @adj_value,
+                      placeholder: "Value"
+                    %>
+                  </div>
+                  <%= submit "Add", class: "submit" %>
+                </div>
+              </form>
+            </li>
+          <% else %>
+            <li class="p-2 border-b border-gray-400" phx-click="add-adjustment-item" phx-target="<%= @myself %>">
+              <p class="text-sm cursor-pointer text-cyan-700 hover:underline">Add adjustment</p>
+            </li>
+          <% end %>
+        </ul>
+      </div>
       <%= if @added do %>
         <div class="text-green-500 font-bold text-center my-8">
           Added to Comparables
@@ -214,7 +283,7 @@
         <div class="flex mt-4">
           <div class="text-green-700 text-xl font-bold flex items-center mr-1">$</div>
           <div class="mr-4 w-24">
-            <form phx-change="change-adj" phx-target="<%= @myself %>">
+            <form phx-change="manual-adj" phx-target="<%= @myself %>">
               <input
                 type="text"
                 class="text-field"

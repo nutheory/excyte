@@ -27,6 +27,7 @@ defmodule ViewportHelpers do
       socket.private
       |> get_in([:connect_params, "viewport", "width"])
 
+    IO.inspect(width, label: "running assign_client_info")
     LiveView.assign(socket, client_info: %{ width: width, media: display_size(width) })
   end
 

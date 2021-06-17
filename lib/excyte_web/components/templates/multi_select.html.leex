@@ -8,7 +8,7 @@
             phx-value-val="<%= selected.value %>"
             phx-target="<%= @myself %>"
             class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs
-                  leading-none rounded-full <%= if @status, do: Enum.join(Map.values(Utilities.status_to_color(selected.name)), " "), else: "text-teal-600 bg-teal-50 border border-teal-600" %>"
+                  leading-none rounded-full status-<%= if @status, do: String.replace(String.downcase(selected.name), " ", "-"), else: "text-teal-600 bg-teal-50 border border-teal-600" %>"
           >
             <%= selected.name %>
           </div>

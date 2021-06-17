@@ -19,7 +19,7 @@ defmodule Excyte.Properties.Adjustments do
             baths: (if Map.has_key?(listing, :baths) && Map.has_key?(subject, :baths),
                     do: numeric_difference(subject.baths, listing.baths.total, "baths"), else: nil),
             lotsize: calculate_lotsize(subject, listing),
-            year_built: calculate_time(subject, listing, :year_built, "year")
+            year_built: calculate_time(subject, listing, :year_built, "year"),
           }
         }
         |> sanitize_equals()
@@ -27,6 +27,7 @@ defmodule Excyte.Properties.Adjustments do
 
       Map.merge(list, %{
         adjustments: adj,
+        custom_adjustments: [],
         excyte_price: (listing[price] + adj.sqft.adjustment),
         excyte_suggested_price: (listing[price] + adj.sqft.adjustment),
         min_adjustment_price: min_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10),

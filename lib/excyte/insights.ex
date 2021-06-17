@@ -1,9 +1,7 @@
 defmodule Excyte.Insights do
   import Ecto.Query, warn: false
-  alias Excyte.Utils.Methods
   alias Ecto.Multi
   alias Excyte.{
-    Activities,
     Agents,
     Brokerages,
     Properties,
@@ -11,7 +9,6 @@ defmodule Excyte.Insights do
   }
   alias Excyte.Insights.{
     Insight,
-    Document,
     DocumentTemplate,
     Section,
     SectionTemplate
@@ -159,7 +156,7 @@ defmodule Excyte.Insights do
   def build_from_templates(uid, insid) do
     r = case get_full_insight(uid, insid) do
         {:ok, res} -> res
-        {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
+        # {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
       end
 
     comp_template = Enum.find(r["sections"], fn s -> s.component_name === "comparable" end)
@@ -189,7 +186,7 @@ defmodule Excyte.Insights do
 
   defp sanitize_data(struct) do
     Enum.reduce(Map.from_struct(struct), %{}, fn
-      ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+      ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
       ({:__meta__, _}, acc) -> acc
       ({k, v}, acc) -> Map.put(acc, k, v)
     end)

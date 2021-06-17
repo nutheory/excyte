@@ -17,7 +17,7 @@ defmodule Excyte.Insights.Insight do
   defimpl Jason.Encoder, for: [Excyte.Insights.Insight] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
-        ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
         ({:__meta__, _}, acc) -> acc
         ({k, v}, acc) -> Map.put(acc, k, v)
       end)
@@ -34,7 +34,7 @@ defmodule Excyte.Insights.Insight do
     field :content, MapType
     field :published, :boolean
     field :cover_photo_url, :string
-    embeds_one(:document_attributes, Theme, on_replace: :update)
+    embeds_one(:document_attributes, Theme, on_replace: :delete)
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
     has_one(:property, Property, foreign_key: :insight_id)
     has_many(:sections, Section)

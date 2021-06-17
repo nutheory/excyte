@@ -16,7 +16,7 @@
               <% end %>
             </p>
             <%= if @listing["Timeline"]["ModificationTimestamp"] do %>
-              <p class="text-xs leading-3">Last Modified <%= Utilities.simple_date_format(@listing["Timeline"]["ModificationTimestamp"]) %></p>
+              <p class="text-xs leading-3">Last Modified <%= Calendar.strftime(@listing["Timeline"]["ModificationTimestamp"], "%b %d, %Y") %></p>
             <% end %>
           </div>
           <div

@@ -18,7 +18,7 @@ defmodule ExcyteWeb.Components.RangeInputs do
     )}
   end
 
-  def handle_event("range-update", %{"min" => min, "max" => max, "_target" => target}, %{assigns: a} = socket) do
+  def handle_event("range-update", %{"min" => min, "max" => max}, %{assigns: a} = socket) do
     mn =
       case a.type.parse(min) do
         {res, _} -> res

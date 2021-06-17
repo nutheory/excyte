@@ -28,19 +28,6 @@ defmodule ExcyteWeb.Helpers.Utilities do
     ]
   end
 
-  def status_to_color(status) do
-    cond do
-      String.contains?(status, "Active") ->  %{text: "text-green-600", bg: "bg-green-50", border: "border border-green-600"}
-      String.contains?(status, "Active Under Contract") -> %{text: "text-amber-600", bg: "bg-amber-50", border: "border border-amber-600"}
-      String.contains?(status, "Canceled") -> %{text: "text-red-600", bg: "bg-red-50", border: "border border-red-600"}
-      String.contains?(status, "Closed") ->  %{text: "text-teal-600", bg: "bg-teal-50", border: "border border-teal-600"}
-      String.contains?(status, "Expired") -> %{text: "text-pink-600", bg: "bg-pink-50", border: "border border-pink-600"}
-      String.contains?(status, "Pending") -> %{text: "text-cyan-600", bg: "bg-cyan-50", border: "border border-cyan-600"}
-      String.contains?(status, "Withdrawn") -> %{text: "text-indigo-600", bg: "bg-indigo-50", border: "border border-indigo-600"}
-      true -> ""
-    end
-  end
-
   def assign_contact_type(content) do
     cond do
       String.match?(content, ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/) -> "phone"
@@ -53,14 +40,14 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def icon_adjustment(adj_diff) do
     adj = to_string(adj_diff)
     if String.starts_with?(adj, "-") do
-      assigns = %{adj: String.slice(adj, 1..10)}
+      assigns = %{__changed__: nil, adj: String.slice(adj, 1..10)}
       ~L"""
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
         </svg><span class="font-bold"><%= @adj %></span>
       """
     else
-      assigns = if String.starts_with?(adj, "+"), do: %{adj: String.slice(adj, 1..20)}, else: %{adj: adj}
+      assigns = if String.starts_with?(adj, "+"), do: %{__changed__: nil,adj: String.slice(adj, 1..20)}, else: %{__changed__: nil, adj: adj}
       ~L"""
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -102,7 +89,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps}) do
-    assigns = %{adj: adj, diff: diff, price_per_sqft: pps}
+    assigns = %{__changed__: nil, adj: adj, diff: diff, price_per_sqft: pps}
     ~L"""
       Total has been adjusted <strong><%= number_to_delimited(@adj, precision: 0) %></strong>
       based on a difference of <%= diff %> at $<%= pps %> per sqft
@@ -110,7 +97,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def summarize_auto_adjust(_) do
-    assigns = %{}
+    assigns = %{__changed__: nil}
     ~L"""
       None
     """
@@ -120,7 +107,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
     if listing.list_price !== nil || listing.close_price !== nil do
       if listing.close_price !== nil do
         when_text = time_to_text(listing, :close_date)
-        assigns = %{listing: listing, when_text: when_text}
+        assigns = %{__changed__: nil, listing: listing, when_text: when_text}
         ~L"""
           Closed for $<strong><%= number_to_delimited(@listing.close_price, precision: 0) %></strong>
           <%= if Map.has_key?(@listing, :close_date) do %>
@@ -130,7 +117,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
         """
       else
         when_text = time_to_text(listing, :on_market_date)
-        assigns = %{listing: listing, when_text: when_text}
+        assigns = %{__changed__: nil, listing: listing, when_text: when_text}
         ~L"""
           Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
           <%= if Map.has_key?(@listing, :days_on_market) do %>
@@ -149,17 +136,17 @@ defmodule ExcyteWeb.Helpers.Utilities do
       months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
       cond do
         months <= 2 ->
-          assigns = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+          assigns = %{__changed__: nil, days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
           ~L"""
             <%= @days %> <%= Inflex.inflect("day", @days) %> ago
           """
         months <= 18 ->
-          assigns = %{months: months}
+          assigns = %{__changed__: nil, months: months}
           ~L"""
             <%= @months %> <%= Inflex.inflect("month", @months) %> ago
           """
         months > 18 ->
-          assigns = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+          assigns = %{__changed__: nil, years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
           ~L"""
             over <%= @years %> <%= Inflex.inflect("year", @years) %> ago
           """
@@ -185,7 +172,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       end)
     ~L"""
       <ul class="feature-list">
-        <%= for {{key, val}, idx} <- Enum.with_index(assigns) do %>
+        <%= for {{key, val}, _idx} <- Enum.with_index(assigns) do %>
           <li class="feature-item">
             <label class="block"><%= split_by_case(key) %></label>
             <p class="text-sm"><%= Enum.join(val, ", ") %></p>
@@ -221,12 +208,6 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def sqft_to_acres(sqft) do
     Float.round(sqft/43560, 2)
-  end
-
-  def simple_date_format(date) do
-    # Remove Timex? Is it being used elsewhere?
-    # {:ok, d, _} = DateTime.from_iso8601(date)
-    # Calendar.strftime(d, "%b %d, %Y")
   end
 
   def format_str_json(body) do

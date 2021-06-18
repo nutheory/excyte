@@ -46,6 +46,7 @@ sections = [
     component_name: "cover",
     component_data_types: ["subject"],
     name: "Cover Page",
+    description: "",
     is_public: true,
     is_excyte_made: true,
     position: 0
@@ -55,6 +56,8 @@ sections = [
     component_name: "whats_cma",
     component_data_types: [],
     name: "What is a CMA",
+    description: "Simple explanation of a CMA for the client.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 1
@@ -64,6 +67,8 @@ sections = [
     component_name: "brokerage_profile",
     component_data_types: ["brokerage"],
     name: "Brokerage Profile",
+    description: "Details and Contact info for Brokerage",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 2
@@ -73,6 +78,8 @@ sections = [
     component_name: "why_an_agent",
     component_data_types: [],
     name: "Why do I need a Agent",
+    description: "Explanation of agents importance.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 3
@@ -82,6 +89,8 @@ sections = [
     component_name: "agent_profile",
     component_data_types: ["agent"],
     name: "Agent Profile",
+    description: "Details and contact info for agent.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 4
@@ -91,6 +100,8 @@ sections = [
     component_name: "subject",
     component_data_types: ["subject"],
     name: "Subject Property",
+    description: "Summary of clients property.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 5
@@ -100,15 +111,30 @@ sections = [
     component_name: "comparable",
     component_data_types: ["listing"],
     name: "Comparable Listing",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 6
   },
   %{
     document_template_id: cma_template.id,
+    component_name: "commission_distribution",
+    component_data_types: [],
+    name: "Commission Distribution",
+    description: "I dont think we should have this page - Derek",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 62
+  },
+  %{
+    document_template_id: cma_template.id,
     component_name: "synopsis",
     component_data_types: ["subject", "listings"],
     name: "Synopsis",
+    description: "Suggested Price explanation.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 60
@@ -118,24 +144,19 @@ sections = [
     component_name: "pricing_strategy",
     component_data_types: [],
     name: "Pricing Strategy",
+    description: "How the suggested price fits into the overall pricing strategy.",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 61
-  },
-  %{
-    document_template_id: cma_template.id,
-    component_name: "commission_distribution",
-    component_data_types: [],
-    name: "Commission Distribution",
-    is_public: true,
-    is_excyte_made: true,
-    position: 62
   },
   %{
     document_template_id: showcase_template.id,
     component_name: "showcase",
     component_data_types: ["listing"],
     name: "Property",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 0
@@ -145,6 +166,8 @@ sections = [
     component_name: "agent_profile",
     component_data_types: ["agent"],
     name: "Agent Profile",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 1
@@ -154,6 +177,8 @@ sections = [
     component_name: "brokerage_profile",
     component_data_types: ["brokerage"],
     name: "Brokerage Profile",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 2
@@ -163,6 +188,8 @@ sections = [
     component_name: "showcase",
     component_data_types: ["listing"],
     name: "Property",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 0
@@ -172,6 +199,8 @@ sections = [
     component_name: "agent_profile",
     component_data_types: ["agent"],
     name: "Agent Profile",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 1
@@ -181,6 +210,8 @@ sections = [
     component_name: "brokerage_profile",
     component_data_types: ["brokerage"],
     name: "Brokerage Profile",
+    description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 2
@@ -191,35 +222,35 @@ Enum.each(sections, fn s ->
   excyte_section_template(s)
 end)
 
-# Enum.each(excyte_admins, fn a ->
-#   admin = agent_fixture(a)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(admin, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(admin)
-#   setup_billing(admin)
-# end)
+Enum.each(excyte_admins, fn a ->
+  admin = agent_fixture(a)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(admin, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(admin)
+  setup_billing(admin)
+end)
 
-# Enum.each(agents, fn a ->
-#   agent = agent_fixture(a)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(agent, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(agent)
-#   setup_billing(agent)
-# end)
+Enum.each(agents, fn a ->
+  agent = agent_fixture(a)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(agent, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(agent)
+  setup_billing(agent)
+end)
 
-# Enum.each(brokerages, fn b ->
-#   broker = brokerage_fixture(b)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(broker, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(broker)
-#   setup_billing(broker)
-# end)
+Enum.each(brokerages, fn b ->
+  broker = brokerage_fixture(b)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(broker, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(broker)
+  setup_billing(broker)
+end)

@@ -14,20 +14,17 @@ defmodule ExcyteWeb.InsightView do
     FilterListings,
     Listings,
     ListingCard,
-    PossibleSubjects,
     PreviewComp,
+    SectionCard,
     SelectedComps,
     SubjectForm,
     SubjectProperty
   }
   alias ExcyteWeb.Components.{
     AddressAutocomplete,
-    DistanceSelector,
-    RangeInputs,
-    Calendar,
     Dropdown,
     Gallery,
-    FindById,
-    MultiSelect
+    MultiSelect,
+    RangeInputs
   }
 end

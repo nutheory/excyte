@@ -17,8 +17,8 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
           insight: ins,
           sections: [],
           data: nil,
-          preview: "",
-          editing_key: nil,
+          preview_content: "",
+          preview_panel: false,
           loading: true
         )}
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")

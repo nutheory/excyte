@@ -277,6 +277,20 @@ button.jumbo {
   background: radial-gradient(at top left, #faca17, #f97516);
 }
 
+.grabbable {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
 .blackout {
   @apply w-screen h-screen fixed top-0 left-0 opacity-80 bg-bgray-800 hidden;
 

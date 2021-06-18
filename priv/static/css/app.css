@@ -483,6 +483,19 @@ button.jumbo {
   background: radial-gradient(at top left, #faca17, #f97516);
 }
 
+.grabbable {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+
+.grabbable:active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}
+
 .blackout {
   position: fixed;
   top: 0px;
@@ -687,7 +700,12 @@ button.jumbo {
 
 input:checked ~ .dot {
   transform: translateX(100%);
-  background-color: #48bb78;
+  background-color: #fff;
+}
+
+input:checked ~ .slider {
+  background: #bef04c;
+  background: radial-gradient(at top left, #bef04c, #11ca26);
 }
 
 form, .form {
@@ -4214,10 +4232,6 @@ h4 {
   height: 100vh;
 }
 
-.h-18 {
-  height: 4.5rem;
-}
-
 .h-3 {
   height: 0.75rem;
 }
@@ -4519,10 +4533,6 @@ h4 {
 
 .overflow-y-auto {
   overflow-y: auto;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
 }
 
 .rounded {
@@ -4839,6 +4849,11 @@ h4 {
   background-color: rgba(240, 253, 244, var(--tw-bg-opacity));
 }
 
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(156, 163, 175, var(--tw-bg-opacity));
+}
+
 .bg-bgray-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(15, 23, 42, var(--tw-bg-opacity));
@@ -5026,14 +5041,6 @@ h4 {
 
 .pr-1 {
   padding-right: 0.25rem;
-}
-
-.pt-20 {
-  padding-top: 5rem;
-}
-
-.pr-6 {
-  padding-right: 1.5rem;
 }
 
 .pt-4 {
@@ -6424,10 +6431,6 @@ h4 {
     width: 18rem;
   }
 
-  .lg\:w-80 {
-    width: 20rem;
-  }
-
   .lg\:w-60 {
     width: 15rem;
   }
@@ -6462,10 +6465,6 @@ h4 {
 
   .lg\:grid-cols-12 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
-  .lg\:flex-col {
-    flex-direction: column;
   }
 
   .lg\:overflow-y-visible {
@@ -6791,10 +6790,6 @@ h4 {
 
   .xl\:w-4\/5 {
     width: 80%;
-  }
-
-  .xl\:w-96 {
-    width: 24rem;
   }
 
   .xl\:w-72 {

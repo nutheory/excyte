@@ -11,6 +11,8 @@ defmodule Excyte.Insights.Section do
 
   schema "sections" do
     field :name, :string, null: false
+    field :description, :string, default: ""
+    field :type, :string
     field :html_content, :string
     field :foreign_id, :string
     field :position, :integer
@@ -24,6 +26,8 @@ defmodule Excyte.Insights.Section do
     insight
     |> cast(attrs, [
       :name,
+      :description,
+      :type,
       :html_content,
       :position,
       :insight_id,

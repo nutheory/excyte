@@ -10,7 +10,9 @@ defmodule Excyte.Repo.Migrations.SectionTemplates do
       add :component_name, :string
       add :component_data_types, :jsonb, default: "[]"
       add :name, :string, null: false
+      add :description, :text
       add :html_content, :text
+      add :type, :string
       add :is_editable, :boolean, default: false
       add :is_shared, :boolean, default: false
       add :is_public, :boolean, default: false

@@ -1,0 +1,36 @@
+<div class="h-screen w-full lg:w-80 xl:w-96 lg:flex lg:flex-col hidden">
+  <div class="w-full h-18 lg:block hidden"></div>
+  <div class="overflow-y-scroll lg:w-80 scrolling-touch fixed top-0 bottom-0 overflow-hidden pt-20 pr-6">
+    <h2 class="">Builder</h2>
+    <ul class="section-nav" phx-hook="InitSortable" id="sections" data-target-id="#builder" data-sections-id="sections">
+      <%= for section <- @sections do %>
+        <li
+          class="section flex cursor-move" x-data="{actions: false}"
+          @mouseover="actions = true"
+          data-sortable-id="<%= section.temp_id %>"
+          @mouseover.away="actions = false"
+        >
+          <div class="flex-1">
+            <%= if section.component_name === "comparable" do %>
+              <h4 class="title"><%= section.data["street_number"] %> <%= section.data["street_name"] %></h4>
+              <h5 class="sub-title"><%= section.name %></h5>
+            <% else %>
+              <h5 class="title"><%= section.name %></h5>
+            <% end %>
+            <div class="flex opacity-0" :class="{'opacity-100': actions === true}">
+              <button class="action" type="button" phx-click="edit-section" phx-value-section-pos="<%= section.position %>">edit</button>
+            </div>
+          </div>
+          <div class="" phx-click="toggle-enabled" phx-value-id="<%= section.temp_id %>">
+            <%= if section.enabled === true do %>
+              <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <% else %>
+              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
+  </div>
+</div>

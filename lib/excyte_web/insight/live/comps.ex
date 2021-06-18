@@ -98,7 +98,7 @@ defmodule ExcyteWeb.Insight.Comps do
     end
   end
 
-  def handle_event("filter-submit", %{"mf" => form}, %{assigns: a}) do
+  def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do
     distance =
       if form["distance"] === "" do
         50.0
@@ -113,6 +113,7 @@ defmodule ExcyteWeb.Insight.Comps do
       selected_statuses: a.filters.selected_statuses
     })
     send self(), {:query_mls, %{insight: a.insight, filters: filters}}
+    {:noreply, assign(socket, fetching: true)}
   end
 
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do

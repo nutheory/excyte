@@ -15,6 +15,8 @@ defmodule Excyte.Insights.SectionTemplate do
     field :component_name, :string
     field :component_data_types, {:array, :string}
     field :name, :string
+    field :description, :string, default: ""
+    field :type, :string
     field :position, :integer
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
@@ -28,6 +30,8 @@ defmodule Excyte.Insights.SectionTemplate do
       :html_content,
       :is_shared,
       :name,
+      :description,
+      :type,
       :position,
       :component_name,
       :component_data_types,

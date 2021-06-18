@@ -8,7 +8,9 @@ defmodule Excyte.Repo.Migrations.Sections do
       add :section_template_id, references(:section_templates)
       add :foreign_id, :string
       add :name, :string, null: false
+      add :description, :text
       add :html_content, :text
+      add :type, :string
       add :position, :integer
 
       timestamps()

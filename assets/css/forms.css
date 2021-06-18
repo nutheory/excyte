@@ -20,7 +20,12 @@
 
 input:checked ~ .dot {
   transform: translateX(100%);
-  background-color: #48bb78;
+  background-color: #fff;
+}
+
+input:checked ~ .slider {
+  background: #bef04c;
+  background: radial-gradient(at top left, #bef04c, #11ca26);
 }
 
 form,

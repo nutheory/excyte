@@ -19562,11 +19562,9 @@ window.currentPreview = function (content) {
 var InitPreview = {
   mounted: function mounted() {
     window.previewHook.base = this;
-    console.log("window.previewHook", window.previewHook);
     this.handleEvent("loadPreview", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme;
-      console.log("loadPreview", content);
       setTimeout(function () {
         window.previewHook.currentPreview.preview.commands.setContent(content);
         var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
@@ -19577,7 +19575,7 @@ var InitPreview = {
         rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
         rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);
-      }, 0);
+      }, 500);
     });
   },
   destroyed: function destroyed() {//  window.previewHook = null

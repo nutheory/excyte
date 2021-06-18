@@ -83,15 +83,17 @@ export const InitPreview = {
     console.log("window.previewHook", window.previewHook)
     this.handleEvent("loadPreview", ({ content, theme }) => {
       console.log("loadPreview", content)
-      window.previewHook.currentPreview.preview.commands.setContent(content)
-      let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
-          rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
-          rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
-          rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
-          rule += `div.preview-wrapper tr {border-bottom-color: ${theme.accent}}`
-          rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
-          rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
-      addCss(rule)
+      setTimeout(() => {
+        window.previewHook.currentPreview.preview.commands.setContent(content)
+        let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
+            rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
+            rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
+            rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
+            rule += `div.preview-wrapper tr {border-bottom-color: ${theme.accent}}`
+            rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
+            rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+        addCss(rule)
+      }, 2000);
     })
   },
   destroyed() {

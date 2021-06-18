@@ -1,6 +1,11 @@
 defmodule ExcyteWeb.Insight.CreateCma do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Insights.Insight, Mls.ResoApi, Properties}
+  alias Excyte.{
+    Accounts,
+    Activities,
+    Insights,
+    Properties
+  }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   def render(assigns), do: InsightView.render("create_cma.html", assigns)
@@ -17,10 +22,6 @@ defmodule ExcyteWeb.Insight.CreateCma do
     )}
   end
 
-  # def handle_info({:update_features, val}, %{assigns: a} = socket) do
-  #   {:noreply, assign(socket, subject: Map.merge(a.subject, val))}
-  # end
-
   def handle_info({:init_subject, %{prop_id: prop_id}}, socket) do
     send self(), {:setup_subject, %{prop_id: prop_id}}
     {:noreply, assign(socket, prop_id: prop_id, fetching: true)}
@@ -29,8 +30,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   def handle_info({:setup_subject, %{prop_id: prop_id}}, %{assigns: a} = socket) do
     case Properties.fetch_subject_details(prop_id, a.current_user.id) do
       {:ok, subject} -> {:noreply, assign(socket, subject: subject, fetching: false)}
-      {:error, err} -> {:noreply, assign(socket, error: err, fetching: false)}
-      _ -> {:noreply, assign(socket, error: "unkown", fetching: false)}
+      {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
     end
   end
 
@@ -39,7 +39,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
     case Insights.create_insight(insight_data(attrs, key, a)) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/comparables")}
       {:error, method, changeset, _} ->
-          # TODO Log Error
+          Activities.handle_errors(changeset, method)
           {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

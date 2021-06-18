@@ -3,6 +3,7 @@ defmodule Excyte.Insights do
   alias Ecto.Multi
   alias Excyte.{
     Agents,
+    Activities,
     Brokerages,
     Properties,
     Repo
@@ -124,10 +125,6 @@ defmodule Excyte.Insights do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:property)
   end
 
-  def get_review_insight(uid, iid) do
-    Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:property)
-  end
-
   def get_minimal_insight(uuid, uid) do
     Insight.minimal_insight(uuid, uid) |> Repo.one()
   end
@@ -142,30 +139,28 @@ defmodule Excyte.Insights do
     Insight.published_agent_insights(uid) |> Repo.all()
   end
 
-  def get_full_insight(uid, insid) do
-    ins = Repo.get_by(Insight, %{created_by_id: uid, id: insid})
-          |> Repo.preload([:property, document_template: :section_templates])
-    agent = Agents.get_agent_profile!(ins.created_by_id)
-    %{brokerage: brp, sections: sections} = maybe_brokerage(%{
-      brokerage_id: ins.brokerage_id,
-      sections: ins.document_template.section_templates
-    })
-    {:ok, %{"insight" => ins, "agent_profile" => agent, "brokerage" => brp, "sections" => sections, "subject" => ins.property}}
+  def get_full_insight(%{usr_id: uid, insight_id: insid}) do
+    Multi.new()
+    |> Multi.run(:get_publishing_info, __MODULE__, :get_publish_insight, [%{usr_id: uid, insight_id: insid}])
+    |> Multi.run(:get_agent_info, Agents, :get_agent_profile, [])
+    |> Multi.run(:setup_possible_brokerage, __MODULE__, :maybe_brokerage, [])
+    |> Repo.transaction()
   end
 
-  def build_from_templates(uid, insid) do
-    r = case get_full_insight(uid, insid) do
-        {:ok, res} -> res
-        # {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
+  def build_cma_sections(%{usr_id: uid, insight_id: insid}) do
+    r = case get_full_insight(%{usr_id: uid, insight_id: insid}) do
+        {:ok, %{get_publishing_info: gpi, get_agent_info: gai, setup_possible_brokerage: spb}} ->
+          %{insight: gpi, agent_profile: gai, brokerage: spb.brokerage, sections: spb.sections }
+        {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
       end
 
-    comp_template = Enum.find(r["sections"], fn s -> s.component_name === "comparable" end)
-    comps = Enum.with_index(r["insight"].content.comps, comp_template.position)
+    comp_template = Enum.find(r.sections, fn s -> s.component_name === "comparable" end)
+    comps = Enum.with_index(r.insight.content.comps, comp_template.position)
       |> Enum.map(fn {comp_data, i} ->
         Map.from_struct(comp_template) |> Map.merge(%{data: comp_data, position: i})
       end)
 
-    pages = Enum.filter(r["sections"], fn sec -> sec.component_name !== "comparable" end)
+    pages = Enum.filter(r.sections, fn sec -> sec.component_name !== "comparable" end)
       |> Enum.map(fn st ->
         Map.from_struct(st)
       end)
@@ -176,12 +171,34 @@ defmodule Excyte.Insights do
     {:ok, %{
       sections: pages,
       data: %{
-        insight: sanitize_data(Map.delete(r["insight"], :saved_search)),
-        agent_profile: sanitize_data(r["agent_profile"]),
-        brokerage: sanitize_data(r["brokerage"]),
-        subject: sanitize_data(r["subject"])
+        insight: sanitize_data(Map.delete(r.insight, :saved_search)),
+        agent_profile: sanitize_data(r.agent_profile),
+        brokerage: sanitize_data(r.brokerage),
+        subject: sanitize_data(r.insight.property)
       }
     }}
+  end
+
+  def get_publish_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do
+    case Repo.get_by(Insight, %{created_by_id: uid, id: insid})
+    |> Repo.preload([:property, document_template: :section_templates]) do
+      %Insight{} = ins -> {:ok, ins}
+      nil -> {:error, %{message: "Insight could not be found."}}
+    end
+  end
+
+  def maybe_brokerage(_repo, %{get_publishing_info: insight}) do
+    if insight.brokerage_id do
+      {:ok, %{
+        brokerage: Brokerages.get_brokerage_profile(insight.brokerage_id),
+        sections: insight.document_template.section_templates
+      }}
+    else
+      {:ok, %{
+        brokerage: nil,
+        sections: Enum.filter(insight.document_template.section_templates, fn s -> s.component_name !== "brokerage_profile" end)
+      }}
+    end
   end
 
   defp sanitize_data(struct) do
@@ -192,13 +209,4 @@ defmodule Excyte.Insights do
     end)
     |> Excyte.Utils.Methods.stringify_keys()
   end
-
-  defp maybe_brokerage(%{brokerage_id: bid, sections: st}) do
-    if bid do
-      %{brokerage: Brokerages.get_brokerage_profile(bid), sections: st}
-    else
-      %{brokerage: nil, sections: Enum.filter(st, fn s -> s.component_name !== "brokerage_profile" end)}
-    end
-  end
-
 end

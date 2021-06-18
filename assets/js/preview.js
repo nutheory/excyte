@@ -80,6 +80,7 @@ window.currentPreview = function (content) {
 export const InitPreview = {
   mounted() {
     window.previewHook.base = this
+    console.log("window.previewHook", window.previewHook)
     this.handleEvent("loadPreview", ({ content, theme }) => {
       window.previewHook.currentPreview.preview.commands.setContent(content)
       let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
@@ -93,8 +94,8 @@ export const InitPreview = {
     })
   },
   destroyed() {
-     window.previewHook = null
-     window.currentPreview = null
+    //  window.previewHook = null
+    //  window.currentPreview = null
   },
 }
 

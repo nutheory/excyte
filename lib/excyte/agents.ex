@@ -1,12 +1,18 @@
 defmodule Excyte.Agents do
   import Ecto.Query, warn: false
-  alias Ecto.Multi
   alias Excyte.Repo
 
   alias Excyte.{Utils.Contact, Agents.Profile}
 
   def get_agent_profile!(aid) do
     Repo.get_by(Profile, %{agent_id: aid})
+  end
+
+  def get_agent_profile(_repo, %{get_publishing_info: insight}) do
+    case Repo.get_by(Profile, %{agent_id: insight.created_by_id}) do
+      %Profile{} = profile -> {:ok, profile}
+      nil -> {:error, %{message: "Agent profile not found."}}
+    end
   end
 
   def get_agent_profile(_agent_id), do: %Profile{contacts: []}

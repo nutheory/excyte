@@ -19560,6 +19560,7 @@ window.currentPreview = function (content) {
 var InitPreview = {
   mounted: function mounted() {
     window.previewHook.base = this;
+    console.log("window.previewHook", window.previewHook);
     this.handleEvent("loadPreview", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme;
@@ -19574,9 +19575,8 @@ var InitPreview = {
       addCss(rule);
     });
   },
-  destroyed: function destroyed() {
-    window.previewHook = null;
-    window.currentPreview = null;
+  destroyed: function destroyed() {//  window.previewHook = null
+    //  window.currentPreview = null
   }
 };
 

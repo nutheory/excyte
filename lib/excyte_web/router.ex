@@ -87,8 +87,7 @@ defmodule ExcyteWeb.Router do
     live "/buyertour/create", CreateBuyerTour
     live "/showcase/create", CreateShowcase
     live "/:insight_id/comparables", Comps
-    # live "/:insight_id/review", Review
-    live "/:insight_id/:builder", Builder
+    live "/:insight_id/customize", CustomizeCma
     live "/editor", Editor
   end
 

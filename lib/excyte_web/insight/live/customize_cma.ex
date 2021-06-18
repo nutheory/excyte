@@ -1,13 +1,14 @@
-defmodule ExcyteWeb.Insight.Builder do
+defmodule ExcyteWeb.Insight.CustomizeCma do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Activities, Insights, Insights.Insight}
   alias ExcyteWeb.{InsightView, Helpers.Templates}
 
 
-  def render(assigns), do: InsightView.render("builder.html", assigns)
+  def render(assigns), do: InsightView.render("customize_cma.html", assigns)
 
-  def mount(%{"insight_id" => id, "builder" => builder}, %{"user_token" => token}, socket) do
+  def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
+    # {:ok, prev_state} = Cachex.get(:insights_cache, params["insight_id"])
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
         send self(), {:get_sections, %{insight: ins}}
@@ -17,31 +18,27 @@ defmodule ExcyteWeb.Insight.Builder do
           sections: [],
           data: nil,
           preview: "",
-          auto_publish: (if builder === "auto", do: true, else: false),
           editing_key: nil,
           loading: true
         )}
-      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
-      err -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
+      err -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
         {:ok, push_redirect(socket, to: "/insights/cma/create")}
     end
   end
 
   def handle_info({:get_sections, %{insight: ins}}, %{assigns: a} = socket) do
-    case Insights.build_from_templates(a.current_user.id, ins.id) do
+    case Insights.build_cma_sections(%{usr_id: a.current_user.id, insight_id: ins.id}) do
       {:ok, res} ->
         sections = with_html_sections(res.sections, res.data)
         insight = merge_theme(res.data)
-        if a.auto_publish do
-          send self(), :publish
-        else
-          send self(), {:load_preview, %{sections: sections, theme: insight["document_attributes"] }}
-        end
+        send self(), {:load_preview, %{sections: sections, theme: insight["document_attributes"] }}
         {:noreply, assign(socket,
           sections: sections,
           insight: insight,
           data: res.data,
-          loading: false)}
+          loading: false
+        )}
       {:error, err} -> err
     end
   end
@@ -61,7 +58,7 @@ defmodule ExcyteWeb.Insight.Builder do
           published: true
         }}) do
           {:ok, pub} -> pub
-          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Builder")
+          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
       end
     {:noreply,
       socket

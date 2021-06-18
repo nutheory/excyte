@@ -1,6 +1,7 @@
 defmodule Excyte.Properties do
   import Ecto.Query, warn: false
   alias Excyte.{
+    Activities,
     Properties.Property,
     Properties.PublicDataApi,
     Repo
@@ -13,12 +14,11 @@ defmodule Excyte.Properties do
   # end
 
   def fetch_subject_details(mpr_id, _aid) do
-    # subscribe(mpr_id)
     case PublicDataApi.get_subject_by_foreign_id(mpr_id) do
       {:ok, res} -> {:ok, res}
-      # {:error, err} ->
-      #   # LOG error
-      #   {:error, err}
+      {:error, err} ->
+        Activities.handle_errors(err, "Excyte.Properties.fetch_subject_details")
+        {:error, err}
     end
   end
 

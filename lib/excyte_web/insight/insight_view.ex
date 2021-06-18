@@ -6,7 +6,7 @@ defmodule ExcyteWeb.InsightView do
     CreateCma,
     CreateShowcase,
     CreateBuyerTour,
-    Builder,
+    CustomizeCma,
     Editor,
     EditorMenuBubble,
     EditorMenuCommands,

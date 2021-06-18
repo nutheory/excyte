@@ -86,14 +86,14 @@ defmodule ExcyteWeb.Insight.Comps do
 
   def handle_info({:update_cma, %{suggested_price: sp}}, %{assigns: a} = socket) do
     update = %{
-      selected_listing_ids: Enum.map(a.comparables, fn c -> c.listing_id end),
+      selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end),
       saved_search: %{criteria: a.filters},
       content: %{comps: a.selected_comps, suggested_subject_price: sp},
       document_attributes: Map.from_struct(a.theme_attributes),
       document_template_id: a.template_id
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/builder")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

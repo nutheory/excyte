@@ -93,7 +93,7 @@ export const InitPreview = {
             rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
             rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
         addCss(rule)
-      }, 2000);
+      }, 0);
     })
   },
   destroyed() {

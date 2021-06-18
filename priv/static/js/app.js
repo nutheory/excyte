@@ -19577,7 +19577,7 @@ var InitPreview = {
         rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
         rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);
-      }, 2000);
+      }, 0);
     });
   },
   destroyed: function destroyed() {//  window.previewHook = null

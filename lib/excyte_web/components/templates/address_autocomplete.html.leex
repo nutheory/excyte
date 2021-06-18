@@ -11,6 +11,8 @@
         class="fake-text-field"
         placeholder="Enter a location"
         autocomplete="off"
+        spellcheck="false"
+        autocorrect="off"
         x-model="inputValue"
         @focus="active=true"
         @input.debounce.250="$dispatch('input-change', inputValue)"

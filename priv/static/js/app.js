@@ -19540,6 +19540,7 @@ __webpack_require__.r(__webpack_exports__);
 window.previewHook = {};
 
 window.currentPreview = function (content) {
+  console.log("currentPreview", content);
   return {
     content: content,
     viewer: null,
@@ -19551,6 +19552,7 @@ window.currentPreview = function (content) {
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_23__.default],
         content: this.content
       });
+      console.log("settingpreview", preview);
       this.preview = preview;
       window.previewHook.currentPreview = this;
     }
@@ -19564,6 +19566,7 @@ var InitPreview = {
     this.handleEvent("loadPreview", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme;
+      console.log("loadPreview", content);
       window.previewHook.currentPreview.preview.commands.setContent(content);
       var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
       rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");

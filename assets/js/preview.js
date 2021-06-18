@@ -32,7 +32,7 @@ import Glightbox from 'glightbox'
 window.previewHook = {}
 
 window.currentPreview = function (content) {
-  
+  console.log("currentPreview", content)
   return {
     content: content,
     viewer: null,
@@ -70,7 +70,7 @@ window.currentPreview = function (content) {
         ],
         content: this.content,
       })
-
+      console.log("settingpreview", preview)
       this.preview = preview
       window.previewHook.currentPreview = this
     },
@@ -82,6 +82,7 @@ export const InitPreview = {
     window.previewHook.base = this
     console.log("window.previewHook", window.previewHook)
     this.handleEvent("loadPreview", ({ content, theme }) => {
+      console.log("loadPreview", content)
       window.previewHook.currentPreview.preview.commands.setContent(content)
       let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
           rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`

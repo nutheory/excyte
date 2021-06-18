@@ -22,19 +22,6 @@ config :excyte, :gcp_places, System.get_env("GCP_EXCYTE_PLACES")
 #   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
 #   auth_token: System.get_env("TWILIO_AUTH_TOKEN")
 
-# remove crawly to remove this setting
-config :crawly,
-  port: 4002
-#   closespider_timeout: 10,
-#   middlewares: [
-#     Crawly.Middlewares.UniqueRequest,
-#     Excyte.ProxyMiddleware,
-#     {Crawly.Middlewares.UserAgent, user_agents: ["Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"]}
-#   ],
-#   pipelines: [
-#     Excyte.DbPipeline
-#   ]
-
 config :tesla, :adapter, Tesla.Adapter.Hackney
 
 config :money,

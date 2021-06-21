@@ -6,6 +6,7 @@ defmodule Excyte.Release do
   @app :excyte
 
   def run_seeds do
+    ensure_started()
     Code.eval_file("priv/repo/seeds.exs")
   end
 

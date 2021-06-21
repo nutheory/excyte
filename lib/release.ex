@@ -6,7 +6,7 @@ defmodule Excyte.Release do
   @app :excyte
 
   def run_seeds do
-    Code.eval_file("/priv/repo/seeds.exs")
+    Code.eval_file("priv/repo/seeds.exs")
   end
 
   def migrate do

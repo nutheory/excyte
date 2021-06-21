@@ -152,6 +152,7 @@ defmodule ExcyteWeb.Insight.Comps do
   defp get_theme(ins, %{assigns: a}) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
     templates = Insights.get_document_templates(a.current_user, ins.type)
+    IO.inspect(templates, label: "TEMPLATES")
     send self(), {:set_theme_template, %{theme_attributes: theme_attrs, template: hd(templates)}}
   end
 

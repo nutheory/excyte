@@ -47,7 +47,7 @@ defmodule Excyte.Insights.DocumentTemplate do
 
   def by_public(query) do
     from dt in query,
-    or_where: dt.is_public == true,
+    where: dt.is_public == true,
     order_by: dt.name
   end
 

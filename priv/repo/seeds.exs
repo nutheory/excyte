@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-# alias Excyte.{Accounts, Insights}
+alias Excyte.{Accounts, Insights}
 # import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
 
 # excyte_admins = [
@@ -36,68 +36,33 @@
 #   }
 # ]
 
-defmodule Excyte.InsightFixtures do
 
-  alias Excyte.Insights
+{:ok, cma_template} = Enum.into(%{}, %{
+                      insight_type: "cma",
+                      is_excyte_made: true,
+                      type_default: true,
+                      name: "Excyte Basic CMA",
+                      is_public: true
+                    })
+                    |> Insights.create_document_template()
 
-  def excyte_cma_template(attrs \\ %{}) do
-    {:ok, temp} =
-      attrs
-        |> Enum.into(%{
-          insight_type: "cma",
-          is_excyte_made: true,
-          type_default: true,
-          name: "Excyte Basic CMA",
-          is_public: true
-        })
-        |> Insights.create_document_template()
-      temp
-  end
+{:ok, showcase_template} = Enum.into(%{}, %{
+                            insight_type: "showcase",
+                            is_excyte_made: true,
+                            type_default: true,
+                            name: "Excyte Basic Showcase",
+                            is_public: true
+                          })
+                          |> Insights.create_document_template()
 
-  def excyte_showcase_template(attrs \\ %{}) do
-    {:ok, temp} =
-      attrs
-        |> Enum.into(%{
-          insight_type: "showcase",
-          is_excyte_made: true,
-          type_default: true,
-          name: "Excyte Basic Showcase",
-          is_public: true
-        })
-        |> Insights.create_document_template()
-      temp
-  end
-
-  def excyte_buyer_tour_template(attrs \\ %{}) do
-    {:ok, temp} =
-      attrs
-        |> Enum.into(%{
-          insight_type: "buyer_tour",
-          is_excyte_made: true,
-          type_default: true,
-          name: "Excyte Basic Buyer Tour",
-          is_public: true
-        })
-        |> Insights.create_document_template()
-      temp
-  end
-
-  def excyte_section_template(attrs \\ %{}) do
-    {:ok, temp} =
-      attrs
-        |> Enum.into(%{
-          is_public: true
-        })
-        |> Insights.create_section_template()
-    temp
-  end
-end
-
-import Excyte.InsightFixtures
-
-cma_template = excyte_cma_template(%{})
-showcase_template = excyte_showcase_template(%{})
-buyer_tour_template = excyte_buyer_tour_template(%{})
+{:ok, buyer_tour_template} = Enum.into(%{
+                              insight_type: "buyer_tour",
+                              is_excyte_made: true,
+                              type_default: true,
+                              name: "Excyte Basic Buyer Tour",
+                              is_public: true
+                            })
+                            |> Insights.create_document_template()
 
 sections = [
   %{
@@ -278,7 +243,10 @@ sections = [
 ]
 
 Enum.each(sections, fn s ->
-  excyte_section_template(s)
+  Enum.into(s, %{
+          is_public: true
+  })
+  |> Insights.create_section_template()
 end)
 
 # Enum.each(excyte_admins, fn a ->

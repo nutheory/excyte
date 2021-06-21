@@ -11,7 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Excyte.{Accounts, Insights}
-import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
+# import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
 
 # excyte_admins = [
 #   %{
@@ -35,6 +35,58 @@ import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
 #     brokerage_name: "Capitol Riot"
 #   }
 # ]
+
+def excyte_cma_template(attrs \\ %{}) do
+  {:ok, temp} =
+    attrs
+      |> Enum.into(%{
+        insight_type: "cma",
+        is_excyte_made: true,
+        type_default: true,
+        name: "Excyte Basic CMA",
+        is_public: true
+      })
+      |> Insights.create_document_template()
+    temp
+end
+
+def excyte_showcase_template(attrs \\ %{}) do
+  {:ok, temp} =
+    attrs
+      |> Enum.into(%{
+        insight_type: "showcase",
+        is_excyte_made: true,
+        type_default: true,
+        name: "Excyte Basic Showcase",
+        is_public: true
+      })
+      |> Insights.create_document_template()
+    temp
+end
+
+def excyte_buyer_tour_template(attrs \\ %{}) do
+  {:ok, temp} =
+    attrs
+      |> Enum.into(%{
+        insight_type: "buyer_tour",
+        is_excyte_made: true,
+        type_default: true,
+        name: "Excyte Basic Buyer Tour",
+        is_public: true
+      })
+      |> Insights.create_document_template()
+    temp
+end
+
+def excyte_section_template(attrs \\ %{}) do
+  {:ok, temp} =
+    attrs
+      |> Enum.into(%{
+        is_public: true
+      })
+      |> Insights.create_section_template()
+  temp
+end
 
 cma_template = excyte_cma_template(%{})
 showcase_template = excyte_showcase_template(%{})

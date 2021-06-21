@@ -22,6 +22,10 @@ Section
 ## Deploy instructions
 
 [https://www.youtube.com/watch?v=DhSylrNr81k](Render deploy)
+# To connect to it remotely
+_build/prod/rel/excyte/bin/excyte remote  
+# To stop it gracefully (you may also send SIGINT/SIGTERM)
+_build/prod/rel/excyte/bin/excyte stop
 
 Migrate cmd $ _build/prod/rel/excyte/bin/excyte eval "Excyte.Release.migrate"
 

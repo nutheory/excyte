@@ -7,6 +7,7 @@ defmodule Excyte.Release do
 
   def run_seeds do
     ensure_started()
+    Excyte.Repo.start_link()
     Code.eval_file("priv/repo/seeds.exs")
   end
 

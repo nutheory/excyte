@@ -24,7 +24,7 @@ config :excyte, :aws, %{
   region: "us-west-1"
 }
 
-
+config :excyte, :base_url, System.get_env("EXCYTE_URL")
 # Do not print debug messages in production
 config :logger, level: :info
 

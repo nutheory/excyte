@@ -79,10 +79,10 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
-  def create_sections(_repo, _changes, sections_arr) do
+  def create_sections(_repo, %{update_insight: %{created_by_id: uid}}, sections_arr) do
     sects=
       Enum.map(sections_arr, fn s ->
-        create_section(s)
+        create_section(Map.merge(s, %{created_by_id: uid}))
       end)
     {:ok, sects}
   end

@@ -189,12 +189,12 @@ body {
   color: rgba(31, 41, 55, var(--tw-text-opacity));
 }
 
-input:checked ~ .dot {
+.dot-selected {
   transform: translateX(100%);
   background-color: #fff;
 }
 
-input:checked ~ .slider {
+.slider-selected {
   background: #bef04c;
   background: radial-gradient(at top left, #bef04c, #11ca26);
 }
@@ -2519,6 +2519,10 @@ h4 {
   margin-left: 0px;
 }
 
+.ml-px {
+  margin-left: 1px;
+}
+
 .mb-16 {
   margin-bottom: 4rem;
 }
@@ -2838,10 +2842,6 @@ h4 {
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.cursor-move {
-  cursor: move;
 }
 
 .resize {
@@ -3375,6 +3375,11 @@ h4 {
   padding-bottom: 1rem;
 }
 
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
 .py-10 {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
@@ -3383,11 +3388,6 @@ h4 {
 .px-6 {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-}
-
-.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
 }
 
 .pl-4 {
@@ -4766,6 +4766,10 @@ h4 {
     margin-top: 8rem;
   }
 
+  .lg\:mt-24 {
+    margin-top: 6rem;
+  }
+
   .lg\:mt-6 {
     margin-top: 1.5rem;
   }
@@ -4830,16 +4834,20 @@ h4 {
     width: 18rem;
   }
 
-  .lg\:w-60 {
-    width: 15rem;
-  }
-
   .lg\:w-3\/5 {
     width: 60%;
   }
 
+  .lg\:w-60 {
+    width: 15rem;
+  }
+
   .lg\:w-1\/4 {
     width: 25%;
+  }
+
+  .lg\:max-w-2xl {
+    max-width: 42rem;
   }
 
   .lg\:max-w-4xl {
@@ -5199,8 +5207,8 @@ h4 {
     width: 75%;
   }
 
-  .xl\:max-w-6xl {
-    max-width: 72rem;
+  .xl\:max-w-7xl {
+    max-width: 80rem;
   }
 
   .xl\:grid-cols-4 {

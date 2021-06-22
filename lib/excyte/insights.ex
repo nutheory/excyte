@@ -113,14 +113,11 @@ defmodule Excyte.Insights do
   end
 
   def get_document_templates(usr, type) do
-    IO.inspect(type, label: "TYPE START")
     DocumentTemplate
     |> DocumentTemplate.by_type(type)
     |> DocumentTemplate.by_public()
-    |> IO.inspect(label: "TYPE AFTER")
     |> DocumentTemplate.by_creator(usr.id)
     |> DocumentTemplate.by_brokerage(usr.brokerage_id)
-    |> IO.inspect(label: "TYPE END")
     |> Repo.all()
   end
 

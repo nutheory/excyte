@@ -301,7 +301,6 @@ button.jumbo {
   @apply h-screen;
 
   width: 95%;
-  max-width: 36rem;
   position: fixed;
   z-index: 2000;
   top: 0;

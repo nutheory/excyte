@@ -10,9 +10,24 @@
     </div>
   <% else %>
     <%= if @preview_panel === false do %>
-      <div class="">
-        <h3 class="">Cutomize</h3>
-        <ul class="section-nav" phx-hook="InitSortable" id="sections" data-target-id="#builder" data-sections-id="sections">
+      <div class="mt-20  w-full lg:w-3/5 lg:mx-auto lg:mt-24">
+        <div class="flex">
+          <h3 class="mb-0 flex-1">Customize</h3>
+          <div
+            class="cursor-pointer flex"
+            phx-click="toggle-preview"
+          >
+            <div class="mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+            <div class="link-button font-bold pt-0.5">Preview</div>
+          </div>
+        </div>
+        <p class="text-base">Customize your report by disabling/enabling, sorting, or adding video.</p>
+        <ul class="section-nav py-6" phx-hook="InitSortable" id="sections" data-target-id="#builder" data-sections-id="sections">
           <%= for section <- @sections do %>
             <%= live_component @socket, SectionCard,
               name: section.name,
@@ -24,17 +39,78 @@
             %>
           <% end %>
         </ul>
+        <div class="pb-12">
+          <%= if @show_video_form do %>
+            <div class="mb-4 p-3 rounded shadow bg-white">
+              <%= f = form_for :video, "#", [phx_submit: :video_upload] %>
+                <div class="flex">
+                  <h4 class="mb-0 flex-1">Add a Video</h4>
+                  <div class="link-button" phx-click="toggle-video">Cancel</div>
+                </div>
+                <div class="mb-4">
+                  <%= text_input f, :name, class: "text-field", placeholder: "Title" %>
+                </div>
+                <div class="mb-4">
+                  <%= textarea f, :description, class: "textarea", placeholder: "Description" %>
+                </div>
+
+              </form>
+            </div>
+          <% else %>
+            <div class="mb-4 p-3 rounded shadow bg-white">
+              <div class="flex justify-center">
+                <div
+                  class="flex"
+                  phx-click="toggle-video"
+                >
+                  <div class="mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <h4 class="mb-0">Add a Video</h4>
+                </div>
+              </div>
+            </div>
+            <div class="p-3 rounded shadow bg-white">
+              <%= f = form_for :publish, "#", [phx_submit: :publish] %>
+                <h4 class="mb-0">Name and Publish</h4>
+                <div class="flex">
+                  <div class="flex-1">
+                    <%= text_input f, :name, class: "text-field", placeholder: "Name", value: @name %>
+                  </div>
+                  <div class="ml-3">
+                    <%= submit "Publish", class: "submit" %>
+                  </div>
+                </div>
+              </form>
+            </div>
+          <% end %>
+        </div>
       </div>
     <% else %>
-      <div class="preview-wrapper" id="previewWrapper" phx-hook="InitPreview">
-        <div class="antialiased" phx-update="ignore">
+      <div class="preview-wrapper panel-slidein bg-gray-100 <%= if @preview_panel, do: 'right-0', else: '' %>" id="previewWrapper" phx-hook="InitPreview">
+        <div class="absolute top-2 left-2 flex">
+          <div class="mr-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </div>
+          <div
+            class="cursor-pointer"
+            phx-click="toggle-preview"
+          >
+            Close preview
+          </div>
+        </div>
+        <div class="antialiased h-screen overflow-y-auto" phx-update="ignore">
           <div
             class="h-full"
             x-data="currentPreview('')"
             x-init="() => init($refs.preview)"
             x-on:click.away="inFocus = false"
           >
-            <div class="px-4 py-10 max-w-3xl mx-auto sm:px-6 sm:py-12 lg:max-w-4xl lg:py-16 lg:px-8 xl:max-w-6xl">
+            <div class="px-4 py-10 max-w-3xl mx-auto sm:px-6 sm:py-12 lg:max-w-4xl lg:py-16 lg:px-8 xl:max-w-7xl">
               <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto">
                 <div x-ref="preview"></div>
               </div>

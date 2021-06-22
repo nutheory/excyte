@@ -19567,6 +19567,7 @@ var InitPreview = {
           theme = _ref.theme;
       setTimeout(function () {
         window.previewHook.currentPreview.preview.commands.setContent(content);
+        console.log("THEME", theme);
         var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
         rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
@@ -19625,7 +19626,7 @@ var init = function init(sortableList, callback) {
   var sectionsId = sortableList.dataset.sectionsId;
   var sortable = new sortablejs__WEBPACK_IMPORTED_MODULE_0__.default(sortableList, {
     group: "shared",
-    handle: ".cursor-move",
+    handle: ".grabbable",
     dragClass: "shadow-xl",
     touchStartThreshold: 6,
     fallbackOnBody: true,

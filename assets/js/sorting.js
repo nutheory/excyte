@@ -14,7 +14,7 @@ const init = (sortableList, callback) => {
 
   const sortable = new Sortable(sortableList, {
     group: "shared",
-    handle: ".cursor-move",
+    handle: ".grabbable",
     dragClass: "shadow-xl",
     touchStartThreshold: 6,
     fallbackOnBody: true,

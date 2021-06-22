@@ -18,12 +18,12 @@
   }
 }
 
-input:checked ~ .dot {
+.dot-selected {
   transform: translateX(100%);
   background-color: #fff;
 }
 
-input:checked ~ .slider {
+.slider-selected {
   background: #bef04c;
   background: radial-gradient(at top left, #bef04c, #11ca26);
 }

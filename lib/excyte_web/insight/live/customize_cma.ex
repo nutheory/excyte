@@ -17,7 +17,9 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
           insight: ins,
           sections: [],
           data: nil,
+          name: "",
           preview_content: "",
+          show_video_form: false,
           preview_panel: false,
           loading: true
         )}
@@ -37,6 +39,7 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
           sections: sections,
           insight: insight,
           data: res.data,
+          name: "#{res.data.subject["street_number"]} #{res.data.subject["street_name"]}",
           loading: false
         )}
       {:error, err} -> err
@@ -48,12 +51,13 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
     {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
   end
 
-  def handle_info(:publish, %{assigns: a} = socket) do
+  def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
     published =
       case Insights.publish_insight(%{
         sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
         insight: %{
           id: a.insight["id"],
+          name: name,
           cover_photo_url: a.data.subject["main_photo_url"],
           published: true
         }}) do
@@ -73,14 +77,25 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
+  def handle_event("toggle-preview", _, %{assigns: a} = socket) do
+    doc = stitch_preview(a.sections)
+    {:noreply,
+      socket
+      |> push_event("loadPreview", %{content: doc, theme: a.insight["document_attributes"]})
+      |> assign(preview_panel: !a.preview_panel)}
+  end
+
+  def handle_event("toggle-video", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, show_video_form: !a.show_video_form)}
+  end
+
   def handle_event("sort", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
     rearranged =
       Enum.map(sections, fn %{"id" => id, "position" => pos} ->
         Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)
-    doc = stitch_preview(rearranged)
-    {:noreply, push_event(socket, "loadPreview", %{content: doc}) |> assign(socket, sections: rearranged)}
+    {:noreply, assign(socket, sections: rearranged)}
   end
 
   def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
@@ -95,13 +110,7 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
       Enum.map(a.sections, fn st ->
         if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
       end)
-    doc = stitch_preview(sections)
-    {:noreply, socket |> push_event("loadPreview", %{content: doc}) |> assign(sections: sections)}
-  end
-
-  def handle_event("publish", socket) do
-    send self(), :publish
-    {:noreply, socket}
+    {:noreply, assign(socket, sections: sections)}
   end
 
   def handle_event("republish", socket) do

@@ -28,7 +28,6 @@ defmodule Excyte.Properties.PublicDataApi do
   def get_listing_info(foreign_id) do
     case get("/properties/v2/detail", query: [property_id: foreign_id]) do
       {:ok, %Tesla.Env{:body => %{"properties" => properties}}} ->
-        IO.inspect(properties, label: "PROP")
         prop = hd(properties)
         if Map.has_key?(prop, "mls") do
           {:ok, %{name: prop["mls"]["name"], id: prop["mls"]["id"]}}

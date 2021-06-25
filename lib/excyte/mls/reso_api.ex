@@ -159,7 +159,7 @@ defmodule Excyte.Mls.ResoApi do
       ""
     else
       "(#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
-      <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: low, high: high})})"
+      <> "#{get_attr_by_range_simple(mls, %{attr: "ClosePrice", low: low, high: high})})"
     end
   end
 
@@ -193,6 +193,19 @@ defmodule Excyte.Mls.ResoApi do
         l !== nil && h !== nil -> "%20and%20#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h}"
         l !== nil -> "%20and%20#{attr}%20gt%20#{l}"
         h !== nil -> "%20and%20#{attr}%20lt%20#{h}"
+        true -> ""
+      end
+    end
+  end
+
+    defp get_attr_by_range_simple(mls, %{attr: attr, low: l, high: h}) do
+    meta = get_metadata(mls)
+    entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
+    if Enum.member?(entity.attributes, attr) do
+      cond do
+        l !== nil && h !== nil -> "#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h}"
+        l !== nil -> "#{attr}%20gt%20#{l}"
+        h !== nil -> "#{attr}%20lt%20#{h}"
         true -> ""
       end
     end

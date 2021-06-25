@@ -246,7 +246,6 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def showcase(%{insight: ins}) do
-    IO.inspect(ins["content"]["suggested_subject_price"], label: "SHOW")
     """
       <p>Welcome to the showcase</p>
     """
@@ -258,7 +257,6 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def subject(%{subject: sbj, insight: ins}) do
-    IO.inspect(ins["content"]["suggested_subject_price"], label: "SPPPP")
     """
       <struct class="section subject" id="subject">
         <h1 class="muted-color">Subject property</h1>
@@ -308,7 +306,6 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def tour_stop(%{listing: lst}) do
     media = Jason.encode!(lst["media"])
-    IO.inspect(lst, label: "TOUR")
     """
       <p>Welcome to the buyer tour</p>
       <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' class="simple-gallery"></div>

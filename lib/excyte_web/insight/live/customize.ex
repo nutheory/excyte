@@ -9,7 +9,6 @@ defmodule ExcyteWeb.Insight.Customize do
   def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     {:ok, current_state} = Cachex.get(:insights_cache, id)
-    IO.inspect(current_state, label: "CUST")
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
         send self(), {:get_sections, %{insight: ins}}

@@ -113,7 +113,6 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   end
 
   def handle_event("update-tour", _, %{assigns: a} = socket) do
-    IO.inspect(a.selected_listings, label: "TOUR")
     update = %{
       selected_listing_ids: Enum.map(a.selected_listings, fn c -> c.listing_id end),
       saved_search: %{criteria: a.filters},

@@ -220,7 +220,7 @@ defmodule ExcyteWeb.Insight.Customize do
       first = hd(ins["content"]["listings"])
       first["main_photo_url"]
     else
-      ins.cover_photo_url
+      ins["cover_photo_url"]
     end
   end
 end

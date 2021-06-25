@@ -158,8 +158,8 @@ defmodule Excyte.Mls.ResoApi do
     if price === nil || price === 0 || Enum.empty?(price) do
       ""
     else
-      "(#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
-      <> "#{get_attr_by_range_simple(mls, %{attr: "ClosePrice", low: low, high: high})})"
+      "#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
+      <> "#{get_attr_by_range_simple(mls, %{attr: "ClosePrice", low: low, high: high})}"
     end
   end
 
@@ -198,7 +198,7 @@ defmodule Excyte.Mls.ResoApi do
     end
   end
 
-    defp get_attr_by_range_simple(mls, %{attr: attr, low: l, high: h}) do
+  defp get_attr_by_range_simple(mls, %{attr: attr, low: l, high: h}) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do

@@ -95,7 +95,7 @@
             <strong>distance (mi.)</strong>
           </div>
         </div>
-        <% if @subject do %>
+        <%= if @subject do %>
           <div class="w-full mt-3">
             <label>Status updated</label>
             <%= live_component @socket, Dropdown,

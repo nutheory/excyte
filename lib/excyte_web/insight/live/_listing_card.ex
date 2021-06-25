@@ -12,7 +12,6 @@ defmodule ExcyteWeb.Insight.ListingCard do
     #   ""
     # end
     {:ok, assign(socket,
-      subject_coords: assigns.subject_coords,
       listing: assigns.listing,
       added: assigns.added
     )}

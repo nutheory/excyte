@@ -11,58 +11,34 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Excyte.{Accounts, Insights}
-# import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
+import Excyte.{AccountsFixtures, InsightFixtures, MlsFixtures}
 
-# excyte_admins = [
-#   %{
-#     full_name: "Excyte Admin",
-#     email: "drush81+admin@gmail.com"
-#   }
-# ]
+excyte_admins = [
+  %{
+    full_name: "Excyte Admin",
+    email: "drush81+admin@gmail.com"
+  }
+]
 
-# agents = [
-#   %{
-#     full_name: "Derek Rush",
-#     email: "drush81+agent@gmail.com",
-#   }
-# ]
+agents = [
+  %{
+    full_name: "Derek Rush",
+    email: "drush81+agent@gmail.com",
+  }
+]
 
-# brokerages = [
-#   %{
-#     full_name: "Derek Broker",
-#     email: "drush81+broker@gmail.com",
-#     phone: "9492808977",
-#     brokerage_name: "Capitol Riot"
-#   }
-# ]
+brokerages = [
+  %{
+    full_name: "Derek Broker",
+    email: "drush81+broker@gmail.com",
+    phone: "9492808977",
+    brokerage_name: "Capitol Riot"
+  }
+]
 
-
-{:ok, cma_template} = Enum.into(%{}, %{
-                      insight_type: "cma",
-                      is_excyte_made: true,
-                      type_default: true,
-                      name: "Excyte Basic CMA",
-                      is_public: true
-                    })
-                    |> Insights.create_document_template()
-
-{:ok, showcase_template} = Enum.into(%{}, %{
-                            insight_type: "showcase",
-                            is_excyte_made: true,
-                            type_default: true,
-                            name: "Excyte Basic Showcase",
-                            is_public: true
-                          })
-                          |> Insights.create_document_template()
-
-{:ok, buyer_tour_template} = Enum.into(%{
-                              insight_type: "buyer_tour",
-                              is_excyte_made: true,
-                              type_default: true,
-                              name: "Excyte Basic Buyer Tour",
-                              is_public: true
-                            })
-                            |> Insights.create_document_template()
+cma_template = excyte_cma_template(%{})
+showcase_template = excyte_showcase_template(%{})
+buyer_tour_template = excyte_buyer_tour_template(%{})
 
 sections = [
   %{
@@ -71,6 +47,7 @@ sections = [
     component_data_types: ["subject"],
     name: "Cover Page",
     description: "",
+    type: "page",
     is_public: true,
     is_excyte_made: true,
     position: 0
@@ -134,7 +111,7 @@ sections = [
     document_template_id: cma_template.id,
     component_name: "comparable",
     component_data_types: ["listing"],
-    name: "Comparable Listing",
+    name: "Comparable Listings",
     description: "",
     type: "page",
     is_public: true,
@@ -208,8 +185,8 @@ sections = [
     position: 2
   },
   %{
-    document_template_id: showcase_template.id,
-    component_name: "showcase",
+    document_template_id: buyer_tour_template.id,
+    component_name: "tour_stop",
     component_data_types: ["listing"],
     name: "Property",
     description: "",
@@ -219,7 +196,7 @@ sections = [
     position: 0
   },
   %{
-    document_template_id: showcase_template.id,
+    document_template_id: buyer_tour_template.id,
     component_name: "agent_profile",
     component_data_types: ["agent"],
     name: "Agent Profile",
@@ -230,7 +207,7 @@ sections = [
     position: 1
   },
   %{
-    document_template_id: showcase_template.id,
+    document_template_id: buyer_tour_template.id,
     component_name: "brokerage_profile",
     component_data_types: ["brokerage"],
     name: "Brokerage Profile",
@@ -243,41 +220,38 @@ sections = [
 ]
 
 Enum.each(sections, fn s ->
-  Enum.into(s, %{
-          is_public: true
-  })
-  |> Insights.create_section_template()
+  excyte_section_template(s)
 end)
 
-# Enum.each(excyte_admins, fn a ->
-#   admin = agent_fixture(a)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(admin, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(admin)
-#   setup_billing(admin)
-# end)
+Enum.each(excyte_admins, fn a ->
+  admin = agent_fixture(a)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(admin, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(admin)
+  setup_billing(admin)
+end)
 
-# Enum.each(agents, fn a ->
-#   agent = agent_fixture(a)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(agent, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(agent)
-#   setup_billing(agent)
-# end)
+Enum.each(agents, fn a ->
+  agent = agent_fixture(a)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(agent, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(agent)
+  setup_billing(agent)
+end)
 
-# Enum.each(brokerages, fn b ->
-#   broker = brokerage_fixture(b)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(broker, url)
-#     end)
-#   Accounts.confirm_user(token)
-#   add_test_mls(broker)
-#   setup_billing(broker)
-# end)
+Enum.each(brokerages, fn b ->
+  broker = brokerage_fixture(b)
+  token =
+    extract_user_token(fn url ->
+      Accounts.deliver_user_confirmation_instructions(broker, url)
+    end)
+  Accounts.confirm_user(token)
+  add_test_mls(broker)
+  setup_billing(broker)
+end)

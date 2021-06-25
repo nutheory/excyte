@@ -1,11 +1,15 @@
-<div class="preview-wrapper" id="viewerWrapper" phx-hook="InitViewer">
-  <%= live_component @socket, Header, id: :report_header %>
+<div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="InitViewer" phx-update="ignore">
+  <%= live_component @socket, Header, current_user: @current_user, id: :report_header %>
   <div
-    class="max-w-screen-xl mx-auto"
+    class=""
     x-data="currentViewer('')"
     x-init="() => init($refs.viewer)"
     x-on:click.away="inFocus = false"
   >
-    <div x-ref="viewer" class=""></div>
+    <div class="px-4 py-10 max-w-3xl mx-auto sm:px-6 sm:py-12 lg:max-w-4xl lg:py-16 lg:px-8 xl:max-w-7xl">
+      <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto">
+        <div x-ref="viewer"></div>
+      </div>
+    </div>
   </div>
 </div>

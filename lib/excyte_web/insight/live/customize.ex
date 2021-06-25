@@ -1,14 +1,15 @@
-defmodule ExcyteWeb.Insight.CustomizeCma do
+defmodule ExcyteWeb.Insight.Customize do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Activities, Insights, Insights.Insight}
-  alias ExcyteWeb.{InsightView, Helpers.Templates}
+  alias ExcyteWeb.{InsightView, Helpers.Templates, Helpers.Utilities}
 
 
-  def render(assigns), do: InsightView.render("customize_cma.html", assigns)
+  def render(assigns), do: InsightView.render("customize.html", assigns)
 
   def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    # {:ok, prev_state} = Cachex.get(:insights_cache, params["insight_id"])
+    {:ok, current_state} = Cachex.get(:insights_cache, id)
+    IO.inspect(current_state, label: "CUST")
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
         send self(), {:get_sections, %{insight: ins}}
@@ -53,20 +54,18 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
 
   def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
     published =
-      case Insights.publish_insight(%{
-        sections: Enum.filter(a.sections, fn st -> st.enabled === true end),
-        insight: %{
-          id: a.insight["id"],
+      case Insights.update_insight(a.insight["uuid"], a.current_user.id, %{
+          content: %{html: stitch_preview(a.sections)},
           name: name,
-          cover_photo_url: a.data.subject["main_photo_url"],
+          cover_photo_url: needs_cover_photo?(a.insight),
           published: true
-        }}) do
+        }) do
           {:ok, pub} -> pub
           {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
       end
     {:noreply,
       socket
-      |> put_flash(:info, "#{String.upcase(published.update_insight.type)} was created and published successfully.")
+      |> put_flash(:info, "#{String.upcase(published.type)} was created and published successfully.")
       |> push_redirect(to: "/agent/dash")}
   end
 
@@ -89,13 +88,27 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
     {:noreply, assign(socket, show_video_form: !a.show_video_form)}
   end
 
-  def handle_event("sort", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
+  def handle_event("sort-sections", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
     rearranged =
       Enum.map(sections, fn %{"id" => id, "position" => pos} ->
         Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)
     {:noreply, assign(socket, sections: rearranged)}
+  end
+
+  def handle_event("sort-listings", %{"listings" => [_|_] = listings}, %{assigns: a} = socket) do
+    section = Enum.find(a.sections, fn %{component_name: cn} -> cn === "comparable" end)
+    rearranged =
+      Enum.map(listings, fn %{"id" => id, "position" => pos} ->
+        Enum.find(section.html_content, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
+        |> Map.put(:position, pos)
+      end)
+    sections = Enum.map(a.sections, fn s ->
+      if s.component_name === "comparable", do: Map.merge(s, %{html_content: rearranged}), else: s
+    end)
+
+    {:noreply, assign(socket, sections: sections)}
   end
 
   def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
@@ -113,14 +126,26 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
     {:noreply, assign(socket, sections: sections)}
   end
 
-  def handle_event("republish", socket) do
-    # send self(), :publish
-    {:noreply, socket}
+  def handle_event("toggle-listing-enabled", %{"id" => id}, %{assigns: a} = socket) do
+    section = Enum.find(a.sections, fn %{component_name: cn} -> cn === "comparable" end)
+    updated =
+      Enum.map(section.html_content, fn st ->
+        if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
+      end)
+    sections = Enum.map(a.sections, fn s ->
+      if s.component_name === "comparable", do: Map.merge(s, %{html_content: updated}), else: s
+    end)
+    {:noreply, assign(socket, sections: sections)}
   end
 
   defp with_html_sections(sections, data) do
     Enum.map(sections, fn s ->
-      html = if s.html_content === nil, do: get_editor_templates(s, data), else: s.html_content
+      html =
+        if s.html_content === nil do
+          get_template_content(s, data)
+        else
+          s.html_content
+        end
       Map.merge(s, %{
         created_by_id: data.agent_profile["id"],
         insight_id: data.insight["id"],
@@ -130,9 +155,41 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
     end)
   end
 
-  defp get_editor_templates(%{component_name: component} = comp, data) do
+  defp get_template_content(%{component_name: component} = section, data) do
     case component do
-      "comparable" -> Templates.comparable(%{listing: comp.data})
+      "comparable" ->
+        Enum.with_index(section.listings, 0)
+        |> Enum.map(fn {listing, i} ->
+          %{
+            position: i,
+            created_by_id: data.agent_profile["id"],
+            section_template_id: section.id,
+            insight_id: data.insight["id"],
+            component_name: "#{component}_item",
+            enabled: true,
+            type: "page",
+            temp_id: i,
+            description: "#{Utilities.humanize_component_name(component)} Listing",
+            name: "#{listing["street_number"]} #{listing["street_name"]}",
+            html_content: Templates.comparable(%{listing: listing})
+          }
+        end)
+      "tour_stop" ->
+        Enum.map(section.listings, fn sl ->
+          %{
+            position: sl["position"],
+            created_by_id: data.agent_profile["id"],
+            section_template_id: section.id,
+            insight_id: data.insight["id"],
+            component_name: "#{component}_item",
+            enabled: true,
+            type: "page",
+            temp_id: sl["position"],
+            description: "#{Utilities.humanize_component_name(component)} Listing",
+            name: "#{sl["street_number"]} #{sl["street_name"]}",
+            html_content: Templates.tour_stop(%{listing: sl})
+          }
+        end)
       _ -> apply(Templates, String.to_existing_atom(component), [data])
     end
   end
@@ -140,7 +197,11 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
   defp stitch_preview(sections) do
     Enum.reduce(sections, "", fn section, acc ->
       if section.enabled === true && section.html_content !== nil do
-        acc <> section.html_content
+        if is_list(section.html_content) do
+          acc <> stitch_preview(section.html_content)
+        else
+          acc <> section.html_content
+        end
       else
         acc
       end
@@ -153,5 +214,14 @@ defmodule ExcyteWeb.Insight.CustomizeCma do
 
   defp merge_theme(%{agent_profile: ag, insight: ins}) do
     Map.merge(ins, %{"document_attributes" => ag["theme_settings"]})
+  end
+
+  defp needs_cover_photo?(ins) do
+    if ins["cover_photo_url"] === nil || ins["cover_photo_url"] === "" do
+      first = hd(ins["content"]["listings"])
+      first["main_photo_url"]
+    else
+      ins.cover_photo_url
+    end
   end
 end

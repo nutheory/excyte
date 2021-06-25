@@ -29,7 +29,8 @@ defmodule ExcyteWeb.Insight.CreateCma do
 
   def handle_info({:setup_subject, %{prop_id: prop_id}}, %{assigns: a} = socket) do
     case Properties.fetch_subject_details(prop_id, a.current_user.id) do
-      {:ok, subject} -> {:noreply, assign(socket, subject: subject, fetching: false)}
+      {:ok, subject} ->
+        {:noreply, assign(socket, subject: subject, fetching: false)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
     end
   end
@@ -37,7 +38,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   def handle_info({:create_subject, attrs}, %{assigns: a} = socket) do
     key = "cma#{a.current_user.id}#{System.os_time(:second)}"
     case Insights.create_insight(insight_data(attrs, key, a)) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/comparables")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/listings")}
       {:error, method, changeset, _} ->
           Activities.handle_errors(changeset, method)
           {:noreply, put_flash(socket, :error, "Something went wrong.")}
@@ -45,11 +46,16 @@ defmodule ExcyteWeb.Insight.CreateCma do
   end
 
   defp insight_data(subject_attrs, key, a) do
+    theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
+    template = Insights.get_document_templates(a.current_user, "cma")
     %{
       insight: %{
         uuid: key,
         type: "cma",
         name: "draft",
+        document_attributes: Map.from_struct(theme_attrs),
+        document_template_id: hd(template).id,
+        cover_photo_url: subject_attrs.main_photo_url,
         created_by_id: a.current_user.id,
         brokerage_id: a.current_user.brokerage_id,
         published: false,

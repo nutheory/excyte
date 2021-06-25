@@ -6,15 +6,12 @@
     <% end %>
     <div class="flex-1">
       <input
-        type="number"
+        type="text"
         name="min"
         class="number-field"
-        step="<%= @step %>"
         inputmode="numeric"
         pattern="[0-9]*"
         placeholder="min"
-        min="0"
-        max=""
         value="<%= @min %>"
         phx-debounce="blur"
       >
@@ -22,11 +19,9 @@
     <div class="mx-1 pt-1 font-bold"> - </div>
     <div class="flex-1">
       <input
-        type="number"
+        type="text"
         name="max"
         class="number-field"
-        step="<%= @step %>"
-        min="0"
         inputmode="numeric"
         pattern="[0-9]*"
         placeholder="max"

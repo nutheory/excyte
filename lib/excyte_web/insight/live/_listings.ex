@@ -7,8 +7,8 @@ defmodule ExcyteWeb.Insight.Listings do
   def update(assigns, socket) do
     {:ok, assign(socket,
       filters: assigns.filters,
-      comps: assigns.comps,
-      selected_comps: assigns.selected_comps,
+      listings: assigns.listings,
+      selected_listings: assigns.selected_listings,
       subject: assigns.subject,
       show_filters: assigns.show_filters
     )}

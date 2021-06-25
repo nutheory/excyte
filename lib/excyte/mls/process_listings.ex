@@ -1,5 +1,5 @@
 defmodule Excyte.Mls.ProcessListings do
-  alias Excyte.Properties.{Rankings}
+  alias Excyte.Properties.{Rankings, Property}
 
   def simple_process({:ok, %{listings: listings} = resp}) do
     new_dataset =
@@ -31,7 +31,7 @@ defmodule Excyte.Mls.ProcessListings do
         |> top_level_info(subject)
         |> main_booleans()
         |> process_media()
-        |> Rankings.process_init(subject)
+        |> rank_listings?(subject)
       end)
 
     {:ok, Map.merge(resp, %{listings: new_dataset})}
@@ -40,6 +40,14 @@ defmodule Excyte.Mls.ProcessListings do
   def process_init(_, _) do
     #LOG ERR in DB
     {:error, %{message: "Could not Process Comparable Listings"}}
+  end
+
+  defp rank_listings?(listings, %Property{} = subject) do
+    Rankings.process_init(listings, subject)
+  end
+
+  defp rank_listings?(listings, _) do
+    listings
   end
 
   def top_level_info(l, subject) do
@@ -110,7 +118,20 @@ defmodule Excyte.Mls.ProcessListings do
     }
   end
 
-  defp main_photo(media) do
+  def format_mls_keys(str) do
+    tl(String.split(str, ~r/(?=[A-Z])/))
+    |> Enum.reduce("", fn lts, acc ->
+      if String.length(lts) > 1 do
+        acc <> "#{lts}_"
+      else
+        acc <> lts
+      end
+    end)
+    |> String.trim("_")
+    |> String.downcase()
+  end
+
+  def main_photo(media) do
     Enum.find(media, fn m ->
       m["MediaCategory"] === "Photo" && m["Order"] === 1
     end)["MediaURL"]
@@ -268,15 +289,10 @@ defmodule Excyte.Mls.ProcessListings do
     acres * 43560
   end
 
-  defp sqft_to_acres(sqft) do
-    Float.round(sqft/43560, 2)
-  end
+  # defp sqft_to_acres(sqft) do
+  #   Float.round(sqft/43560, 2)
+  # end
 
   def process_init({:error, err}), do: {:error, err}
   def process_init(_), do: {:error, %{message: "Unknown Error"}}
 end
-
-
-# |> comparable_score()
-# |> score_description()
-# |> adjustment_considerations(waterfront, pool, )

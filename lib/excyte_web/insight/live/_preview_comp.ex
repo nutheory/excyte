@@ -1,6 +1,5 @@
 defmodule ExcyteWeb.Insight.PreviewComp do
   use ExcyteWeb, :live_component
-  # import Ecto
   alias ExcyteWeb.InsightView
 
   def render(assigns), do: InsightView.render("preview_comp.html", assigns)

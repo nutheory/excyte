@@ -15,8 +15,10 @@ defmodule ExcyteWeb.InsightView do
     Listings,
     ListingCard,
     PreviewComp,
+    PreviewTour,
     SectionCard,
     SelectedComps,
+    SelectedTour,
     SubjectForm,
     SubjectProperty
   }

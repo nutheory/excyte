@@ -1,15 +1,16 @@
-defmodule ExcyteWeb.Insight.Comps do
+defmodule ExcyteWeb.Insight.ListingSelector do
   use ExcyteWeb, :live_view
   alias Excyte.{
     Accounts,
     Insights,
     Insights.Insight,
     Mls.ResoApi,
-    Properties.Adjustments
+    Properties.Adjustments,
+    Properties.Property
   }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
-  def render(assigns), do: InsightView.render("comps.html", assigns)
+  def render(assigns), do: InsightView.render("listing_selector.html", assigns)
 
   def mount(params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
@@ -19,22 +20,19 @@ defmodule ExcyteWeb.Insight.Comps do
         insight: prev_state.insight,
         filters: Utilities.format_quoted_json(prev_state.insight.saved_search.criteria)
       }}
-      {:ok, assign(socket, Map.merge(prev_state, %{comparables: [], fetching: true}))}
+      {:ok, assign(socket, Map.merge(prev_state, %{listings: [], fetching: true}))}
     else
       if params["insight_id"], do: send self(), {:load_from_store, params["insight_id"]}
       {:ok, assign(socket,
         current_user: cu,
-        selected_comps: [],
+        selected_listings: [],
         filters: %{},
         client_info: assign_client_info(socket),
         subject: nil,
-        insight_name: nil,
-        template_id: nil,
-        theme_attributes: nil,
         sort_by: "ranking",
         key: params["insight_id"],
         fetching: (if params["insight_id"], do: true, else: false),
-        comparables: nil,
+        listings: nil,
         preview: nil,
         show_panel: false,
         show_filters: false
@@ -45,7 +43,6 @@ defmodule ExcyteWeb.Insight.Comps do
   def handle_info({:load_from_store, id}, %{assigns: a} = socket) do
     case Insights.get_initial_insight(a.current_user.id, id) do
       %Insight{} = ins ->
-        get_theme(ins, socket)
         send self(), {:query_mls, %{insight: ins, filters: Utilities.format_quoted_json(ins.saved_search.criteria)}}
         {:noreply, socket}
       nil -> {:noreply, assign(socket, fetching: false, errors: [%{message: "cannot locate #{id}."}])}
@@ -53,10 +50,11 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_info({:query_mls, %{insight: ins, filters: filters}}, %{assigns: a} = socket) do
-    case ResoApi.comparable_properties(a.current_user.current_mls, ins.property, filters) do
+    case ResoApi.listing_properties(a.current_user.current_mls, ins.property, filters) do
       {:ok, c} -> %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, ins.property, filters, socket)
-        {:noreply, assign(socket, insight: ins, comparables: ls, fetching: false, filters: fs,
-          subject: ns, comp_count: c.count)}
+
+        {:noreply, assign(socket, insight: ins, listings: ls, fetching: false, filters: fs,
+          subject: ns, comp_count: c.count, show_filters: length(ls) === 0)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
                         subject: ins.property)}
     end
@@ -75,22 +73,51 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_info({:add_comp, %{listing: listing}}, %{assigns: a} = socket) do
-    ns = assign(socket, selected_comps: a.selected_comps ++ [listing], preview: nil, show_panel: false)
+    ns = assign(socket, selected_listings: a.selected_listings ++ [listing], preview: nil, show_panel: false)
     progress_save(ns)
     {:noreply, ns}
   end
 
-  def handle_info({:set_theme_template, %{theme_attributes: theme, template: template}}, socket) do
-    {:noreply, assign(socket, theme_attributes: theme, template_id: template.id)}
+  def handle_info({:update_selected_listing, %{listing: listing}}, %{assigns: a} = socket) do
+    selected =
+      Enum.map(a.selected_listings, fn sl ->
+        if sl.listing_id === listing.listing_id, do: listing, else: sl
+      end)
+    ns = assign(socket, selected_listings: selected)
+    progress_save(ns)
+    {:noreply, ns}
+  end
+
+  def handle_info({:add_tour_stop, %{listing: listing}}, %{assigns: a} = socket) do
+    ns = assign(socket, selected_listings: a.selected_listings ++ [listing], preview: nil, show_panel: false)
+    progress_save(ns)
+    {:noreply, ns}
+  end
+
+  def handle_info({:tour_sorted, %{selected: sel}}, socket) do
+    ns = assign(socket, selected_listings: sel)
+    progress_save(ns)
+    {:noreply, ns}
   end
 
   def handle_info({:update_cma, %{suggested_price: sp}}, %{assigns: a} = socket) do
     update = %{
-      selected_listing_ids: Enum.map(a.selected_comps, fn c -> c.listing_id end),
+      selected_listing_ids: Enum.map(a.selected_listings, fn c -> c.listing_id end),
       saved_search: %{criteria: a.filters},
-      content: %{comps: a.selected_comps, suggested_subject_price: sp},
-      document_attributes: Map.from_struct(a.theme_attributes),
-      document_template_id: a.template_id
+      content: %{listings: a.selected_listings, suggested_subject_price: sp}
+    }
+    case Insights.update_insight(a.key, a.current_user.id, update) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
+      {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    end
+  end
+
+  def handle_event("update-tour", _, %{assigns: a} = socket) do
+    IO.inspect(a.selected_listings, label: "TOUR")
+    update = %{
+      selected_listing_ids: Enum.map(a.selected_listings, fn c -> c.listing_id end),
+      saved_search: %{criteria: a.filters},
+      content: %{listings: a.selected_listings}
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
@@ -116,6 +143,16 @@ defmodule ExcyteWeb.Insight.Comps do
     {:noreply, assign(socket, fetching: true)}
   end
 
+  def handle_event("sort-listings", %{"listings" => [_|_] = listings}, %{assigns: a} = socket) do
+    rearranged =
+      Enum.map(listings, fn %{"id" => id, "position" => pos} ->
+        Enum.find(a.selected_listings, fn %{listing_id: lid} -> id === lid end)
+        |> Map.put(:position, pos)
+      end)
+
+    {:noreply, assign(socket, selected_listings: rearranged)}
+  end
+
   def handle_event("toggle-panel", _, %{assigns: a} = socket) do
     {:noreply, assign(socket, preview: nil, show_panel: !a.show_panel)}
   end
@@ -125,8 +162,13 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, %{assigns: a} = socket) do
-    sel = Enum.find(a.comparables, fn lk -> lk.listing_key === selected_lk end)
-    preview = Adjustments.process_init(sel, a.subject)
+    sel = Enum.find(a.listings, fn lk -> lk.listing_key === selected_lk end)
+    preview =
+      if Map.has_key?(a.subject, :__struct__) do
+        Adjustments.process_init(sel, a.subject)
+      else
+        sel
+      end
     {:noreply, assign(socket, preview: preview, show_panel: true)}
   end
 
@@ -135,32 +177,32 @@ defmodule ExcyteWeb.Insight.Comps do
   end
 
   def handle_event("remove-comp", %{"key" => selected_lk}, %{assigns: a} = socket) do
-    ret = Enum.reject(a.selected_comps, fn lk -> lk.listing_key === selected_lk end)
-    ns = assign(socket, selected_comps: ret)
+    ret = Enum.reject(a.selected_listings, fn lk -> lk.listing_key === selected_lk end)
+    ns = assign(socket, selected_listings: ret)
+    progress_save(ns)
+    {:noreply, ns}
+  end
+
+  def handle_event("remove-tour-stop", %{"key" => selected_lk}, %{assigns: a} = socket) do
+    ret = Enum.reject(a.selected_listings, fn lk -> lk.listing_key === selected_lk end)
+    ns = assign(socket, selected_listings: ret)
     progress_save(ns)
     {:noreply, ns}
   end
 
   def handle_event("reset-subject", _, socket) do
     {:noreply, assign(socket,
-      comparables: nil,
-      selected_comps: [],
+      listings: nil,
+      selected_listings: [],
       subject: nil
     )}
   end
 
-  defp get_theme(ins, %{assigns: a}) do
-    theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
-    templates = Insights.get_document_templates(a.current_user, ins.type)
-    IO.inspect(templates, label: "TEMPLATES")
-    send self(), {:set_theme_template, %{theme_attributes: theme_attrs, template: hd(templates)}}
-  end
-
   defp progress_save(%{assigns: a}) do
-    Cachex.put(:insights_cache, a.key, Map.drop(a, [:flash, :live_action, :socket, :comparables]))
+    Cachex.put(:insights_cache, a.key, Map.drop(a, [:flash, :live_action, :socket, :listings]))
   end
 
-  defp sort_by(listings, subj, filters, %{assigns: a}) do
+  defp sort_by(listings, %Property{} = subj, filters, %{assigns: a}) do
     show_filters = if length(listings) === 0, do: true, else: false
     cond do
       a.sort_by === "ranking" ->
@@ -186,6 +228,11 @@ defmodule ExcyteWeb.Insight.Comps do
           show_filters: show_filters}
       true -> %{listings: listings, subject: subj, filters: filters, show_filters: show_filters}
     end
+  end
+
+  defp sort_by(listings, _, filters, %{assigns: a}) do
+    show_filters = if length(listings) === 0, do: true, else: false
+    %{listings: listings, subject: a.filters, filters: filters, show_filters: show_filters}
   end
 
   defp setup_price_filter(price) do

@@ -34,3 +34,34 @@
     <button type="button" phx-click="new-section" class="action-button w-full my-6">Add a section</button>
   </div>
 </div>
+
+
+
+
+09:45:45.959 [error] GenServer #PID<0.5547.0> terminating
+Jun 22 02:45:45 AM  ** (Ecto.ConstraintError) constraint error when attempting to insert struct:
+Jun 22 02:45:45 AM  
+Jun 22 02:45:45 AM      * sections_created_by_id_fkey (foreign_key_constraint)
+Jun 22 02:45:45 AM  
+Jun 22 02:45:45 AM  If you would like to stop this constraint violation from raising an
+Jun 22 02:45:45 AM  exception and instead add it as an error to your changeset, please
+Jun 22 02:45:45 AM  call `foreign_key_constraint/3` on your changeset with the constraint
+Jun 22 02:45:45 AM  `:name` as an option.
+Jun 22 02:45:45 AM  
+Jun 22 02:45:45 AM  The changeset has not defined any constraint.
+Jun 22 02:45:45 AM  
+Jun 22 02:45:45 AM      (ecto 3.5.2) lib/ecto/repo/schema.ex:688: anonymous fn/4 in Ecto.Repo.Schema.constraints_to_errors/3
+Jun 22 02:45:45 AM      (elixir 1.11.3) lib/enum.ex:1411: Enum."-map/2-lists^map/1-0-"/2
+Jun 22 02:45:45 AM      (ecto 3.5.2) lib/ecto/repo/schema.ex:673: Ecto.Repo.Schema.constraints_to_errors/3
+Jun 22 02:45:45 AM      (ecto 3.5.2) lib/ecto/repo/schema.ex:654: Ecto.Repo.Schema.apply/4
+Jun 22 02:45:45 AM      (ecto 3.5.2) lib/ecto/repo/schema.ex:262: anonymous fn/15 in Ecto.Repo.Schema.do_insert/4
+Jun 22 02:45:45 AM      (elixir 1.11.3) lib/enum.ex:1411: Enum."-map/2-lists^map/1-0-"/2
+Jun 22 02:45:45 AM      (excyte 0.1.0) lib/excyte/insights.ex:84: Excyte.Insights.create_sections/3
+Jun 22 02:45:45 AM      (ecto 3.5.2) lib/ecto/multi.ex:646: Ecto.Multi.apply_operation/5
+Jun 22 02:45:45 AM  Last message: %Phoenix.Socket.Message{event: "event", join_ref: "123", payload: %{"event" => "publish", "type" => "form", "value" => "_csrf_token=DiIBeAg1KjUFKV5PbigPGSV9VDsaCklDBZW2XmsP5l29CNAJpEgqoOq6&publish%5Bname%5D=21982+Midcrest+Dr"}, ref: "136", topic: "lv:phx-ForeRzByKrVsewdh"}
+Jun 22 02:45:47 AM  SPPPP: %{"max" => "300286", "min" => "271687"}
+Jun 22 02:48:12 AM  09:48:12.215 [info] CONNECTED TO Phoenix.LiveView.Socket in 59µs
+Jun 22 02:48:12 AM    Transport: :websocket
+Jun 22 02:48:12 AM    Serializer: Phoenix.Socket.V2.JSONSerializer
+Jun 22 02:48:12 AM    Parameters: %{"_csrf_token" => "DwocAToSAClgCT0kYzwrHCJUdx44F3EYCrJKjJYLPLQRNZeOwlDTMRIm", "_mounts" => "1", "_track_static" => %{"0" => "https://excyte.io/css/app-c4dddec60701072cf08314cbf19169d8.css?vsn=d", "1" => "https://excyte.io/js/app.js"}, "viewport" => %{"height" => "973", "width" => "1678"}, "vsn" => "2.0.0"}
+Jun 22 02:48:12 AM  SPPPP: %{"max" => "300286", "min" => "271687"}

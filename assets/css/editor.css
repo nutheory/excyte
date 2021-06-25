@@ -142,7 +142,10 @@ div.editor-wrapper {
 
 div.preview-wrapper {
   @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
+}
 
+div.preview-wrapper,
+div.viewer-wrapper {
   & .cover-wrapper {
     @apply w-full my-20 lg:my-36;
   }

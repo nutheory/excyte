@@ -2,6 +2,7 @@ defmodule Excyte.Mls.ResoApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
   alias Excyte.Mls.{MetaCache, ProcessListings}
+  alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
@@ -53,13 +54,22 @@ defmodule Excyte.Mls.ResoApi do
     |> ProcessListings.simple_process()
   end
 
-  def get_listings_by_brokerage(mls, %{office_broker_key: obk}) do
-  # OfficeBrokerKey: "238cb1a714e69b74eccf629b85a70ffc"
+  # def get_listings_by_brokerage(mls, %{office_broker_key: obk}) do
+  # # OfficeBrokerKey: "238cb1a714e69b74eccf629b85a70ffc"
 
-  end
+  # end
 
   def get_listing_by_key(mls, %{listing_key: key}) do
     get("#{mls.dataset_id}/Property(%27#{key}%27)?access_token=#{mls.access_token}")
+    |> case do
+      {:ok, %Tesla.Env{:body => body}} ->
+        if is_nil(body) do
+          {:error, %{message: "Could not find property on MLS."}}
+        else
+          {:ok, Map.put(body, "MainPhotoUrl", ProcessListings.main_photo(body["Media"]))}
+        end
+      {:error, err} -> {:error, err}
+    end
   end
 
   def property_by_address(mls, %{
@@ -84,17 +94,17 @@ defmodule Excyte.Mls.ResoApi do
     {:error, %{message: "invalid Address"}}
   end
 
-  def comparable_properties(mls, subject, opts) do
+  def listing_properties(mls, %Property{} = subject, opts) do
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
-      <> "$filter=#{get_listings_by_distance(get_by_opts)}"
-      <> "%20and%20#{get_listings_by_price(mls, opts)}"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
-      <> "%20and%20#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
-      <> "%20and%20#{status(opts.selected_statuses)}"
+      <> "$filter=#{get_by_distance(get_by_opts)}"
+      <> "#{get_by_all_prices(mls, opts)}"
+      # <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      # <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      # <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "#{status(opts.selected_statuses)}"
       # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
     )
     |> format_response()
@@ -105,21 +115,51 @@ defmodule Excyte.Mls.ResoApi do
     end
   end
 
-  def get_listings_by_distance(%{coords: %{lng: lng, lat: lat}, distance: d}) do
+  def listing_properties(mls, _subject, opts) do
+    query = get_expanded(mls)
+    get_by_opts = if query.coords, do: %{coords: opts.coords, distance: opts.distance}, else: %{zip: opts.zip}
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
+      <> query.select_str
+      <> "$filter=#{get_by_distance(get_by_opts)}"
+      <> "#{get_by_price(mls, opts)}"
+      # <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      # <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      # <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+    )
+    |> format_response()
+    |> ProcessListings.process_init(opts)
+    |> case do
+      {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
+      {:error, err} -> {:error, err}
+    end
+  end
+
+  def get_by_distance(%{coords: %{lng: lng, lat: lat}, distance: d}) do
     "(geo.distance(Coordinates,POINT(#{lng}%20#{lat}))%20lt%20#{d})"
   end
 
-  def get_listings_by_distance(%{zip: z}) do
+  def get_by_distance(%{zip: z}) do
     zip_code(z)
   end
 
-  defp get_listings_by_price(mls, %{price: price}) do
+  defp get_by_price(mls, %{price: price}) do
+    low = if price.low === nil || price.low < 0, do: 0, else: price.low
+    high = if price.high === nil, do: 100_000_000, else: price.high
     if price === nil || price === 0 || Enum.empty?(price) do
       ""
     else
-      "#{get_attr_by_range(mls, %{attr: "ListPrice", low: price.low, high: price.high})}%20or%20"
-      <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: price.low, high: price.high})}%20or%20"
-      |> String.trim_trailing("%20or%20")
+      "#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}"
+    end
+  end
+
+  defp get_by_all_prices(mls, %{price: price}) do
+    low = if price.low === nil || price.low < 0, do: 0, else: price.low
+    high = if price.high === nil, do: 100_000_000, else: price.high
+    if price === nil || price === 0 || Enum.empty?(price) do
+      ""
+    else
+      "(#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
+      <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: low, high: high})})"
     end
   end
 
@@ -150,9 +190,9 @@ defmodule Excyte.Mls.ResoApi do
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
       cond do
-        l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
-        l !== nil -> "#{attr}%20ge%20#{l}"
-        h !== nil -> "#{attr}%20le%20#{h}"
+        l !== nil && h !== nil -> "%20and%20#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h}"
+        l !== nil -> "%20and%20#{attr}%20gt%20#{l}"
+        h !== nil -> "%20and%20#{attr}%20lt%20#{h}"
         true -> ""
       end
     end
@@ -163,11 +203,11 @@ defmodule Excyte.Mls.ResoApi do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
-      "((#{attr}%20ge%20date(#{l}))%20and%20(#{attr}%20le%20date(#{h})))"
+      "%20and%20#((#{attr}%20ge%20date(#{l}))%20and%20(#{attr}%20le%20date(#{h})))"
     end
   end
 
-  def get_by_listing_ids(mls, ids_array, subject) do
+  def get_by_listing_ids(mls, ids_array, %Property{} = subject) do
     ids_str = Enum.reduce(ids_array, "$filter=", fn id, acc ->
       "#{acc}#{listing_id(id)}"
     end)
@@ -205,7 +245,7 @@ defmodule Excyte.Mls.ResoApi do
   # Active, Active Under Contract, Canceled, Closed, Expired, Pending, Withdrawn
   # ContractStatusChangeDate
   defp status(status_arr) when is_list(status_arr) do
-    Enum.reduce(status_arr, "", fn st, acc ->
+    Enum.reduce(status_arr, "%20and%20", fn st, acc ->
       "#{acc}tolower(StandardStatus)%20eq%20%27#{st.value}%27%20or%20"
     end)
     |> String.trim_trailing("%20or%20")
@@ -227,11 +267,10 @@ defmodule Excyte.Mls.ResoApi do
   defp get_select(mls, %{fields: fields, name: name}, extra \\ []) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
-    min_list = fields ++ extra
     coords = Enum.member?(entity.attributes, "Coordinates")
     res =
       Enum.reduce(fields ++ extra, "$select=ListingKey,", fn str, acc ->
-        acc = if Enum.member?(entity.attributes, str), do: acc <> str <> ",", else: acc
+        if Enum.member?(entity.attributes, str), do: acc <> str <> ",", else: acc
       end)
       |> String.trim_trailing(",")
       |> (&<>/2).("&")

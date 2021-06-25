@@ -245,6 +245,18 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
   end
 
+  def showcase(%{insight: ins}) do
+    IO.inspect(ins["content"]["suggested_subject_price"], label: "SHOW")
+    """
+      <p>Welcome to the showcase</p>
+    """
+    |> Solid.parse()
+    |> case do
+      {:ok, template} -> to_string(Solid.render(template, %{"sc" => ins}))
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
+    end
+  end
+
   def subject(%{subject: sbj, insight: ins}) do
     IO.inspect(ins["content"]["suggested_subject_price"], label: "SPPPP")
     """
@@ -290,6 +302,20 @@ defmodule ExcyteWeb.Helpers.Templates do
     |> Solid.parse()
     |> case do
       {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj}))
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
+    end
+  end
+
+  def tour_stop(%{listing: lst}) do
+    media = Jason.encode!(lst["media"])
+    IO.inspect(lst, label: "TOUR")
+    """
+      <p>Welcome to the buyer tour</p>
+      <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' class="simple-gallery"></div>
+    """
+    |> Solid.parse()
+    |> case do
+      {:ok, template} -> to_string(Solid.render(template, %{"bt" => lst}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end

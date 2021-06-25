@@ -12,7 +12,6 @@ defmodule ExcyteWeb.Components.RangeInputs do
       min: assigns.min,
       max: assigns.max,
       type: assigns.type,
-      step: assigns.step,
       label: assigns.label,
       callback: assigns.callback
     )}

@@ -22,6 +22,15 @@ defmodule Excyte.Properties do
     end
   end
 
+  def fetch_mls_info(mpr_id) do
+    case PublicDataApi.get_listing_info(mpr_id) do
+      {:ok, res} -> {:ok, res}
+      {:error, err} ->
+        Activities.handle_errors(err, "Excyte.Properties.get_listing_info")
+        {:error, err}
+    end
+  end
+
   def get_subject_by_foreign_id(%{foreign_id: fid, agent_id: aid}) do
     Repo.get_by(Property, %{agent_id: aid, foreign_id: fid, internal_type: "subject"})
   end

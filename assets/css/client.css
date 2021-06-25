@@ -1,3 +1,4 @@
+@import "./editor.css";
 @import "../node_modules/glightbox/dist/css/glightbox.min.css";
 
 @tailwind base;
@@ -5,92 +6,51 @@
 
 /* Client styles */
 @layer base {
-  body {
-    @apply bg-gray-100;
+  html {
+    /* font-size: 16px; */
   }
 
-  div.preview-wrapper {
-    @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
+  body {
+    @apply bg-gray-100 text-bgray-600 text-sm md:text-base lg:text-lg;
 
-    & .cover-wrapper {
-      @apply w-full my-20 lg:my-36;
-    }
+    line-height: 1.2;
+  }
 
-    & .comp {
-      & p {
-        @apply my-0;
-      }
-    }
+  [x-cloak] {
+    display: none;
+  }
 
-    & .subject {
-      & img {
-        @apply my-0;
-      }
-    }
+  a.fancy {
+    color: #0e7490 !important;
+    text-decoration: none;
+    font-weight: 500;
+    box-shadow: inset 0 -0.125em 0 0 #fff, inset 0 -0.375em 0 0 rgba(165, 243, 252, 0.4);
+  }
 
-    & .agent {
-      & img {
-        @apply my-0;
-      }
-    }
+  input[type='text'],
+  input[type='number'],
+  textarea {
+    font-size: 16px;
+  }
 
-    & .section {
-      @apply w-full my-20 lg:my-36;
+  p {
+    @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 lg:leading-7;
+  }
 
-      & .data-grid {
-        @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
-      }
+  h1 {
+    @apply md:mb-2 text-bgray-400 text-2xl md:text-3xl lg:text-4xl font-extrabold;
+  }
 
-      & .data-grid-fifty {
-        @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
-      }
+  h2 {
+    @apply md:mb-2 text-bgray-800 text-xl md:text-2xl lg:text-3xl font-extrabold;
+  }
 
-      & .minor {
-        @apply h-full;
-      }
+  h3 {
+    @apply md:mb-2 text-bgray-800 text-lg md:text-xl lg:text-2xl font-extrabold;
+  }
 
-      & .major {
-        @apply lg:col-span-2;
-      }
-
-      & img {
-        @apply rounded-md;
-      }
-
-      & .cover-agent {
-        @apply absolute -left-8 -bottom-6 rounded-full h-20 w-20 bg-cover border-4;
-      }
-
-      & h1.cover-header {
-        @apply mb-4;
-      }
-
-      & .cover-address {
-        @apply my-2 lg:my-4;
-      }
-
-      & .cover-name {
-        @apply mt-4 mb-20;
-      }
-
-      & .why-agent-photo {
-        @apply float-left mr-8 my-4 rounded-full bg-cover border-4 w-32 h-32 lg:w-40 lg:h-40;
-      }
-
-      & .simple-gallery {
-        @apply grid grid-cols-4 gap-1;
-
-        & img {
-          @apply my-0;
-        }
-      }
-
-      & table {
-        & p {
-          @apply my-0;
-        }
-      }
-    }
+  h4 {
+    @apply md:mb-2 text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
   }
 }
 

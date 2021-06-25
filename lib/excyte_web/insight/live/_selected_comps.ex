@@ -47,8 +47,8 @@ defmodule ExcyteWeb.Insight.SelectedComps do
     {:noreply, socket}
   end
 
-  defp sort_selected_by_status(comps) do
-    Enum.group_by(comps, &by_status(&1))
+  defp sort_selected_by_status(listings) do
+    Enum.group_by(listings, &by_status(&1))
     |> Enum.sort(:asc)
   end
 

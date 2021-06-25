@@ -38,6 +38,7 @@ window.LocationAutocomplete = () => {
       return this.$refs[which];
     },
     moveUpList() {
+      if (this.suggestions.length === 0) {return true}
       // Move up the list if there is a list and we're not at the top already.
       if (this.suggestions.length > 0 && this.cursorIndex > 0) {
         // Decrement cursorIndex.
@@ -62,6 +63,8 @@ window.LocationAutocomplete = () => {
       }
     },
     moveDownList() {
+      if (this.suggestions.length === 0) {return true}
+      if (this.active === false) {return true}
       // Move down the list only if there is room on the list to move down.
       if (
         this.suggestions.length > 0 &&

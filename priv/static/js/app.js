@@ -19416,7 +19416,11 @@ window.LocationAutocomplete = function () {
       return this.$refs[which];
     },
     moveUpList: function moveUpList() {
-      // Move up the list if there is a list and we're not at the top already.
+      if (this.suggestions.length === 0) {
+        return true;
+      } // Move up the list if there is a list and we're not at the top already.
+
+
       if (this.suggestions.length > 0 && this.cursorIndex > 0) {
         // Decrement cursorIndex.
         this.cursorIndex--; // Remove active status from any other suggestion.
@@ -19439,7 +19443,15 @@ window.LocationAutocomplete = function () {
       }
     },
     moveDownList: function moveDownList() {
-      // Move down the list only if there is room on the list to move down.
+      if (this.suggestions.length === 0) {
+        return true;
+      }
+
+      if (this.active === false) {
+        return true;
+      } // Move down the list only if there is room on the list to move down.
+
+
       if (this.suggestions.length > 0 && this.cursorIndex < this.suggestions.length - 1) {
         // Just increment the cursorIndex.
         this.cursorIndex++; // Remove active status from any other suggestion.
@@ -19604,35 +19616,49 @@ var addCss = function addCss(rule) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "InitSortable": () => (/* binding */ InitSortable)
+/* harmony export */   "InitSectionSortable": () => (/* binding */ InitSectionSortable),
+/* harmony export */   "InitListingSortable": () => (/* binding */ InitListingSortable)
 /* harmony export */ });
 /* harmony import */ var sortablejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js");
 
-var InitSortable = {
+var InitSectionSortable = {
   mounted: function mounted() {
     var _this = this;
 
     var callback = function callback(sections) {
-      _this.pushEventTo(_this.el.dataset.targetId, "sort", {
+      _this.pushEventTo(_this.el.dataset.targetId, "sort-sections", {
         sections: sections
       });
     };
 
-    init(this.el, callback);
+    sections(this.el, callback);
+  }
+};
+var InitListingSortable = {
+  mounted: function mounted() {
+    var _this2 = this;
+
+    var callback = function callback(listings) {
+      _this2.pushEventTo(_this2.el.dataset.targetId, "sort-listings", {
+        listings: listings
+      });
+    };
+
+    listings(this.el, callback);
   }
 };
 
-var init = function init(sortableList, callback) {
+var sections = function sections(sortableList, callback) {
   var sectionsId = sortableList.dataset.sectionsId;
   var sortable = new sortablejs__WEBPACK_IMPORTED_MODULE_0__.default(sortableList, {
-    group: "shared",
+    group: "sections",
     handle: ".grabbable",
     dragClass: "shadow-xl",
     touchStartThreshold: 6,
     fallbackOnBody: true,
     swapThreshold: 0.65,
     onSort: function onSort(evt) {
-      var ids = [];
+      var list = [];
       var nodeList = sortableList.querySelectorAll("[data-sortable-id]");
 
       for (var i = 0; i < nodeList.length; i++) {
@@ -19641,10 +19667,37 @@ var init = function init(sortableList, callback) {
           sections_id: sectionsId,
           position: i
         };
-        ids.push(idObject);
+        list.push(idObject);
       }
 
-      callback(ids);
+      callback(list);
+    }
+  });
+};
+
+var listings = function listings(sortableList, callback) {
+  var listingsId = sortableList.dataset.listingsId;
+  var sortable = new sortablejs__WEBPACK_IMPORTED_MODULE_0__.default(sortableList, {
+    group: "listings",
+    handle: ".grabbable",
+    dragClass: "shadow-xl",
+    touchStartThreshold: 6,
+    fallbackOnBody: true,
+    swapThreshold: 0.65,
+    onSort: function onSort(evt) {
+      var list = [];
+      var nodeList = sortableList.querySelectorAll("[data-listable-id]");
+
+      for (var i = 0; i < nodeList.length; i++) {
+        var idObject = {
+          id: nodeList[i].dataset.listableId,
+          listings_id: listingsId,
+          position: i
+        };
+        list.push(idObject);
+      }
+
+      callback(list);
     }
   });
 };
@@ -48026,7 +48079,8 @@ __webpack_require__.r(__webpack_exports__);
 var Uploaders = {};
 var Hooks = {};
 Hooks.InitCheckout = _init_checkout__WEBPACK_IMPORTED_MODULE_13__.InitCheckout;
-Hooks.InitSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSortable;
+Hooks.InitSectionSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSectionSortable;
+Hooks.InitListingSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitListingSortable;
 Hooks.InitGallery = _gallery__WEBPACK_IMPORTED_MODULE_8__.InitGallery;
 Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_9__.InitColorPicker;
 Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_14__.AutocompleteLocation;

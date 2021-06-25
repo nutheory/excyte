@@ -1,27 +1,31 @@
 <div class="col-start-1 col-span-7">
   <div class="sticky top-12 md:top-[4.5rem] bg-gray-100 bg-opacity-95 blur z-30 pt-4 pb-2">
-    <h4 class="text-sm md:text-base lg:text-lg text-gray-400 mb-0">Subject Property</h4>
-    <div class="flex">
-      <div class="flex-1">
-        <h2 class="text-lg leading-none lg:text-2xl lg:leading-none mb-0">
-          <%= @subject.street_number %> <%= @subject.street_name %>
-          <%= if Map.has_key?(@subject, :unit_number) do %>
-            <span class="pt-1 inline-block ml-1"><label>Unit</label><%= @subject.unit_number %></span>
-          <% end %>
-        </h2>
-        <p class="text-xs lg:text-sm text-gray-400"><%= @subject.city %>, <%= @subject.state %> <%= @subject.zip %></p>
+    <%= if Map.has_key?(@subject, :__struct__) do %>
+      <h4 class="text-sm md:text-base lg:text-lg text-gray-400 mb-0">Subject Property</h4>
+      <div class="flex">
+        <div class="flex-1">
+          <h2 class="text-lg leading-none lg:text-2xl lg:leading-none mb-0">
+            <%= @subject.street_number %> <%= @subject.street_name %>
+            <%= if Map.has_key?(@subject, :unit_number) do %>
+              <span class="pt-1 inline-block ml-1"><label>Unit</label><%= @subject.unit_number %></span>
+            <% end %>
+          </h2>
+          <p class="text-xs lg:text-sm text-gray-400"><%= @subject.city %>, <%= @subject.state %> <%= @subject.zip %></p>
+        </div>
+        <div class="text-right">
+          <h2 class="text-lg leading-none lg:text-2xl lg:leading-none text-gray-500 mb-0">
+            <%= if @subject.est_price !== nil do %>
+              <span class="font-light inline-block text-sm lg:text-lg align-top -mt-1 mr-0.5">$</span><%= number_to_delimited(@subject.est_price, precision: 0) %>
+            <% else %>
+              N/A
+            <% end %>
+          </h2>
+          <p class="text-xs lg:text-sm text-gray-400">est. value</p>
+        </div>
       </div>
-      <div class="text-right">
-        <h2 class="text-lg leading-none lg:text-2xl lg:leading-none text-gray-500 mb-0">
-          <%= if @subject.est_price !== nil do %>
-            <span class="font-light inline-block text-sm lg:text-lg align-top -mt-1 mr-0.5">$</span><%= number_to_delimited(@subject.est_price, precision: 0) %>
-          <% else %>
-            N/A
-          <% end %>
-        </h2>
-        <p class="text-xs lg:text-sm text-gray-400">est. value</p>
-      </div>
-    </div>
+    <% else %>
+    <h2>Buyer Tour</h2>
+    <% end %>
     <div class="relative">
       <div class="flex">
         <div
@@ -40,9 +44,9 @@
             <span class="ml-0.5 <%= if @show_filters, do: "font-bold" %>">Filter</span>
             <span class="ml-0.5 text-xs <%= if !@show_filters, do: "hidden" %>">close</span>
           </div>
-          <p class="text-right text-sm"><span class="font-bold"><%= length(@comps) %></span> Comparables</p>
+          <p class="text-right text-sm"><span class="font-bold"><%= length(@listings) %></span><%= if @subject, do: " Comparables", else: " Tour stops" %></p>
         </div>
-        <%= if length(@selected_comps) > 0 do %>
+        <%= if length(@selected_listings) > 0 do %>
           <div
             phx-click="toggle-panel"
             class="relative inline-flex text-sm rounded px-4 py-2 mt-2 ml-4 border cursor-pointer border-green-700 text-green-700 bg-green-50 hover:border-green-600 hover:text-green-600"
@@ -51,15 +55,16 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </span>
-            <strong><%= length(@selected_comps) %></strong>&nbsp;Selected
+            <strong><%= length(@selected_listings) %></strong>&nbsp;Selected
           </div>
         <% end %>
       </div>
       <div class="<%= if !@show_filters, do: 'hidden' %>">
         <div class="rounded mt-1 px-4 lg:px-6 py-4 border border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600">
           <%= live_component @socket, FilterListings,
-            subject: @subject,
+            subject: (if Map.has_key?(@subject, :__struct__), do: @subject, else: nil),
             filters: @filters,
+            listing_count: length(@listings),
             id: :filter_listings
           %>
         </div>
@@ -67,14 +72,13 @@
       <div class="hidden lg:block h-4 mt-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
     </div>
   </div>
-  <%= if length(@comps) > 0 do %>
+  <%= if length(@listings) > 0 do %>
     <ul class="pt-16 lg:pt-24 pb-6">
-      <%= for listing <- @comps do %>
+      <%= for listing <- @listings do %>
         <li class="w-full py-1">
           <%= live_component @socket, ListingCard,
             listing: listing,
-            subject_coords: [@subject.coords["lng"], @subject.coords["lat"]],
-            added: Enum.find(@selected_comps, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
+            added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
             id: listing.listing_key
           %>
         </li>

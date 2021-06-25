@@ -15,26 +15,24 @@ defmodule Excyte.Insights do
     SectionTemplate
   }
 
-  def publish_insight(%{sections: sections, insight: insight}) do
-    Multi.new()
-    |> Multi.run(:update_insight, __MODULE__, :update_insight, [insight])
-    |> Multi.run(:create_sections, __MODULE__, :create_sections, [sections])
-    |> Repo.transaction()
-  end
+  # def publish_insight(%{sections: sections, insight: insight}) do
+  #   Multi.new()
+  #   |> Multi.run(:update_insight, __MODULE__, :update_insight, [insight])
+  #   |> Multi.run(:create_sections, __MODULE__, :create_sections, [sections])
+  #   |> Repo.transaction()
+  # end
 
-    def republish_insight(%{sections: sections, insight: insight}) do
-    Multi.new()
-    |> Multi.run(:update_insight, __MODULE__, :update_insight, [insight])
-    |> Multi.run(:destroy_current_sections, __MODULE__, :destroy_sections, [])
-    |> Multi.run(:create_sections, __MODULE__, :create_sections, [sections])
-    |> Repo.transaction()
-  end
-
-  def create_insight(attrs) do
+  def create_insight(%{subject: sub} = attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
     |> Multi.run(:create_subject, __MODULE__, :create_subject, [attrs])
     |> Repo.transaction()
+  end
+
+  def create_insight(attrs) do
+    %Insight{}
+    |> Insight.changeset(attrs)
+    |> Repo.insert()
   end
 
   def create_insight(_repo, _changes, %{insight: ins}) do
@@ -47,15 +45,15 @@ defmodule Excyte.Insights do
     Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
   end
 
-  def update_insight(_repo, _changes, %{id: id} = insight) do
-    ins = Repo.get!(Insight, id)
-    if ins do
-      Insight.changeset(ins, insight)
-      |> Repo.update()
-    else
-      {:error, %{message: "Insight could not be found."}}
-    end
-  end
+  # def update_insight(_repo, _changes, %{id: id} = insight) do
+  #   ins = Repo.get!(Insight, id)
+  #   if ins do
+  #     Insight.changeset(ins, insight)
+  #     |> Repo.update()
+  #   else
+  #     {:error, %{message: "Insight could not be found."}}
+  #   end
+  # end
 
   def update_insight(uuid, uid, attrs) do
     ins = Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid})
@@ -79,23 +77,23 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
-  def create_sections(_repo, %{update_insight: %{created_by_id: uid}}, sections_arr) do
-    sects=
-      Enum.map(sections_arr, fn s ->
-        create_section(Map.merge(s, %{created_by_id: uid}))
-      end)
-    {:ok, sects}
-  end
+  # def create_sections(_repo, %{update_insight: %{created_by_id: uid}}, sections_arr) do
+  #   sects=
+  #     Enum.map(sections_arr, fn s ->
+  #       create_section(Map.merge(s, %{created_by_id: uid}))
+  #     end)
+  #   {:ok, sects}
+  # end
 
-  def create_section(attrs) do
-    %Section{}
-    |> Section.changeset(attrs)
-    |> Repo.insert()
-  end
+  # def create_section(attrs) do
+  #   %Section{}
+  #   |> Section.changeset(attrs)
+  #   |> Repo.insert()
+  # end
 
-  def destroy_sections(_repo, %{update_insight: ins} , _) do
-    Repo.delete_all(from(s in Section, where: s.insight_id == ^ins.id))
-  end
+  # def destroy_sections(_repo, %{update_insight: ins} , _) do
+  #   Repo.delete_all(from(s in Section, where: s.insight_id == ^ins.id))
+  # end
 
   def get_theme_attributes(aid, bid) do
     profile =
@@ -154,17 +152,14 @@ defmodule Excyte.Insights do
         {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
       end
 
-    comp_template = Enum.find(r.sections, fn s -> s.component_name === "comparable" end)
-    comps = Enum.with_index(r.insight.content.comps, comp_template.position)
-      |> Enum.map(fn {comp_data, i} ->
-        Map.from_struct(comp_template) |> Map.merge(%{data: comp_data, position: i})
+    pages = Enum.map(r.sections, fn st ->
+        section = Map.from_struct(st)
+        if section.component_name === "comparable" || section.component_name === "tour_stop" do
+          Map.merge(section, %{listings: r.insight.content.listings})
+        else
+          section
+        end
       end)
-
-    pages = Enum.filter(r.sections, fn sec -> sec.component_name !== "comparable" end)
-      |> Enum.map(fn st ->
-        Map.from_struct(st)
-      end)
-      |> Enum.concat(comps)
       |> Enum.sort(fn a, b -> a.position <= b.position end)
       |> Enum.with_index()
       |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
@@ -202,11 +197,15 @@ defmodule Excyte.Insights do
   end
 
   defp sanitize_data(struct) do
-    Enum.reduce(Map.from_struct(struct), %{}, fn
-      ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
-      ({:__meta__, _}, acc) -> acc
-      ({k, v}, acc) -> Map.put(acc, k, v)
-    end)
-    |> Excyte.Utils.Methods.stringify_keys()
+    if is_struct(struct) do
+      Enum.reduce(Map.from_struct(struct), %{}, fn
+        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({:__meta__, _}, acc) -> acc
+        ({k, v}, acc) -> Map.put(acc, k, v)
+      end)
+      |> Excyte.Utils.Methods.stringify_keys()
+    else
+      struct
+    end
   end
 end

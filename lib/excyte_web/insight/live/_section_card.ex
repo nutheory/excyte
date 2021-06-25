@@ -11,7 +11,8 @@ defmodule ExcyteWeb.Insight.SectionCard do
       type: assigns.type,
       enabled: assigns.enabled,
       position: assigns.position,
-      temp_id: assigns.temp_id
+      temp_id: assigns.temp_id,
+      component_name: assigns.component_name
     )}
   end
 end

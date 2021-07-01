@@ -25,6 +25,7 @@ config :excyte, :aws, %{
 }
 
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
+config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 # Do not print debug messages in production
 config :logger, level: :info
 

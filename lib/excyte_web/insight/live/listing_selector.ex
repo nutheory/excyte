@@ -161,13 +161,19 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, %{assigns: a} = socket) do
-    sel = Enum.find(a.listings, fn lk -> lk.listing_key === selected_lk end)
+    already_added = Enum.find(a.selected_listings, fn lk -> lk.listing_key === selected_lk end)
     preview =
-      if Map.has_key?(a.subject, :__struct__) do
-        Adjustments.process_init(sel, a.subject)
+      if already_added do
+        already_added
       else
-        sel
+        new_listing = Enum.find(a.listings, fn lk -> lk.listing_key === selected_lk end)
+        if Map.has_key?(a.subject, :__struct__) do
+          Adjustments.process_init(new_listing, a.subject)
+        else
+          new_listing
+        end
       end
+
     {:noreply, assign(socket, preview: preview, show_panel: true)}
   end
 
@@ -205,7 +211,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
     show_filters = if length(listings) === 0, do: true, else: false
     cond do
       a.sort_by === "ranking" ->
-        sorted = Enum.sort_by(listings, &(&1.excyte_ranking.score))
+        sorted = Enum.sort_by(listings, &(&1.excyte_ranking.score), :desc)
         price =
           if subj.est_price === nil || subj.est_price === 0 do
             Enum.reduce(sorted, [], fn l, acc ->

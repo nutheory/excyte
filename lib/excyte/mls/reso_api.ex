@@ -96,16 +96,18 @@ defmodule Excyte.Mls.ResoApi do
 
   def listing_properties(mls, %Property{} = subject, opts) do
     query = get_expanded(mls)
+    IO.inspect(opts, label: "OPTS")
     get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
+    mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}%20and%20", else: ""
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
-      <> "$filter=#{get_by_distance(get_by_opts)}"
-      <> "#{get_by_all_prices(mls, opts)}"
-      # <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
-      # <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
-      # <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "$filter=(#{mb}"
       <> "#{status(opts.selected_statuses)}"
-      # <> if Map.has_key?(opts, :months_back), do: "&#{get_by_months_back(opts)}&", else: "&"
+      <> "#{get_by_all_prices(mls, opts)}"
+      <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "%20and%20#{get_by_distance(get_by_opts)})"
     )
     |> format_response()
     |> ProcessListings.process_init(subject)
@@ -164,20 +166,21 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp get_by_months_back(%{selected_statuses: statuses, status_updated: updated}) do
-    gte_date = Timex.shift(Date.utc_today(), months: updated)
+    gte_date = Timex.shift(Date.utc_today(), months: updated.value * -1)
 
+    IO.inspect(gte_date, label: "GTE")
     if length(statuses) > 0 do
       Enum.reduce(statuses, "", fn st, acc ->
         case st.value do
-          "closed" -> "#{acc}date(CloseDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
-          "pending" -> "#{acc}date(ListingContractDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
-          "active" -> "#{acc}date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
-          _ -> "#{acc}date(OffMarketDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "closed" -> "#{acc}CloseDate%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "pending" -> "#{acc}ListingContractDate%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "active" -> "#{acc}ContractStatusChangeDate%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          _ -> "#{acc}ContractStatusChangeDate%20le%20#{Date.to_string(gte_date)}%20or%20"
         end
       end)
       |> String.trim_trailing("%20or%20")
     else
-      "date(OnMarketDate)%20ge%20#{Date.to_string(gte_date)}"
+      "%20and%20ContractStatusChangeDate%20ge%20#{Date.to_string(gte_date)}"
     end
   end
 
@@ -190,7 +193,7 @@ defmodule Excyte.Mls.ResoApi do
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
       cond do
-        l !== nil && h !== nil -> "%20and%20#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h}"
+        l !== nil && h !== nil -> "%20and%20(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
         l !== nil -> "%20and%20#{attr}%20gt%20#{l}"
         h !== nil -> "%20and%20#{attr}%20lt%20#{h}"
         true -> ""
@@ -203,7 +206,7 @@ defmodule Excyte.Mls.ResoApi do
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
       cond do
-        l !== nil && h !== nil -> "#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h}"
+        l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
         l !== nil -> "#{attr}%20gt%20#{l}"
         h !== nil -> "#{attr}%20lt%20#{h}"
         true -> ""
@@ -258,7 +261,7 @@ defmodule Excyte.Mls.ResoApi do
   # Active, Active Under Contract, Canceled, Closed, Expired, Pending, Withdrawn
   # ContractStatusChangeDate
   defp status(status_arr) when is_list(status_arr) do
-    Enum.reduce(status_arr, "%20and%20", fn st, acc ->
+    Enum.reduce(status_arr, "", fn st, acc ->
       "#{acc}tolower(StandardStatus)%20eq%20%27#{st.value}%27%20or%20"
     end)
     |> String.trim_trailing("%20or%20")
@@ -331,3 +334,31 @@ defmodule Excyte.Mls.ResoApi do
   end
 
 end
+
+# https://api.bridgedataoutput.com/api/v2/OData/tmls/Properties?access_token=c72f9c07c32759011128b84001acb35d&$top=60&$select=
+
+# ListingKey,ListingId,Coordinates,ListPrice,ClosePrice,StandardStatus,StreetNumber,StreetName,StateOrProvince,City,PostalCode,UnitNumber,BathroomsOneQuarter,BathroomsThreeQuarter,BathroomsFull,BathroomsHalf,BedroomsTotal,PropertySubType,LivingArea,PropertyType,ModificationTimestamp,Media,PublicRemarks,YearBuilt,ExteriorFeatures,InteriorFeatures,WaterfrontFeatures,PoolFeatures,SpaFeatures,FireplaceFeatures,ParkingFeatures,DoorFeatures,WindowFeatures,PatioAndPorchFeatures,CommunityFeatures,Flooring,GarageSpaces,PropertyType,GarageYN,GarageSpaces,AttachedGarageYN,LotSizeAcres,LotSizeSquareFeet,AssociationFee,AssociationFeeIncludes,AssociationFeeFrequency,ViewYN,WaterfrontYN,NewConstructionYN,PoolPrivateYN,SpaYN,SubdivisionName,CloseDate,DaysOnMarket,ContractStatusChangeDate,Appliances,ListingContractDate,PriceChangeTimestamp,StatusChangeTimestamp&
+# $filter=(geo.distance(Coordinates,POINT(-78.49652%2035.937658))%20lt%2020.0)
+# %20and%20ListPrice%20ge%20470250%20and%20ListPrice%20le%20519750%20or%20ClosePrice%20ge%20470250%20and%20ClosePrice%20le%20519750
+# %20and%20LivingArea%20ge%202374%20and%20LivingArea%20le%205427
+# %20and%20BedroomsTotal%20ge%202%20and%20BedroomsTotal%20le%206
+# %20and%20BathroomsTotalInteger%20ge%202%20and%20BathroomsTotalInteger%20le%206%20and%20tolower(StandardStatus)%20eq%20%27active%27%20and%20ModificatoTimestamp%20le%202019-07-01
+
+
+# https://api.bridgedataoutput.com/api/v2/OData/dataset_id/Property?access_token=access_token&$filter=
+# ((InternetEntireListingDisplayYN ne false) and
+#   ((StandardStatus eq ‘Closed’) and
+#     (((YearBuilt eq null) or
+#       ((YearBuilt le 1986) and (YearBuilt ge 1976))
+#     ) and
+#     (((LivingArea eq null) or
+#       ((LivingArea le 3264) and (LivingArea ge 2412))
+#     ) and
+#     ((CloseDate ge 2019-09-01) and
+#       (((BedroomsTotal eq null) or
+#         ((BedroomsTotal le 5) and (BedroomsTotal ge 3))
+#       ) and
+#       (((BathroomsTotalDecimal eq null) or ((BathroomsTotalDecimal le 3.5) and (BathroomsTotalDecimal ge 1.5)))
+#       and ((SpecialListingConditions ne ‘Auction’) and ((SpecialListingConditions ne ‘Probate’) and ((SpecialListingConditions ne ‘Short Sale’) and ((SpecialListingConditions ne ‘REO’) and
+#       (((ClosePrice eq null) or ((ClosePrice le 472666) and (ClosePrice ge 315110)))
+#       and (geo.distance(Coordinates,POINT(-115.10998 36.091513)) lt 0.5)))))))))))))

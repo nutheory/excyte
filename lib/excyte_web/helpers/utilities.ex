@@ -13,6 +13,22 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
+  def insight_type_to_color(type) do
+    case type do
+      "cma" -> "blue"
+      "buyer_tour" -> "orange"
+      "showcase" -> "green"
+    end
+  end
+
+  def full_insight_type_to_name(type) do
+    case type do
+      "cma" -> "Comparable Market Analysis"
+      "buyer_tour" -> "Buyer Tour"
+      "showcase" -> "Showcase"
+    end
+  end
+
   def humanize_component_name(type) do
     case type do
       "tour_stop" -> "Tour Stop"
@@ -20,6 +36,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       _ -> ""
     end
   end
+
 
   def status_options() do
     [
@@ -98,9 +115,13 @@ defmodule ExcyteWeb.Helpers.Utilities do
         high: (if subject.sqft, do: round(subject.sqft * 1.6), else: 0)
       },
       # TODO switch to live make statuses ["closed", "pending"]
-      selected_statuses: [%{value: "active", name: "Active"}],
+      selected_statuses: [
+        %{value: "active", name: "Active"},
+        %{value: "closed", name: "Closed"},
+        %{value: "pending", name: "Pending"}
+      ],
       status_updated: %{value: 24, text: "Past 2 years"},
-      distance: 200.0
+      distance: 20.0
     }
   end
 

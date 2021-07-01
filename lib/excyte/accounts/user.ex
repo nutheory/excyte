@@ -36,7 +36,7 @@ defmodule Excyte.Accounts.User do
     belongs_to(:brokerage, Brokerage)
     belongs_to(:invited_by, User)
     has_many(:mls_credentials, Credential, foreign_key: :agent_id)
-    has_many(:profiles, Profile)
+    has_many(:profiles, Profile, foreign_key: :agent_id)
     timestamps()
   end
 

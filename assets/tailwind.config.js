@@ -15,7 +15,7 @@ module.exports = {
       wgray: colors.warmGray,
       cyan: colors.cyan,
       teal: colors.teal,
-      blue: colors.lightBlue,
+      blue: colors.sky,
       amber: colors.amber,
       yellow: colors.yellow,
       green: colors.green,

@@ -14,8 +14,14 @@ defmodule ExcyteWeb.Brokerage.Dashboard do
         {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
       end
     else
-      agent_insights = Insights.get_published_agent_insights(cu.id)
-      {:ok, assign(socket, current_user: cu, insights: agent_insights)}
+      agent_insights = Insights.get_published_agent_insights(cu.id, "all")
+      {:ok, assign(socket,
+        current_user: cu,
+        insights: agent_insights,
+        show_send_panel: false,
+        insight_to_send: nil,
+        current_view: %{value: "all", text: "View All"}
+      )}
     end
   end
 end

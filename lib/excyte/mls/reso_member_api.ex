@@ -1,19 +1,37 @@
 defmodule Excyte.Mls.ResoMemberApi do
   use Tesla, only: [:get], docs: false
-  import SweetXml
-  alias Excyte.Mls.{MetaCache}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
-  #   [{"authorization", "Bearer #{Application.get_env(:excyte, :bridge_server_api_key)}"}]
+  #   [{"authorization", "Bearer #{Application.get_env(:excyte, :bridge_server_key)}"}]
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  def getMemberDetails(mls) do
-    get("#{mls.dataset_id}/Member(%27#{mls.member_key}%27)?access_token=#{mls.access_token}")
+  def getMembersByName(mls, name) do
+    name_arr = String.split(name, " ")
+    get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Office&$filter="
+    <> "endswith(tolower(MemberLastName),%27#{hd(tl(name_arr))}%27)%20and%20startswith(tolower(MemberFirstName),%27hd(name_arr)%27)")
     |> format_response()
     |> case do
-      {:ok, md} ->
+      {:ok, %{agents: agents}} -> {:ok, agents}
+      {:error, err} -> {:error, err}
+    end
+  end
+
+  def getMemberByLoginId(mls, id) do
+    get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Office&$filter="
+    <> "MemberLoginId%20eq%20%27#{id}%27")
+    |> format_response()
+    |> case do
+      {:ok, %{agents: agents}} -> {:ok, (if length(agents) > 0, do: hd(agents), else: nil)}
+      {:error, _err} -> {:ok, nil}
+    end
+  end
+
+  def getMemberDetails(mls) do
+    get("#{mls.dataset_id}/Member(%27#{mls.member_key}%27)?access_token=#{mls.access_token}")
+    |> case do
+      {:ok, %Tesla.Env{:body => md}} ->
         %{
           company_name: md["OfficeName"],
           job_title: md["JobTitle"],
@@ -39,7 +57,6 @@ defmodule Excyte.Mls.ResoMemberApi do
         acc
       end
     end)
-
   end
 
   def split_name_by_case(str) do
@@ -51,7 +68,12 @@ defmodule Excyte.Mls.ResoMemberApi do
   end
 
   defp format_response({:ok, %Tesla.Env{:body => body}}) do
-    {:ok, body}
+    {:ok, %{
+      context: body["@odata.context"],
+      count: body["@odata.count"],
+      next_link: body["@odata.nextLink"],
+      agents: body["value"]
+    }}
   end
 
   defp format_response({:error, error}) do

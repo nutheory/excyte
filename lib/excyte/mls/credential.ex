@@ -48,11 +48,7 @@ defmodule Excyte.Mls.Credential do
     ])
     |> validate_required([
       :agent_id,
-      :mls_id,
-      :id_token,
-      :member_key,
       :dataset_id,
-      :refresh_token,
       :access_token
     ])
   end

@@ -6,9 +6,9 @@ defmodule ExcyteWeb.Insight.PreviewComp do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
-      excyte_price: assigns.listing.excyte_suggested_price,
+      excyte_price: (if assigns.listing.excyte_price, do: assigns.listing.excyte_price, else: assigns.listing.excyte_suggested_price),
       custom_adjustments: assigns.listing.custom_adjustments,
-      auto_adjusted: true,
+      auto_adjusted: assigns.listing.auto_adjusted,
       adj_name: "",
       adj_value: "",
       listing: assigns.listing,
@@ -67,7 +67,12 @@ defmodule ExcyteWeb.Insight.PreviewComp do
   end
 
   def handle_event("manual-adj", %{"adj" => adj}, socket) do
-    {:noreply, assign(socket, excyte_price: adj)}
+    int_val =
+      case Integer.parse(adj) do
+        {int, _} -> int
+        :error -> IO.inspect(adj, label: "ERR")
+      end
+    {:noreply, assign(socket, excyte_price: int_val)}
   end
 
   def handle_event("toggle-auto-adj", %{"action" => act}, %{assigns: a} = socket) do
@@ -83,7 +88,8 @@ defmodule ExcyteWeb.Insight.PreviewComp do
   def handle_event("add-comp", _, %{assigns: a} = socket) do
     send self(), {:add_comp, %{listing: Map.merge(a.listing, %{
       excyte_price: a.excyte_price,
-      custom_adjustments: a.custom_adjustments
+      custom_adjustments: a.custom_adjustments,
+      auto_adjusted: a.auto_adjusted
     })}}
     {:noreply, socket}
   end

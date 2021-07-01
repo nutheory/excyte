@@ -1,9 +1,5 @@
 <div>
-  <%= f = form_for @changeset, "#",
-    id: "invite_team_form",
-    phx_change: "validate",
-    phx_submit: "save"
-  %>
+  <%= f = form_for @changeset, "#", [id: "invite_team_form", phx_change: "validate", phx_submit: "save"] %>
     <div class="shadow-md bg-white rounded-md p-4">
       <div class="mt-4">
         <%= label f, :full_name %>
@@ -39,7 +35,7 @@
         <%= for invite <- @invitations do %>
           <li class="p-2 border-b border-bgray-500">
             <div class="flex">
-              <div class="flex-1" >
+              <div class="flex-1">
                 <div class="flex">
                   <div class="font-bold flex-1">
                     <%= invite.full_name %>

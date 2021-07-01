@@ -24,4 +24,8 @@ defmodule ExcyteWeb.Settings.Dashboard do
       |> put_flash(:info, "Email confirmation sent. Please confirm your email.")
     }
   end
+
+  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
+    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
+  end
 end

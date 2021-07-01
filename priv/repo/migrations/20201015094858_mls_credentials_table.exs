@@ -9,7 +9,7 @@ defmodule Excyte.Repo.Migrations.MlsCredentialsTable do
       add :mls_name, :string
       add :email, :citext
       add :default, :boolean, default: false
-      add :mls_id, :string, null: false
+      add :mls_id, :string
       add :zone_info, :string
       add :username, :string
       add :dataset_id, :string

@@ -262,6 +262,11 @@ button.jumbo {
   background: radial-gradient(at top left, #30ecf8, #428bf3);
 }
 
+.blue-radial-text {
+  color: #30b9f8;
+  color: radial-gradient(at top left, #30ecf8, #428bf3);
+}
+
 .pink-radial {
   background: #ec4798;
   background: radial-gradient(at top left, #ec4798, #ef406b);
@@ -272,9 +277,19 @@ button.jumbo {
   background: radial-gradient(at top left, #bef04c, #11ca26);
 }
 
+.green-radial-text {
+  color: #52f04c;
+  color: radial-gradient(at top left, #bef04c, #11ca26);
+}
+
 .orange-radial {
   background: #faca17;
   background: radial-gradient(at top left, #faca17, #f97516);
+}
+
+.orange-radial-text {
+  color: #fab217;
+  color: radial-gradient(at top left, #faca17, #f97516);
 }
 
 .grabbable {

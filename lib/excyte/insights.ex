@@ -22,7 +22,7 @@ defmodule Excyte.Insights do
   #   |> Repo.transaction()
   # end
 
-  def create_insight(%{subject: sub} = attrs) do
+  def create_insight(%{subject: _} = attrs) do
     Multi.new()
     |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
     |> Multi.run(:create_subject, __MODULE__, :create_subject, [attrs])
@@ -45,15 +45,15 @@ defmodule Excyte.Insights do
     Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
   end
 
-  # def update_insight(_repo, _changes, %{id: id} = insight) do
-  #   ins = Repo.get!(Insight, id)
-  #   if ins do
-  #     Insight.changeset(ins, insight)
-  #     |> Repo.update()
-  #   else
-  #     {:error, %{message: "Insight could not be found."}}
-  #   end
-  # end
+  def update_insight(_repo, %{new_client: client}, %{id: id}) do
+    ins = Repo.get!(Insight, id)
+    if ins do
+      Insight.changeset(ins, %{client_id: client.id})
+      |> Repo.update()
+    else
+      {:error, %{message: "Insight could not be found."}}
+    end
+  end
 
   def update_insight(uuid, uid, attrs) do
     ins = Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid})
@@ -133,8 +133,8 @@ defmodule Excyte.Insights do
     {:ok, ins}
   end
 
-  def get_published_agent_insights(uid) do
-    Insight.published_agent_insights(uid) |> Repo.all()
+  def get_published_agent_insights(uid, type) do
+    Insight.published_agent_insights(uid, type) |> Repo.all()
   end
 
   def get_full_insight(%{usr_id: uid, insight_id: insid}) do

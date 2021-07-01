@@ -131,10 +131,20 @@ defmodule Excyte.Mls.ProcessListings do
     |> String.downcase()
   end
 
-  def main_photo(media) do
+  def main_photo(media) when is_list(media) do
     Enum.find(media, fn m ->
-      m["MediaCategory"] === "Photo" && m["Order"] === 1
+      {int, _} =
+        cond do
+          is_binary(m["Order"]) -> Integer.parse(m["Order"])
+          is_integer(m["Order"]) -> m["Order"]
+          true -> 1
+        end
+      m["MediaCategory"] === "Photo" && int === 1
     end)["MediaURL"]
+  end
+
+  def main_photo(media) do
+    IO.inspect(media, label: "BOOM")
   end
 
   def main_booleans(%{listing: l, changes: changes}) do
@@ -225,6 +235,10 @@ defmodule Excyte.Mls.ProcessListings do
     Map.put(changes, :media, Enum.map(media, fn m ->
       format_quoted_json(m)
     end))
+  end
+
+  defp process_media(%{listing: %{}, changes: changes}) do
+      Map.put(changes, :media, [])
   end
 
   def format_str_json(body) do

@@ -3,10 +3,26 @@ defmodule Excyte.Clients do
   import Ecto.Query, warn: false
   alias Ecto.Multi
 
-  alias ExTwilio.JWT.AccessToken
-  alias Excyte.{Repo, Activities, Clients.Conversation, Clients.Client, Logger}
+  # alias ExTwilio.JWT.AccessToken
+  alias Excyte.{Repo, Activities, Clients.Conversation, Clients.Client, Clients.ClientNotifier, Insights}
 
   @proxies []
+
+  def create_client(%{client: client, insight: insight, email: email} = all) do
+    Multi.new()
+    |> Multi.run(:new_client, __MODULE__, :create_client, [%{client: client, agent_id: email.profile.agent_id}])
+    |> Multi.run(:update_insight, Insights, :update_insight, [insight])
+    |> Multi.run(:send_email, ClientNotifier, :deliver_report, [all])
+    |> Multi.run(:new_activity, Activities, :create_activity, [])
+    |> Repo.transaction()
+  end
+
+  def create_client(_repo, _changes, %{client: cl, agent_id: aid}) do
+    case Repo.get_by(Client, %{email: cl.email, created_by_id: aid}) do
+      %Client{} = client -> {:ok, client}
+      nil -> Repo.insert(Client.changeset(%Client{}, cl))
+    end
+  end
 
   def create_insight_conversation(%{insight: ins, agent: ag}) do
     # Enum.find textable phone #
@@ -49,9 +65,9 @@ defmodule Excyte.Clients do
     end
   end
 
-  def create_participant(_repo, _convo, %{agent: ag, proxies: p}) do
-    IO.inspect(p, label: "EMPTY")
-  end
+  # def create_participant(_repo, _convo, %{agent: ag, proxies: p}) do
+  #   IO.inspect(p, label: "EMPTY")
+  # end
 
   def save_conversation(_repo, %{conversation: c, participant: p}, %{insight: ins, agent: ag}) do
     save_conversation(%{
@@ -75,23 +91,22 @@ defmodule Excyte.Clients do
   end
 
   def get_conversation_for_insight(%{insight_id: iid, agent: ag}) do
-    convo = Repo.get_by(Conversation, insight_id: iid, agent: ag)
+    convo = Repo.get_by(Conversation, %{insight_id: iid, agent: ag})
 
-    if convo !== nil do
-      with {:ok, c} <- ExTwilio.Conversations.find(convo.conversation_id),
-                      _ <-
-                        create_conversation_chat_participant(
-                          c.conversation_sid,
-                          ag.email,
-                          ag.avatar,
-                          "#{ag.first_name} #{ag.last_name}"
-                        ),
-            {:ok, token} <- create_twilio_token("#{ag.email}", c.chat_service_sid) do
-        {:ok, %{token: token, details: c}}
-      else
-        {:error, err} -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
-        err -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
-      end
+    if convo && Map.has_key?(convo, :conversation_sid) && convo.conversation_sid do
+      # with {:ok, c} <- ExTwilio.Conversations.find(convo.conversation_sid),
+      #             _ <- create_conversation_chat_participant(
+      #                     c.conversation_sid,
+      #                     ag.email,
+      #                     ag.avatar,
+      #                     "#{ag.first_name} #{ag.last_name}"
+      #                   ),
+      #      {:ok, token} <- create_twilio_token("#{ag.email}", c.chat_service_sid) do
+      #   {:ok, %{token: token, details: c}}
+      # else
+      #   {:error, err, _status} -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
+      #   err -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
+      # end
     # else
     #   with ins <- Repo.get!(Insight, iid),
     #        {:ok, c} <- create_insight_conversation(lead, account),
@@ -138,7 +153,7 @@ defmodule Excyte.Clients do
   #   end)
   # end
 
-  def create_conversation_message(convo_id, body, author, attrs, media) do
+  def create_conversation_message(convo_id, body, author, attrs, _media) do
     ExTwilio.Conversations.Message.create(
       %{body: body, attributes: attrs, author: author},
       conversation: convo_id
@@ -155,17 +170,17 @@ defmodule Excyte.Clients do
     ExTwilio.Conversations.destroy(convo_id)
   end
 
-  defp create_twilio_token(identity, service_sid) do
-    token =
-      AccessToken.new(
-        account_sid: Application.get_env(:ex_twilio, :account_sid),
-        api_key: Application.get_env(:ex_twilio, :api_key),
-        api_secret: Application.get_env(:ex_twilio, :api_secret),
-        identity: identity,
-        expires_in: 86_400,
-        grants: [AccessToken.ChatGrant.new(service_sid: service_sid)]
-      )
+  # defp create_twilio_token(identity, service_sid) do
+  #   token =
+  #     AccessToken.new(
+  #       account_sid: Application.get_env(:ex_twilio, :account_sid),
+  #       api_key: Application.get_env(:ex_twilio, :api_key),
+  #       api_secret: Application.get_env(:ex_twilio, :api_secret),
+  #       identity: identity,
+  #       expires_in: 86_400,
+  #       grants: [AccessToken.ChatGrant.new(service_sid: service_sid)]
+  #     )
 
-    {:ok, AccessToken.to_jwt!(token)}
-  end
+  #   {:ok, AccessToken.to_jwt!(token)}
+  # end
 end

@@ -28,7 +28,8 @@ defmodule Excyte.Properties.Adjustments do
       Map.merge(list, %{
         adjustments: adj,
         custom_adjustments: [],
-        excyte_price: (listing[price] + adj.sqft.adjustment),
+        excyte_price: nil,
+        auto_adjusted: true,
         excyte_suggested_price: (listing[price] + adj.sqft.adjustment),
         min_adjustment_price: min_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10),
         max_adjustment_price: max_adjustment_price(listing[price], (listing[price] + adj.sqft.adjustment), 10)
@@ -111,9 +112,9 @@ defmodule Excyte.Properties.Adjustments do
     number = if diff < 0, do: diff * -1, else: diff
     adj = if diff < 0, do: "-", else: "+"
     if unit === "sqft" do
-      "#{adj}#{diff} lot #{unit}"
+      "#{adj}#{trunc(diff)} lot #{unit}"
     else
-      "#{adj}#{Float.round(number/43560, 2)} lot #{unit}"
+      "#{adj}#{trunc(number/43560)} lot #{unit}"
     end
   end
 

@@ -105,6 +105,7 @@ defmodule ExcyteWeb.Router do
 
   scope "/", ExcyteWeb do
     pipe_through [:app_browser, :require_authenticated_user]
+    get "/uploader/auth", UploadController, :auth
     get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
     delete "/log_out", UserSessionController, :delete
   end

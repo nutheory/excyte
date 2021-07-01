@@ -24,6 +24,7 @@ import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {InitPreview} from "./preview"
 import {InitViewer} from "./viewer"
+import {InitUploader} from "./uploader"
 import {InitCheckout} from "./init_checkout"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
@@ -41,6 +42,7 @@ Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
 Hooks.InitPreview = InitPreview
 Hooks.InitViewer = InitViewer
+Hooks.InitUploader = InitUploader
 Hooks.DistanceSelector = {
   mounted(){
     const add = this.el.querySelector('.add-distance')
@@ -50,6 +52,20 @@ Hooks.DistanceSelector = {
     })
     minus.addEventListener("click", () => {
       this.pushEventTo("#distance-selector", "update", "minus", reply => {})  
+    })
+  }
+}
+
+Hooks.CopyToClipboard = {
+  mounted(){
+    const copyText = this.el.querySelector("#copyReportLink")
+    const button = this.el.querySelector("#copyReportLinkButton")
+    const alert = this.el.querySelector("#alertCopied")
+    button.addEventListener("click", () => {
+      copyText.select()
+      copyText.setSelectionRange(0, 99999)
+      document.execCommand("copy")
+      alert.classList.remove("hidden")
     })
   }
 }

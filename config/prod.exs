@@ -1,6 +1,6 @@
 import Config
 
-import_config "dev_open_id_providers.exs"
+import_config "open_id_providers.exs"
 import_config "pricing.exs"
 config :excyte, env: :prod
 

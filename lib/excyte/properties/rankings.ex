@@ -10,7 +10,7 @@ defmodule Excyte.Properties.Rankings do
         attrs: %{
           beds: %{
             percentage: generic_percentage(listing.beds, subject.beds),
-            text: Inflex.inflect("bed", listing.beds),
+            text: (if listing.beds, do: Inflex.inflect("bed", listing.beds), else: "beds"),
             value: "#{listing.beds}",
             weight: 1
           },
@@ -42,7 +42,7 @@ defmodule Excyte.Properties.Rankings do
             percentage: distance_percentage(listing.distance_from_subject),
             text: "distance",
             value: "#{listing.distance_from_subject}",
-            weight: 2
+            weight: 3
           },
           sqft: %{
             percentage: generic_percentage(listing.sqft, subject.sqft),
@@ -78,11 +78,11 @@ defmodule Excyte.Properties.Rankings do
 
   defp distance_percentage(d) do
     cond do
-      d <= 0.2 -> 100
-      d <= 0.6 -> 95
-      d <= 1.0 -> 90
-      d <= 1.5 -> 85
-      d <= 2.5 -> 80
+      d <= 3.0 -> 100
+      d <= 4.0 -> 95
+      d <= 5.0 -> 90
+      d <= 8.0 -> 85
+      d <= 10.0 -> 80
       true -> 75
     end
   end

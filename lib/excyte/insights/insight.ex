@@ -5,6 +5,7 @@ defmodule Excyte.Insights.Insight do
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
+    Clients.Client,
     Insights.DocumentTemplate,
     Insights.SavedSearch,
     Insights.Section,
@@ -41,6 +42,7 @@ defmodule Excyte.Insights.Insight do
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
+    belongs_to(:client, Client)
     timestamps()
   end
 
@@ -56,6 +58,7 @@ defmodule Excyte.Insights.Insight do
       :content,
       :published,
       :document_template_id,
+      :client_id,
       :brokerage_id,
       :created_by_id
     ])
@@ -69,10 +72,18 @@ defmodule Excyte.Insights.Insight do
     select: struct(ins, [:id, :published, :uuid, :type])
   end
 
-  def published_agent_insights(uid) do
-    from ins in __MODULE__,
-    where: ins.created_by_id == ^uid and ins.published == true,
-    select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
+  def published_agent_insights(uid, type) do
+    if type === "all" do
+      from ins in __MODULE__,
+      where: ins.created_by_id == ^uid and ins.published == true,
+      order_by: [desc: ins.updated_at],
+      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type, :client_id])
+    else
+      from ins in __MODULE__,
+      where: ins.created_by_id == ^uid and ins.type == ^type and ins.published == true,
+      order_by: [desc: ins.updated_at],
+      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type, :client_id])
+    end
   end
 
   def all_agent_insights(uid) do

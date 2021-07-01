@@ -25,8 +25,9 @@
         <%= @listing.status %>
       </div>
     </div>
-    <h4 class="mt-1">
-      <%= @listing.street_number %> <%= @listing.street_name %>
+    <h4 class="mb-0">
+
+      <%= @listing.excyte_ranking.score %> / <%= @listing.street_number %> <%= @listing.street_name %>
       <%= if @listing.unit do %>
         <span class="pt-1 inline-block ml-1 text-gray-400 text-base">
           <label>Unit</label>
@@ -34,7 +35,7 @@
         </span>
       <% end %>
     </h4>
-    <p class="text-sm mt-1"><%= Utilities.summarize_sale_info(@listing) %></p>
+    <p class="text-sm"><%= Utilities.summarize_sale_info(@listing) %></p>
     <div class="flex mt-2 text-gray-400">
       <div class="mr-5">
         <label class="block text-right uppercase text-tiny">List price</label>
@@ -42,11 +43,11 @@
       </div>
       <div class="mx-5 text-center">
         <label class="block uppercase text-tiny">sqft</label>
-        <p class="font-bold"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
+        <p class="font-bold"><%= if @listing.sqft, do: number_to_delimited(@listing.sqft, precision: 0), else: "N/A" %></p>
       </div>
       <div class="mx-5 text-center">
         <label class="block uppercase text-tiny">Beds</label>
-        <p class="font-bold"><%= @listing.beds %></p>
+        <p class="font-bold"><%= if @listing.beds, do: @listing.beds, else: "N/A" %></p>
       </div>
       <div class="ml-5 text-center">
         <label class="block uppercase text-tiny">Baths</label>

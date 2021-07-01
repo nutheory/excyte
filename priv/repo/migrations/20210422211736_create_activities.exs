@@ -3,8 +3,11 @@ defmodule Excyte.Repo.Migrations.CreateActivities do
 
   def change do
     create table(:activities) do
-      add :created_by_id, references(:users)
+      add :agent_id, references(:users)
+      add :account_id, references(:accounts)
       add :brokerage_id, references(:brokerages)
+      add :insight_id, references(:insights)
+      add :client_id, references(:clients)
       add :name, :string
       add :description, :text
       add :type, :string
@@ -14,7 +17,7 @@ defmodule Excyte.Repo.Migrations.CreateActivities do
       timestamps()
     end
 
-    create index(:activities, [:created_by_id])
+    create index(:activities, [:agent_id])
     create index(:activities, [:brokerage_id])
   end
 end

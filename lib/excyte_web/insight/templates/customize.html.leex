@@ -108,8 +108,10 @@
                 <div class="mb-4">
                   <%= textarea f, :description, class: "textarea", placeholder: "Description" %>
                 </div>
-
               </form>
+              <%# <div id="upload-video" phx-hook="InitUploader">
+                <input type="file" id="file-field" name="file-field">
+              </div> %>
             </div>
           <% else %>
             <div class="mb-4 p-3 rounded shadow bg-white">

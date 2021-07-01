@@ -2,9 +2,11 @@ use Mix.Config
 
 config :excyte,
        :mls_auth_options, [
-         %{val: "google", name: "The Googs"},
-         %{val: "google_too", name: "The Googs Duece"},
-        ]
+         %{val: "miamire", name: "Miami AOR (MIAMIRE)", type: "bridge"},
+         %{val: "riar", name: "Rhode Island (RIAR)", type: "bridge"},
+         %{val: "tmls", name: "Triangle MLS (TMLS)", type: "bridge"}
+       ]
+
 
 config :excyte,
        :openid_connect_providers,

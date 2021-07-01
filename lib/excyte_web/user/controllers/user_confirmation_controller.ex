@@ -46,7 +46,7 @@ defmodule ExcyteWeb.UserConfirmationController do
 
   def confirm_mls(conn, %{"mls" => incoming_mls} = params) do
     mls = String.to_atom(incoming_mls)
-    if Application.get_env(:excyte, :env) === :prod do
+    # if Application.get_env(:excyte, :env) === :prod do
       with {:ok, tokens} <- OpenIDConnect.fetch_tokens(mls, params["code"]),
            {:ok, _claims} <- OpenIDConnect.verify(mls, tokens["id_token"]) do
           #  {:ok, confirmed_user} <- Accounts.confirm_user(params["excyte_confirm_token"]),
@@ -57,39 +57,39 @@ defmodule ExcyteWeb.UserConfirmationController do
       else
         {:error, err} -> {:error, err}
       end
-    else
-      {:ok, _} = bypass_open_id(conn, params)
+    # else
+    #   {:ok, _} = bypass_open_id(conn, params)
 
-      conn
-      |> put_flash(:info, "MLS successfully added.")
-      |> redirect(to: params["return_to"])
-    end
+    #   conn
+    #   |> put_flash(:info, "MLS successfully added.")
+    #   |> redirect(to: params["return_to"])
+    # end
 
   end
 
   #c hanged first param from conn to agent_id to call directly
-  def bypass_open_id(agent_id, params) do
-    # agent_id = conn.assigns.current_user.id
-    case Mls.create_credential(mls_params(agent_id, %{
-           "access_token" => params["access_token"],
-           "refresh_token" => params["refresh_token"],
-           "id_token" => params["id_token"],
-           "mls_name" => params["mls_name"],
-           "member_key" => params["member_key"],
-           "office_key" => params["office_key"],
-           "dataset_id" => params["dataset_id"],
-           "expires_in" => params["expires_in"]
-         }, %{
-           "agent_name" => "Derek Rush",
-           "mls_id" => "67475454757",
-           "sub" => "actris_ref",
-           "username" => "nutheory",
-           "zoneinfo" => "America/Chicago"
-         })) do
-      {:ok, agent} -> {:ok, agent}
-      {:error, err} -> {:error, err}
-    end
-  end
+  # def bypass_open_id(agent_id, params) do
+  #   # agent_id = conn.assigns.current_user.id
+  #   case Mls.create_credential(mls_params(agent_id, %{
+  #          "access_token" => params["access_token"],
+  #          "refresh_token" => params["refresh_token"],
+  #          "id_token" => params["id_token"],
+  #          "mls_name" => params["mls_name"],
+  #          "member_key" => params["member_key"],
+  #          "office_key" => params["office_key"],
+  #          "dataset_id" => params["dataset_id"],
+  #          "expires_in" => params["expires_in"]
+  #        }, %{
+  #          "agent_name" => "Derek Rush",
+  #          "mls_id" => "67475454757",
+  #          "sub" => "actris_ref",
+  #          "username" => "nutheory",
+  #          "zoneinfo" => "America/Chicago"
+  #        })) do
+  #     {:ok, agent} -> {:ok, agent}
+  #     {:error, err} -> {:error, err}
+  #   end
+  # end
 
   defp mls_params(agent_id, tokens, claims) do
     %{

@@ -13,6 +13,7 @@ defmodule Excyte.Repo.Migrations.SectionTemplates do
       add :description, :text
       add :html_content, :text
       add :type, :string
+      add :video_id, :string
       add :is_editable, :boolean, default: false
       add :is_shared, :boolean, default: false
       add :is_public, :boolean, default: false

@@ -4,7 +4,23 @@ defmodule Excyte.Activities do
   """
 
   import Ecto.Query, only: [from: 2]
-  alias Excyte.{Repo, Activities.ErrorLog}
+  alias Excyte.{Repo, Activities.Activity, Activities.ErrorLog}
+
+  def create_activity(_repo, %{new_client: nc, update_insight: ui}) do
+    %Activity{}
+    |> Activity.changeset(%{
+      name: "sent",
+      description: "Sent report to #{nc.name} at #{nc.email}",
+      agent_id: ui.created_by_id,
+      client_id: nc.id,
+      insight_id: ui.id
+    })
+    |> Repo.insert()
+  end
+
+  def fetch_insight_activities(query) do
+    Repo.all(Activity.insight_activities(query))
+  end
 
   def handle_errors(err, func_name, opts \\ []) do
     IO.inspect(err, label: "ERR")

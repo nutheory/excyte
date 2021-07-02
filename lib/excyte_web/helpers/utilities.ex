@@ -101,18 +101,18 @@ defmodule ExcyteWeb.Helpers.Utilities do
       },
       beds: %{
         type: Integer,
-        low: (if subject.beds, do: subject.beds - 2, else: 0),
-        high: (if subject.beds, do: subject.beds + 2, else: 100)
+        low: (if subject.beds, do: subject.beds - 1, else: 0),
+        high: (if subject.beds, do: subject.beds + 1, else: 100)
       },
       baths: %{
         type: Float,
-        low: (if subject.baths, do: round(subject.baths) - 2, else: 0),
-        high: (if subject.baths, do: round(subject.baths) + 2, else: 0)
+        low: (if subject.baths, do: round(subject.baths) - 1, else: 0),
+        high: (if subject.baths, do: round(subject.baths) + 1, else: 0)
       },
       sqft: %{
         type: Integer,
         low: (if subject.sqft, do: round(subject.sqft * 0.7), else: 0),
-        high: (if subject.sqft, do: round(subject.sqft * 1.6), else: 0)
+        high: (if subject.sqft, do: round(subject.sqft * 1.4), else: 0)
       },
       # TODO switch to live make statuses ["closed", "pending"]
       selected_statuses: [

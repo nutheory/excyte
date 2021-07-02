@@ -40,15 +40,15 @@ defmodule ExcyteWeb.Insight.Editor do
     {:noreply, socket}
   end
 
-  # def handle_event("search-pexel-images", %{"term" => term}, %{assigns: a} = socket) do
-  #   ApiServices.pexel_image_search(term, 20, 0)
-  #   {:noreply, socket}
-  # end
+  def handle_event("search-pexel-images", %{"term" => term}, %{assigns: a} = socket) do
+    ApiServices.pexel_image_search(term, 20, 0)
+    {:noreply, socket}
+  end
 
-  # def fetch_pexel_images("load-pexel-images", %{"page-url" => url}, %{assigns: a} = socket) do
-  #   ApiServices.pexel_image_next(url)
-  #   {:noreply, socket}
-  # end
+  def fetch_pexel_images("load-pexel-images", %{"page-url" => url}, %{assigns: a} = socket) do
+    ApiServices.pexel_image_next(url)
+    {:noreply, socket}
+  end
 
   # def handle_event("toggle-image-panel", _, %{assigns: a} = socket) do
   #   {:noreply, assign(socket, image_panel: !a.image_panel)}

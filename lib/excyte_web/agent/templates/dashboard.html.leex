@@ -36,7 +36,7 @@
       <% end %>
     </div>
   </div>
-  <div class="panel-slidein bg-gray-100 px-2 pt-2 lg:pt-6 lg:max-w-2xl <%= if @show_send_panel, do: 'right-0', else: '' %>">
+  <div class="panel-slidein bg-gray-100 px-2 pt-6 lg:max-w-2xl <%= if @show_send_panel, do: 'right-0', else: '' %>">
     <%= if @insight_to_send do %>
       <%= live_component @socket, SendToClient,
         insight: @insight_to_send,

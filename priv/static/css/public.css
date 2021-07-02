@@ -2145,6 +2145,79 @@ h4 {
   margin-bottom: 0;
 }
 
+@layer base {
+  html, body {
+    --tw-bg-opacity: 1;
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  }
+  html, body {
+    --tw-text-opacity: 1;
+    color: rgba(75, 85, 99, var(--tw-text-opacity));
+  }
+  html,
+  body {
+
+    line-height: 1.2;
+    height: 100%;
+  }
+
+  [x-cloak] {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  h1 {
+    font-weight: 800;
+  }
+
+  h1 {
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  h2 {
+    font-weight: 700;
+  }
+
+  h2 {
+    line-height: 1;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  h3 {
+    font-weight: 700;
+  }
+
+  h3 {
+    line-height: 1;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  h4 {
+    font-weight: 700;
+  }
+
+  h4 {
+    line-height: 1;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -3433,6 +3506,10 @@ h4 {
 
 .pt-16 {
   padding-top: 4rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
 }
 
 .pl-1 {
@@ -4793,10 +4870,6 @@ h4 {
     margin-top: 7rem;
   }
 
-  .lg\:mt-6 {
-    margin-top: 1.5rem;
-  }
-
   .lg\:mt-36 {
     margin-top: 9rem;
   }
@@ -4807,6 +4880,10 @@ h4 {
 
   .lg\:mt-24 {
     margin-top: 6rem;
+  }
+
+  .lg\:mt-6 {
+    margin-top: 1.5rem;
   }
 
   .lg\:mt-20 {
@@ -4953,12 +5030,12 @@ h4 {
     padding-top: 6rem;
   }
 
-  .lg\:pt-6 {
-    padding-top: 1.5rem;
-  }
-
   .lg\:pt-0 {
     padding-top: 0px;
+  }
+
+  .lg\:pt-6 {
+    padding-top: 1.5rem;
   }
 
   .lg\:text-lg {

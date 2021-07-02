@@ -81,9 +81,9 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   def handle_info({:update_selected_listing, %{listing: listing}}, %{assigns: a} = socket) do
     selected =
       Enum.map(a.selected_listings, fn sl ->
-        if sl.listing_id === listing.listing_id, do: listing, else: sl
+        if sl.listing_key === listing.listing_key, do: listing, else: sl
       end)
-    ns = assign(socket, selected_listings: selected)
+    ns = assign(socket, selected_listings: selected, preview: nil)
     progress_save(ns)
     {:noreply, ns}
   end

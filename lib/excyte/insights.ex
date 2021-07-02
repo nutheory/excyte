@@ -11,7 +11,6 @@ defmodule Excyte.Insights do
   alias Excyte.Insights.{
     Insight,
     DocumentTemplate,
-    Section,
     SectionTemplate
   }
 
@@ -143,35 +142,38 @@ defmodule Excyte.Insights do
     |> Multi.run(:get_agent_info, Agents, :get_agent_profile, [])
     |> Multi.run(:setup_possible_brokerage, __MODULE__, :maybe_brokerage, [])
     |> Repo.transaction()
+    |> case do
+      {:ok, %{get_publishing_info: gpi, get_agent_info: gai, setup_possible_brokerage: spb}} ->
+        {:ok, %{insight: gpi, agent_profile: gai, brokerage: spb.brokerage, sections: spb.sections}}
+      {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
+    end
   end
 
-  def build_cma_sections(%{usr_id: uid, insight_id: insid}) do
-    r = case get_full_insight(%{usr_id: uid, insight_id: insid}) do
-        {:ok, %{get_publishing_info: gpi, get_agent_info: gai, setup_possible_brokerage: spb}} ->
-          %{insight: gpi, agent_profile: gai, brokerage: spb.brokerage, sections: spb.sections }
-        {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
-      end
-
-    pages = Enum.map(r.sections, fn st ->
-        section = Map.from_struct(st)
-        if section.component_name === "comparable" || section.component_name === "tour_stop" do
-          Map.merge(section, %{listings: r.insight.content.listings})
-        else
-          section
-        end
-      end)
-      |> Enum.sort(fn a, b -> a.position <= b.position end)
-      |> Enum.with_index()
-      |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
-    {:ok, %{
-      sections: pages,
-      data: %{
-        insight: sanitize_data(Map.delete(r.insight, :saved_search)),
-        agent_profile: sanitize_data(r.agent_profile),
-        brokerage: sanitize_data(r.brokerage),
-        subject: sanitize_data(r.insight.property)
-      }
-    }}
+  def build_sections(%{usr_id: uid, insight_id: insid}) do
+    case get_full_insight(%{usr_id: uid, insight_id: insid}) do
+      {:ok, %{insight: ins, agent_profile: ap, brokerage: bp, sections: sections}} ->
+        pages = Enum.map(sections, fn st ->
+            section = Map.from_struct(st)
+            if section.component_name === "comparable" || section.component_name === "tour_stop" do
+              Map.merge(section, %{listings: ins.content.listings})
+            else
+              section
+            end
+          end)
+          |> Enum.sort(fn a, b -> a.position <= b.position end)
+          |> Enum.with_index()
+          |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
+        {:ok, %{
+          sections: pages,
+          data: %{
+            insight: sanitize_data(Map.delete(ins, :saved_search)),
+            agent_profile: sanitize_data(ap),
+            brokerage: sanitize_data(bp),
+            subject: sanitize_data(ins.property)
+          }
+        }}
+      {:error, err} -> {:error, %{error: err, message: "Oops something went wrong in the build."}}
+    end
   end
 
   def get_publish_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do

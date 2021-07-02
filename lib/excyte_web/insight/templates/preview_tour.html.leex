@@ -123,35 +123,46 @@
     <%= if @show_remarks do %>
       <p class="my-4 text-sm"><%= @listing.public_remarks %></p>
     <% end %>
-    <div class="bg-white shadow rounded-lg p-4">
+    <div class="bg-white shadow rounded-lg p-4 form">
       <%= if @added do %>
         <%= if @editing_note do %>
           <form phx-change="add-note" phx-target="<%= @myself %>">
-            <label for="note">Edit note</label>
-            <textarea
-              class="textarea"
-              name="note"
-              placeholder="Enter note here..."
-              value="<%= @listing.excyte_note %>">
-            </textarea>
+            <div class="flex">
+              <div class="flex-1">
+                <label for="note">Edit note</label>
+              </div>
+              <div
+                class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
+                phx-click="toggle-edit-note"
+                phx-target="<%= @myself %>">cancel</div>
+            </div>
+            <textarea class="textarea" name="note" placeholder="Enter note here..."><%= @note %></textarea>
           </form>
-          <button phx-click="update-listing" phx-target="<%= @myself %>" >Save</button>
+          <button class="submit mt-4 w-full" phx-click="update-listing" phx-target="<%= @myself %>">Save</button>
         <% else %>
           <div class="mb-4">
-            <p class=""><%= @listing.excyte_note %></p>
-            <p class="" phx-click="toggle-edit-note">edit</p>
+            <div class="flex">
+              <div class="text-base font-bold flex-1">Note</div>
+              <div
+                class="link-button pt-1 text-sm"
+                phx-click="toggle-edit-note"
+                phx-target="<%= @myself %>">edit</div>
+            </div>
+            <p class="text-base"><%= if @note !== "", do: @note, else: "None." %></p>
           </div>
-        <% end %>
-        <div class="text-green-500 font-bold text-center my-8">
-          Added to Comparables
-            <span
+          <div class="flex">
+            <div class="flex-1">
+              <h4 class="text-sm">Added to Tour</h4>
+            </div>
+            <div
               class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
               phx-click="remove-tour-stop"
               phx-value-key="<%= @listing.listing_key %>"
-            >remove</span>
-        </div>
+            >remove</div>
+          </div>
+        <% end %>
       <% else %>
-        <div class="py-12">
+        <div class="">
           <form phx-change="add-note" phx-target="<%= @myself %>">
             <label for="note">Add a note</label>
             <textarea

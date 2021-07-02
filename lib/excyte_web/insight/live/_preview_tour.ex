@@ -8,11 +8,15 @@ defmodule ExcyteWeb.Insight.PreviewTour do
     {:ok, assign(socket,
       listing: assigns.listing,
       added: assigns.added,
-      note: "",
+      note: (if Map.has_key?(assigns.listing, :excyte_note), do: assigns.listing.excyte_note, else: ""),
       show_remarks: false,
       editing_note: false,
       error: nil
     )}
+  end
+
+  def handle_event("toggle-edit-note", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, editing_note: !a.editing_note)}
   end
 
   def handle_event("add-tour-stop", _, %{assigns: a} = socket) do

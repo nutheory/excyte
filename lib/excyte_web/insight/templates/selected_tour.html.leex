@@ -29,11 +29,13 @@
             class="bg-white shadow rounded p-1.5 flex mb-2 relative"
             data-listable-id="<%= listing.listing_id %>"
           >
-            <div class="drag-handle grabbable pl-2 pr-4 flex items-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-              </svg>
-            </div>
+            <%= if length(@selected) > 1 do %>
+              <div class="drag-handle grabbable pl-2 pr-4 flex items-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                </svg>
+              </div>
+            <% end %>
             <div
               class="w-24 h-16 bg-cover rounded shadow"
               style="background-image: url(<%= listing.main_photo_url %>)"
@@ -53,7 +55,7 @@
           </li>
         <% end %>
       </ul>
-      <div>
+      <div class="form">
         <button class="submit block w-full" phx-click="update-tour">Continue with selected</button>
       </div>
     <% else %>

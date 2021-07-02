@@ -19,7 +19,7 @@
     <%= if @size > 0 do %>
       <div class="my-8">
         <%= for {key, val} <- @selected do %>
-          <div class="px-2 rounded status-decor-<%= String.downcase(Enum.join(tl(String.split(key, "_")), "-")) %>">
+          <div class="px-2 rounded mb-4 status-decor-<%= String.downcase(Enum.join(tl(String.split(key, "_")), "-")) %>">
             <h4 class="text-right text-sm py-1 status-text-<%= String.downcase(Enum.join(tl(String.split(key, "_")), "-")) %>"><%= String.capitalize(Enum.join(tl(String.split(key, "_")), " ")) %></h4>
             <ul class="">
               <%= for sel <- val do %>

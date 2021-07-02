@@ -30,7 +30,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:get_sections, %{insight: ins}}, %{assigns: a} = socket) do
-    case Insights.build_cma_sections(%{usr_id: a.current_user.id, insight_id: ins.id}) do
+    case Insights.build_sections(%{usr_id: a.current_user.id, insight_id: ins.id}) do
       {:ok, res} ->
         sections = with_html_sections(res.sections, res.data)
         insight = merge_theme(res.data)

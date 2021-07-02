@@ -1,7 +1,7 @@
 defmodule Excyte.Mls.ResoApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
-  alias Excyte.Mls.{MetaCache, ProcessListings}
+  alias Excyte.Mls.{MetaCache, ProcessListings, ResoMemberApi}
   alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
@@ -44,20 +44,19 @@ defmodule Excyte.Mls.ResoApi do
   # uncomment middleware above
 
   def get_listings_by_agent(mls, %{list_agent_key: lak}) do
-    # ListAgentKey: "e01c0c36ad4a8e406770f2a56522ef91"
-    # ListAgentKey: "77c4b2f3ec218c88bd7e41617ef63489" Current(Eric Moreland)
+    meta = get_metadata(mls)
+    entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     query = get_expanded(mls)
-    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
-      <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="
-      <> "ListAgentKey%20eq%20%27#{lak}%27")
-    |> format_response()
-    |> ProcessListings.simple_process()
+    if Enum.member?(entity.attributes, "ListAgentKey") do
+      get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
+        <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="
+        <> "ListAgentKey%20eq%20%27#{lak}%27")
+      |> format_response()
+      |> ProcessListings.simple_process()
+    else
+      ResoMemberApi.getMemberListings(mls)
+    end
   end
-
-  # def get_listings_by_brokerage(mls, %{office_broker_key: obk}) do
-  # # OfficeBrokerKey: "238cb1a714e69b74eccf629b85a70ffc"
-
-  # end
 
   def get_listing_by_key(mls, %{listing_key: key}) do
     get("#{mls.dataset_id}/Property(%27#{key}%27)?access_token=#{mls.access_token}")
@@ -147,7 +146,7 @@ defmodule Excyte.Mls.ResoApi do
   defp get_by_price(mls, %{price: price}) do
     low = if price.low === nil || price.low < 0, do: 0, else: price.low
     high = if price.high === nil, do: 100_000_000, else: price.high
-    if price === nil || price === 0 || Enum.empty?(price) do
+    if price === nil || Enum.empty?(price) do
       ""
     else
       "#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}"
@@ -157,7 +156,7 @@ defmodule Excyte.Mls.ResoApi do
   defp get_by_all_prices(mls, %{price: price}) do
     low = if price.low === nil || price.low < 0, do: 0, else: price.low
     high = if price.high === nil, do: 100_000_000, else: price.high
-    if price === nil || price === 0 || Enum.empty?(price) do
+    if price === nil || Enum.empty?(price) do
       ""
     else
       "#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
@@ -215,13 +214,13 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   # I think date wraps the attr not the string?
-  defp get_attr_by_date_range(mls, %{attr: attr, low: l, high: h}) do
-    meta = get_metadata(mls)
-    entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
-    if Enum.member?(entity.attributes, attr) do
-      "%20and%20#((#{attr}%20ge%20date(#{l}))%20and%20(#{attr}%20le%20date(#{h})))"
-    end
-  end
+  # defp get_attr_by_date_range(mls, %{attr: attr, low: l, high: h}) do
+  #   meta = get_metadata(mls)
+  #   entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
+  #   if Enum.member?(entity.attributes, attr) do
+  #     "%20and%20#((#{attr}%20ge%20date(#{l}))%20and%20(#{attr}%20le%20date(#{h})))"
+  #   end
+  # end
 
   def get_by_listing_ids(mls, ids_array, %Property{} = subject) do
     ids_str = Enum.reduce(ids_array, "$filter=", fn id, acc ->

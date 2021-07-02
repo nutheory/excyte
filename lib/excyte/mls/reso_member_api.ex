@@ -1,5 +1,6 @@
 defmodule Excyte.Mls.ResoMemberApi do
   use Tesla, only: [:get], docs: false
+  alias Excyte.Mls.{ProcessListings}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
@@ -25,6 +26,21 @@ defmodule Excyte.Mls.ResoMemberApi do
     |> case do
       {:ok, %{agents: agents}} -> {:ok, (if length(agents) > 0, do: hd(agents), else: nil)}
       {:error, _err} -> {:ok, nil}
+    end
+  end
+
+  def getMemberListings(mls) do
+    if mls.member_key do
+      get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Listings&$top=9&"
+      <> "$orderby=ModificationTimestamp%20desc&$filter=MemberKey%20eq%20%27#{mls.member_key}%27")
+      |> case do
+        {:ok, %Tesla.Env{:body => %{"value" => agents}}} ->
+          agent = hd(agents)
+          ProcessListings.simple_process({:ok, %{listings: agent["Listings"]}})
+        {:error, _err} -> {:ok, %{listings: []}}
+      end
+    else
+      {:ok, %{listings: []}}
     end
   end
 

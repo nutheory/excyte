@@ -52,9 +52,9 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   def handle_info({:query_mls, %{insight: ins, filters: filters}}, %{assigns: a} = socket) do
     case ResoApi.listing_properties(a.current_user.current_mls, ins.property, filters) do
       {:ok, c} -> %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, ins.property, filters, socket)
-
         {:noreply, assign(socket, insight: ins, listings: ls, fetching: false, filters: fs,
           subject: ns, comp_count: c.count, show_filters: length(ls) === 0)}
+
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
                         subject: ins.property)}
     end

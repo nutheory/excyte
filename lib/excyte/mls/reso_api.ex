@@ -83,7 +83,6 @@ defmodule Excyte.Mls.ResoApi do
 
   def listing_properties(mls, %Property{} = subject, opts) do
     query = get_expanded(mls)
-    IO.inspect(opts, label: "OPTS")
     get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
     mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}", else: ""
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
@@ -92,9 +91,9 @@ defmodule Excyte.Mls.ResoApi do
       <> "(#{mb})%20and%20"
       <> "(#{status(opts.selected_statuses)})%20and%20"
       <> "#{get_by_all_prices(mls, opts)}%20and%20"
-      <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}%20and%20"
-      <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}%20and%20"
-      <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}%20and%20"
+      <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "#{get_by_distance(get_by_opts)}"
     )
     |> format_response()
@@ -110,11 +109,12 @@ defmodule Excyte.Mls.ResoApi do
     get_by_opts = if query.coords, do: %{coords: opts.coords, distance: opts.distance}, else: %{zip: opts.zip}
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
-      <> "$filter=#{get_by_distance(get_by_opts)}"
+      <> "$filter="
       <> "#{get_by_price(mls, opts)}"
-      # <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
-      # <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
-      # <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+      <> "#{get_by_distance(get_by_opts)}"
     )
     |> format_response()
     |> ProcessListings.process_init(opts)
@@ -148,8 +148,8 @@ defmodule Excyte.Mls.ResoApi do
     if price === nil || Enum.empty?(price) do
       ""
     else
-      "(#{get_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
-      <> "#{get_attr_by_range(mls, %{attr: "ClosePrice", low: low, high: high})})"
+      "(#{get_simple_attr_by_range(mls, %{attr: "ListPrice", low: low, high: high})}%20or%20"
+      <> "#{get_simple_attr_by_range(mls, %{attr: "ClosePrice", low: low, high: high})})"
     end
   end
 
@@ -180,7 +180,8 @@ defmodule Excyte.Mls.ResoApi do
     ""
   end
 
-  defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
+  # not for chaining
+  defp get_simple_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
@@ -188,6 +189,20 @@ defmodule Excyte.Mls.ResoApi do
         l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
         l !== nil -> "#{attr}%20gt%20#{l}"
         h !== nil -> "#{attr}%20lt%20#{h}"
+        true -> ""
+      end
+    end
+  end
+
+  # for chaining
+  defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
+    meta = get_metadata(mls)
+    entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
+    if Enum.member?(entity.attributes, attr) do
+      cond do
+        l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})%20and%20"
+        l !== nil -> "#{attr}%20gt%20#{l}%20and%20"
+        h !== nil -> "#{attr}%20lt%20#{h}%20and%20"
         true -> ""
       end
     end

@@ -18,68 +18,70 @@
         show_filters: @show_filters,
         id: :listings_list %>
       <% IO.inspect(Map.has_key?(@client_info, :width), label: "HAS WIDTH KEY? ") %>
-      <% IO.inspect(@client_info, label: "HAS CLIENT KEY? ") %>
-      <%= if Map.has_key?(@client_info, :width) && @client_info.width >= 1024 do %>
-        <div class="lg:sticky lg:top-0 lg:col-start-8 lg:pt-24 lg:col-span-5 px-4 h-screen <%= if @preview, do: 'animate-select'%>">
-          <%= if @preview do %>
-            <%= if Map.has_key?(@subject, :__struct__) do %>
-              <%= live_component @socket, PreviewComp,
-                listing: @preview,
-                added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-                id: :listing_preview_comp
-              %>
+      <% IO.inspect(@socket.assigns, label: "HAS CLIENT KEY? ") %>
+      <%= if Map.has_key?(@client_info, :width) do %>
+        <%= if @client_info.width >= 1024 do %>
+          <div class="lg:sticky lg:top-0 lg:col-start-8 lg:pt-24 lg:col-span-5 px-4 h-screen <%= if @preview, do: 'animate-select'%>">
+            <%= if @preview do %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, PreviewComp,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_comp
+                %>
+              <% else %>
+                <%= live_component @socket, PreviewTour,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_tour
+                %>
+              <% end %>
             <% else %>
-              <%= live_component @socket, PreviewTour,
-                listing: @preview,
-                added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-                id: :listing_preview_tour
-              %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, SelectedComps,
+                  selected: @selected_listings,
+                  id: :selected_comps
+                %>
+              <% else %>
+                <%= live_component @socket, SelectedTour,
+                  selected: @selected_listings,
+                  id: :selected_tour
+                %>
+              <% end %>
             <% end %>
-          <% else %>
-            <%= if Map.has_key?(@subject, :__struct__) do %>
-              <%= live_component @socket, SelectedComps,
-                selected: @selected_listings,
-                id: :selected_comps
-              %>
+          </div>
+        <% else %>
+          <div class="panel-slidein bg-gray-100 px-2 pt-4 lg:pt-6 lg:max-w-2xl <%= if @preview || @show_panel, do: 'right-0', else: '' %>">
+            <%= if @preview do %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, PreviewComp,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_comp
+                %>
+              <% else %>
+                <%= live_component @socket, PreviewTour,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_tour
+                %>
+              <% end %>
             <% else %>
-              <%= live_component @socket, SelectedTour,
-                selected: @selected_listings,
-                id: :selected_tour
-              %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, SelectedComps,
+                  selected: @selected_listings,
+                  id: :selected_comps
+                %>
+              <% else %>
+                <%= live_component @socket, SelectedTour,
+                  selected: @selected_listings,
+                  id: :selected_tour
+                %>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="panel-slidein bg-gray-100 px-2 pt-4 lg:pt-6 lg:max-w-2xl <%= if @preview || @show_panel, do: 'right-0', else: '' %>">
-          <%= if @preview do %>
-            <%= if Map.has_key?(@subject, :__struct__) do %>
-              <%= live_component @socket, PreviewComp,
-                listing: @preview,
-                added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-                id: :listing_preview_comp
-              %>
-            <% else %>
-              <%= live_component @socket, PreviewTour,
-                listing: @preview,
-                added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
-                id: :listing_preview_tour
-              %>
-            <% end %>
-          <% else %>
-            <%= if Map.has_key?(@subject, :__struct__) do %>
-              <%= live_component @socket, SelectedComps,
-                selected: @selected_listings,
-                id: :selected_comps
-              %>
-            <% else %>
-              <%= live_component @socket, SelectedTour,
-                selected: @selected_listings,
-                id: :selected_tour
-              %>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>

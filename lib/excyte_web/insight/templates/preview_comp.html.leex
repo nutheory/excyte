@@ -146,6 +146,13 @@
             </tr>
           </thead>
           <tbody>
+            <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Sqft</td>
+                <td class="text-center p-2"><%= @listing.sqft %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.sqft.difference) %></td>
+              </tr>
+            <% end %>
             <%= if Map.has_key?(@listing.adjustments, :beds) do %>
               <tr class="border-b border-gray-300 hover:bg-cyan-50">
                 <td class="font-bold p-2">Beds</td>

@@ -91,7 +91,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def adjustment_value(adj_diff) do
     adj = to_string(adj_diff)
     if String.starts_with?(adj, "-") do
-      assigns = %{__changed__: nil, adj: String.slice(adj, 1..10)}
+      assigns = %{__changed__: nil, adj: adj}
       ~L"""
         <span class="font-bold text-red-700"><%= @adj %></span>
       """

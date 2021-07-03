@@ -102,18 +102,21 @@ defmodule Excyte.Properties.Adjustments do
   end
 
   defp to_text(val, attr) do
+    adj =
+      cond do
+        is_integer(val) -> if val < 0, do: "-", else: "+"
+        is_float(val) -> if val < 0.0, do: "-", else: "+"
+      end
     number = if val < 0, do: val * -1, else: val
-    adj = if val < 0, do: "-", else: "+"
     "#{adj}#{number} #{Inflex.inflect(attr, number)}"
   end
 
   defp to_text_lot(unit, diff) do
     number = if diff < 0, do: diff * -1, else: diff
-    adj = if diff < 0, do: "-", else: "+"
     if unit === "sqft" do
-      "#{adj}#{trunc(diff)}"
+      "#{trunc(diff)}"
     else
-      "#{adj}#{trunc(number/43560)}"
+      "#{trunc(number/43560)}"
     end
   end
 

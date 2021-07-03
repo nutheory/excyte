@@ -8,6 +8,7 @@ defmodule ExcyteWeb.Insight.FilterListings do
     {:ok, assign(socket,
       subject: assigns.subject,
       status_options: Utilities.status_options,
+      property_options: Utilities.property_options(assigns.filters.dataset_id),
       listing_count: assigns.listing_count,
       filters: assigns.filters)}
   end

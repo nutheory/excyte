@@ -22,7 +22,13 @@ window.LocationAutocomplete = () => {
                 return { 
                   geo: loc.centroid, 
                   id: loc.mpr_id, 
-                  address: `${loc.line}, ${loc.city}, ${loc.state_code}, ${loc.postal_code}`
+                  address: `${loc.line}, ${loc.city}, ${loc.state_code}, ${loc.postal_code}`, 
+                  parsed: {
+                    addr: loc.line,
+                    city: loc.city,
+                    state: loc.state_code,
+                    zip: loc.postal_code
+                  }
                 }
               })
               .slice(0, 6)

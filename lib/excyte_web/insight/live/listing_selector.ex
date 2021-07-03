@@ -43,7 +43,10 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   def handle_info({:load_from_store, id}, %{assigns: a} = socket) do
     case Insights.get_initial_insight(a.current_user.id, id) do
       %Insight{} = ins ->
-        send self(), {:query_mls, %{insight: ins, filters: Utilities.format_quoted_json(ins.saved_search.criteria)}}
+        send self(), {:query_mls, %{
+          insight: ins,
+          filters: Utilities.format_quoted_json(ins.saved_search.criteria)
+        }}
         {:noreply, socket}
       nil -> {:noreply, assign(socket, fetching: false, errors: [%{message: "cannot locate #{id}."}])}
     end

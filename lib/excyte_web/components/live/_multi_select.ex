@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Components.MultiSelect do
       options: assigns.options,
       label: assigns.label,
       status: assigns.status,
+      show_top_label: assigns.show_top_label,
       selected: selected,
       key: assigns.key,
       callback: assigns.callback)}

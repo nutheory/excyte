@@ -74,48 +74,60 @@
           options: @status_options,
           label: "Select statuses",
           status: true,
+          show_top_label: false,
           selected: @filters.selected_statuses,
           callback: :update_filter,
           key: :selected_statuses,
           id: :update_statuses %>
       </div>
     </div>
-    <div class="lg:w-2/5 px-2 md:px-4 mt-5">
+    <div class="lg:w-2/5 px-2 md:px-4">
       <%= f = form_for :mf, "#", [phx_submit: "filter-submit"] %>
         <div class="w-full flex">
-          <div class="mr-2">
-            <%= number_input f, :distance,
-              class: "number-field w-24",
+          <div class="mr-4 w-16">
+            <label>Distance</label>
+            <%= text_input f, :distance,
+              class: "number-field",
               inputmode: "numeric",
+              pattern: "[0-9]*[.]?[0-9]*",
               placeholder: "Radius",
               value: @filters.distance,
               phx_debounce: "blur" %>
           </div>
-          <div>
-            <strong>distance (mi.)</strong>
-          </div>
+          <%= if @subject do %>
+            <div class="flex-1">
+              <label>Status updated</label>
+              <%= live_component @socket, Dropdown,
+                options: [
+                  %{value: 1, text: "Past month"},
+                  %{value: 2, text: "Past 2 months"},
+                  %{value: 3, text: "Past 3 months"},
+                  %{value: 6, text: "Past 6 months"},
+                  %{value: 9, text: "Past 9 months"},
+                  %{value: 12, text: "Past year"},
+                  %{value: 24, text: "Past 2 years"}
+                ],
+                selected: @filters.status_updated,
+                attr: :status_updated,
+                callback: :update_filter,
+                label: "Status updated",
+                id: :status_updated
+              %>
+            </div>
+          <% end %>
         </div>
-        <%= if @subject do %>
-          <div class="w-full mt-3">
-            <label>Status updated</label>
-            <%= live_component @socket, Dropdown,
-              options: [
-                %{value: 1, text: "Past month"},
-                %{value: 2, text: "Past 2 months"},
-                %{value: 3, text: "Past 3 months"},
-                %{value: 6, text: "Past 6 months"},
-                %{value: 9, text: "Past 9 months"},
-                %{value: 12, text: "Past year"},
-                %{value: 24, text: "Past 2 years"}
-              ],
-              selected: @filters.status_updated,
-              attr: :status_updated,
-              callback: :update_filter,
-              label: "Status updated",
-              id: :status_updated
-            %>
-          </div>
-        <% end %>
+        <div class="mt-3 w-full">
+          <%= live_component @socket, MultiSelect,
+            options: @property_options,
+            selected: @filters.property_types,
+            key: :property_types,
+            status: false,
+            show_top_label: true,
+            callback: :update_filter,
+            label: "Property Type",
+            id: :property_types
+          %>
+        </div>
         <div class="w-full mt-4">
           <button type="submit" class="submit w-full h-full" value="Submit">Filter</button>
         </div>

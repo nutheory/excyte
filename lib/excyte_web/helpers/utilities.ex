@@ -37,6 +37,24 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
+  def property_options(dataset_id) do
+    case dataset_id do
+      "tmls" ->
+        [
+          %{value: "detached", name: "Detached"},
+          %{value: "attached", name: "Attached"},
+          %{value: "condominium", name: "Condo"},
+          %{value: "manufactured home", name: "Manufactured Home"}
+        ]
+      _ ->
+        [
+          %{value: "single family residence", name: "Single Family"},
+          %{value: "condominium", name: "Condominium"},
+          %{value: "townhouse", name: "Townhouse"},
+          %{value: "multi family", name: "Multi Family"},
+        ]
+    end
+  end
 
   def status_options() do
     [
@@ -70,21 +88,17 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
-  def icon_adjustment(adj_diff) do
+  def adjustment_value(adj_diff) do
     adj = to_string(adj_diff)
     if String.starts_with?(adj, "-") do
       assigns = %{__changed__: nil, adj: String.slice(adj, 1..10)}
       ~L"""
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6" />
-        </svg><span class="font-bold"><%= @adj %></span>
+        <span class="font-bold text-red-700"><%= @adj %></span>
       """
     else
       assigns = if String.starts_with?(adj, "+"), do: %{__changed__: nil,adj: String.slice(adj, 1..20)}, else: %{__changed__: nil, adj: adj}
       ~L"""
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg><span class="font-bold"><%= @adj %></span>
+        <span class="font-bold"><%= @adj %></span>
       """
     end
   end
@@ -92,6 +106,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def default_filter(subject) do
     %{
       default: true,
+      dataset_id: subject.dataset_id,
       price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
       price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
       price: %{
@@ -114,7 +129,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
         low: (if subject.sqft, do: round(subject.sqft * 0.7), else: 0),
         high: (if subject.sqft, do: round(subject.sqft * 1.4), else: 0)
       },
-      # TODO switch to live make statuses ["closed", "pending"]
+      property_types: set_property_type(subject),
       selected_statuses: [
         %{value: "active", name: "Active"},
         %{value: "closed", name: "Closed"},
@@ -266,6 +281,18 @@ defmodule ExcyteWeb.Helpers.Utilities do
         {k, handle_nested(v)}
       end
     end)
+  end
+
+  defp set_property_type(subject) do
+    case subject.dataset_id do
+      "tmls" ->
+        case subject.property_type do
+          "single_family" -> [%{name: "Detached", value: "detached"}]
+          "condo" -> [%{name: "Condo", value: "condominium"}]
+          _ -> [%{name: "Attached", value: "attached"}]
+        end
+      # _ ->
+    end
   end
 
   defp handle_nested(v) when is_list(v) do

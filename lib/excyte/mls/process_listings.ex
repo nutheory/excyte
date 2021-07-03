@@ -225,9 +225,9 @@ defmodule Excyte.Mls.ProcessListings do
   defp process_parking(p) do
     cond do
       p.garage -> %{type: "Garage", spaces: p.garage_spaces, attached: p.garage_attached}
-      p.carport -> %{type: "Carport", spaces: p.carport_spaces}
-      p.open_parking -> %{type: "Street", spaces: "N/A"}
-      true -> %{type: "Street", spaces: "N/A"}
+      p.carport -> %{type: "Carport", spaces: p.carport_spaces, attached: false}
+      p.open_parking -> %{type: "Street/Open", spaces: "N/A", attached: false}
+      true -> %{type: "Street", spaces: "N/A", attached: false}
     end
   end
 

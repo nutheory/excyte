@@ -36,11 +36,12 @@ defmodule ExcyteWeb.Insight.PreviewComp do
     {:noreply, assign(socket, adj_name: name, adj_value: int_val)}
   end
 
-  def handle_event("commit-adjustment-item", _, %{assigns: a} = socket) do
+  def handle_event("commit-adjustment-item", btn, %{assigns: a} = socket) do
+    value = if Map.has_key?(btn, "add"), do: a.adj_value, else: a.adj_value * -1
     adj = a.custom_adjustments ++ [%{
       id: Ecto.UUID.generate,
       name: a.adj_name,
-      value: a.adj_value
+      value: value
     }]
 
     {:noreply, assign(socket,
@@ -48,7 +49,7 @@ defmodule ExcyteWeb.Insight.PreviewComp do
       adj_value: "",
       custom_adjustments: adj,
       show_adjustment_form: false,
-      excyte_price: a.excyte_price + a.adj_value
+      excyte_price: a.excyte_price + value
     )}
   end
 

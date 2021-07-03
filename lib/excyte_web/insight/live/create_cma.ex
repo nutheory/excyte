@@ -65,7 +65,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
           query: "",
           coords: subject_attrs.coords,
           zip: subject_attrs.zip,
-          criteria: Utilities.default_filter(subject_attrs)
+          criteria: Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: a.current_user.current_mls.dataset_id}))
         }
       },
       subject: subject_attrs

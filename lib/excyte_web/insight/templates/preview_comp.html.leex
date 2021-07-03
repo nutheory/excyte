@@ -1,5 +1,5 @@
 <div class="h-full flex flex-col">
-  <div class="flex  mb-6 lg:mt-6">
+  <div class="flex  mb-3 lg:mt-6">
     <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
       <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -106,8 +106,10 @@
         <% end %>
         <%= if @listing.parking.type && @listing.parking.spaces do %>
           <div class="flex w-full">
-            <label class="w-20 pr-4 pb-1 flex items-end justify-end"><%= @listing.parking.type %></label>
-            <p class="font-bold flex-1"><%= @listing.parking.spaces %></p>
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Parking</label>
+            <p class="font-bold flex-1">
+              <%= @listing.parking.type %> <%= if @listing.parking.spaces === "N/A", do: "", else: "(#{@listing.parking.spaces})" %>
+            </p>
           </div>
         <% end %>
         <%= if @listing.property_sub_type do %>
@@ -148,28 +150,28 @@
               <tr class="border-b border-gray-300 hover:bg-cyan-50">
                 <td class="font-bold p-2">Beds</td>
                 <td class="text-center p-2"><%= @listing.beds %></td>
-                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.beds.difference) %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.beds.difference) %></td>
               </tr>
             <% end %>
             <%= if Map.has_key?(@listing.adjustments, :baths) do %>
               <tr class="border-b border-gray-300 hover:bg-cyan-50">
                 <td class="font-bold p-2">Baths</td>
                 <td class="text-center p-2"><%= @listing.baths.total %></td>
-                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.baths.difference) %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.baths.difference) %></td>
               </tr>
             <% end %>
             <%= if Map.has_key?(@listing.adjustments, :stories) do %>
               <tr class="border-b border-gray-300 hover:bg-cyan-50">
                 <td class="font-bold p-2">Stories</td>
                 <td class="text-center p-2"><%= @listing.stories %></td>
-                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.stories.difference) %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.stories.difference) %></td>
               </tr>
             <% end %>
             <%= if Map.has_key?(@listing.adjustments, :lotsize) do %>
               <tr class="border-b border-gray-300 hover:bg-cyan-50">
                 <td class="font-bold p-2">Lot size</td>
                 <td class="text-center p-2"><%= @listing.lotsize_sqft %></td>
-                <td class="text-center p-2"><%= Utilities.icon_adjustment(@listing.adjustments.lotsize.to_text) %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.lotsize.to_text) %></td>
               </tr>
             <% end %>
             <%= if Map.has_key?(@listing.adjustments, :year_built) do %>
@@ -182,32 +184,7 @@
           </tbody>
         </table>
       <% end %>
-      <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
-        <%= if @added do %>
-          <h4 class="text-sm">Auto Adjustments</h4>
-          <p class="text-sm mb-2">
-            <%= if @auto_adjusted , do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
-          </p>
-        <% else %>
-          <div
-            class="flex"
-            phx-click="toggle-auto-adj"
-            phx-target="<%= @myself %>"
-            phx-value-action="<%= if @auto_adjusted, do: "remove", else: "apply" %>"
-          >
-            <div class="flex-1">
-              <h4 class="text-sm">Auto Adjustments</h4>
-            </div>
-            <div class="text-sm cursor-pointer text-cyan-700 hover:underline">
-              <%= if @auto_adjusted, do: "Remove adjustment", else: "Apply adjustment" %>
-            </div>
-            </h4>
-          </div>
-          <p class="text-sm mb-2">
-            <%= if @auto_adjusted, do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
-          </p>
-        <% end %>
-      <% end %>
+      <%#= live_component @socket, AutoAdjustments, id: :auto_adjustments %>
       <div class="py-2">
         <h4 class="text-sm border-b border-gray-400 pb-2 mb-0">Custom Adjustments</h4>
         <ul class="">
@@ -217,9 +194,15 @@
                 <div class="flex-1 mr-4 ">
                   <%= String.capitalize(ca.name) %>
                 </div>
-                <div class="text-right">
-                  $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
-                </div>
+                <%= if ca.value < 0 do %>
+                  <div class="text-right text-red-700">
+                    $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
+                  </div>
+                <% else %>
+                  <div class="text-right">
+                    $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
+                  </div>
+                <% end %>
                 <%= if !@added do %>
                   <%= if !@show_adjustment_form do %>
                     <div class="ml-2">
@@ -268,12 +251,23 @@
                         class: "text-field",
                         inputmode: "numeric",
                         title: "Numbers only.",
-                        pattern: "^-?[0-9]*",
+                        pattern: "[0-9]*",
                         value: @adj_value,
                         placeholder: "Value"
                       %>
                     </div>
-                    <%= submit "Add", class: "submit" %>
+                    <div class="flex blue-radial border border-blue-800 rounded">
+                      <button type="submit" name="add" class="rounded-l px-2 text-white border-r border-blue-800">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                      </button>
+                      <button type="submit" name="subject" class="rounded-r px-2 text-white">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </form>
               </li>

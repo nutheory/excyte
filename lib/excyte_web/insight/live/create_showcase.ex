@@ -12,30 +12,24 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
     {:ok, assign(socket,
       current_user: cu,
       mls: mls,
-      listing_id: "",
+      listing_id: nil,
+      results: nil,
       recent: agent_listings,
       errors: []
     )}
   end
 
-  def handle_info({:create_insight, %{listing_id: id}}, %{assigns: a} = socket) do
-    key = "shw#{a.current_user.id}#{System.os_time(:second)}"
-      case ResoApi.get_listing_by_key(a.mls, %{listing_key: id}) do
-        {:ok, listing} ->
-          case Insights.create_insight(insight_data(listing, key, a)) do
-            {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
-            {:error, _method, _changeset, _} ->
-              {:noreply, put_flash(socket, :error, "Something went wrong.")}
-          end
-        {:error, %{message: msg}} -> {:noreply, put_flash(socket, :error, msg)}
-      end
-  end
-
-  def handle_info({:property_search, %{prop_id: mpr_id}}, socket) do
-    case Properties.fetch_mls_info(mpr_id) do
-      {:ok, %{id: listing_id}} ->
-        send self(), {:create_insight, %{listing_id: listing_id}}
-        {:noreply, socket}
+  def handle_info({:property_search, %{parsed: address}}, %{assigns: a} = socket) do
+    line = String.split(address["addr"], " ", parts: 2)
+    case ResoApi.property_by_address(a.mls, %{
+      street_number: hd(line),
+      safe_street_name: hd(tl(line)),
+      city: address["city"],
+      state: address["state"],
+      zip: address["zip"]
+    }) do
+      {:ok, %{listings: listings}} ->
+        {:noreply, assign(socket, results: listings)}
       {:error, _err} ->
         {:noreply, put_flash(socket, :error, "Could not find this property on the MLS.")}
     end
@@ -45,13 +39,13 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
     {:noreply, assign(socket, listing_id: id)}
   end
 
-  def handle_event("submit-id", %{"listing_id" => id}, socket) do
-     send self(), {:create_insight, %{listing_id: id}}
-    {:noreply, socket}
-  end
-
-  def handle_event("select-recent", %{"listing-id" => id}, socket) do
-    send self(), {:create_insight, %{listing_id: id}}
+  def handle_event("submit-id", %{"listing-id" => id}, %{assigns: a} = socket) do
+    key = "shw#{a.current_user.id}#{System.os_time(:second)}"
+    # case Insights.create_insight(insight_data(listing, key, a)) do
+    #   {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
+    #   {:error, _method, _changeset, _} ->
+    #     {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    # end
     {:noreply, socket}
   end
 

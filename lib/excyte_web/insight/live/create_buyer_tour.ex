@@ -21,7 +21,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       zip_code: "",
       distance: 20,
       listing_ids: "",
-      filters: @filters,
+      filters: Map.merge(@filters, %{dataset_id: cu.current_mls.dataset_id}),
       errors: nil,
       fetching: false
     )}
@@ -73,7 +73,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       saved_search: %{
         query: "",
         zip: a.zip_code,
-        criteria: Map.merge(tour_attrs, %{distance: a.distance, coords: a.coords, zip: a.zip_code})
+        criteria: Map.merge(tour_attrs, %{distance: a.distance, coords: a.coords, zip: a.zip_code, dataset_id: a.current_user.current_mls.dataset_id})
       }
     }
   end

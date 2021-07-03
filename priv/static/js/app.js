@@ -19387,7 +19387,13 @@ window.LocationAutocomplete = function () {
                       return {
                         geo: loc.centroid,
                         id: loc.mpr_id,
-                        address: "".concat(loc.line, ", ").concat(loc.city, ", ").concat(loc.state_code, ", ").concat(loc.postal_code)
+                        address: "".concat(loc.line, ", ").concat(loc.city, ", ").concat(loc.state_code, ", ").concat(loc.postal_code),
+                        parsed: {
+                          addr: loc.line,
+                          city: loc.city,
+                          state: loc.state_code,
+                          zip: loc.postal_code
+                        }
                       };
                     }).slice(0, 6);
                   });

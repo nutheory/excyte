@@ -17,6 +17,7 @@ defmodule ExcyteWeb.Components.AddressAutocomplete do
     selected = Enum.at(opts, pos)
     send self(), {a.callback, %{
       prop_id: selected["id"],
+      parsed: selected["parsed"],
       address: selected["address"],
       geo: %{
         lat: selected["geo"]["lat"],

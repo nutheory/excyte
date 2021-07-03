@@ -33,18 +33,26 @@ defmodule ExcyteWeb.Insight.SubjectForm do
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
     subject_attrs =
       Map.merge(a.subject, %{
-        beds: String.to_integer(form["beds"]),
-        baths: elem(Float.parse(form["baths"]), 0),
-        sqft: String.to_integer(form["sqft"]),
-        stories: elem(Float.parse(form["stories"]), 0),
-        year_built: String.to_integer(form["year_built"]),
+        beds: sanitize_number(form["beds"], Integer),
+        baths: sanitize_number(form["baths"], Float),
+        sqft: sanitize_number(form["sqft"], Integer),
+        stories: sanitize_number(form["stories"], Integer),
+        year_built: sanitize_number(form["year_built"], Integer),
       })
       |> Map.merge(sanitize_lotsize(%{
         lotsize_unit: a.lotsize_unit,
         lotsize_value: form["lotsize_value"]
       }))
-    send self(), {:create_subject, subject_attrs}
-    {:noreply, socket}
+
+    cs = Properties.change_property(subject_attrs)
+    if cs.valid? do
+      IO.inspect(cs, label: "VaLID")
+      send self(), {:create_subject, subject_attrs}
+      {:noreply, socket}
+    else
+      IO.inspect(cs, label: "iNVaLID")
+      {:noreply, assign(socket, changeset: cs)}
+    end
   end
 
   def handle_event("toggle-lot-unit", _, %{assigns: a}  = socket) do
@@ -63,9 +71,13 @@ defmodule ExcyteWeb.Insight.SubjectForm do
 
   defp sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
     if unit === "acres" do
-      %{lotsize_preference: "acres", lotsize_sqft: round(Utilities.acres_to_sqft(String.to_float(val)))}
+      %{lotsize_preference: "acres", lotsize_sqft: trunc(Utilities.acres_to_sqft(sanitize_number(val, Float)))}
     else
-      %{lotsize_preference: "sqft", lotsize_sqft: round(String.to_integer(val))}
+      %{lotsize_preference: "sqft", lotsize_sqft: sanitize_number(val, Integer)}
     end
+  end
+
+  defp sanitize_number(str, to_type) do
+    if str !== "", do: elem(to_type.parse(str), 0), else: nil
   end
 end

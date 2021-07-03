@@ -90,6 +90,7 @@ defmodule Excyte.Mls.ResoApi do
       <> "$filter="
       <> "(#{mb})%20and%20"
       <> "(#{status(opts.selected_statuses)})%20and%20"
+      <> "(#{property_type(opts.property_types)})%20and%20"
       <> "#{get_by_all_prices(mls, opts)}%20and%20"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
@@ -110,6 +111,7 @@ defmodule Excyte.Mls.ResoApi do
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
       <> query.select_str
       <> "$filter="
+      <> "(#{property_type(opts.property_types)})%20and%20"
       <> "#{get_by_price(mls, opts)}"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
@@ -265,7 +267,12 @@ defmodule Excyte.Mls.ResoApi do
     status([stat])
   end
 
-
+  def property_type(property_arr) when is_list(property_arr) do
+    Enum.reduce(property_arr, "", fn prop, acc ->
+      "#{acc}tolower(PropertySubType)%20eq%20%27#{prop.value}%27%20or%20"
+    end)
+    |> String.trim_trailing("%20or%20")
+  end
 
   defp get_expanded(mls) do
     case MetaCache.get("#{mls.dataset_id}_expanded") do

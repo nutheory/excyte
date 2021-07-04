@@ -78,24 +78,26 @@
       <div class="hidden lg:block h-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
     </div>
   </div>
-  <%= f = form_for :finder, "#", [phx_change: :finder_update] %>
-    <%= text_input f, :search,
-      class: "text-field",
-      placeholder: "Find by Listing ID",
-      value: @search
-    %>
-  </form>
-  <%= if length(@listings) > 0 do %>
-    <ul class="pt-16 lg:pt-24 pb-6">
-      <%= for listing <- @listings do %>
-        <li class="w-full py-1">
-          <%= live_component @socket, ListingCard,
-            listing: listing,
-            added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
-            id: listing.listing_key
-          %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
+  <div class="pt-16 lg:pt-24">
+    <%= f = form_for :finder, "#", [phx_change: :finder_update] %>
+      <%= text_input f, :search,
+        class: "text-field",
+        placeholder: "Find by Listing ID",
+        value: @search
+      %>
+    </form>
+    <%= if length(@listings) > 0 do %>
+      <ul class=" mt-4 pb-6">
+        <%= for listing <- @listings do %>
+          <li class="w-full py-1">
+            <%= live_component @socket, ListingCard,
+              listing: listing,
+              added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
+              id: listing.listing_key
+            %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
 </div>

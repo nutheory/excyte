@@ -20,7 +20,7 @@ defmodule ExcyteWeb.Insight.Listings do
     res =
       if length(srch) > 2 do
         Enum.filter(a.listings, fn lst ->
-
+          String.starts_with?(lst.listing_id, srch) || String.starts_with?(lst.street_name, srch)
         end)
       else
         []

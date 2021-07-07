@@ -13,8 +13,9 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       current_user: cu,
       mls: mls,
       listing_id: nil,
-      results: nil,
-      recent: agent_listings,
+      addr_results: [],
+      id_results: [],
+      recent_results: agent_listings.listings,
       errors: []
     )}
   end
@@ -29,7 +30,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       zip: address["zip"]
     }) do
       {:ok, %{listings: listings}} ->
-        {:noreply, assign(socket, results: listings)}
+        {:noreply, assign(socket, addr_results: listings)}
       {:error, _err} ->
         {:noreply, put_flash(socket, :error, "Could not find this property on the MLS.")}
     end
@@ -39,14 +40,22 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
     {:noreply, assign(socket, listing_id: id)}
   end
 
-  def handle_event("submit-id", %{"listing-id" => id}, %{assigns: a} = socket) do
+  def handle_event("select-listing", %{"listing-key" => key_id, "list" => list}, %{assigns: a} = socket) do
     key = "shw#{a.current_user.id}#{System.os_time(:second)}"
-    # case Insights.create_insight(insight_data(listing, key, a)) do
-    #   {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
-    #   {:error, _method, _changeset, _} ->
-    #     {:noreply, put_flash(socket, :error, "Something went wrong.")}
-    # end
-    {:noreply, socket}
+    listing = Enum.find(a[String.to_atom("#{list}_results")], fn lst -> key_id === lst["ListingKey"] end)
+    case Insights.create_insight(insight_data(listing, key, a)) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
+      {:error, _method, _changeset, _} ->
+        {:noreply, put_flash(socket, :error, "Something went wrong.")}
+      {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
+    end
+  end
+
+  def handle_event("submit-id", %{"listing_id" => id}, %{assigns: a} = socket) do
+    case ResoApi.get_by_listing_id(a.mls, id) do
+      {:ok, %{listings: listings}} -> {:noreply, assign(socket, listing_id: id, id_results: listings)}
+      {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
+    end
   end
 
   defp insight_data(property_attrs, key, a) do

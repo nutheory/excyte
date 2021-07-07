@@ -9,9 +9,39 @@
         label: "Enter a starting point",
         id: :starting_location
       %>
+      <div class="flex flex-wrap lg:-mx-2">
+        <div class="w-full lg:w-1/2 lg:px-2 mt-4">
+          <div class="form">
+            <%= live_component @socket, MultiSelect,
+              options: @property_options,
+              selected: @filters.property_types,
+              key: :property_types,
+              status: false,
+              show_top_label: true,
+              callback: :update_filter,
+              label: "Property Type",
+              id: :property_types
+            %>
+          </div>
+        </div>
+        <div class="w-full lg:w-1/2 lg:px-2 mt-4">
+          <div class="form">
+            <%= live_component @socket, MultiSelect,
+              options: @feature_options,
+              selected: @filters.features,
+              key: :features,
+              status: false,
+              show_top_label: true,
+              callback: :update_filter,
+              label: "Feaures",
+              id: :feature_list
+            %>
+          </div>
+        </div>
+      </div>
       <div class="flex flex-wrap lg:-mx-2 mt-4">
-        <div class="w-full lg:w-1/2 lg:px-2">
-          <div class="mb-2">
+        <div class="w-full lg:w-2/5 lg:px-2 mt-4">
+          <div class="">
             <%= live_component @socket, RangeInputs,
               prefix: "$",
               suffix: "K",
@@ -25,7 +55,47 @@
               id: :price_filter
             %>
           </div>
-          <div class="mb-2">
+        </div>
+        <div class="w-full lg:w-3/5 lg:px-2">
+          <div class="flex -mx-2">
+            <div class="w-full lg:w-1/2 px-2 mt-4">
+              <div class="">
+                <%= live_component @socket, RangeInputs,
+                  prefix: nil,
+                  suffix: nil,
+                  min: @filters.beds.low,
+                  max: @filters.beds.high,
+                  attribute: :beds,
+                  type: Float,
+                  step: "0.5",
+                  label: "Beds",
+                  callback: :update_filter,
+                  id: :beds_filter
+                %>
+              </div>
+            </div>
+            <div class="w-full lg:w-1/2 px-2 mt-4">
+              <div class="">
+                <%= live_component @socket, RangeInputs,
+                  prefix: nil,
+                  suffix: nil,
+                  min: @filters.baths.low,
+                  max: @filters.baths.high,
+                  attribute: :baths,
+                  type: Float,
+                  step: "0.25",
+                  label: "Baths",
+                  callback: :update_filter,
+                  id: :baths_filter
+                %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap lg:-mx-2 mb-2 mt-4">
+        <div class="w-full lg:w-1/3 lg:px-2 mt-4">
+          <div class="">
             <%= live_component @socket, RangeInputs,
               prefix: nil,
               suffix: nil,
@@ -39,55 +109,83 @@
               id: :sqft_filter
             %>
           </div>
-          <div class="mb-2">
-            <%= live_component @socket, RangeInputs,
-              prefix: nil,
-              suffix: nil,
-              min: @filters.beds.low,
-              max: @filters.beds.high,
-              attribute: :beds,
-              type: Float,
-              step: "0.5",
-              label: "Beds",
-              callback: :update_filter,
-              id: :beds_filter
-            %>
-          </div>
+        </div>
+        <div class="w-full lg:w-1/3 lg:px-2 mt-4">
           <div class="">
             <%= live_component @socket, RangeInputs,
               prefix: nil,
               suffix: nil,
-              min: @filters.baths.low,
-              max: @filters.baths.high,
-              attribute: :baths,
-              type: Float,
-              step: "0.25",
-              label: "Baths",
+              min: @filters.lot_size.low,
+              max: @filters.lot_size.high,
+              attribute: :lot_size,
+              type: Integer,
+              step: "1",
+              label: "Lot (sqft)",
               callback: :update_filter,
-              id: :baths_filter
+              id: :lot_size_filter
             %>
           </div>
         </div>
-        <div class="w-full h-full lg:w-1/2 lg:px-2 flex flex-col">
-          <div class="flex-1">
-            <%= f = form_for :commit, "#", [phx_change: :update_commit, phx_submit: :create_tour] %>
-              <div class="mb-4">
-                <%= label f, :listing_ids, "Listing ID's" %>
-                <%= textarea f, :listing_ids, class: "textarea h-full", value: @listing_ids %>
+        <div class="w-full lg:w-1/3 lg:px-2">
+          <div class="flex -mx-2">
+            <div class="w-full lg:w-1/2 px-2 mt-4">
+              <div class="">
+                <%= live_component @socket, Dropdown,
+                  options: [
+                    %{value: "any", text: "Any"},
+                    %{value: "1", text: "1"},
+                    %{value: "2", text: "2"},
+                    %{value: "2+", text: "2+"}
+                  ],
+                  selected: %{value: "any", text: "Any"},
+                  attr: :stories,
+                  convert_to_range: true,
+                  show_top_label: true,
+                  callback: :update_filter,
+                  label: "Stories",
+                  id: :stories
+                %>
               </div>
-              <div class="flex">
-                <div class="mr-4 w-24">
-                  <%= label f, :distance, "Distance (mi)" %>
-                  <%= text_input f, :distance, class: "text-field w-24", value: @distance %>
-                </div>
-                <div class="flex-1 flex items-end pb-0.5">
-                  <%= submit "Search", class: "submit w-full" %>
-                </div>
+            </div>
+            <div class="w-full lg:w-1/2 px-2 mt-4">
+              <div class="">
+                <%= live_component @socket, Dropdown,
+                  options: [
+                    %{value: "any", text: "Any"},
+                    %{value: "1", text: "1"},
+                    %{value: "2", text: "2"},
+                    %{value: "2+", text: "2+"}
+                  ],
+                  selected: %{value: "any", text: "Any"},
+                  attr: :garage,
+                  convert_to_range: true,
+                  show_top_label: true,
+                  callback: :update_filter,
+                  label: "Garage",
+                  id: :garage
+                %>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
+      <%= f = form_for :commit, "#", [phx_change: :update_commit, phx_submit: :create_tour] %>
+        <div class="w-full flex flex-wrap mt-4">
+          <div class="w-full md:flex-1">
+            <%= label f, :listing_ids, "Listing ID's" %>
+            <%= textarea f, :listing_ids, class: "textarea h-12", value: @listing_ids %>
+          </div>
+          <div class="flex md:w-full w-32 mt-4">
+            <div class="mr-4 w-32">
+              <%= label f, :distance, "Distance (mi)" %>
+              <%= text_input f, :distance, class: "text-field w-24", value: @distance %>
+            </div>
+            <div class="flex-1 flex items-end pb-0.5">
+              <%= submit "Search", class: "submit w-full" %>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

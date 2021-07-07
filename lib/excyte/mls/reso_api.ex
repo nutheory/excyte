@@ -75,6 +75,7 @@ defmodule Excyte.Mls.ResoApi do
       <> "#{state(state)}%20and%20"
       <> zip_code(zip))
     |> format_response()
+    |> ProcessListings.simple_process()
   end
 
   def property_by_address(_, _) do
@@ -85,18 +86,19 @@ defmodule Excyte.Mls.ResoApi do
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
     mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}", else: ""
-    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
-      <> query.select_str
+    query_str = query.select_str
       <> "$filter="
       <> "(#{mb})%20and%20"
       <> "(#{status(opts.selected_statuses)})%20and%20"
-      <> "(#{property_type(opts.property_types)})%20and%20"
+      <> if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
       <> "#{get_by_all_prices(mls, opts)}%20and%20"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "#{get_by_distance(get_by_opts)}"
-    )
+
+    safe_str = String.trim_trailing(query_str, "%20and%20")
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
     |> format_response()
     |> ProcessListings.process_init(subject)
     |> case do
@@ -106,18 +108,25 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   def listing_properties(mls, _subject, opts) do
+    IO.inspect(opts, label: "OPTIONS")
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: opts.coords, distance: opts.distance}, else: %{zip: opts.zip}
-    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&"
-      <> query.select_str
+    query_str = query.select_str
       <> "$filter="
-      <> "(#{property_type(opts.property_types)})%20and%20"
+      <> "(#{status(opts.selected_statuses)})%20and%20"
+      <> if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
+      <> if Map.has_key?(opts, :features) && length(opts.property_types) > 0, do: "(#{get_by_features(opts.features)})%20and%20", else: ""
       <> "#{get_by_price(mls, opts)}"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "LotSizeSquareFeet", low: opts.lot_size.low, high: opts.lot_size.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "GarageSpaces", low: opts.garage.low, high: opts.garage.high})}"
+      <> "#{get_attr_by_range(mls, %{attr: "Stories", low: opts.stories.low, high: opts.stories.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "#{get_by_distance(get_by_opts)}"
-    )
+
+    safe_str = String.trim_trailing(query_str, "%20and%20")
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
     |> format_response()
     |> ProcessListings.process_init(opts)
     |> case do
@@ -132,6 +141,10 @@ defmodule Excyte.Mls.ResoApi do
 
   def get_by_distance(%{zip: z}) do
     zip_code(z)
+  end
+
+  def get_by_distance(_, _) do
+    ""
   end
 
   defp get_by_price(mls, %{price: price}) do
@@ -157,13 +170,10 @@ defmodule Excyte.Mls.ResoApi do
 
   defp get_by_months_back(%{selected_statuses: statuses, status_updated: updated}) do
     gte_date = Timex.shift(Date.utc_today(), months: updated.value * -1)
-    IO.inspect(statuses, label: "STAT")
     if length(statuses) > 0 do
       Enum.reduce(statuses, "", fn st, acc ->
         case st.value do
-          "closed" ->
-            IO.inspect(label: "clased")
-            "#{acc}date(CloseDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
+          "closed" -> "#{acc}date(CloseDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
           "pending" -> "#{acc}date(ListingContractDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
           "active" -> "#{acc}date(ContractStatusChangeDate)%20ge%20#{Date.to_string(gte_date)}%20or%20"
           _ ->
@@ -173,7 +183,6 @@ defmodule Excyte.Mls.ResoApi do
       end)
       |> String.trim_trailing("%20or%20")
     else
-      IO.inspect(label: "ELSE")
       "%20and%20(ContractStatusChangeDate%20ge%20#{Date.to_string(gte_date)})"
     end
   end
@@ -189,8 +198,8 @@ defmodule Excyte.Mls.ResoApi do
     if Enum.member?(entity.attributes, attr) do
       cond do
         l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})"
-        l !== nil -> "#{attr}%20gt%20#{l}"
-        h !== nil -> "#{attr}%20lt%20#{h}"
+        l !== nil -> "#{attr}%20ge%20#{l}"
+        h !== nil -> "#{attr}%20le%20#{h}"
         true -> ""
       end
     end
@@ -198,16 +207,30 @@ defmodule Excyte.Mls.ResoApi do
 
   # for chaining
   defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
+    IO.inspect(attr, label: "LAST ATTR")
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
       cond do
         l !== nil && h !== nil -> "(#{attr}%20ge%20#{l}%20and%20#{attr}%20le%20#{h})%20and%20"
-        l !== nil -> "#{attr}%20gt%20#{l}%20and%20"
-        h !== nil -> "#{attr}%20lt%20#{h}%20and%20"
+        l !== nil -> "#{attr}%20ge%20#{l}%20and%20"
+        h !== nil -> "#{attr}%20le%20#{h}%20and%20"
         true -> ""
       end
     end
+  end
+
+  def get_by_features(features) when is_list(features) do
+    Enum.reduce(features, "", fn feat, acc ->
+      case feat do
+        "NewConstructionYN" -> "#{acc}NewConstructionYN%20eq%20%true%20or%20"
+        "ViewYN" -> "#{acc}ViewYN%20eq%20%true%20or%20"
+        "WaterfrontYN" -> "#{acc}WaterfrontYN%20eq%20%true%20or%20"
+        "PoolPrivateYN" -> "#{acc}PoolPrivateYN%20eq%20%true%20or%20"
+        "SpaYN" -> "#{acc}SpaYN%20eq%20%true%20or%20"
+      end
+    end)
+    |> String.trim_trailing("%20or%20")
   end
 
   # I think date wraps the attr not the string?
@@ -228,6 +251,23 @@ defmodule Excyte.Mls.ResoApi do
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
     |> format_response()
     |> ProcessListings.process_init(subject)
+  end
+
+  def get_by_listing_ids(mls, ids_array, opts) do
+    ids_str = Enum.reduce(ids_array, "$filter=", fn id, acc ->
+      "#{acc}#{listing_id(id)}"
+    end)
+    |> String.trim_trailing("%20or%20")
+
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
+    |> format_response()
+    |> ProcessListings.process_init(opts)
+  end
+
+  def get_by_listing_id(mls, id) do
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$filter=ListingId%20eq%20%27#{URI.encode(id)}%27")
+    |> format_response()
+    |> ProcessListings.simple_process()
   end
 
   defp listing_id(id) do
@@ -335,29 +375,3 @@ defmodule Excyte.Mls.ResoApi do
   end
 
 end
-
-# https://api.bridgedataoutput.com/api/v2/OData/tmls/Properties?access_token=c72f9c07c32759011128b84001acb35d&$top=60&$select=
-
-# ListingKey,ListingId,Coordinates,ListPrice,ClosePrice,StandardStatus,StreetNumber,StreetName,StateOrProvince,City,PostalCode,UnitNumber,BathroomsOneQuarter,BathroomsThreeQuarter,BathroomsFull,BathroomsHalf,BedroomsTotal,PropertySubType,LivingArea,PropertyType,ModificationTimestamp,Media,PublicRemarks,YearBuilt,ExteriorFeatures,InteriorFeatures,WaterfrontFeatures,PoolFeatures,SpaFeatures,FireplaceFeatures,ParkingFeatures,DoorFeatures,WindowFeatures,PatioAndPorchFeatures,CommunityFeatures,Flooring,GarageSpaces,PropertyType,GarageYN,GarageSpaces,AttachedGarageYN,LotSizeAcres,LotSizeSquareFeet,AssociationFee,AssociationFeeIncludes,AssociationFeeFrequency,ViewYN,WaterfrontYN,NewConstructionYN,PoolPrivateYN,SpaYN,SubdivisionName,CloseDate,DaysOnMarket,ContractStatusChangeDate,Appliances,ListingContractDate,PriceChangeTimestamp,StatusChangeTimestamp&
-# $filter=(geo.distance(Coordinates,POINT(-78.49652%2035.937658))%20lt%2020.0)
-# %20and%20ListPrice%20ge%20470250%20and%20ListPrice%20le%20519750%20or%20ClosePrice%20ge%20470250%20and%20ClosePrice%20le%20519750
-# %20and%20LivingArea%20ge%202374%20and%20LivingArea%20le%205427
-# %20and%20BedroomsTotal%20ge%202%20and%20BedroomsTotal%20le%206
-# %20and%20BathroomsTotalInteger%20ge%202%20and%20BathroomsTotalInteger%20le%206%20and%20tolower(StandardStatus)%20eq%20%27active%27%20and%20ModificatoTimestamp%20le%202019-07-01
-
-
-# https://api.bridgedataoutput.com/api/v2/OData/dataset_id/Property?access_token=access_token&$filter=
-# ((InternetEntireListingDisplayYN ne false) and
-#   ((StandardStatus eq ‘Closed’) and
-#     (((YearBuilt eq null) or ((YearBuilt le 1986) and (YearBuilt ge 1976))) and
-#     (((LivingArea eq null) or ((LivingArea le 3264) and (LivingArea ge 2412))) and
-#     ((CloseDate ge 2019-09-01) and
-#       (((BedroomsTotal eq null) or ((BedroomsTotal le 5) and (BedroomsTotal ge 3))) and
-#       (((BathroomsTotalDecimal eq null) or ((BathroomsTotalDecimal le 3.5) and (BathroomsTotalDecimal ge 1.5)))
-#       and ((SpecialListingConditions ne ‘Auction’) and ((SpecialListingConditions ne ‘Probate’) and ((SpecialListingConditions ne ‘Short Sale’) and ((SpecialListingConditions ne ‘REO’) and
-#       (((ClosePrice eq null) or ((ClosePrice le 472666) and (ClosePrice ge 315110)))
-#       and (geo.distance(Coordinates,POINT(-115.10998 36.091513)) lt 0.5)))))))))))
-# )
-#)
-
-# date(CloseDate)%20gt%202019-07-01%20and%20date(ModificationTimestamp)%20gt%202019-07-01%20and%20tolower(StandardStatus)%20eq%20%27closed%27%20and%20geo.distance(Coordinates,%20POINT(-78.49652%2035.937658))%20lt%2020.0

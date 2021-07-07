@@ -1,4 +1,4 @@
-<button type="button" class="flex mb-12 cursor-pointer w-full text-left" phx-click="preview-property" phx-value-key="<%= @listing.listing_key %>">
+<button type="button" class="flex mb-8 cursor-pointer w-full text-left" phx-click="preview-property" phx-value-key="<%= @listing.listing_key %>">
   <div class="flex-1 relative">
     <%= if @added do %>
       <span class="flex absolute top-0 right-0 sm:-right-7 -mt-1 -mr-1 h-3 w-3 z-20">
@@ -21,9 +21,13 @@
           <% end %>
         </p>
       </div>
-      <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full status-<%= String.replace(String.downcase(@listing.status), " ", "-") %>">
-        <%= @listing.status %>
-      </div>
+      <%= if Map.has_key?(@listing, :search_by_listing) do %>
+        <span class="bg-yellow-200"><%= @listing.listing_id %></span>
+      <% else %>
+        <div class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full status-<%= String.replace(String.downcase(@listing.status), " ", "-") %>">
+          <%= @listing.status %>
+        </div>
+      <% end %>
     </div>
     <h4 class="mb-0">
       <%#= if Map.has_key?(@listing, :excyte_ranking), do: "#{@listing.excyte_ranking.score} / " %><%= @listing.street_number %> <%= @listing.street_name %>

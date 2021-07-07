@@ -1,4 +1,7 @@
-<div class="w-full inline-block relative" x-data="{ menuOpen: false }">
+<div class="w-full inline-block relative form" x-data="{ menuOpen: false }">
+  <%= if @show_top_label do %>
+    <label><%= @label %></label>
+  <% end %>
   <div
     @click="menuOpen = !menuOpen"
     @click.away="menuOpen = false"

@@ -1,13 +1,18 @@
 defmodule ExcyteWeb.Insight.CreateBuyerTour do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Insights}
-  alias ExcyteWeb.{InsightView}
+  alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   @filters %{
     price: %{low: nil, high: nil},
     beds: %{low: nil, high: nil},
     baths: %{low: nil, high: nil},
     sqft: %{low: nil, high: nil},
+    lot_size: %{low: nil, high: nil},
+    garage: %{low: nil, high: nil},
+    stories: %{low: nil, high: nil},
+    property_types: [],
+    features: [],
     selected_statuses: [%{value: "active", name: "Active"}]
   }
 
@@ -21,6 +26,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       zip_code: "",
       distance: 20,
       listing_ids: "",
+      feature_options: Utilities.feature_options(),
+      property_options: Utilities.property_options(cu.current_mls.dataset_id),
       filters: Map.merge(@filters, %{dataset_id: cu.current_mls.dataset_id}),
       errors: nil,
       fetching: false

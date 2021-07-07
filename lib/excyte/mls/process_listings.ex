@@ -4,7 +4,10 @@ defmodule Excyte.Mls.ProcessListings do
   def simple_process({:ok, %{listings: listings} = resp}) do
     new_dataset =
       Enum.map(listings, fn listing ->
-        Map.put(listing, "MainPhotoUrl", main_photo(listing["Media"]))
+        Map.merge(listing, %{
+          "MainPhotoUrl" => main_photo(listing["Media"]),
+          "Updated" => process_updated_date(listing["ModificationTimestamp"])
+        })
       end)
 
     {:ok, Map.merge(resp, %{listings: new_dataset})}
@@ -147,6 +150,15 @@ defmodule Excyte.Mls.ProcessListings do
     IO.inspect(media, label: "BOOM")
   end
 
+  def process_updated_date(datetime) do
+    if datetime do
+      {:ok, dt} = NaiveDateTime.from_iso8601(datetime)
+      Calendar.strftime(dt, "%b %d, %Y")
+    else
+      nil
+    end
+  end
+
   def main_booleans(%{listing: l, changes: changes}) do
     %{listing: l,
       changes: Map.merge(changes, %{
@@ -205,13 +217,26 @@ defmodule Excyte.Mls.ProcessListings do
     %{full: bf, half: bh, one_quarter: boq, three_quarter: btq, total: total}
   end
 
-  defp distance_from_subject(listing_coords, subject) do
+  defp distance_from_subject(listing_coords, %{coords: %{lng: lng, lat: lat}} = subject) do
     if listing_coords && subject.coords do
-      m = Geocalc.distance_between(listing_coords, [subject.coords.lng, subject.coords.lat])
+      m = Geocalc.distance_between(listing_coords, [lng, lat])
       Float.round(m * 0.000621371192, 2)
     else
       nil
     end
+  end
+
+  defp distance_from_subject(listing_coords, %{coords: %{"lng" => lng, "lat" => lat}} = subject) do
+    if listing_coords && subject.coords do
+      m = Geocalc.distance_between(listing_coords, [lng, lat])
+      Float.round(m * 0.000621371192, 2)
+    else
+      nil
+    end
+  end
+
+  defp distance_from_subject(_,_) do
+    nil
   end
 
   defp process_status(%{mls: m, standard: s}) do

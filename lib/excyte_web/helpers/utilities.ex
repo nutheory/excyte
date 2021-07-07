@@ -70,12 +70,11 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def feature_options() do
     [
-      %{value: "pool", name: "Pool"},
-      %{value: "spa", name: "Spa"},
-      %{value: "view", name: "View"},
-      %{value: "waterfront", name: "Waterfront"},
-      %{value: "construction", name: "New Construction"},
-      %{value: "horses", name: "Horse Stable"}
+      %{value: "PoolPrivateYN", name: "Pool"},
+      %{value: "SpaYN", name: "Spa"},
+      %{value: "ViewYN", name: "View"},
+      %{value: "WaterfrontYN", name: "Waterfront"},
+      %{value: "NewConstructionYN", name: "New Construction"}
     ]
   end
 
@@ -283,7 +282,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end)
   end
 
-  defp set_property_type(subject) do
+  def set_property_type(subject) do
     case subject.dataset_id do
       "tmls" ->
         case subject.property_type do

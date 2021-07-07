@@ -12,6 +12,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12" id="preview-gallery" phx-hook="InitGallery">
       <%= live_component @socket, Listings,
         subject: @subject,
+        search: @finder_input,
         selected_listings: @selected_listings,
         filters: @filters,
         listings: @listings,

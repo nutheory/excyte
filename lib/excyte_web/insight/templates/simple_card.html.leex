@@ -1,0 +1,16 @@
+<div class="rounded-md shadow bg-white relative flex cursor-pointer">
+  <div class="h-24 p-2">
+    <%= if @listing["MainPhotoUrl"] do %>
+      <img src="<%= @listing["MainPhotoUrl"] %>" alt="Main photo" class="rounded-md h-full w-32" />
+    <% else %>
+      <div class="rounded-md h-full w-32 flex bg-bgray-800 text-white font-bold items-center justify-center">No photo</div>
+    <% end %>
+  </div>
+  <div class="flex-1">
+    <h4 class="font-bold mt-3 mb-0 text-base"><%= @listing["StreetNumber"] %> <%= @listing["StreetName"] %></h4>
+    <p>Listing ID: <%= @listing["ListingId"] %>
+    <p class="text-sm">
+      <span class="text-xs">updated</span> <%= @listing["Updated"] %>
+    </p>
+  </div>
+</div>

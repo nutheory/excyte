@@ -78,26 +78,49 @@
       <div class="hidden lg:block h-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
     </div>
   </div>
-  <div class="pt-16 lg:pt-24">
-    <%= f = form_for :finder, "#", [phx_change: :finder_update] %>
-      <%= text_input f, :search,
-        class: "text-field",
-        placeholder: "Find by Listing ID",
-        value: @search
-      %>
-    </form>
-    <%= if length(@listings) > 0 do %>
-      <ul class=" mt-4 pb-6">
-        <%= for listing <- @listings do %>
-          <li class="w-full py-1">
-            <%= live_component @socket, ListingCard,
-              listing: listing,
-              added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
-              id: listing.listing_key
-            %>
-          </li>
-        <% end %>
-      </ul>
-    <% end %>
+  <div class="pt-16 lg:pt-20 flex">
+    <div class="w-full my-2">
+      <%= if @show_listing_ids_form do %>
+        <%= f = form_for :finder, "#", [phx_submit: :finder_submit] %>
+          <div class="flex">
+            <div class="flex-1">
+              <%= label f, :listing_ids, "Find by Listing ID's" %>
+            </div>
+            <div class="link-button">
+              <span phx-click="toggle-finder" phx-target="<%= @myself %>">Close</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap">
+            <div class="w-full md:flex-1">
+              <%= text_input f, :listing_ids,
+                class: "text-field",
+                placeholder: "Enter comma seperated Listing ID's",
+                value: @search
+              %>
+            </div>
+            <div class="w-full md:w-32">
+              <%= submit "Find listings", class: "submit md:ml-3" %>
+            </div>
+          </div>
+        </form>
+      <% else %>
+        <div class="text-right">
+          <span class="link-button text-sm" phx-click="toggle-finder" phx-target="<%= @myself %>">Find by Listing ID's</span>
+        </div>
+      <% end %>
+    </div>
   </div>
+  <%= if length(@listings) > 0 do %>
+    <ul class=" mt-4 pb-6">
+      <%= for {listing, idx} <- Enum.with_index(@listings) do %>
+        <li class="w-full py-1">
+          <%= live_component @socket, ListingCard,
+            listing: listing,
+            added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
+            id: "#{listing.listing_key}_#{idx}"
+          %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
 </div>

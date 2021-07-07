@@ -29,6 +29,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
         filters: %{},
         client_info: assign_client_info(socket),
         subject: nil,
+        finder_input: "",
         sort_by: "ranking",
         key: params["insight_id"],
         fetching: (if params["insight_id"], do: true, else: false),
@@ -125,6 +126,18 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
+  end
+
+  def handle_event("finder_submit", %{"finder" => %{"listing_ids" => lst_ids}}, %{assigns: a} = socket) do
+    ids = String.split(lst_ids, [" ", ","], trim: true)
+    subject = if a.insight.type === "cma", do: a.subject, else: a.insight.saved_search.criteria
+    res =
+      case ResoApi.get_by_listing_ids(a.current_user.current_mls, ids, subject) do
+        {:ok, %{listings: listings}} -> Enum.map(listings, fn lst -> Map.merge(lst, %{search_by_listing: true}) end)
+        {:error, err} ->
+          IO.inspect(err, label: "ERR")
+      end
+    {:noreply, assign(socket, finder_input: "", listings: res ++ a.listings)}
   end
 
   def handle_event("filter-submit", %{"mf" => form}, %{assigns: a} = socket) do

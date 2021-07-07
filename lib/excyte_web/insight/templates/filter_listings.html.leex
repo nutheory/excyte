@@ -96,7 +96,6 @@
           </div>
           <%= if @subject do %>
             <div class="flex-1">
-              <label>Status updated</label>
               <%= live_component @socket, Dropdown,
                 options: [
                   %{value: 1, text: "Past month"},
@@ -109,6 +108,8 @@
                 ],
                 selected: @filters.status_updated,
                 attr: :status_updated,
+                convert_to_range: false,
+                show_top_label: true,
                 callback: :update_filter,
                 label: "Status updated",
                 id: :status_updated

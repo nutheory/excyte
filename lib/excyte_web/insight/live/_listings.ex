@@ -7,24 +7,16 @@ defmodule ExcyteWeb.Insight.Listings do
   def update(assigns, socket) do
     {:ok, assign(socket,
       filters: assigns.filters,
-      search: "",
-      search_results: [],
+      search: assigns.search,
       listings: assigns.listings,
       selected_listings: assigns.selected_listings,
       subject: assigns.subject,
+      show_listing_ids_form: false,
       show_filters: assigns.show_filters
     )}
   end
 
-  def handle_event("finder_update", %{"search" => srch}, %{assigns: a} = socket) do
-    res =
-      if length(srch) > 2 do
-        Enum.filter(a.listings, fn lst ->
-          String.starts_with?(lst.listing_id, srch) || String.starts_with?(lst.street_name, srch)
-        end)
-      else
-        []
-      end
-    {:noreply, assign(socket, finder_input: srch, search_results: res)}
+  def handle_event("toggle-finder", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, show_listing_ids_form: !a.show_listing_ids_form)}
   end
 end

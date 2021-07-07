@@ -13,6 +13,7 @@ defmodule ExcyteWeb.InsightView do
     SectionCard,
     SelectedComps,
     SelectedTour,
+    SimpleCard,
     SubjectForm,
     SubjectProperty
   }

@@ -118,6 +118,12 @@
             <p class="font-bold  flex-1"><%= @listing.property_sub_type %></p>
           </div>
         <% end %>
+        <%= if @listing.listing_id do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Listing ID</label>
+            <p class="font-bold  flex-1"><%= @listing.listing_id %></p>
+          </div>
+        <% end %>
         <%= if @listing.public_remarks do %>
           <div class="flex w-full">
             <label class="w-20 pr-4 pb-1 flex items-end justify-end">Remarks</label>

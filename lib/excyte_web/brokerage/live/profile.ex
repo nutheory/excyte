@@ -81,7 +81,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
   end
 
   defp maybe_attempt_prefill?(profile, mls) do
-    if profile.updated_by_user === false && mls.office_key do
+    if profile.updated_by_user === false && Map.has_key?(mls, :office_key) && mls.office_key do
       mls_details = ResoOfficeApi.getOfficeDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
         %Contact{

@@ -38,7 +38,8 @@ config :excyte, ExcyteWeb.Endpoint,
     "//excyte.io",
     "//www.excyte.io",
     "//excyte-re.onrender.com",
-    "https://localhost:4000"
+    "https://localhost:4000",
+    "https://excyte.ngrok.io"
   ],
   secret_key_base: secret_key_base,
   pubsub_server: Excyte.PubSub

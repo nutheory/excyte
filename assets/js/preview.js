@@ -24,6 +24,7 @@ import {
   ExcyteParagraph 
 } from './extensions/modified_extensions'
 import SimpleGallery from './extensions/simple_gallery'
+import SimpleVideo from './extensions/simple_video'
 import Comparable from './extensions/comparable'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
@@ -41,7 +42,7 @@ window.currentPreview = function (content) {
     init(el) {
       let preview = new TipTap({
         element: el,
-        editable: false,
+        // editable: false,
         extensions: [
           Italic,
           Bold,
@@ -65,6 +66,7 @@ window.currentPreview = function (content) {
           TableRow,
           TableCell,
           SimpleGallery,
+          SimpleVideo,
           Struct,
           Comparable,
         ],

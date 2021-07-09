@@ -24,8 +24,8 @@ import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {InitPreview} from "./preview"
 import {InitViewer} from "./viewer"
-import {InitUploader} from "./uploader"
-import {InitCheckout} from "./init_checkout"
+import {MuxUploader} from "./mux_uploader"
+import {InitCheckout} from "./checkout"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
 
@@ -42,7 +42,7 @@ Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
 Hooks.InitPreview = InitPreview
 Hooks.InitViewer = InitViewer
-Hooks.InitUploader = InitUploader
+Hooks.MuxUploader = MuxUploader
 Hooks.DistanceSelector = {
   mounted(){
     const add = this.el.querySelector('.add-distance')

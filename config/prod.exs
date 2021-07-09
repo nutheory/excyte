@@ -24,6 +24,11 @@ config :excyte, :aws, %{
   region: "us-west-1"
 }
 
+config :mux,
+  access_token_id: System.get_env("MUX_ACCESS_TOKEN"),
+  access_token_secret: System.get_env("MUX_SECRET_KEY"),
+  signing_secret: System.get_env("MUX_SIGNING_SECRET")
+
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 # Do not print debug messages in production

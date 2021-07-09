@@ -38,7 +38,6 @@ export default Node.create({
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       if (HTMLAttributes.images === null) {return true}
       const images = JSON.parse(HTMLAttributes.images)
-
       const dom = document.createElement('div')
       dom.classList.add("simple-gallery", "w-full")
 

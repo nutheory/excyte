@@ -96,22 +96,63 @@
         </ul>
         <div class="pb-12">
           <%= if @show_video_form do %>
-            <div class="mb-4 p-3 rounded shadow bg-white">
-              <%= f = form_for :video, "#", [phx_submit: :video_upload] %>
-                <div class="flex">
-                  <h4 class="mb-0 flex-1">Add a Video</h4>
-                  <div class="link-button" phx-click="toggle-video">Cancel</div>
+            <div class="mb-4 p-2 rounded shadow bg-white">
+              <div class="flex">
+                <div class="mb-2 flex-1 flex">
+                  <div
+                    phx-click="toggle-upload-tab"
+                    phx-value-tab="upload"
+                    class="rounded text-base px-3 py-1 mr-4 <%= if @selected_tab === "upload", do: "font-bold bg-cyan-100", else: "cursor-pointer" %>">Upload new</div>
+                  <%= if length(@assets) > 0 do %>
+                    <div
+                      phx-click="toggle-upload-tab"
+                      phx-value-tab="existing"
+                      class="rounded text-base px-3 py-1 mr-4 <%= if @selected_tab === "existing", do: "font-bold bg-cyan-100", else: "cursor-pointer" %>">Use existing</div>
+                  <% end %>
                 </div>
-                <div class="mb-4">
-                  <%= text_input f, :name, class: "text-field", placeholder: "Title" %>
-                </div>
-                <div class="mb-4">
-                  <%= textarea f, :description, class: "textarea", placeholder: "Description" %>
-                </div>
-              </form>
-              <%# <div id="upload-video" phx-hook="InitUploader">
-                <input type="file" id="file-field" name="file-field">
-              </div> %>
+                <div class="link-button text-base m-1" phx-click="toggle-video">Cancel</div>
+              </div>
+              <div class="pt-2">
+                <%= if @selected_tab === "upload" do %>
+                  <%= if @uploaded_asset do %>
+                  <% else %>
+                    <div id="upload-video" phx-hook="MuxUploader" class="form mb-4">
+                      <input type="file" id="file-field" name="file-field" class="action">
+                      <div id="adding-file" class="hidden rounded bg-cyan-100 p-2">
+                        <h4 class="font-normal text-base">Uploading... <span class="font-bold" id="filename"></span></h4>
+                        <label for="file-field">Progress:</label>
+                        <progress id="upload-progress" max="100" value="0"></progress>
+                        <p id="preparing" class="text-sm font-bold hidden">preparing...</p>
+                      </div>
+                    </div>
+                  <% end %>
+                  <%= f = form_for :video, "#", [phx_submit: :video_upload] %>
+                    <div class="mb-4">
+                      <%= text_input f, :name, class: "text-field", placeholder: "Title" %>
+                    </div>
+                    <div class="mb-4">
+                      <%= textarea f, :description, class: "textarea", placeholder: "Description" %>
+                    </div>
+                  </form>
+                <% else %>
+                  <ul class="">
+                    <%= for asset <- @assets do %>
+                      <li class="flex rounded p-2 mb-2 hover:bg-cyan-100">
+                        <div
+                          phx-click="select-video"
+                          phx-value-uuid="<%= asset.uuid %>"
+                          class="w-32 mr-3">
+                          <img src="<%= asset.thumb_url %>" alt="<%= asset.title %> thumbnail" />
+                        </div>
+                        <div class="flex-1">
+                          <h4 class="text-base"><%= asset.title %></h4>
+                          <p class="text-base"><%= asset.description %></p>
+                        </div>
+                      </li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </div>
             </div>
           <% else %>
             <div class="mb-4 p-3 rounded shadow bg-white">

@@ -4,7 +4,7 @@ defmodule ExcyteWeb.Router do
   import ExcyteWeb.UserAuth
 
   pipeline :app_browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "json"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, {ExcyteWeb.LayoutView, :root}
@@ -29,6 +29,10 @@ defmodule ExcyteWeb.Router do
     plug :put_root_layout, {ExcyteWeb.LayoutView, :client_root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+  end
+
+  pipeline :hooks do
+    plug :accepts, ["json"]
   end
 
   pipeline :auth do
@@ -103,9 +107,19 @@ defmodule ExcyteWeb.Router do
     live "/getting-started", GettingStarted
   end
 
+  scope "/mux", ExcyteWeb do
+    pipe_through [:app_browser, :require_authenticated_user]
+    post "/upload", UploadController, :mux_auth_url
+  end
+
+  scope "/mux", ExcyteWeb do
+    pipe_through [:hooks]
+    post "/webhooks", WebhookController, :mux_incoming
+  end
+
   scope "/", ExcyteWeb do
     pipe_through [:app_browser, :require_authenticated_user]
-    get "/uploader/auth", UploadController, :auth
+    get "/uploader/auth", UploadController, :aws_auth
     get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
     delete "/log_out", UserSessionController, :delete
   end

@@ -3172,6 +3172,11 @@ h4 {
       margin: 0.5rem;
 }
 
+.m-1 {
+
+      margin: 0.25rem;
+}
+
 .mx-auto {
 
       margin-left: auto;
@@ -5332,6 +5337,13 @@ h4 {
       --tw-bg-opacity: 1;
 
       background-color: rgba(187, 247, 208, var(--tw-bg-opacity));
+}
+
+.hover\:bg-cyan-100:hover {
+
+      --tw-bg-opacity: 1;
+
+      background-color: rgba(207, 250, 254, var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-200:hover {

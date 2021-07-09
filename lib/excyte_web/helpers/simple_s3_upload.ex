@@ -89,14 +89,21 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
     "#{config.access_key_id}/#{short_date(expires_at)}/#{config.region}/s3/aws4_request"
   end
 
-  defp signature(config, %DateTime{} = expires_at, encoded_policy) do
+  def signature(config, %DateTime{} = expires_at, encoded_policy) do
     config
     |> signing_key(expires_at, "s3")
     |> sha256(encoded_policy)
     |> Base.encode16(case: :lower)
   end
 
-  defp signing_key(%{} = config, %DateTime{} = expires_at, service) when service in ["s3"] do
+  def signature(config, expires_at, encoded_policy) do
+    config
+    |> signing_key(expires_at, "s3")
+    |> sha256(encoded_policy)
+    |> Base.encode16(case: :lower)
+  end
+
+  def signing_key(%{} = config, %DateTime{} = expires_at, service) when service in ["s3"] do
     amz_date = short_date(expires_at)
     %{secret_access_key: secret, region: region} = config
 
@@ -107,11 +114,21 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
     |> sha256("aws4_request")
   end
 
-  defp short_date(%DateTime{} = expires_at) do
+  def signing_key(%{} = config, expires_at, service) when service in ["s3"] do
+    %{secret_access_key: secret, region: region} = config
+
+    ("AWS4" <> secret)
+    |> sha256(expires_at)
+    |> sha256(region)
+    |> sha256(service)
+    |> sha256("aws4_request")
+  end
+
+  def short_date(%DateTime{} = expires_at) do
     expires_at
     |> amz_date()
     |> String.slice(0..7)
   end
 
-  defp sha256(secret, msg), do: :crypto.mac(:hmac, :sha256, secret, msg)
+  def sha256(secret, msg), do: :crypto.mac(:hmac, :sha256, secret, msg)
 end

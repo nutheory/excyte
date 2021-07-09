@@ -55,6 +55,7 @@ defmodule Excyte.MixProject do
       {:hackney, "~> 1.17"},
       {:inflex, "~> 2.0.0"},
       {:number, "~> 1.0.1"},
+      {:mux, "~> 2.0.0"},
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},
       {:geocalc, "~> 0.5"},

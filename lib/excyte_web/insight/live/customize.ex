@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Insight.Customize do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Activities, Insights, Insights.Insight}
+  alias Excyte.{Accounts, Assets, Activities, Insights, Insights.Insight}
   alias ExcyteWeb.{InsightView, Helpers.Templates, Helpers.Utilities}
 
 
@@ -8,7 +8,8 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    {:ok, current_state} = Cachex.get(:insights_cache, id)
+    assets = Assets.get_agent_assets(%{agent_id: cu.id, brokerage_id: cu.brokerage_id})
+    # {:ok, current_state} = Cachex.get(customize_cache, id)
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
         send self(), {:get_sections, %{insight: ins}}
@@ -16,9 +17,12 @@ defmodule ExcyteWeb.Insight.Customize do
           current_user: cu,
           insight: ins,
           sections: [],
+          assets: assets,
           data: nil,
           name: "",
           preview_content: "",
+          uploaded_asset: nil,
+          selected_tab: "upload",
           show_video_form: false,
           preview_panel: false,
           loading: true
@@ -46,9 +50,31 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
+  def handle_info({Assets, [:asset, _], result}, socket) do
+    IO.inspect(result, label: "RESULT")
+    {:noreply, assign(socket, uploaded_asset: result)}
+  end
+
   def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
     doc = stitch_preview(sections)
     {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
+  end
+
+  def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
+    content = Templates.video_section(%{asset: asset})
+    IO.inspect(content, label: "CONTENT")
+    section = [%{
+        position: (length(a.sections) + 1),
+        created_by_id: a.current_user.id,
+        component_name: "video_section",
+        enabled: true,
+        type: "video",
+        temp_id: String.to_integer(List.last(String.split(asset.uuid, "_"))),
+        description: asset.description,
+        name: asset.title,
+        html_content: content
+      }]
+    {:noreply, assign(socket, sections: a.sections ++ section)}
   end
 
   def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
@@ -75,6 +101,11 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
+  def handle_event("validate-new-video", %{}, %{assigns: a} = socket) do
+
+    {:noreply, socket}
+  end
+
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do
     doc = stitch_preview(a.sections)
     {:noreply,
@@ -84,12 +115,28 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-video", _, %{assigns: a} = socket) do
-    {:noreply, assign(socket, show_video_form: !a.show_video_form)}
+    uuid = "#{a.current_user.id}_#{a.insight["uuid"]}_#{System.os_time(:second)}"
+    if connected?(socket), do: Assets.subscribe(uuid)
+    {:noreply,
+      socket
+      |> push_event("idDetails", %{uuid: uuid, aid: a.current_user.id, bid: a.current_user.brokerage_id})
+      |> assign(show_video_form: !a.show_video_form)}
+  end
+
+  def handle_event("toggle-upload-tab", %{"tab" => tab}, %{assigns: %{current_user: cu} = a} = socket) do
+    {:noreply, assign(socket, selected_tab: tab)}
+  end
+
+  def handle_event("select-video", %{"uuid" => uuid}, %{assigns: a} = socket) do
+    send self(), {:create_video_section, Enum.find(a.assets, fn ast -> ast.uuid === uuid end)}
+    {:noreply, socket}
   end
 
   def handle_event("sort-sections", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
     rearranged =
       Enum.map(sections, fn %{"id" => id, "position" => pos} ->
+        IO.inspect(id, label: "TID")
+        IO.inspect(String.to_integer(id), label: "TO_INT")
         Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)

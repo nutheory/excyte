@@ -55,6 +55,12 @@ config :excyte, :aws, %{
   region: "us-west-1"
 }
 
+config :mux,
+  access_token_id: System.get_env("MUX_ACCESS_TOKEN"),
+  access_token_secret: System.get_env("MUX_SECRET_KEY"),
+  signing_secret: System.get_env("MUX_SIGNING_SECRET")
+
+
 config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")

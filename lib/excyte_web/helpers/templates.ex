@@ -317,6 +317,18 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
+  def video_section(%{asset: asset}) do
+    asset_json = Jason.encode!(asset)
+    """
+      <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset_json}' data-video-desc='#{asset.description}' class=""></div>
+    """
+    |> Solid.parse()
+    |> case do
+      {:ok, template} -> to_string(Solid.render(template, %{"asset" => asset}))
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
+    end
+  end
+
   def whats_cma(_) do
     """
       <struct class="section" id="whats_cma">

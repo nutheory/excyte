@@ -126,7 +126,7 @@
                       </div>
                     </div>
                   <% end %>
-                  <%= f = form_for :video_form, "#", [phx_submit: "update-new-video"] %>
+                  <%= f = form_for :video_form, "#", [phx_change: "update-video-details", phx_submit: "update-new-video"] %>
                     <div class="mb-4">
                       <%= text_input f, :title, class: "text-field", placeholder: "Title", value: @video_form.title %>
                     </div>

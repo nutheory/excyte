@@ -24,7 +24,6 @@ export default Node.create({
   },
 
   parseHTML() {
-    console.log("Parse")
     return [
       {
         tag: 'div[data-type="simpleVideo"]',
@@ -39,7 +38,6 @@ export default Node.create({
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       if (HTMLAttributes.video === null) {return true}
-      console.log("Boo", HTMLAttributes)
       const v = JSON.parse(HTMLAttributes.video)
       const dom = document.createElement('div')
       const video = document.createElement('video')
@@ -60,7 +58,6 @@ export default Node.create({
           }
         }
       })
-      console.log("ghfhgfh", v.stream_id)
       player.src({ type: 'video/mux', src: v.stream_id })
       return {
         dom,

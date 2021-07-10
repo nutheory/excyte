@@ -52,7 +52,6 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({Assets, [:asset, _], result}, socket) do
-    IO.inspect(result, label: "RESULT")
     {:noreply, assign(socket, uploaded_asset: result)}
   end
 
@@ -63,7 +62,6 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
     content = Templates.video_section(%{asset: Map.from_struct(asset)})
-    IO.inspect(content, label: "CONTENT")
     section = [%{
         position: (length(a.sections) + 1),
         created_by_id: a.current_user.id,
@@ -111,6 +109,10 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
+  def handle_event("update-video-details", %{"video_form" => vf}, socket) do
+    {:noreply, assign(socket, video_form: %{title: vf["title"], description: vf["description"]})}
+  end
+
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do
     doc = stitch_preview(a.sections)
     {:noreply,
@@ -140,8 +142,6 @@ defmodule ExcyteWeb.Insight.Customize do
   def handle_event("sort-sections", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do
     rearranged =
       Enum.map(sections, fn %{"id" => id, "position" => pos} ->
-        IO.inspect(id, label: "TID")
-        IO.inspect(String.to_integer(id), label: "TO_INT")
         Enum.find(a.sections, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)

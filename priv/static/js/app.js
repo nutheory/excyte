@@ -19393,7 +19393,6 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   parseHTML: function parseHTML() {
-    console.log("Parse");
     return [{
       tag: 'div[data-type="simpleVideo"]'
     }];
@@ -19417,7 +19416,6 @@ __webpack_require__.r(__webpack_exports__);
         return true;
       }
 
-      console.log("Boo", HTMLAttributes);
       var v = JSON.parse(HTMLAttributes.video);
       var dom = document.createElement('div');
       var video = document.createElement('video');
@@ -19438,7 +19436,6 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       });
-      console.log("ghfhgfh", v.stream_id);
       player.src({
         type: 'video/mux',
         src: v.stream_id

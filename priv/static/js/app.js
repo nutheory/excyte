@@ -19385,9 +19385,8 @@ __webpack_require__.r(__webpack_exports__);
       video: {
         "default": null,
         parseHTML: function parseHTML(element) {
-          console.log("Boo", element);
           return {
-            video: element.getAttribute('data-video-url')
+            video: element.getAttribute('data-video-json')
           };
         }
       }
@@ -19418,17 +19417,32 @@ __webpack_require__.r(__webpack_exports__);
         return true;
       }
 
+      console.log("Boo", HTMLAttributes);
+      var v = JSON.parse(HTMLAttributes.video);
       var dom = document.createElement('div');
-      var video = document.createElement('video'); // const source = document.createElement('source')
-      // source.src = HTMLAttributes.video
-      // source.type = "video/mux"
-
+      var video = document.createElement('video');
+      video.id = "mux-default";
       video.classList.add('video-js', 'vjs-16-9');
       video.controls = "controls";
       video.preload = "auto";
       video.width = "100%";
-      video.append(source);
       dom.append(video);
+      var player = _mux_videojs_kit__WEBPACK_IMPORTED_MODULE_1___default()(video, {
+        "timelineHoverPreviews": true,
+        "plugins": {
+          "mux": {
+            "data": {
+              "env_key": "8annq75bglotovm9k0asdh112",
+              "video_title": "My Great Video"
+            }
+          }
+        }
+      });
+      console.log("ghfhgfh", v.stream_id);
+      player.src({
+        type: 'video/mux',
+        src: v.stream_id
+      });
       return {
         dom: dom
       };

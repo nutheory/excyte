@@ -1,0 +1,10 @@
+Jul 9 03:01:44 PM  ** (RuntimeError) cannot replace related %Excyte.Utils.Contact{content: "drush81@gmail.com", delete: nil, id: "6271bdd2-f9a1-44b4-8365-395113df1a8b", inserted_at: ~U[2021-07-09 21:48:57Z], name: "Email", temp_id: nil, textable: nil, type: "email", updated_at: ~U[2021-07-09 21:48:57Z]} because it already exists and it is not currently associated with the given struct. Ecto forbids casting existing records through the association field for security reasons. Instead, set the foreign key value accordingly
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset/relation.ex:419: Ecto.Changeset.Relation.check_action!/2
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset/relation.ex:181: Ecto.Changeset.Relation.do_change/4
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset/relation.ex:339: Ecto.Changeset.Relation.map_changes/9
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset/relation.ex:157: Ecto.Changeset.Relation.change/3
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset.ex:1206: Ecto.Changeset.put_change/7
+Jul 9 03:01:44 PM      (ecto 3.5.2) lib/ecto/changeset.ex:1414: Ecto.Changeset.put_relation/5
+Jul 9 03:01:44 PM      (excyte 0.1.0) lib/excyte_web/brokerage/live/profile.ex:45: ExcyteWeb.Brokerage.Profile.handle_event/3
+
+

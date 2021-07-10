@@ -317,10 +317,15 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def video_section(%{asset: asset}) do
-    asset_json = Jason.encode!(asset)
+  def video_section(%{asset: a}) do
+    asset = Jason.encode!(%{
+      title: a.title,
+      thumb_url: a.thumb_url,
+      stream_id: a.stream_id,
+      description: a.description,
+      video_url: a.video_url})
     """
-      <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset_json}' data-video-desc='#{asset.description}' class=""></div>
+      <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset}' class=""></div>
     """
     |> Solid.parse()
     |> case do

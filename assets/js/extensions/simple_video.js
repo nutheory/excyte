@@ -15,9 +15,8 @@ export default Node.create({
       video: {
         default: null,
         parseHTML: element => {
-          console.log("Boo", element)
           return {
-            video: element.getAttribute('data-video-url')
+            video: element.getAttribute('data-video-json')
           }
         }
       }
@@ -40,19 +39,29 @@ export default Node.create({
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       if (HTMLAttributes.video === null) {return true}
-      
+      console.log("Boo", HTMLAttributes)
+      const v = JSON.parse(HTMLAttributes.video)
       const dom = document.createElement('div')
       const video = document.createElement('video')
-      // const source = document.createElement('source')
-      // source.src = HTMLAttributes.video
-      // source.type = "video/mux"
+      video.id = "mux-default"
       video.classList.add('video-js', 'vjs-16-9')
       video.controls = "controls"
       video.preload = "auto"
       video.width = "100%"
-      video.append(source)
       dom.append(video)
-
+      const player = videojs(video, {
+        "timelineHoverPreviews": true,
+        "plugins": {
+          "mux": {
+            "data": {
+              "env_key": "8annq75bglotovm9k0asdh112",
+              "video_title": "My Great Video"
+            }
+          }
+        }
+      })
+      console.log("ghfhgfh", v.stream_id)
+      player.src({ type: 'video/mux', src: v.stream_id })
       return {
         dom,
       }

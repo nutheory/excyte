@@ -126,13 +126,21 @@
                       </div>
                     </div>
                   <% end %>
-                  <%= f = form_for :video, "#", [phx_submit: :video_upload] %>
+                  <%= f = form_for :video_form, "#", [phx_submit: "update-new-video"] %>
                     <div class="mb-4">
-                      <%= text_input f, :name, class: "text-field", placeholder: "Title" %>
+                      <%= text_input f, :title, class: "text-field", placeholder: "Title", value: @video_form.title %>
                     </div>
                     <div class="mb-4">
-                      <%= textarea f, :description, class: "textarea", placeholder: "Description" %>
+                      <%= textarea f, :description, class: "textarea", placeholder: "Description", value: @video_form.description %>
                     </div>
+                    <%= if @video_form.title !== "" && @uploaded_asset do %>
+                      <div class="flex">
+                        <div class="flex-1"></div>
+                        <div class="">
+                          <%= submit "Add Video", class: "submit" %>
+                        </div>
+                      </div>
+                    <% end %>
                   </form>
                 <% else %>
                   <ul class="">

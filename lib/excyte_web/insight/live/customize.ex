@@ -23,6 +23,7 @@ defmodule ExcyteWeb.Insight.Customize do
           preview_content: "",
           uploaded_asset: nil,
           selected_tab: "upload",
+          video_form: %{title: "", description: ""},
           show_video_form: false,
           preview_panel: false,
           loading: true
@@ -61,7 +62,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
-    content = Templates.video_section(%{asset: asset})
+    content = Templates.video_section(%{asset: Map.from_struct(asset)})
     IO.inspect(content, label: "CONTENT")
     section = [%{
         position: (length(a.sections) + 1),
@@ -86,7 +87,7 @@ defmodule ExcyteWeb.Insight.Customize do
           published: true
         }) do
           {:ok, pub} -> pub
-          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
+          {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
       end
     {:noreply,
       socket
@@ -101,9 +102,13 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
-  def handle_event("validate-new-video", %{}, %{assigns: a} = socket) do
-
-    {:noreply, socket}
+  def handle_event("update-new-video", %{"video_form" => vf}, %{assigns: a} = socket) do
+    case Assets.update_asset(a.uploaded_asset.uuid, %{title: vf["title"], description: vf["description"]}) do
+      {:ok, upload} ->
+        send self(), {:create_video_section, upload}
+        {:noreply, assign(socket, assets: [upload | a.assets], show_video_form: false, uploaded_asset: nil)}
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
+    end
   end
 
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do
@@ -123,7 +128,7 @@ defmodule ExcyteWeb.Insight.Customize do
       |> assign(show_video_form: !a.show_video_form)}
   end
 
-  def handle_event("toggle-upload-tab", %{"tab" => tab}, %{assigns: %{current_user: cu} = a} = socket) do
+  def handle_event("toggle-upload-tab", %{"tab" => tab}, socket) do
     {:noreply, assign(socket, selected_tab: tab)}
   end
 

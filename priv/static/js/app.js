@@ -19420,7 +19420,7 @@ __webpack_require__.r(__webpack_exports__);
       var dom = document.createElement('div');
       var video = document.createElement('video');
       video.id = "mux-default";
-      video.classList.add('video-js', 'vjs-16-9');
+      video.classList.add('video-js', 'vjs-16-9', 'mt-0', 'mb-0');
       video.controls = "controls";
       video.preload = "auto";
       video.width = "100%";
@@ -19845,11 +19845,10 @@ window.currentPreview = function (content) {
     init: function init(el) {
       var preview = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
-        // editable: false,
+        editable: false,
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__.default],
         content: this.content
       });
-      console.log("settingpreview", preview);
       this.preview = preview;
       window.previewHook.currentPreview = this;
     }
@@ -19864,7 +19863,6 @@ var InitPreview = {
           theme = _ref.theme;
       setTimeout(function () {
         window.previewHook.currentPreview.preview.commands.setContent(content);
-        console.log("THEME", theme);
         var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
         rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
@@ -20116,10 +20114,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
 /* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
 /* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
-/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_25___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_25__);
+/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
+/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_26__);
+
 
 
 
@@ -20158,7 +20158,7 @@ window.currentViewer = function (content) {
       var viewer = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
         editable: false,
-        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_23__.default],
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__.default],
         content: this.content
       });
       this.viewer = viewer;
@@ -20173,13 +20173,29 @@ var InitViewer = {
     this.handleEvent("loadViewer", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme;
-      window.viewerHook.currentViewer.viewer.commands.setContent(content);
+      setTimeout(function () {
+        window.viewerHook.currentViewer.viewer.commands.setContent(content);
+        var rule = "div.viewer-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
+        rule += "div.viewer-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
+        rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
+        rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+        rule += "div.viewer-wrapper tr {border-bottom-color: ".concat(theme.accent, "}");
+        rule += "div.viewer-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
+        rule += "div.viewer-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
+        addCss(rule);
+      }, 500);
     });
   },
-  destroyed: function destroyed() {
-    window.viewerHook = null;
-    window.currentViewer = null;
-  }
+  destroyed: function destroyed() {}
+};
+
+var addCss = function addCss(rule) {
+  var css = document.createElement('style');
+  css.type = 'text/css';
+  if (css.styleSheet) css.styleSheet.cssText = rule; // Support for IE
+  else css.appendChild(document.createTextNode(rule)); // Support for the rest
+
+  document.getElementsByTagName("head")[0].appendChild(css);
 };
 
 /***/ }),

@@ -42,7 +42,7 @@ export default Node.create({
       const dom = document.createElement('div')
       const video = document.createElement('video')
       video.id = "mux-default"
-      video.classList.add('video-js', 'vjs-16-9')
+      video.classList.add('video-js', 'vjs-16-9', 'mt-0', 'mb-0')
       video.controls = "controls"
       video.preload = "auto"
       video.width = "100%"

@@ -168,6 +168,10 @@ div.viewer-wrapper {
     }
   }
 
+  & video {
+    @apply my-0;
+  }
+
   & .section {
     @apply w-full my-20 lg:my-36;
 

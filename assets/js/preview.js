@@ -42,7 +42,7 @@ window.currentPreview = function (content) {
     init(el) {
       let preview = new TipTap({
         element: el,
-        // editable: false,
+        editable: false,
         extensions: [
           Italic,
           Bold,
@@ -72,7 +72,6 @@ window.currentPreview = function (content) {
         ],
         content: this.content,
       })
-      console.log("settingpreview", preview)
       this.preview = preview
       window.previewHook.currentPreview = this
     },
@@ -85,7 +84,6 @@ export const InitPreview = {
     this.handleEvent("loadPreview", ({ content, theme }) => {
       setTimeout(() => {
         window.previewHook.currentPreview.preview.commands.setContent(content)
-        console.log("THEME", theme)
         let rule  = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
             rule += `div.preview-wrapper .header-color {color: ${theme.sub_header_text}}`
             rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
@@ -94,13 +92,13 @@ export const InitPreview = {
             rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text}}`
             rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
         addCss(rule)
-      }, 500);
+      }, 500)
     })
   },
   destroyed() {
     //  window.previewHook = null
     //  window.currentPreview = null
-  },
+},
 }
 
 const addCss = (rule) => {

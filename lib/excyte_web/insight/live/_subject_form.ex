@@ -46,11 +46,9 @@ defmodule ExcyteWeb.Insight.SubjectForm do
 
     cs = Properties.change_property(subject_attrs)
     if cs.valid? do
-      IO.inspect(cs, label: "VaLID")
       send self(), {:create_subject, subject_attrs}
       {:noreply, socket}
     else
-      IO.inspect(cs, label: "iNVaLID")
       {:noreply, assign(socket, changeset: cs)}
     end
   end

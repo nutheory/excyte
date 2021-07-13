@@ -1,15 +1,22 @@
-<h1>Resend confirmation instructions</h1>
+<div class="pt-2 pb-6">
+  <div class="bg-white rounded-lg shadow-md px-6 py-4">
+    <h2 class="text-2xl text-center leading-none font-extrabold text-gray-900 mb-6">
+      Resend confirmation instructions
+    </h2>
 
-<%= form_for :user, Routes.user_confirmation_path(@conn, :create), fn f -> %>
-  <%= label f, :email %>
-  <%= email_input f, :email, required: true %>
+    <%= form_for :user, Routes.user_confirmation_path(@conn, :create), fn f -> %>
+      <%= label f, :email %>
+      <%= email_input f, :email, required: true, class: "text-field" %>
 
-  <div>
-    <%= submit "Resend confirmation instructions" %>
+      <div class="mb-4">
+        <%= submit "Resend confirmation instructions", class: "submit w-full" %>
+      </div>
+    <% end %>
+
+    <p>
+      <%= link "Register", to: Routes.live_path(@conn, ExcyteWeb.AgentRegistration) %> |
+      <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
+    </p>
   </div>
-<% end %>
+</div>
 
-<p>
-  <%= link "Register", to: Routes.live_path(@conn, ExcyteWeb.AgentRegistration) %> |
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
-</p>

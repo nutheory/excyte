@@ -39,14 +39,8 @@
           </div>
           <%= if fc.data.type === "phone" || (Map.has_key?(fc.source.changes, :type) && fc.source.changes.type === "phone") do %>
             <div class="w-full px-1 pt-3">
-              <%= live_component @socket, Toggle,
-                form: fc,
-                c_type: :small,
-                input_name: :textable,
-                label: "Recieve text messages using this number?",
-                id: "#{fc.id}_textable",
-                callback: "return"
-              %>
+              <%= checkbox fc, :textable, class: "" %>
+              <%= label fc, :textable, "Recieve text messages using this number?", class: "text-sm cursor-pointer inline pl-2" %>
             </div>
           <% end %>
         </div>

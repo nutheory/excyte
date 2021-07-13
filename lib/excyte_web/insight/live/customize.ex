@@ -109,8 +109,18 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  def handle_event("update-video-details", %{"video_form" => vf}, socket) do
+  def handle_event("validate-video-details", %{"video_form" => vf}, socket) do
     {:noreply, assign(socket, video_form: %{title: vf["title"], description: vf["description"]})}
+  end
+
+  def handle_event("delete_video", %{"value" => _v, "video-id" => id}, %{assigns: a} = socket) do
+    asset_id = String.to_integer(id)
+    assets =
+      case Assets.delete_asset(a.current_user.id, asset_id) do
+        {:ok, _} -> Enum.filter(a.assets, fn ast -> ast.id !== asset_id end)
+        {:error, err} -> err
+      end
+    {:noreply, assign(socket, assets: assets)}
   end
 
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do

@@ -28,6 +28,17 @@ defmodule Excyte.Assets do
     |> notify_subscribers([:asset, :updated])
   end
 
+  def delete_asset(uid, asset_id) do
+    client = Mux.client()
+    with %Asset{} = asset <- Repo.get_by!(Asset, %{uploaded_by_id: uid, id: asset_id}),
+         {:ok, _env} <- Mux.Video.Assets.delete(client, asset.source_id),
+         {:ok, struct} <- Repo.delete(asset) do
+      {:ok, struct}
+    else
+      {:error, err} -> IO.inspect(err, label: "ERR")
+    end
+  end
+
   defp notify_subscribers({:ok, result}, event) do
     Phoenix.PubSub.broadcast(
       Excyte.PubSub,

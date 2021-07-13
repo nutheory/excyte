@@ -115,8 +115,16 @@
               <div class="pt-2">
                 <%= if @selected_tab === "upload" do %>
                   <%= if @uploaded_asset do %>
+                    <div class="w-32 mr-3">
+                      <img src="<%= @uploaded_asset.thumb_url %>" alt="<%= @video_form.title %> thumbnail" />
+                    </div>
+                    <div class="flex-1">
+                      <h4 class="text-base"><%= @video_form.title %></h4>
+                      <p class="text-base"><%= @video_form.description %></p>
+                    </div>
+                    <div>
                   <% else %>
-                    <div id="upload-video" phx-hook="MuxUploader" class="form mb-4">
+                    <div id="upload-video" phx-hook="MuxUploader" class="form mb-4" phx-update="ignore">
                       <input type="file" id="file-field" name="file-field" class="action">
                       <div id="adding-file" class="hidden rounded bg-cyan-100 p-2">
                         <h4 class="font-normal text-base">Uploading... <span class="font-bold" id="filename"></span></h4>
@@ -126,21 +134,19 @@
                       </div>
                     </div>
                   <% end %>
-                  <%= f = form_for :video_form, "#", [phx_change: "update-video-details", phx_submit: "update-new-video"] %>
+                  <%= f = form_for :video_form, "#", [phx_change: "validate-video-details", phx_submit: "update-new-video"] %>
                     <div class="mb-4">
                       <%= text_input f, :title, class: "text-field", placeholder: "Title", value: @video_form.title %>
                     </div>
                     <div class="mb-4">
                       <%= textarea f, :description, class: "textarea", placeholder: "Description", value: @video_form.description %>
                     </div>
-                    <%= if @video_form.title !== "" && @uploaded_asset do %>
-                      <div class="flex">
-                        <div class="flex-1"></div>
-                        <div class="">
-                          <%= submit "Add Video", class: "submit" %>
-                        </div>
+                    <div class="flex">
+                      <div class="flex-1"></div>
+                      <div class="">
+                        <%= submit "Add Video", class: "submit" %>
                       </div>
-                    <% end %>
+                    </div>
                   </form>
                 <% else %>
                   <ul class="">
@@ -149,13 +155,22 @@
                         <div
                           phx-click="select-video"
                           phx-value-uuid="<%= asset.uuid %>"
-                          class="w-32 mr-3">
+                          class="w-32 mr-3 cursor-pointer">
                           <img src="<%= asset.thumb_url %>" alt="<%= asset.title %> thumbnail" />
                         </div>
                         <div class="flex-1">
                           <h4 class="text-base"><%= asset.title %></h4>
                           <p class="text-base"><%= asset.description %></p>
                         </div>
+                        <%= if asset.uploaded_by_id === @current_user.id do %>
+                          <div class="flex ">
+                            <button data-confirm="Are you sure?" phx-click="delete_video" phx-value-video-id="<%= asset.id %>">
+                              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        <% end %>
                       </li>
                     <% end %>
                   </ul>

@@ -203,7 +203,7 @@ defmodule Excyte.Mls.ProcessListings do
     Enum.reduce(assc, [], fn a, acc ->
       if l[a] !== nil do
         name =
-          Inflex.underscore(hd(String.split(a, "Association")))
+          Inflex.underscore(hd(tl(String.split(a, "Association"))))
           |> String.replace("_", " ")
           |> String.capitalize()
         human = if is_list(l[a]), do: String.trim_trailing(Enum.join(l[a], ", "), ", "), else: l[a]
@@ -233,7 +233,7 @@ defmodule Excyte.Mls.ProcessListings do
         attr_name =
           String.split(attrs.name, " ")
           |> Enum.reduce("", fn str, acc ->
-            if str === k || str === "room" do
+            if str === k || str === "room" || str === "bedroom" do
               acc
             else
               acc <> "#{str} "
@@ -241,7 +241,8 @@ defmodule Excyte.Mls.ProcessListings do
           end)
         value = if is_list(attrs.value), do: String.trim_trailing(Enum.join(attrs.value, ", "), ", "), else: attrs.value
         %{name: String.trim(String.capitalize(attr_name)), value: value}
-      end)}
+      end)
+      |> Enum.sort_by(&(&1.name))}
     end)
   end
 

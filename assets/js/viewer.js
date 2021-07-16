@@ -87,8 +87,10 @@ export const InitViewer = {
             rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
             rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
             rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
+            rule += `div.viewer-wrapper a {color: ${theme.accent}}`
             rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
             rule += `div.viewer-wrapper .muted-color {color: ${theme.muted_text}}`
+            rule += `div.viewer-wrapper .muted-border {border-color: ${theme.muted_text};}`
             rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
         addCss(rule)
       }, 500)

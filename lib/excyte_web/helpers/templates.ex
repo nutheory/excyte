@@ -388,16 +388,22 @@ defmodule ExcyteWeb.Helpers.Templates do
                     </td>
                   </tr>
                   <tr>
-                    <td class="label"></td>
-                    <td class="value"></td>
+                    <td class="label">View on Map</td>
+                    <td class="value">
+                      {% if lst["coords"] and lst["coords"][0] %}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ lst["coords"][1] }}%2C{{ lst["coords"][0] }}">Click here</a>
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </struct>
             {% if lst["features"].size > 0 %}
-              <struct class="mt-6">
-                <h4 class="sub-header-color pb-1">Features</h4>
-                <struct class="check">
+              <struct class="mt-12">
+                <h3 class="sub-header-color pb-1">Features</h4>
+                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {% for feat in lst["features"] %}
                     <struct class="block">
                       <p><strong>{{ feat["name"] }}: </strong>{{ feat["human"] }}</p>
@@ -407,17 +413,24 @@ defmodule ExcyteWeb.Helpers.Templates do
               </struct>
             {% endif %}
             {% if lst["layout_details"].size > 0 %}
-              <struct class="mt-6">
-                <h4 class="sub-header-color pb-1">Layout Details</h4>
-                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <struct class="mt-12">
+                <h3 class="sub-header-color pb-1">Room Details</h4>
+                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {% for ld in lst["layout_details"] %}
                     <struct class="">
-                      <h4>{{ ld["room_name"] }}</h4>
-                      <ul>
+                      <h4 class="mb-0 inline-block">{{ ld["room_name"] }}</h4>
+                      {% for attr in ld["values"] %}
+                        {% if attr["name"] == "Features" %}
+                          <p class="italic inline-block text-base ml-2">{{ attr["value"] }}</p>
+                        {% endif %}
+                      {% endfor %}
+                      <struct class="flex flex-wrap">
                         {% for attr in ld["values"] %}
-                          <li>{{ attr["name"] }} {{ attr["value"] }}</li>
+                          {% if attr["name"] != "Features" %}
+                            <struct class="w-2/5 py-1">{{ attr["name"] }} <strong>{{ attr["value"] }}</strong></struct>
+                          {% endif %}
                         {% endfor %}
-                      </ul>
+                      </struct>
                     </struct>
                   {% endfor %}
                 </struct>
@@ -428,6 +441,15 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% if lst["public_remarks"] %}
               <h4 class="sub-header-color">About</h4>
               <p>{{ lst["public_remarks"] }}</p>
+            {% endif %}
+            {% if lst["association"].size > 0 %}
+              <h4 class="sub-header-color mt-8 border-b accent-color pb-1">Association</h4>
+              {% for assoc in lst["association"] %}
+                <struct class="flex w-full py-1 border-b muted-border">
+                  <struct class="flex-1">{{ assoc["name"] }}</struct>
+                  <struct class="font-bold w-1/2">{{ assoc["human"] }}</struct>
+                </struct>
+              {% endfor %}
             {% endif %}
           </struct>
         </struct>
@@ -605,26 +627,20 @@ defmodule ExcyteWeb.Helpers.Templates do
     Float.round(m * 0.000621371192, 2)
   end
 
-  # def display_relevant_features(features) do
-  #   assigns =
-  #     Enum.reduce(features, %{}, fn {key, val}, acc ->
-  #       if length(val) > 0 and hd(val) !== "None" do
-  #         Map.put(acc, key, val)
-  #       else
-  #         acc
-  #       end
-  #     end)
-  #   """
-  #     <ul class="feature-list">
-  #       <%= for {{key, val}, idx} <- Enum.with_index(assigns) do %>
-  #         <li class="feature-item">
-  #           <label class="block"><%= split_by_case(key) %></label>
-  #           <p class="text-sm"><%= Enum.join(val, ", ") %></p>
-  #         </li>
-  #        <% end %>
-  #     </ul>
-  #   """
-  # end
+  def simple_row(%{name: n, data: d}) do
+    """
+      <tr>
+        <td class="label">n</td>
+        <td class="value">
+          {% if d %}
+            {{ d }}
+          {% else %}
+            N/A
+          {% endif %}
+        </td>
+      </tr>
+    """
+  end
 
   defp summarize_sale_info(listing) do
     if listing["list_price"] !== nil || listing["close_price"] !== nil do

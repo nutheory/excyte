@@ -19987,8 +19987,10 @@ var InitPreview = {
         rule += "div.preview-wrapper .header-color {color: ".concat(theme.header_text, ";}");
         rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.preview-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+        rule += "div.preview-wrapper a {color: ".concat(theme.accent, "}");
         rule += "div.preview-wrapper th {border-bottom-color: ".concat(theme.accent, "}");
-        rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "; border-color: ").concat(theme.muted_text, ";}");
+        rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, ";}");
+        rule += "div.preview-wrapper .muted-border {border-color: ".concat(theme.muted_text, ";}");
         rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);
       }, 500);
@@ -20301,8 +20303,10 @@ var InitViewer = {
         rule += "div.viewer-wrapper .header-color {color: ".concat(theme.header_text, "}");
         rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+        rule += "div.viewer-wrapper a {color: ".concat(theme.accent, "}");
         rule += "div.viewer-wrapper th {border-bottom-color: ".concat(theme.accent, "}");
         rule += "div.viewer-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
+        rule += "div.viewer-wrapper .muted-border {border-color: ".concat(theme.muted_text, ";}");
         rule += "div.viewer-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);
       }, 500);

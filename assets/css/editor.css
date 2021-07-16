@@ -91,7 +91,7 @@ mark {
 }
 
 div.webpack {
-  @apply text-bgray-200 w-48 h-48 lg:w-48 lg:h-48;
+  @apply text-bgray-200 hidden w-48 h-48 lg:w-48 lg:h-48 lg:grid-cols-2;
 }
 
 div.editor-wrapper {
@@ -282,10 +282,6 @@ div.viewer-wrapper {
         bottom: 0;
         left: 0;
         background-color: rgba(0, 0, 0, 0);
-      }
-
-      & .check {
-        @apply grid grid-cols-1 md:grid-cols-2 gap-4;
       }
 
       & img {

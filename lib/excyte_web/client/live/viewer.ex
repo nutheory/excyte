@@ -5,33 +5,16 @@ defmodule ExcyteWeb.Client.Viewer do
 
   def render(assigns), do: ClientView.render("viewer.html", assigns)
 
-  def mount(%{"insight_id" => iid}, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(%{"insight_id" => iid}, t, socket) do
+    cu = if is_nil(t["user_token"]), do: nil, else: Accounts.get_user_by_session_token(t["user_token"])
     report =
       case Insights.get_published_insight(iid) do
         {:ok, ins} -> ins
         # {:error, err} -> err
       end
-      IO.inspect(report.document_attributes, label: "DA")
     send self(), {:load_view, %{sections: report.content.html}}
     {:ok, assign(socket,
       current_user: cu,
-      insight: report,
-      theme: report.document_attributes,
-      created_by: report.created_by
-    )}
-  end
-
-  def mount(%{"insight_id" => iid}, _, socket) do
-    report =
-      case Insights.get_published_insight(iid) do
-        {:ok, ins} -> ins
-        # {:error, err} -> err
-      end
-      IO.inspect(report.document_attributes, label: "DA")
-    send self(), {:load_view, %{sections: report.content.html}}
-    {:ok, assign(socket,
-      current_user: nil,
       insight: report,
       theme: report.document_attributes,
       created_by: report.created_by

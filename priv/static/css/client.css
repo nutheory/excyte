@@ -3343,6 +3343,11 @@ h4 {
       width: 3.5rem;
 }
 
+.w-1\/2 {
+
+      width: 50%;
+}
+
 .w-64 {
 
       width: 16rem;
@@ -3386,11 +3391,6 @@ h4 {
 .w-4 {
 
       width: 1rem;
-}
-
-.w-1\/2 {
-
-      width: 50%;
 }
 
 .max-w-screen-xl {
@@ -4152,11 +4152,6 @@ h4 {
 .bg-opacity-40 {
 
       --tw-bg-opacity: 0.4;
-}
-
-.bg-opacity-30 {
-
-      --tw-bg-opacity: 0.3;
 }
 
 .bg-opacity-25 {

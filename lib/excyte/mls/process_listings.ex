@@ -113,6 +113,7 @@ defmodule Excyte.Mls.ProcessListings do
         },
         association: process_associations(l),
         layout_details: process_rooms(l),
+        tax_exemptions: l["TaxExemptions"],
         tax_assessed_value: l["TaxAssessedValue"],
         tax_annual_amount: l["TaxAnnualAmount"],
         tax_year: l["TaxYear"]

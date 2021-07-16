@@ -451,6 +451,31 @@ defmodule ExcyteWeb.Helpers.Templates do
                 </struct>
               {% endfor %}
             {% endif %}
+            {% if lst["tax_year"] or lst["tax_assessed_value"] or lst["tax_annual_amount"] or lst["tax_exemptions"] %}
+              <h4 class="sub-header-color mt-8">Tax Info
+                {% if lst["tax_year"] %}
+                  ({{ lst["tax_year"] }})
+                {% endif %}
+              </h4>
+              {% if lst["tax_annual_amount"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Annual amount</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_annual_amount"] }}</struct>
+                </struct>
+              {% endif %}
+              {% if lst["tax_assessed_value"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Assessed Value</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_assessed_value"] }}</struct>
+                </struct>
+              {% endif %}
+              {% if lst["tax_exemptions"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Exemptions</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_exemptions"] }}</struct>
+                </struct>
+              {% endif %}
+            {% endif %}
           </struct>
         </struct>
       </struct>

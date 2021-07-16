@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.ClientView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/client/templates", path: ""]}
-
-  alias ExcyteWeb.Client.{Viewer, Header}
+  alias ExcyteWeb.Helpers.Utilities
+  alias ExcyteWeb.Client.{Header}
+  alias ExcyteWeb.Agent.Dashboard
 end

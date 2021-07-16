@@ -1,5 +1,10 @@
 <div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="InitViewer" phx-update="ignore">
-  <%= live_component @socket, Header, current_user: @current_user, id: :report_header %>
+  <%= live_component @socket, Header,
+    current_user: @current_user,
+    created_by: @created_by,
+    insight_type: @insight.type,
+    id: :report_header
+  %>
   <div
     class=""
     x-data="currentViewer('')"
@@ -7,7 +12,7 @@
     x-on:click.away="inFocus = false"
   >
     <div class="px-4 py-10 max-w-3xl mx-auto sm:px-6 sm:py-12 lg:max-w-4xl lg:py-16 lg:px-8 xl:max-w-7xl">
-      <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto">
+      <div class="mx-auto">
         <div x-ref="viewer" class="viewer"></div>
       </div>
     </div>

@@ -72,7 +72,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       document_template_id: hd(template).id,
       published: false,
       mls: a.mls.dataset_id,
-      selected_listing_ids: [],
+      selected_listing_ids: [property_attrs["ListingId"]],
       content: %{listings: [property_attrs]}
     }
   end

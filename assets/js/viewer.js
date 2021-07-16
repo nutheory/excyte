@@ -24,6 +24,7 @@ import {
   ExcyteParagraph 
 } from './extensions/modified_extensions'
 import SimpleGallery from './extensions/simple_gallery'
+import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
 import Comparable from './extensions/comparable'
 import Struct from './extensions/struct'
@@ -62,6 +63,7 @@ window.currentViewer = function (content) {
           Underline, 
           TextAlign,
           SimpleGallery,
+          ShowcaseGallery,
           SimpleVideo,
           Struct,
           Comparable,
@@ -82,10 +84,10 @@ export const InitViewer = {
       setTimeout(() => {
         window.viewerHook.currentViewer.viewer.commands.setContent(content)
         let rule  = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
-            rule += `div.viewer-wrapper .header-color {color: ${theme.sub_header_text}}`
+            rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
             rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
             rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
-            rule += `div.viewer-wrapper tr {border-bottom-color: ${theme.accent}}`
+            rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
             rule += `div.viewer-wrapper .muted-color {color: ${theme.muted_text}}`
             rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
         addCss(rule)

@@ -6,6 +6,10 @@ defmodule ExcyteWeb.Client.Header do
   def render(assigns), do: ClientView.render("header.html", assigns)
 
   def update(assigns, socket) do
-    {:ok, assign(socket, current_user: assigns.current_user)}
+    {:ok, assign(socket,
+      current_user: assigns.current_user,
+      created_by: assigns.created_by,
+      insight_type: assigns.insight_type
+    )}
   end
 end

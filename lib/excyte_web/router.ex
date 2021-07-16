@@ -98,12 +98,14 @@ defmodule ExcyteWeb.Router do
   scope "/agent", ExcyteWeb.Agent do
     pipe_through [:app_browser, :require_authenticated_user]
     live "/dash", Dashboard
+    live "/dashboard", Dashboard
     live "/getting-started", GettingStarted
   end
 
   scope "/brokerage", ExcyteWeb.Brokerage do
     pipe_through [:app_browser, :require_authenticated_user]
     live "/dash", Dashboard
+    live "/dashboard", Dashboard
     live "/getting-started", GettingStarted
   end
 

@@ -272,10 +272,30 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end)
   end
 
+  # def format_quoted_json_to_lower(body) do
+  #   Map.new(body, fn {k, v} ->
+  #     if is_binary(k) do
+  #       {Inflex.underscore(k), handle_nested_str(v)}
+  #     else
+  #       {k, handle_nested_str(v)}
+  #     end
+  #   end)
+  # end
+
   def format_quoted_json(body) do
     Map.new(body, fn {k, v} ->
       if is_binary(k) do
         {String.to_atom(k), handle_nested(v)}
+      else
+        {k, handle_nested(v)}
+      end
+    end)
+  end
+
+  def format_atom_json(body) do
+    Map.new(body, fn {k, v} ->
+      if is_atom(k) do
+        {Atom.to_string(k), handle_nested_atom(v)}
       else
         {k, handle_nested(v)}
       end
@@ -293,6 +313,25 @@ defmodule ExcyteWeb.Helpers.Utilities do
       # _ ->
     end
   end
+
+    defp handle_nested_atom(v) when is_list(v) do
+    Enum.map(v, fn x ->
+      if Enumerable.impl_for(x) do
+        Map.new(x, fn {k, val} ->
+          {Atom.to_string(k), handle_nested_atom(val)}
+        end)
+      else
+        x
+      end
+    end)
+  end
+
+  defp handle_nested_atom(v) when is_map(v) do
+    Map.new(v, fn {k, vm} ->
+      {Atom.to_string(k), handle_nested_atom(vm)} end)
+  end
+
+  defp handle_nested_atom(v), do: v
 
   defp handle_nested(v) when is_list(v) do
     Enum.map(v, fn x ->

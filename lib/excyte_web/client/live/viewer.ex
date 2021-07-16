@@ -12,12 +12,13 @@ defmodule ExcyteWeb.Client.Viewer do
         {:ok, ins} -> ins
         # {:error, err} -> err
       end
+      IO.inspect(report.document_attributes, label: "DA")
     send self(), {:load_view, %{sections: report.content.html}}
     {:ok, assign(socket,
       current_user: cu,
       insight: report,
       theme: report.document_attributes,
-      sections: report.sections
+      created_by: report.created_by
     )}
   end
 
@@ -27,17 +28,18 @@ defmodule ExcyteWeb.Client.Viewer do
         {:ok, ins} -> ins
         # {:error, err} -> err
       end
+      IO.inspect(report.document_attributes, label: "DA")
     send self(), {:load_view, %{sections: report.content.html}}
     {:ok, assign(socket,
       current_user: nil,
       insight: report,
       theme: report.document_attributes,
-      sections: report.sections
+      created_by: report.created_by
     )}
   end
 
-  def handle_info({:load_view, %{sections: sections}}, socket) do
+  def handle_info({:load_view, %{sections: sections}}, %{assigns: a} = socket) do
     # doc = Enum.reduce(sections, "", fn section, acc -> acc <> section.html_content end)
-    {:noreply, push_event(socket, "loadViewer", %{content: sections})}
+    {:noreply, push_event(socket, "loadViewer", %{content: sections, theme: a.theme})}
   end
 end

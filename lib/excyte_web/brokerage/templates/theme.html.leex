@@ -3,14 +3,14 @@
     class="preview rounded-md flex items-center justify-center border border-bgray-400"
     style="background-color: <%= @theme_settings.background %>;font-family: <%= @theme_settings.font %>"
   >
-    <div class="w-full xl:w-4/5 flex flex-wrap my-12 xl:my-24">
+    <div class="w-4/5 flex flex-wrap my-12 xl:my-24">
       <h1 style="color: <%= @theme_settings.muted_text %>;">Theme Preview</h1>
       <div class="">
         <div
           class="float-left mr-12 curve rounded-full h-32 w-32 bg-cover border-4"
           style="background-image: url(<%= @agent_profile.photo_url %>); border-color: <%= @theme_settings.accent %>;"></div>
         <div class="border-b-2 pb-2" style="border-color: <%= @theme_settings.accent %>;">
-          <h2 class="mb-0" style="<%= @theme_settings.header_text %>"><%= @agent_profile.name %></h2>
+          <h2 class="mb-0" style="color: <%= @theme_settings.header_text %>"><%= @agent_profile.name %></h2>
           <h3 style="color: <%= @theme_settings.sub_header_text %>; border-color: <%= @theme_settings.accent %>;">Your friendly agent</h3>
           <p style="color: <%= @theme_settings.text %>;">A Comparative Market Analysis should be as simple to understand and navigate as the process of listing and
           <span style="background-color: <%= @theme_settings.highlight_background %>;color: <%= @theme_settings.highlight_text %>;">

@@ -64,6 +64,7 @@ defmodule Excyte.Mls.ProcessListings do
         zip: l["PostalCode"],
         coords: l["Coordinates"],
         state: l["StateOrProvince"],
+        county: l["CountyOrParish"],
         status: process_status(%{
           mls: l["MlsStatus"],
           standard: l["StandardStatus"]
@@ -80,6 +81,7 @@ defmodule Excyte.Mls.ProcessListings do
         year_built: l["YearBuilt"],
         days_on_market: l["DaysOnMarket"],
         on_market_date: l["OnMarketDate"],
+        lotsize_dimensions: l["LotSizeDimensions"],
         expiration_date: l["ExpirationDate"],
         withdrawn_date: l["WithdrawnDate"],
         pending_timestamp: l["PendingTimestamp"],
@@ -102,7 +104,6 @@ defmodule Excyte.Mls.ProcessListings do
         listing_id: l["ListingId"],
         features: process_features(l),
         last_modified: l["ModificationTimestamp"],
-        # dirty_info: Map.delete(l, "Media"),
         pool: l["PoolYN"],
         spa: l["SpaYN"],
         schools: %{
@@ -110,10 +111,8 @@ defmodule Excyte.Mls.ProcessListings do
           junior: l["JuniorSchool"],
           high: l["HighSchool"]
         },
-        association_fee: l["AssociationFee"],
-        association_amenities: l["AssociationAmenities"],
-        association_name: l["AssociationName"],
-        association_fee_frequency: l["AssociationFeeFrequency"],
+        association: process_associations(l),
+        layout_details: process_rooms(l),
         tax_assessed_value: l["TaxAssessedValue"],
         tax_annual_amount: l["TaxAnnualAmount"],
         tax_year: l["TaxYear"]
@@ -197,13 +196,73 @@ defmodule Excyte.Mls.ProcessListings do
     end
   end
 
+  defp process_associations(l) do
+    assc = ["AssociationFeeIncludes", "AssociationFee", "AssociationFeeFrequency",
+            "AssociationAmenities", "AssociationName"]
+
+    Enum.reduce(assc, [], fn a, acc ->
+      if l[a] !== nil do
+        name =
+          Inflex.underscore(hd(String.split(a, "Association")))
+          |> String.replace("_", " ")
+          |> String.capitalize()
+        human = if is_list(l[a]), do: String.trim_trailing(Enum.join(l[a], ", "), ", "), else: l[a]
+        [%{ name: name, value: l[a], human: human }  | acc ]
+      else
+        acc
+      end
+    end)
+  end
+
+  def process_rooms(l) do
+    Enum.reduce(l, [], fn {k, v}, acc ->
+      if String.starts_with?(k, "Room") do
+        name =
+          Inflex.underscore(hd(tl(String.split(k, "Room", parts: 2))))
+          |> String.replace("_", " ")
+          |> String.capitalize()
+
+        [%{name: name, value: v} | acc]
+      else
+        acc
+      end
+    end)
+    |> Enum.group_by(fn k -> hd(String.split(k.name, " ")) end)
+    |> Map.drop(["S", "Type"])
+    |> Enum.map(fn {k, v} -> %{room_name: k, values: Enum.map(v, fn attrs ->
+        attr_name =
+          String.split(attrs.name, " ")
+          |> Enum.reduce("", fn str, acc ->
+            if str === k || str === "room" do
+              acc
+            else
+              acc <> "#{str} "
+            end
+          end)
+        value = if is_list(attrs.value), do: String.trim_trailing(Enum.join(attrs.value, ", "), ", "), else: attrs.value
+        %{name: String.trim(String.capitalize(attr_name)), value: value}
+      end)}
+    end)
+  end
+
   defp process_features(l) do
     feat = ["FireplaceFeatures", "PoolFeatures", "ExteriorFeatures", "LotFeatures",
-          "CommunityFeatures", "InteriorFeatures", "BuildingFeatures", "SpaFeatures",
-          "PatioAndPorchFeatures"]
+            "CommunityFeatures", "InteriorFeatures", "BuildingFeatures", "SpaFeatures",
+            "PatioAndPorchFeatures", "LaundryFeatures", "WindowFeatures", "ParkingFeatures",
+            "AccessibilityFeatures", "WaterfrontFeatures", "ArchitecturalStyle", "StructureType",
+            "Heating", "Cooling", "Flooring", "Roof"]
 
-    Enum.reduce(feat, %{}, fn f, acc ->
-      Map.put(acc, String.to_atom(hd(String.split(f, "Features"))), l[f])
+    Enum.reduce(feat, [], fn f, acc ->
+      if l[f] !== nil do
+        name =
+          Inflex.underscore(hd(String.split(f, "Features")))
+          |> String.replace("_", " ")
+          |> String.capitalize()
+        human = if is_list(l[f]), do: String.trim_trailing(Enum.join(l[f], ", "), ", "), else: l[f]
+        [%{ name: name, value: l[f], human: human }  | acc ]
+      else
+        acc
+      end
     end)
   end
 
@@ -335,3 +394,15 @@ defmodule Excyte.Mls.ProcessListings do
   def process_init({:error, err}), do: {:error, err}
   def process_init(_), do: {:error, %{message: "Unknown Error"}}
 end
+
+  # "features" => %{
+  #   "Building" => nil,
+  #   "Community" => nil,
+  #   "Exterior" => nil,
+  #   "Fireplace" => nil,
+  #   "Interior" => ["Entrance Foyer", "Great Room", "Walk-In Closet(s)"],
+  #   "Lot" => nil,
+  #   "PatioAndPorch" => nil,
+  #   "Pool" => nil,
+  #   "Spa" => nil
+  # },

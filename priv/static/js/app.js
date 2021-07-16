@@ -19251,6 +19251,124 @@ var ExcyteParagraph = _tiptap_extension_paragraph__WEBPACK_IMPORTED_MODULE_2__.d
 
 /***/ }),
 
+/***/ "./js/extensions/showcase_gallery.js":
+/*!*******************************************!*\
+  !*** ./js/extensions/showcase_gallery.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
+  name: 'showcaseGallery',
+  group: 'block',
+  content: 'block+',
+  addAttributes: function addAttributes() {
+    return {
+      images: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            images: element.getAttribute('data-media-json')
+          };
+        }
+      },
+      id: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            id: element.getAttribute('data-listing-id')
+          };
+        }
+      }
+    };
+  },
+  parseHTML: function parseHTML() {
+    return [{
+      tag: 'div[data-type="showcaseGallery"]'
+    }];
+  },
+  renderHTML: function renderHTML(_ref) {
+    var HTMLAttributes = _ref.HTMLAttributes;
+    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes, {
+      'data-type': 'showcaseGallery'
+    }), 0];
+  },
+  addNodeView: function addNodeView() {
+    return function (_ref2) {
+      var editor = _ref2.editor,
+          node = _ref2.node,
+          getPos = _ref2.getPos,
+          HTMLAttributes = _ref2.HTMLAttributes,
+          decorations = _ref2.decorations,
+          extension = _ref2.extension;
+
+      if (HTMLAttributes.images === null) {
+        return true;
+      }
+
+      var images = JSON.parse(HTMLAttributes.images);
+      var id = HTMLAttributes.id;
+      var dom = document.createElement('div');
+      var main_photo = document.createElement('div');
+      var gallery_preview = document.createElement('div');
+      dom.classList.add("showcase-gallery");
+      main_photo.classList.add("main-photo");
+      main_photo.style.backgroundImage = "url(".concat(images[0].media_url, ")");
+      dom.append(main_photo);
+      var init = images.map(function (imag, idx) {
+        var link = document.createElement('a');
+        link.setAttribute("href", imag.media_url);
+        link.setAttribute("data-gallery", "gallery_".concat(id));
+
+        if (imag.short_description) {
+          link.setAttribute("data-description", imag.short_description);
+        }
+
+        link.classList.add("glightbox", "preview");
+
+        if (idx === 0) {
+          var main = document.createElement('div');
+          main.classList.add('hidden');
+          main.append(link);
+          dom.append(main);
+        } else if (idx > 0 && idx < 4) {
+          link.style.backgroundImage = "url(".concat(images[idx].media_url, ")");
+          dom.append(link);
+        } else {
+          var hiddenItem = document.createElement('div');
+          hiddenItem.classList.add('hidden');
+          hiddenItem.append(link);
+          dom.append(hiddenItem);
+        }
+      });
+      return {
+        dom: dom
+      };
+    };
+  },
+  onFocus: function onFocus(_ref3) {
+    var editor = _ref3.editor,
+        event = _ref3.event;
+    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true,
+      selector: ".glightbox"
+    });
+  }
+}));
+
+/***/ }),
+
 /***/ "./js/extensions/simple_gallery.js":
 /*!*****************************************!*\
   !*** ./js/extensions/simple_gallery.js ***!
@@ -19801,11 +19919,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
 /* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
 /* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
-/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
-/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_26__);
+/* harmony import */ var _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/showcase_gallery */ "./js/extensions/showcase_gallery.js");
+/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
+/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_27__);
+
 
 
 
@@ -19846,7 +19966,7 @@ window.currentPreview = function (content) {
       var preview = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
         editable: false,
-        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__.default],
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_25__.default],
         content: this.content
       });
       this.preview = preview;
@@ -19864,11 +19984,11 @@ var InitPreview = {
       setTimeout(function () {
         window.previewHook.currentPreview.preview.commands.setContent(content);
         var rule = "div.preview-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
-        rule += "div.preview-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
+        rule += "div.preview-wrapper .header-color {color: ".concat(theme.header_text, ";}");
         rule += "div.preview-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.preview-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
-        rule += "div.preview-wrapper tr {border-bottom-color: ".concat(theme.accent, "}");
-        rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
+        rule += "div.preview-wrapper th {border-bottom-color: ".concat(theme.accent, "}");
+        rule += "div.preview-wrapper .muted-color {color: ".concat(theme.muted_text, "; border-color: ").concat(theme.muted_text, ";}");
         rule += "div.preview-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);
       }, 500);
@@ -20114,11 +20234,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
 /* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
 /* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
-/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
-/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_26__);
+/* harmony import */ var _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/showcase_gallery */ "./js/extensions/showcase_gallery.js");
+/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
+/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_27__);
+
 
 
 
@@ -20158,7 +20280,7 @@ window.currentViewer = function (content) {
       var viewer = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
         editable: false,
-        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__.default],
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_18__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_21__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_19__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_25__.default],
         content: this.content
       });
       this.viewer = viewer;
@@ -20176,10 +20298,10 @@ var InitViewer = {
       setTimeout(function () {
         window.viewerHook.currentViewer.viewer.commands.setContent(content);
         var rule = "div.viewer-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
-        rule += "div.viewer-wrapper .header-color {color: ".concat(theme.sub_header_text, "}");
+        rule += "div.viewer-wrapper .header-color {color: ".concat(theme.header_text, "}");
         rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
         rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
-        rule += "div.viewer-wrapper tr {border-bottom-color: ".concat(theme.accent, "}");
+        rule += "div.viewer-wrapper th {border-bottom-color: ".concat(theme.accent, "}");
         rule += "div.viewer-wrapper .muted-color {color: ".concat(theme.muted_text, "}");
         rule += "div.viewer-wrapper mark {background-color: ".concat(theme.highlight_background, "; color: ").concat(theme.highlight_text, "}");
         addCss(rule);

@@ -3,7 +3,9 @@ defmodule ExcyteWeb.Helpers.Templates do
   import Excyte.Utils.Methods
   use Timex
   import Number.{Delimit}
-  alias Excyte.{Activities}
+  alias Excyte.{Activities, Mls.ProcessListings}
+  alias ExcyteWeb.{Helpers.Utilities}
+
 
   def agent_profile(%{agent_profile: ap}) do
     """
@@ -246,12 +248,194 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def showcase(%{insight: ins}) do
+    # IO.inspect(ins["content"]["listings"], label: "LST", limit: :infinity)
+    listing =
+      case ProcessListings.process_init({:ok, %{listings: ins["content"]["listings"]}}, nil) do
+        {:ok, res} ->
+          # IO.inspect(res, label: "LST", limit: :infinity)
+          Utilities.format_atom_json(hd(res.listings))
+        {:error, err} -> IO.inspect(err)
+      end
+      IO.inspect(listing, label: "LST-2", limit: :infinity)
+    media = Jason.encode!(listing["media"])
     """
-      <p>Welcome to the showcase</p>
+      <struct class="section" id="showcase">
+
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+          </svg>
+        <h1 class="muted-color">Showcase</h1>
+        <struct class="header flex flex-wrap">
+          <struct class="flex-1">
+            <h2 class="header-color mb-0">
+              {{ lst["street_number"] }} {{ lst["street_name"] }}
+            </h2>
+            <h4 class="sub-header-color">
+              {% if lst["city"] and lst["state"] %}
+                {{ lst["city"] }}, {{ lst["state"] }}
+              {% endif %}
+              {% if lst["zip"] %}
+                {{ lst["zip"] }}
+              {% endif %}
+            </h4>
+          </struct>
+          {% if lst["list_price"] %}
+            <struct class="mt-4 lg:mt-0">
+              <p class="font-bold text-right">List price</p>
+              <h2 class="ml-4"><mark>$#{number_to_delimited(listing["list_price"], precision: 0)}</mark></h2>
+            </struct>
+          {% endif %}
+        </struct>
+        <div data-type="showcaseGallery" contenteditable="false" data-media-json='#{media}' data-listing-id='{{ lst["listing_id"] }}' class="showcase-gallery"></div>
+        <struct class="data-grid mt-4 lg:mt-6">
+          <struct class="major left-right-wrapper">
+            <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
+            <struct class="data-grid-fifty">
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="label">Sqft</td>
+                    <td class="value">
+                      {% if lst["sqft"] %}
+                        #{number_to_delimited(listing["sqft"], precision: 0)}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Stories</td>
+                    <td class="value">
+                      {% if lst["stories"] %}
+                        {{ lst["stories"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Beds</td>
+                    <td class="value">
+                      {% if lst["beds"] %}
+                        {{ lst["beds"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Baths</td>
+                    <td class="value">
+                      {% if lst["baths"] and lst["baths"]["total"] %}
+                        {{ lst["baths"]["total"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Built</td>
+                    <td class="value">
+                      {% if lst["year_built"] %}
+                        {{ lst["year_built"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="label">Lot #{String.capitalize(listing["lotsize_preference"])}</td>
+                    <td class="value">
+                      {% if lst["lotsize_preference"] == "sqft" %}
+                        #{number_to_delimited(listing["lotsize_sqft"], precision: 0)}
+                      {% else %}
+                        #{Utilities.sqft_to_acres(listing["lotsize_sqft"])}
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Parking</td>
+                    <td class="value">
+                      {{ lst["parking"]["type"] }}
+                      {% if lst["parking"]["spaces"] == "N/A" %}
+                      {% else %}
+                        (#{listing["parking"]["spaces"]})
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Sub Type</td>
+                    <td class="value">
+                      {% if lst["property_sub_type"] %}
+                        {{ lst["property_sub_type"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Listing ID</td>
+                    <td class="value">
+                      {% if lst["listing_id"] %}
+                        {{ lst["listing_id"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label"></td>
+                    <td class="value"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </struct>
+            {% if lst["features"].size > 0 %}
+              <struct class="mt-6">
+                <h4 class="sub-header-color pb-1">Features</h4>
+                <struct class="check">
+                  {% for feat in lst["features"] %}
+                    <struct class="block">
+                      <p><strong>{{ feat["name"] }}: </strong>{{ feat["human"] }}</p>
+                    </struct>
+                  {% endfor %}
+                </struct>
+              </struct>
+            {% endif %}
+            {% if lst["layout_details"].size > 0 %}
+              <struct class="mt-6">
+                <h4 class="sub-header-color pb-1">Layout Details</h4>
+                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {% for ld in lst["layout_details"] %}
+                    <struct class="">
+                      <h4>{{ ld["room_name"] }}</h4>
+                      <ul>
+                        {% for attr in ld["values"] %}
+                          <li>{{ attr["name"] }} {{ attr["value"] }}</li>
+                        {% endfor %}
+                      </ul>
+                    </struct>
+                  {% endfor %}
+                </struct>
+              </struct>
+            {% endif %}
+          </struct>
+          <struct class="minor">
+            {% if lst["public_remarks"] %}
+              <h4 class="sub-header-color">About</h4>
+              <p>{{ lst["public_remarks"] }}</p>
+            {% endif %}
+          </struct>
+        </struct>
+      </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"sc" => ins}))
+      {:ok, template} -> to_string(Solid.render(template, %{"lst" => listing}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -388,6 +572,7 @@ defmodule ExcyteWeb.Helpers.Templates do
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
+
 
   defp summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps} ) do
     """

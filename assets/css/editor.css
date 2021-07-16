@@ -29,7 +29,7 @@ body {
   @apply focus:outline-none p-0 m-0;
 }
 
-/* blockquote {
+blockquote {
   border: 0;
   margin: 0;
   padding: 0;
@@ -64,7 +64,7 @@ blockquote p:first-child::before {
   left: -0.2em;
   text-shadow: none;
   z-index: -300;
-} */
+}
 
 a.fancy {
   color: #0e7490 !important;
@@ -76,26 +76,6 @@ a.fancy {
 .curve {
   shape-outside: circle();
 }
-
-/* p {
-  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 lg:leading-7;
-}
-
-h1 {
-  @apply md:mb-2 text-bgray-600 text-2xl md:text-3xl lg:text-4xl font-extrabold;
-}
-
-h2 {
-  @apply md:mb-2 text-bgray-800 text-xl md:text-2xl lg:text-3xl font-extrabold;
-}
-
-h3 {
-  @apply md:mb-2 text-bgray-800 text-lg md:text-xl lg:text-2xl font-extrabold;
-}
-
-h4 {
-  @apply md:mb-2 text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
-} */
 
 mark {
   @apply bg-yellow-200 px-1;
@@ -144,6 +124,26 @@ div.preview-wrapper {
   @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
 }
 
+p {
+  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 lg:leading-7;
+}
+
+h1 {
+  @apply md:mb-2 text-2xl md:text-3xl lg:text-4xl font-extrabold;
+}
+
+h2 {
+  @apply md:mb-2 text-xl md:text-2xl lg:text-3xl font-extrabold;
+}
+
+h3 {
+  @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
+}
+
+h4 {
+  @apply md:mb-2 text-base md:text-lg lg:text-xl font-extrabold;
+}
+
 div.preview-wrapper,
 div.viewer-wrapper {
   & .cover-wrapper {
@@ -173,14 +173,14 @@ div.viewer-wrapper {
   }
 
   & .section {
-    @apply w-full my-20 lg:my-36;
+    @apply w-full my-8 lg:my-16;
 
     & .data-grid {
       @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
     }
 
     & .data-grid-fifty {
-      @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+      @apply grid grid-cols-1 sm:grid-cols-2 gap-8;
     }
 
     & .minor {
@@ -223,9 +223,99 @@ div.viewer-wrapper {
       }
     }
 
-    & table {
-      & p {
+    & .showcase-gallery {
+      @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
+
+      /* height: 20rem; */
+
+      & .main-photo {
+        @apply col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 relative w-full pt-2/3 rounded bg-cover bg-center;
+      }
+
+      & .main-photo::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.25)
+      }
+
+      & .main-photo:hover::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      & a.preview {
+        @apply block h-28 relative rounded bg-cover bg-center lg:w-full lg:h-full;
+      }
+
+      & a.preview::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.25)
+      }
+
+      & a.preview:hover::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      & .check {
+        @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+      }
+
+      & img {
         @apply my-0;
+      }
+    }
+
+    & .left-right-wrapper {
+      & table {
+        @apply w-full;
+
+        & p {
+          @apply my-0;
+        }
+
+        & th {
+          @apply font-bold p-2 border-b-2;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & td:nth-child(odd) {
+          @apply px-2 py-1 text-right mr-2 w-1/2 text-base;
+        }
+
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold w-1/2;
+        }
       }
     }
   }

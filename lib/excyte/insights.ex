@@ -128,7 +128,7 @@ defmodule Excyte.Insights do
 
   def get_published_insight(uuid) do
     ins = Repo.get_by(Insight, %{uuid: uuid, published: true})
-          |> Repo.preload([:sections])
+          |> Repo.preload([:created_by])
     {:ok, ins}
   end
 

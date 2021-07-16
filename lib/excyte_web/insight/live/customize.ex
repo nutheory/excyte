@@ -80,6 +80,7 @@ defmodule ExcyteWeb.Insight.Customize do
     published =
       case Insights.update_insight(a.insight["uuid"], a.current_user.id, %{
           content: %{html: stitch_preview(a.sections)},
+          document_attributes: a.insight["document_attributes"],
           name: name,
           cover_photo_url: needs_cover_photo?(a.insight),
           published: true
@@ -146,7 +147,7 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def handle_event("select-video", %{"uuid" => uuid}, %{assigns: a} = socket) do
     send self(), {:create_video_section, Enum.find(a.assets, fn ast -> ast.uuid === uuid end)}
-    {:noreply, socket}
+    {:noreply, assign(socket, selected_tab: "upload", show_video_form: false)}
   end
 
   def handle_event("sort-sections", %{"sections" => [_|_] = sections}, %{assigns: a} = socket) do

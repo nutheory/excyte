@@ -565,14 +565,239 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def tour_stop(%{listing: lst}) do
+    destination_uri = URI.encode("#{lst["street_number"]} #{lst["street_name"]}, #{lst["city"]}, #{lst["state"]}")
+    address_uri = URI.encode("#{lst["city"]}, #{lst["state"]}, United States")
     media = Jason.encode!(lst["media"])
     """
-      <p>Welcome to the buyer tour</p>
-      <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' class="simple-gallery"></div>
+      <struct class="section" id="showcase">
+
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+          </svg>
+        <struct class="flex">
+          <h1 class="muted-color flex-1" x-on:click="{alert("boom")}">Tour Stop</h1>
+          <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Get Directions</a></h4>
+        </struct>
+        <struct class="header flex flex-wrap">
+          <struct class="flex-1">
+            <h2 class="header-color mb-0">
+              {{ lst["street_number"] }} {{ lst["street_name"] }}
+            </h2>
+            <h4 class="sub-header-color">
+              {% if lst["city"] and lst["state"] %}
+                {{ lst["city"] }}, {{ lst["state"] }}
+              {% endif %}
+              {% if lst["zip"] %}
+                {{ lst["zip"] }}
+              {% endif %}
+            </h4>
+          </struct>
+          {% if lst["list_price"] %}
+            <struct class="mt-4 lg:mt-0">
+              <p class="font-bold text-right">List price</p>
+              <h2 class="ml-4"><mark>$#{number_to_delimited(lst["list_price"], precision: 0)}</mark></h2>
+            </struct>
+          {% endif %}
+        </struct>
+        <div data-type="showcaseGallery" contenteditable="false" data-media-json='#{media}' data-listing-id='{{ lst["listing_id"] }}' class="showcase-gallery"></div>
+        <struct class="data-grid mt-4 lg:mt-6">
+          <struct class="major left-right-wrapper">
+            <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
+            <struct class="data-grid-fifty mb-6">
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="label">Sqft</td>
+                    <td class="value">
+                      {% if lst["sqft"] %}
+                        #{number_to_delimited(lst["sqft"], precision: 0)}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Stories</td>
+                    <td class="value">
+                      {% if lst["stories"] %}
+                        {{ lst["stories"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Beds</td>
+                    <td class="value">
+                      {% if lst["beds"] %}
+                        {{ lst["beds"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Baths</td>
+                    <td class="value">
+                      {% if lst["baths"] and lst["baths"]["total"] %}
+                        {{ lst["baths"]["total"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Built</td>
+                    <td class="value">
+                      {% if lst["year_built"] %}
+                        {{ lst["year_built"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <table>
+                <tbody>
+                  <tr>
+                    <td class="label">Lot #{String.capitalize(lst["lotsize_preference"])}</td>
+                    <td class="value">
+                      {% if lst["lotsize_preference"] == "sqft" %}
+                        #{number_to_delimited(lst["lotsize_sqft"], precision: 0)}
+                      {% else %}
+                        #{Utilities.sqft_to_acres(lst["lotsize_sqft"])}
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Parking</td>
+                    <td class="value">
+                      {{ lst["parking"]["type"] }}
+                      {% if lst["parking"]["spaces"] == "N/A" %}
+                      {% else %}
+                        (#{lst["parking"]["spaces"]})
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Sub Type</td>
+                    <td class="value">
+                      {% if lst["property_sub_type"] %}
+                        {{ lst["property_sub_type"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">Listing ID</td>
+                    <td class="value">
+                      {% if lst["listing_id"] %}
+                        {{ lst["listing_id"] }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="label">View on Map</td>
+                    <td class="value">
+                      {% if lst["coords"] and lst["coords"][0] %}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ lst["coords"][1] }}%2C{{ lst["coords"][0] }}">Click here</a>
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </struct>
+            {% if lst["features"].size > 0 %}
+              <collapsable class="mb-6" title="Features">
+                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {% for feat in lst["features"] %}
+                    <struct class="block">
+                      <p><strong>{{ feat["name"] }}: </strong>{{ feat["human"] }}</p>
+                    </struct>
+                  {% endfor %}
+                </struct>
+              </collapsable>
+            {% endif %}
+            {% if lst["layout_details"].size > 0 %}
+              <collapsable class="mb-6" title="Room Details">
+                <struct class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {% for ld in lst["layout_details"] %}
+                    <struct class="">
+                      <h4 class="mb-0 inline-block">{{ ld["room_name"] }}</h4>
+                      {% for attr in ld["values"] %}
+                        {% if attr["name"] == "Features" %}
+                          <p class="italic inline-block text-base ml-2">{{ attr["value"] }}</p>
+                        {% endif %}
+                      {% endfor %}
+                      <struct class="flex flex-wrap">
+                        {% for attr in ld["values"] %}
+                          {% if attr["name"] != "Features" %}
+                            <struct class="w-2/5 py-1">{{ attr["name"] }} <strong>{{ attr["value"] }}</strong></struct>
+                          {% endif %}
+                        {% endfor %}
+                      </struct>
+                    </struct>
+                  {% endfor %}
+                </struct>
+              </collapsable>
+            {% endif %}
+          </struct>
+          <struct class="minor">
+            {% if lst["public_remarks"] %}
+              <h4 class="sub-header-color">About</h4>
+              <p>{{ lst["public_remarks"] }}</p>
+            {% endif %}
+            {% if lst["walkscore"] %}
+              <h4 class="text-right">Walkscrore: {{ lst["walkscore"] }}</h4>
+            {% endif %}
+            <a href="https://foursquare.com/explore?mode=url&near=#{address_uri}" class="button text-center">Explore the Community</a>
+            {% if lst["association"].size > 0 %}
+              <h4 class="sub-header-color mt-8 border-b accent-color pb-1">Association</h4>
+              {% for assoc in lst["association"] %}
+                <struct class="flex w-full py-1 border-b muted-border">
+                  <struct class="flex-1">{{ assoc["name"] }}</struct>
+                  <struct class="font-bold w-1/2">{{ assoc["human"] }}</struct>
+                </struct>
+              {% endfor %}
+            {% endif %}
+            {% if lst["tax_year"] or lst["tax_assessed_value"] or lst["tax_annual_amount"] or lst["tax_exemptions"] %}
+              <h4 class="sub-header-color mt-8">Tax Info
+                {% if lst["tax_year"] %}
+                  ({{ lst["tax_year"] }})
+                {% endif %}
+              </h4>
+              {% if lst["tax_annual_amount"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Annual amount</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_annual_amount"] }}</struct>
+                </struct>
+              {% endif %}
+              {% if lst["tax_assessed_value"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Assessed Value</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_assessed_value"] }}</struct>
+                </struct>
+              {% endif %}
+              {% if lst["tax_exemptions"] %}
+                <struct class="flex w-full py-1">
+                  <struct class="flex-1">Exemptions</struct>
+                  <struct class="font-bold w-1/2">{{ lst["tax_exemptions"] }}</struct>
+                </struct>
+              {% endif %}
+            {% endif %}
+          </struct>
+        </struct>
+      </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"bt" => lst}))
+      {:ok, template} -> to_string(Solid.render(template, %{"lst" => lst}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end

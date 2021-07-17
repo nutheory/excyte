@@ -13044,8 +13044,6 @@ __webpack_require__.r(__webpack_exports__);
         }
       };
 
-      console.log("HTMLAttributes.type", HTMLAttributes);
-
       if (HTMLAttributes.type === 'url') {
         button.setAttribute('x-on:click', "window.open('tel:".concat(HTMLAttributes.content, "', '_self')"));
         label.innerHTML = HTMLAttributes.name;
@@ -13147,6 +13145,12 @@ var ExcyteLink = _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_2__.default.ext
             "class": element.getAttribute('class')
           };
         }
+      },
+      href: {
+        "default": null
+      },
+      target: {
+        "default": this.options.HTMLAttributes.target
       }
     };
   }

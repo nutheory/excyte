@@ -92,7 +92,7 @@ export default Node.create({
           return newStr
         }
       }
-      console.log("HTMLAttributes.type", HTMLAttributes)
+
       if (HTMLAttributes.type === 'url') {
         button.setAttribute('x-on:click', `window.open('tel:${HTMLAttributes.content}', '_self')`)
         label.innerHTML = HTMLAttributes.name

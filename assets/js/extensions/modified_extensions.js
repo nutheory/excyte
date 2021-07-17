@@ -48,6 +48,12 @@ export const ExcyteLink = Link.extend({
           }
         }
       },
+      href: {
+        default: null,
+      },
+      target: {
+        default: this.options.HTMLAttributes.target,
+      },
     }
   },
 })

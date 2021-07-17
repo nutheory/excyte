@@ -7,7 +7,6 @@ import HardBreak from '@tiptap/extension-hard-break'
 import Highlight from '@tiptap/extension-highlight'
 import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
-import Link from '@tiptap/extension-link'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
 import Paragraph from '@tiptap/extension-paragraph'
@@ -21,12 +20,15 @@ import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { 
   ExcyteHeading,
-  ExcyteParagraph 
+  ExcyteParagraph,
+  ExcyteLink, 
 } from './extensions/modified_extensions'
 import SimpleGallery from './extensions/simple_gallery'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
 import Comparable from './extensions/comparable'
+import Collapsable from './extensions/collapsable'
+import Contact from './extensions/contact'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -57,7 +59,7 @@ window.currentViewer = function (content) {
           HardBreak,
           Text,
           ExcyteParagraph,
-          Link,
+          ExcyteLink,
           Image,
           Highlight,
           Underline, 
@@ -66,6 +68,8 @@ window.currentViewer = function (content) {
           TableHeader,
           TableRow,
           TableCell,
+          Contact,
+          Collapsable,
           SimpleGallery,
           ShowcaseGallery,
           SimpleVideo,
@@ -96,6 +100,7 @@ export const InitViewer = {
             rule += `div.viewer-wrapper .muted-color {color: ${theme.muted_text}}`
             rule += `div.viewer-wrapper .muted-border {border-color: ${theme.muted_text};}`
             rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+            rule += `div.preview-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.muted_text}; font-size: 5.6rem; z-index: -1;}`
         addCss(rule)
       }, 500)
     })

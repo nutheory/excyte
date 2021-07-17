@@ -3,7 +3,17 @@ defmodule Excyte.Utils.Contact do
   import Ecto.Changeset
 
   @timestamps_opts [type: :utc_datetime]
-  @derive {Jason.Encoder, only: [:type, :name, :content, :textable]}
+  # @derive {Jason.Encoder, only: [:type, :name, :content, :textable]}
+  defimpl Jason.Encoder, for: [Excyte.Utils.Contact] do
+    def encode(struct, opts) do
+      Enum.reduce(Map.from_struct(struct), %{}, fn
+        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({:__meta__, _}, acc) -> acc
+        ({k, v}, acc) -> Map.put(acc, k, v)
+      end)
+      |> Jason.Encode.map(opts)
+    end
+  end
 
   embedded_schema do
     field :temp_id, :string, virtual: true

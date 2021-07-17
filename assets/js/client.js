@@ -5,11 +5,18 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {InitViewer} from "./viewer"
+import {setupSizing} from "./mobile_sizing"
 import topbar from "topbar"
 
 let Hooks = {}
 
 Hooks.InitViewer = InitViewer
+
+setupSizing()
+
+window.addEventListener("resize", function(){
+  setupSizing()
+})
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {

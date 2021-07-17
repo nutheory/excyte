@@ -24,6 +24,7 @@ import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {InitPreview} from "./preview"
 import {InitViewer} from "./viewer"
+import {setupSizing} from "./mobile_sizing"
 import {MuxUploader} from "./mux_uploader"
 import {InitCheckout} from "./checkout"
 import {AutocompleteLocation} from "./location"
@@ -70,6 +71,11 @@ Hooks.CopyToClipboard = {
   }
 }
 
+setupSizing()
+
+window.addEventListener("resize", function(){
+  setupSizing()
+})
 
 Uploaders.S3 = function(entries, onViewError){
   entries.forEach(entry => {

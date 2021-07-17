@@ -8,67 +8,94 @@ defmodule ExcyteWeb.Helpers.Templates do
 
 
   def agent_profile(%{agent_profile: ap}) do
+    profile = Excyte.Utils.Methods.stringify_keys(ap)
     """
-      <struct class="section agent" id="agent_profile">
+      <struct class="section agent max-w-screen-lg w-full lg:w-4/5" id="agent_profile">
         <h1 class="muted-color">Agent profile</h1>
         <struct class="data-grid">
           <struct class="minor">
             {% if agent["photo_url"] %}
               <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
             {% endif %}
+            {% if agent["contacts"].size > 0 %}
+              <struct class="mt-6">
+                <h4 class="sub-header-color">Contact</h4>
+                {% for cnt in agent["contacts"] %}
+                  <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
+                {% endfor %}
+              </struct>
+            {% endif %}
           </struct>
           <struct class="major">
             <struct class="">
-              <h2>{{ agent["name"] }}</h2>
-              <h3>{{ agent["tagline"] }}</h3>
+              {% if agent["name"] %}
+                <h2>{{ agent["name"] }}</h2>
+              {% endif %}
+              {% if agent["tagline"] %}
+                <struct class="m-6">
+                  <blockquote>{{ agent["tagline"] }}</blockquote>
+                </struct>
+              {% endif %}
             </struct>
-            <p>{{ agent["bio"] }}</p>
+            {% if agent["bio"] %}
+              <p class="mt-6">{{ agent["bio"] }}</p>
+            {% endif %}
+            <struct class="mt-6">
+              {% if agent["company_name"] %}
+                <p><strong>{{ agent["company_name"] }}</strong></p>
+              {% endif %}
+              {% if agent["job_title"] %}
+                <p><i>{{ agent["job_title"] }}</i></p>
+              {% endif %}
+            </struct>
           </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"agent" => ap}))
+      {:ok, template} -> to_string(Solid.render(template, %{"agent" => profile}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
 
   def brokerage_profile(%{brokerage: brk}) do
+    profile = Excyte.Utils.Methods.stringify_keys(brk)
     """
-      <struct class="section" id="brokerage">
+      <struct class="section max-w-screen-lg w-full lg:w-4/5" id="brokerage">
         <h1 class="muted-color">About {{ brokerage["company_name"]}}</h1>
-        {% if brokerage["tagline"] %}
-          <blockquote>{{ brokerage["tagline"] }}</blockquote>
-        {% endif %}
-        {% if brokerage["description"] %}
-          <p>{{ brokerage["description"] }}</p>
-        {% endif %}
-        <struct class="data-grid-fifty">
-          {% if brokerage["logo_url"] or brokerage["addresses"].size > 0 %}
-            <struct class="fifty">
-              {% if brokerage["logo_url"] %}
-                <img src="{{ brokerage["logo_url"] }}" alt="logo" />
-              {% endif %}
-            </struct>
-          {% endif %}
-          <struct class="fifty">
-            {% for address in brokerage["addresses"] %}
-              <struct class="mt-4">
-                <h4>{{ address["address_one"] }}</h4>
-                <p>
-                  {{ address["address_two"] }}<br />
-                  {{ address["city"] }}, {{ address["state"] }}, {{ address["zip"] }}<br />
-                </p>
+        <struct class="data-grid">
+          <struct class="major">
+            {% if brokerage["tagline"] %}
+              <struct class="m-6">
+                <blockquote>{{ brokerage["tagline"] }}</blockquote>
               </struct>
-            {% endfor %}
+            {% endif %}
+            {% if brokerage["logo_url"] %}
+              <struct class="w-4/5 mx-auto">
+                <img src="{{ brokerage["logo_url"] }}" alt="logo" />
+              </struct>
+            {% endif %}
+            {% if brokerage["description"] %}
+              <p class="mt-6">{{ brokerage["description"] }}</p>
+            {% endif %}
+          </struct>
+          <struct class="minor">
+            {% if brokerage["contacts"] or brokerage["addresses"] %}
+              <h4 class="sub-header-color">Contact</h4>
+              {% for cnt in brokerage["contacts"] %}
+                <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
+              {% endfor %}
+              {% for address in brokerage["addresses"] %}
+              {% endfor %}
+            {% endif %}
           </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"brokerage" => brk}))
+      {:ok, template} -> to_string(Solid.render(template, %{"brokerage" => profile}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -256,7 +283,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           Utilities.format_atom_json(hd(res.listings))
         {:error, err} -> IO.inspect(err)
       end
-      IO.inspect(listing, label: "LST-2", limit: :infinity)
+    address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"])
     """
       <struct class="section" id="showcase">
@@ -290,7 +317,7 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid mt-4 lg:mt-6">
           <struct class="major left-right-wrapper">
             <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
-            <struct class="data-grid-fifty">
+            <struct class="data-grid-fifty mb-6">
               <table>
                 <tbody>
                   <tr>
@@ -401,8 +428,7 @@ defmodule ExcyteWeb.Helpers.Templates do
               </table>
             </struct>
             {% if lst["features"].size > 0 %}
-              <struct class="mt-12">
-                <h3 class="sub-header-color pb-1">Features</h4>
+              <collapsable class="mb-6" title="Features">
                 <struct class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {% for feat in lst["features"] %}
                     <struct class="block">
@@ -410,11 +436,10 @@ defmodule ExcyteWeb.Helpers.Templates do
                     </struct>
                   {% endfor %}
                 </struct>
-              </struct>
+              </collapsable>
             {% endif %}
             {% if lst["layout_details"].size > 0 %}
-              <struct class="mt-12">
-                <h3 class="sub-header-color pb-1">Room Details</h4>
+              <collapsable class="mb-6" title="Room Details">
                 <struct class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {% for ld in lst["layout_details"] %}
                     <struct class="">
@@ -434,7 +459,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                     </struct>
                   {% endfor %}
                 </struct>
-              </struct>
+              </collapsable>
             {% endif %}
           </struct>
           <struct class="minor">
@@ -442,6 +467,10 @@ defmodule ExcyteWeb.Helpers.Templates do
               <h4 class="sub-header-color">About</h4>
               <p>{{ lst["public_remarks"] }}</p>
             {% endif %}
+            {% if lst["walkscore"] %}
+              <h4 class="text-right">Walkscrore: {{ lst["walkscore"] }}</h4>
+            {% endif %}
+            <a href="https://foursquare.com/explore?mode=url&near=#{address_uri}" class="button text-center">Explore the Community</a>
             {% if lst["association"].size > 0 %}
               <h4 class="sub-header-color mt-8 border-b accent-color pb-1">Association</h4>
               {% for assoc in lst["association"] %}

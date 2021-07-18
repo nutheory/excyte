@@ -71,7 +71,6 @@ export default Node.create({
           link.append(icon)
           dom.append(link)
         } else if (idx > 0 && idx < 4) {
-          const icon = document.createElement('div')
           dom.append(link)
         } else {
           const hiddenItem = document.createElement('div')

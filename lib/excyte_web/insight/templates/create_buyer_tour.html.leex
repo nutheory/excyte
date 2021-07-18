@@ -171,10 +171,6 @@
       </div>
       <%= f = form_for :commit, "#", [phx_change: :update_commit, phx_submit: :create_tour] %>
         <div class="w-full flex flex-wrap mt-4">
-          <div class="w-full md:flex-1">
-            <%= label f, :listing_ids, "Listing ID's" %>
-            <%= textarea f, :listing_ids, class: "textarea h-12", value: @listing_ids %>
-          </div>
           <div class="flex md:w-full w-32 mt-4">
             <div class="mr-4 w-32">
               <%= label f, :distance, "Distance (mi)" %>

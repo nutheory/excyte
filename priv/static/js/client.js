@@ -13247,8 +13247,6 @@ __webpack_require__.r(__webpack_exports__);
           link.append(icon);
           dom.append(link);
         } else if (idx > 0 && idx < 4) {
-          var _icon = document.createElement('div');
-
           dom.append(link);
         } else {
           var hiddenItem = document.createElement('div');
@@ -13306,6 +13304,14 @@ __webpack_require__.r(__webpack_exports__);
             images: element.getAttribute('data-media-json')
           };
         }
+      },
+      id: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            id: element.getAttribute('data-listing-id')
+          };
+        }
       }
     };
   },
@@ -13334,37 +13340,37 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var images = JSON.parse(HTMLAttributes.images);
+      var id = HTMLAttributes.id;
       var dom = document.createElement('div');
-      dom.classList.add("simple-gallery", "w-full");
+      var icon = document.createElement('div');
+      icon.classList.add("icon");
+      icon.innerHTML = "<svg class=\"w-5 h-5 text-white\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path>\n        </svg>";
       var init = images.map(function (imag, idx) {
         var link = document.createElement('a');
         link.setAttribute("href", imag.media_url);
-        link.setAttribute("data-gallery", "gallery");
-        link.setAttribute("data-description", imag.short_description);
-        link.classList.add("glightbox");
-        var img = document.createElement('img');
-        img.setAttribute("src", imag.media_url);
-        img.setAttribute("alt", "image");
+        link.setAttribute("data-gallery", "gallery_".concat(id));
+
+        if (imag.short_description) {
+          link.setAttribute("data-description", imag.short_description);
+        }
+
+        link.classList.add("glightbox", "preview");
+        link.style.backgroundImage = "url(".concat(images[idx].media_url, ")");
 
         if (idx === 0) {
-          var main = document.createElement('div');
-          main.classList.add('col-span-4');
-          link.append(img);
-          main.append(link);
-          dom.append(main);
+          link.classList.add('main-photo');
+          link.append(icon);
+          dom.append(link);
         } else if (idx > 0 && idx < 5) {
-          var gridItem = document.createElement('div');
-          link.append(img);
-          gridItem.append(link);
-          dom.append(gridItem);
+          dom.append(link);
         } else {
           var hiddenItem = document.createElement('div');
           hiddenItem.classList.add('hidden');
-          link.append(img);
           hiddenItem.append(link);
           dom.append(hiddenItem);
         }
       });
+      dom.classList.add("simple-gallery", "w-full");
       return {
         dom: dom
       };

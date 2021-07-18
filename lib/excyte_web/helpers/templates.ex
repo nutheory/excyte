@@ -109,90 +109,215 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
   end
 
-  def comparable(%{listing: lst}) do
-    media = Jason.encode!(lst["media"])
+  def comparable(%{listing: listing}) do
+    media = Jason.encode!(listing["media"])
     """
-      <struct class="section comp" id="comparable_#{lst["listing_key"]}">
+      <struct class="section comp" id="comparable_#{listing["listing_key"]}">
         <h1 class="muted-color">Comparable Listing</h1>
-        <blockquote>#{summarize_sale_info(lst)}</blockquote>
-        {% if listing["street_number"] or listing["street_name"] %}
-          <h3 class="header-color text-right">{{ listing["street_number"] }} {{ listing["street_name"] }}</h3>
-        {% endif %}
         <struct class="data-grid">
-          <struct class="minor">
-            <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' class="simple-gallery"></div>
-            <struct class="mt-4">
-              {% if listing["city"] %}
-                <p>City of <span class="sub-header-color"><strong>{{ listing["city"] }}</strong></span></p>
-              {% endif %}
-              {% if listing["excyte_price"] %}
-                <h4>Adjusted value of listing</h4>
-                <h3>$#{number_to_delimited(lst["excyte_price"], precision: 0)}</h3>
+          <struct class="major left-right-wrapper">
+            {% if listing["street_number"] or listing["street_name"] %}
+              <h3 class="header-color mb-0">{{ listing["street_number"] }} {{ listing["street_name"] }}</h3>
+            {% endif %}
+            {% if listing["city"] %}
+              <h4>{{ listing["city"] }}</h4>
+            {% endif %}
+            <struct class="py-6 lg:py-10">
+              <blockquote>#{summarize_sale_info(listing)}</blockquote>
+            </struct>
+            <struct class="">
+              <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
+              <struct class="data-grid-fifty mb-6">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td class="label">Sqft</td>
+                      <td class="value">
+                        {% if listing["sqft"] %}
+                          #{number_to_delimited(listing["sqft"], precision: 0)}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Stories</td>
+                      <td class="value">
+                        {% if listing["stories"] %}
+                          {{ listing["stories"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Beds</td>
+                      <td class="value">
+                        {% if listing["beds"] %}
+                          {{ listing["beds"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Baths</td>
+                      <td class="value">
+                        {% if listing["baths"] and listing["baths"]["total"] %}
+                          {{ listing["baths"]["total"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Built</td>
+                      <td class="value">
+                        {% if listing["year_built"] %}
+                          {{ listing["year_built"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td class="label">Lot #{String.capitalize(listing["lotsize_preference"])}</td>
+                      <td class="value">
+                        {% if listing["lotsize_preference"] == "sqft" %}
+                          #{number_to_delimited(listing["lotsize_sqft"], precision: 0)}
+                        {% else %}
+                          #{Utilities.sqft_to_acres(listing["lotsize_sqft"])}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Parking</td>
+                      <td class="value">
+                        {{ listing["parking"]["type"] }}
+                        {% if listing["parking"]["spaces"] == "N/A" %}
+                        {% else %}
+                          (#{listing["parking"]["spaces"]})
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Sub Type</td>
+                      <td class="value">
+                        {% if listing["property_sub_type"] %}
+                          {{ listing["property_sub_type"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Listing ID</td>
+                      <td class="value">
+                        {% if listing["listing_id"] %}
+                          {{ listing["listing_id"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">View on Map</td>
+                      <td class="value">
+                        {% if listing["coords"] and listing["coords"][0] %}
+                          <a href="https://www.google.com/maps/search/?api=1&query={{ listing["coords"][1] }}%2C{{ listing["coords"][0] }}">Click here</a>
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </struct>
+            </struct>
+            <struct class="">
+              {% if listing["custom_adjustments"] %}
+                <h4 class="sub-header-color">Adjustment considerations</h4>
+                <table>
+                  <tbody>
+                    {% for ca in listing["custom_adjustments"] %}
+                      <tr>
+                        <td class="label">{{ ca.name }}</td>
+                        <td class="value">{{ ca.value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               {% endif %}
             </struct>
+            <struct class="total">
+              <h2></h2>
+            </struct>
           </struct>
-          <struct class="major">
-            <div data-type="compDetails">
-              <p class="null-p">#{lst["public_remarks"]}</p>
-              <div class="tableWrapper accent-color">
-                <table>
+          <struct class="minor">
+            <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' data-listing-id='{{ listing["listing_id"] }}' class="simple-gallery"></div>
+            <h4 class="sub-header-color mt-4">Comparison Summary</h4>
+            <struct class="summary-table">
+              <table>
+                <tr>
+                  <th></th>
+                  <th>Listing</th>
+                  <th>Difference</th>
+                </tr>
+                {% if listing["adjustments"]["sqft"] %}
                   <tr>
-                    <th></th>
-                    <th>Listing</th>
-                    <th>Difference</th>
+                    <td>Sqft</td>
+                    <td>{{ listing["sqft"] }}</td>
+                    <td>{{ listing["adjustments"]["sqft"]["difference"] }}</td>
                   </tr>
-                  {% if listing["adjustments"]["sqft"] %}
-                    <tr>
-                      <td>Sqft</td>
-                      <td>{{ listing["sqft"] }}</td>
-                      <td>{{ listing["adjustments"]["sqft"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if listing["adjustments"]["lotsize"] %}
-                    <tr>
-                      <td>Lotsize</td>
-                      <td>{{ listing["lotsize_sqft"] }}</td>
-                      <td>{{ listing["adjustments"]["lotsize"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if listing["adjustments"]["beds"] %}
-                    <tr>
-                      <td>Beds</td>
-                      <td>{{ listing["beds"] }}</td>
-                      <td>{{ listing["adjustments"]["beds"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if listing["adjustments"]["baths"] %}
-                    <tr>
-                      <td>Baths</td>
-                      <td>{{ listing["baths"]["total"] }}</td>
-                      <td>{{ listing["adjustments"]["baths"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if listing["adjustments"]["stories"] %}
-                    <tr>
-                      <td>Stories</td>
-                      <td>{{ listing["stories"] }}</td>
-                      <td>{{ listing["adjustments"]["stories"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                  {% if listing["adjustments"]["year_built"] %}
-                    <tr>
-                      <td>Year built</td>
-                      <td>{{ listing["year_built"] }}</td>
-                      <td>{{ listing["adjustments"]["year_built"]["difference"] }}</td>
-                    </tr>
-                  {% endif %}
-                </table>
-              </div>
-            </div>
+                {% endif %}
+                {% if listing["adjustments"]["lotsize"] %}
+                  <tr>
+                    <td>Lotsize</td>
+                    <td>{{ listing["lotsize_sqft"] }}</td>
+                    <td>{{ listing["adjustments"]["lotsize"]["difference"] }}</td>
+                  </tr>
+                {% endif %}
+                {% if listing["adjustments"]["beds"] %}
+                  <tr>
+                    <td>Beds</td>
+                    <td>{{ listing["beds"] }}</td>
+                    <td>{{ listing["adjustments"]["beds"]["difference"] }}</td>
+                  </tr>
+                {% endif %}
+                {% if listing["adjustments"]["baths"] %}
+                  <tr>
+                    <td>Baths</td>
+                    <td>{{ listing["baths"]["total"] }}</td>
+                    <td>{{ listing["adjustments"]["baths"]["difference"] }}</td>
+                  </tr>
+                {% endif %}
+                {% if listing["adjustments"]["stories"] %}
+                  <tr>
+                    <td>Stories</td>
+                    <td>{{ listing["stories"] }}</td>
+                    <td>{{ listing["adjustments"]["stories"]["difference"] }}</td>
+                  </tr>
+                {% endif %}
+                {% if listing["adjustments"]["year_built"] %}
+                  <tr>
+                    <td>Year built</td>
+                    <td>{{ listing["year_built"] }}</td>
+                    <td>{{ listing["adjustments"]["year_built"]["difference"] }}</td>
+                  </tr>
+                {% endif %}
+              </table>
+            </struct>
           </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"listing" => lst}))
+      {:ok, template} -> to_string(Solid.render(template, %{"listing" => listing}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -516,11 +641,10 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def subject(%{subject: sbj, insight: ins}) do
+  def subject(%{subject: subject, insight: ins}) do
     """
       <struct class="section subject" id="subject">
         <h1 class="muted-color">Subject property</h1>
-        <h3>Estimated value <mark>$#{number_to_delimited(sbj["est_price"], precision: 0)}</mark></h3>
         <struct class="data-grid">
           <struct class="major">
             <struct class="header">
@@ -531,29 +655,141 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% if subject["overview"] %}
               <p>{{ subject["overview"] }}</p>
             {% endif %}
-          </struct>
-          {% if subject["main_photo_url"] %}
-            <struct class="minor">
-              <img src="{{ subject["main_photo_url"] }}" alt="Subject home" />
+            <struct class="mt-6 subject-table">
+              <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
+              <struct class="data-grid-fifty mb-6">
+                <table>
+                  <tbody>
+                    <tr>
+                      <td class="label">Sqft</td>
+                      <td class="value">
+                        {% if subject["sqft"] %}
+                          #{number_to_delimited(subject["sqft"], precision: 0)}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Stories</td>
+                      <td class="value">
+                        {% if subject["stories"] %}
+                          {{ subject["stories"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Beds</td>
+                      <td class="value">
+                        {% if subject["beds"] %}
+                          {{ subject["beds"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Baths</td>
+                      <td class="value">
+                        {% if subject["baths"] and subject["baths"]["total"] %}
+                          {{ subject["baths"]["total"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Built</td>
+                      <td class="value">
+                        {% if subject["year_built"] %}
+                          {{ subject["year_built"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table>
+                  <tbody>
+                    <tr>
+                      <td class="label">Lot #{String.capitalize(subject["lotsize_preference"])}</td>
+                      <td class="value">
+                        {% if subject["lotsize_preference"] == "sqft" %}
+                          #{number_to_delimited(subject["lotsize_sqft"], precision: 0)}
+                        {% else %}
+                          #{Utilities.sqft_to_acres(subject["lotsize_sqft"])}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Parking</td>
+                      <td class="value">
+                        {{ subject["parking"]["type"] }}
+                        {% if subject["parking"]["spaces"] == "N/A" %}
+                        {% else %}
+                          (#{subject["parking"]["spaces"]})
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Sub Type</td>
+                      <td class="value">
+                        {% if subject["property_sub_type"] %}
+                          {{ subject["property_sub_type"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">Listing ID</td>
+                      <td class="value">
+                        {% if subject["subject_id"] %}
+                          {{ subject["subject_id"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="label">View on Map</td>
+                      <td class="value">
+                        {% if subject["coords"] and subject["coords"][0] %}
+                          <a href="https://www.google.com/maps/search/?api=1&query={{ subject["coords"][1] }}%2C{{ subject["coords"][0] }}">Click here</a>
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </struct>
             </struct>
-          {% endif %}
-        </struct>
-        <struct>
-          <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"])}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"])}</mark></h4>
+          </struct>
+          <struct class="minor">
+            {% if subject["main_photo_url"] %}
+              <img src="{{ subject["main_photo_url"] }}" alt="Subject home" />
+            {% endif %}
+          </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj}))
+      {:ok, template} -> to_string(Solid.render(template, %{"subject" => subject}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
 
-  def synopsis(%{subject: sbj}) do
+  def synopsis(%{subject: sbj, insight: ins}) do
+    IO.inspect(ins, label: "FULL")
     """
       <struct class="section" id="synopsis">
-        <struct class="body">
+        <struct>
+          <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"])}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"])}</mark></h4>
         </struct>
       </struct>
     """

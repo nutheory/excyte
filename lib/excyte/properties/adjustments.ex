@@ -49,7 +49,7 @@ defmodule Excyte.Properties.Adjustments do
   defp calculate_lotsize(subject, listing) do
     if Map.has_key?(subject, :lotsize_sqft) && Map.has_key?(listing, :lotsize_sqft) do
       %{
-        difference: subject.lotsize_sqft - listing.lotsize_sqft,
+        difference: trunc(subject.lotsize_sqft - listing.lotsize_sqft),
         to_text: to_text_lot(subject.lotsize_preference, subject.lotsize_sqft - listing.lotsize_sqft)
       }
     else
@@ -60,7 +60,7 @@ defmodule Excyte.Properties.Adjustments do
   defp calculate_sqft(subject, listing, listing_price) do
     if Map.has_key?(listing, :sqft) && Map.has_key?(subject, :sqft) && listing_price do
       %{
-        difference: subject.sqft - listing.sqft,
+        difference: trunc(subject.sqft - listing.sqft),
         price_per_sqft: round(listing_price/listing.sqft),
         adjustment: round((subject.sqft - listing.sqft) * (listing_price/listing.sqft))
       }

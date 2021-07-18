@@ -201,17 +201,71 @@ div.viewer-wrapper {
     }
 
     & .simple-gallery {
-      @apply grid grid-cols-4 gap-1;
+      @apply grid grid-cols-3 grid-rows-4 gap-1;
 
-      & img {
-        @apply my-0;
+      & .main-photo {
+        @apply relative col-span-3 row-span-3 w-full pt-2/3 rounded bg-cover bg-center;
+      }
+
+      & .main-photo::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.25)
+      }
+
+      & .main-photo:hover::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      & a.preview {
+        @apply block h-28 relative rounded bg-cover bg-center lg:w-full lg:h-full;
+
+        & .icon {
+          @apply bg-bgray-800 bg-opacity-70 rounded-bl rounded-tr absolute top-0 right-0 p-1.5;
+        }
+      }
+
+      & a.preview::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.25)
+      }
+
+      & a.preview:hover::before {
+        @apply rounded;
+
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0);
       }
     }
 
     & .showcase-gallery {
       @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
-
-      /* height: 20rem; */
 
       & .main-photo {
         @apply col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 relative w-full pt-2/3 rounded bg-cover bg-center;
@@ -275,6 +329,58 @@ div.viewer-wrapper {
 
       & img {
         @apply my-0;
+      }
+    }
+
+    & .subject-table {
+      & table {
+        @apply w-full;
+
+        & p {
+          @apply my-0;
+        }
+
+        & th {
+          @apply font-bold p-2 border-b text-left;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & td:nth-child(odd) {
+          @apply px-2 py-1 text-right mr-2 text-base;
+        }
+
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold;
+        }
+      }
+    }
+
+    & .summary-table {
+      & table {
+        @apply w-full;
+
+        & p {
+          @apply my-0;
+        }
+
+        & th {
+          @apply font-bold p-2 border-b text-left;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & td:nth-child(odd) {
+          @apply px-2 py-1 mr-2 text-base;
+        }
+
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold;
+        }
       }
     }
 

@@ -9,8 +9,8 @@ defmodule ExcyteWeb.Settings.Dashboard do
     cu = Accounts.get_user_by_session_token(token)
     {:ok, assign(socket,
       current_user: cu,
-      section: "profile",
-      return_to: "/settings?section=mls_auth"
+      section: "dash",
+      return_to: "/settings?section=dash"
     )}
   end
 

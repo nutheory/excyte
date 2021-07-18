@@ -810,7 +810,9 @@ defmodule ExcyteWeb.Helpers.Templates do
       description: a.description,
       video_url: a.video_url})
     """
-      <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset}' class=""></div>
+      <struct class="section">
+        <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset}'></div>
+      </struct>
     """
     |> Solid.parse()
     |> case do

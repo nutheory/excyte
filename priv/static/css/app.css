@@ -1957,19 +1957,19 @@ div.preview-wrapper a.button:hover, div.viewer-wrapper a.button:hover {
 }
 
 div.preview-wrapper .section, div.viewer-wrapper .section {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  width: 100%;
 }
 
 div.preview-wrapper .section, div.viewer-wrapper .section {
-  width: 100%;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 }
 
 @media (min-width: 1024px) {
 
 div.preview-wrapper .section, div.viewer-wrapper .section {
-    margin-top: 4rem;
-    margin-bottom: 4rem;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
 }
 
@@ -3920,18 +3920,6 @@ h4 {
   right: 0px;
 }
 
-.right-24 {
-  right: 6rem;
-}
-
-.top-4 {
-  top: 1rem;
-}
-
-.right-4 {
-  right: 1rem;
-}
-
 .top-1 {
   top: 0.25rem;
 }
@@ -3974,6 +3962,10 @@ h4 {
 
 .right-2 {
   right: 0.5rem;
+}
+
+.top-4 {
+  top: 1rem;
 }
 
 .left-4 {
@@ -4152,6 +4144,10 @@ h4 {
 
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
 }
 
 .mr-3 {
@@ -4406,8 +4402,8 @@ h4 {
   width: 2.25rem;
 }
 
-.w-48 {
-  width: 12rem;
+.w-60 {
+  width: 15rem;
 }
 
 .w-6 {
@@ -4430,8 +4426,8 @@ h4 {
   width: 6rem;
 }
 
-.w-3\/4 {
-  width: 75%;
+.w-40 {
+  width: 10rem;
 }
 
 .w-4\/5 {
@@ -4916,11 +4912,6 @@ h4 {
   background-color: rgba(190, 18, 60, var(--tw-bg-opacity));
 }
 
-.bg-teal-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(20, 184, 166, var(--tw-bg-opacity));
-}
-
 .bg-cyan-50 {
   --tw-bg-opacity: 1;
   background-color: rgba(236, 254, 255, var(--tw-bg-opacity));
@@ -5092,12 +5083,12 @@ h4 {
   padding: 0.5rem;
 }
 
-.p-1 {
-  padding: 0.25rem;
-}
-
 .p-3 {
   padding: 0.75rem;
+}
+
+.p-1 {
+  padding: 0.25rem;
 }
 
 .p-1\.5 {
@@ -5190,6 +5181,10 @@ h4 {
   padding-bottom: 0.5rem;
 }
 
+.pt-1 {
+  padding-top: 0.25rem;
+}
+
 .pt-16 {
   padding-top: 4rem;
 }
@@ -5202,12 +5197,12 @@ h4 {
   padding-left: 0.25rem;
 }
 
-.pt-1 {
-  padding-top: 0.25rem;
-}
-
 .pb-2\/3 {
   padding-bottom: 66.666667%;
+}
+
+.pb-1 {
+  padding-bottom: 0.25rem;
 }
 
 .pr-2 {
@@ -5264,10 +5259,6 @@ h4 {
 
 .pb-6 {
   padding-bottom: 1.5rem;
-}
-
-.pb-1 {
-  padding-bottom: 0.25rem;
 }
 
 .pl-6 {
@@ -5372,12 +5363,12 @@ h4 {
   line-height: 1.25rem;
 }
 
-.leading-4 {
-  line-height: 1rem;
-}
-
 .leading-none {
   line-height: 1;
+}
+
+.leading-4 {
+  line-height: 1rem;
 }
 
 .leading-3 {
@@ -5458,6 +5449,11 @@ h4 {
   color: rgba(51, 65, 85, var(--tw-text-opacity));
 }
 
+.text-red-800 {
+  --tw-text-opacity: 1;
+  color: rgba(159, 18, 57, var(--tw-text-opacity));
+}
+
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgba(107, 114, 128, var(--tw-text-opacity));
@@ -5501,11 +5497,6 @@ h4 {
 .text-red-300 {
   --tw-text-opacity: 1;
   color: rgba(253, 164, 175, var(--tw-text-opacity));
-}
-
-.text-red-800 {
-  --tw-text-opacity: 1;
-  color: rgba(159, 18, 57, var(--tw-text-opacity));
 }
 
 .text-blue-800 {
@@ -5780,14 +5771,6 @@ h4 {
 
 @media (min-width: 768px) {
 
-  .md\:right-32 {
-    right: 8rem;
-  }
-
-  .md\:top-2 {
-    top: 0.5rem;
-  }
-
   .md\:top-\[4\.5rem\] {
     top: 4.5rem;
   }
@@ -5821,6 +5804,10 @@ h4 {
     height: 7rem;
   }
 
+  .md\:h-24 {
+    height: 6rem;
+  }
+
   .md\:w-4\/5 {
     width: 80%;
   }
@@ -5831,6 +5818,10 @@ h4 {
 
   .md\:w-28 {
     width: 7rem;
+  }
+
+  .md\:w-40 {
+    width: 10rem;
   }
 
   .md\:w-full {
@@ -5932,6 +5923,30 @@ h4 {
 
   .lg\:mt-28 {
     margin-top: 7rem;
+  }
+
+  .lg\:mb-0 {
+    margin-bottom: 0px;
+  }
+
+  .lg\:ml-0 {
+    margin-left: 0px;
+  }
+
+  .lg\:mr-4 {
+    margin-right: 1rem;
+  }
+
+  .lg\:mt-0 {
+    margin-top: 0px;
+  }
+
+  .lg\:mr-0 {
+    margin-right: 0px;
+  }
+
+  .lg\:ml-4 {
+    margin-left: 1rem;
   }
 
   .lg\:mt-36 {
@@ -6050,6 +6065,10 @@ h4 {
     flex: 1 1 auto;
   }
 
+  .lg\:flex-1 {
+    flex: 1 1 0%;
+  }
+
   .lg\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -6068,6 +6087,10 @@ h4 {
 
   .lg\:border-4 {
     border-width: 4px;
+  }
+
+  .lg\:border-2 {
+    border-width: 2px;
   }
 
   .lg\:p-6 {
@@ -6114,6 +6137,10 @@ h4 {
     padding-top: 5rem;
   }
 
+  .lg\:pt-4 {
+    padding-top: 1rem;
+  }
+
   .lg\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
@@ -6151,6 +6178,10 @@ h4 {
 
   .xl\:w-72 {
     width: 18rem;
+  }
+
+  .xl\:w-4\/5 {
+    width: 80%;
   }
 
   .xl\:w-3\/4 {

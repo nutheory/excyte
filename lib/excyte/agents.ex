@@ -32,6 +32,7 @@ defmodule Excyte.Agents do
   end
 
   def update_profile(%Profile{} = profile, attrs, after_save \\ &{:ok, &1}) do
+
     profile
     |> Profile.changeset(attrs)
     |> Repo.update()

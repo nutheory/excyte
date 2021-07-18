@@ -8,16 +8,17 @@ defmodule ExcyteWeb.Agent.Profile do
   def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     profile = Agents.get_agent_profile!(cu.id)
-      cs = maybe_attempt_prefill?(profile, cu.current_mls)
-
+    cs = maybe_attempt_prefill?(profile, cu.current_mls)
     {:ok,
       assign(socket,
         changeset: cs,
         cu_id: cu.id,
         photo_url: profile.photo_url,
+        logo_url: profile.logo_url,
         return_to: rt,
         profile: profile)
-      |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
+      |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_photo/2)
+      |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_logo/2)}
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
@@ -34,6 +35,14 @@ defmodule ExcyteWeb.Agent.Profile do
       {:noreply, assign(socket, photo_url: a.profile.photo_url)}
     else
       {:noreply, assign(socket, photo_url: nil)}
+    end
+  end
+
+  def handle_event("toggle-logo-delete", _,  %{assigns: a} = socket) do
+    if a.logo_url === nil do
+      {:noreply, assign(socket, logo_url: a.profile.logo_url)}
+    else
+      {:noreply, assign(socket, logo_url: nil)}
     end
   end
 
@@ -69,6 +78,7 @@ defmodule ExcyteWeb.Agent.Profile do
 
   def consume_photo(socket, %Profile{} = profile) do
     consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end)
+    consume_uploaded_entries(socket, :logo, fn _meta, _entry -> :ok end)
     {:ok, profile}
   end
 
@@ -86,6 +96,7 @@ defmodule ExcyteWeb.Agent.Profile do
       mls_details = ResoMemberApi.getMemberDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
         %Contact{
+          id: cnt.id,
           temp_id: Utilities.get_temp_id(),
           name: cnt.name,
           content: cnt.content,
@@ -108,7 +119,7 @@ defmodule ExcyteWeb.Agent.Profile do
   defp s3_host, do: "//#{@bucket}.s3.amazonaws.com"
   defp s3_key(entry, user_id), do: "agent_photos/#{user_id}/#{Utilities.get_temp_id()}.#{ext(entry)}"
 
-  defp presign_upload(entry, socket) do
+  defp presign_photo(entry, socket) do
     uploads = socket.assigns.uploads
     key = s3_key(entry, socket.assigns.cu_id)
 
@@ -126,9 +137,28 @@ defmodule ExcyteWeb.Agent.Profile do
     {:ok, meta, assign(socket, photo_url: key)}
   end
 
+  defp presign_logo(entry, socket) do
+    uploads = socket.assigns.uploads
+    key = s3_key(entry, socket.assigns.cu_id)
+
+    config = Application.get_env(:excyte, :aws)
+
+    {:ok, fields} =
+      SimpleS3Upload.sign_form_upload(config, @bucket,
+        key: key,
+        content_type: entry.client_type,
+        max_file_size: uploads.logo.max_file_size,
+        expires_in: :timer.hours(1)
+      )
+
+    meta = %{uploader: "S3", key: key, url: s3_host(), fields: fields}
+    {:ok, meta, assign(socket, logo_url: key)}
+  end
+
   defp save_profile(%{assigns: a} = socket, profile_params) do
+    logo = logo_url(socket)
     avatar = photo_url(socket)
-    attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "photo_url" => avatar })
+    attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "photo_url" => avatar, "logo_url" => logo })
     with {:ok, _profile} <- Agents.update_profile(a.profile, attrs, &consume_photo(socket, &1)),
          {:ok, _agent} <- Accounts.update_user(a.cu_id, %{completed_setup: true, current_avatar: avatar}) do
       {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
@@ -140,6 +170,15 @@ defmodule ExcyteWeb.Agent.Profile do
   defp photo_url(%{assigns: a} = socket) do
     if a.photo_url do
       key = String.replace(a.photo_url, s3_host(), "")
+      Path.join(s3_host(), key)
+    else
+      nil
+    end
+  end
+
+  defp logo_url(%{assigns: a} = socket) do
+    if a.logo_url do
+      key = String.replace(a.logo_url, s3_host(), "")
       Path.join(s3_host(), key)
     else
       nil

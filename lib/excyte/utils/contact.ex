@@ -28,13 +28,15 @@ defmodule Excyte.Utils.Contact do
   def changeset(contact, attrs) do
     contact
     |> Map.put(:temp_id, (contact.temp_id || attrs["temp_id"]))
-    |> cast(attrs, [:name, :type, :textable, :content])
+    |> cast(attrs, [:name, :type, :textable, :content, :delete])
     |> validate_required([:name, :content])
     |> maybe_mark_for_deletion()
     |> assign_type()
   end
 
-  defp maybe_mark_for_deletion(%{data: %{id: nil}} = changeset), do: changeset
+  defp maybe_mark_for_deletion(%{data: %{id: nil}} = changeset) do
+    changeset
+  end
   defp maybe_mark_for_deletion(changeset) do
     if get_change(changeset, :delete) do
       %{changeset | action: :delete}

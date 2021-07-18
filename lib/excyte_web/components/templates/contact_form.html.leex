@@ -2,6 +2,7 @@
   <%= if @form do %>
     <div class="mt-2 -mx-1">
       <%= for fc <- inputs_for(@form, :contacts) do %>
+        <%= hidden_input fc, :id, value: fc.data.id %>
         <div class="border-t border-cyan-200 py-4 relative">
           <%= if Map.has_key?(fc.params, "delete") && fc.params["delete"] == "true" do %>
             <div class="text-xs bg-red-700 text-white absolute top-1 right-0 px-1">marked for delete</div>

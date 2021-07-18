@@ -158,7 +158,7 @@ div.viewer-wrapper {
   }
 
   & .section {
-    @apply w-full my-8 lg:my-16;
+    @apply w-full py-16 lg:py-24;
 
     & .data-grid {
       @apply grid grid-cols-1 lg:grid-cols-3 gap-6;

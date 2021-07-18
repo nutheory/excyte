@@ -16,7 +16,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
         return_to: rt,
         logo_url: brokerage_profile.logo_url,
         profile: brokerage_profile)
-      |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), external: &presign_upload/2)}
+      |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_upload/2)}
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do

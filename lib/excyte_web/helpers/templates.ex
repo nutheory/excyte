@@ -785,8 +785,63 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def synopsis(%{subject: sbj, insight: ins}) do
-    IO.inspect(ins, label: "FULL")
+    IO.inspect(ins, label: "BOO")
     """
+    <h1 class="muted-color">Subject property</h1>
+    <struct class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <struct class="summary-table">
+        <table>
+          <tr>
+            <th></th>
+            <th>Listing</th>
+            <th>Difference</th>
+          </tr>
+          {% if listing["adjustments"]["sqft"] %}
+            <tr>
+              <td>Sqft</td>
+              <td>{{ listing["sqft"] }}</td>
+              <td>{{ listing["adjustments"]["sqft"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+          {% if listing["adjustments"]["lotsize"] %}
+            <tr>
+              <td>Lotsize</td>
+              <td>{{ listing["lotsize_sqft"] }}</td>
+              <td>{{ listing["adjustments"]["lotsize"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+          {% if listing["adjustments"]["beds"] %}
+            <tr>
+              <td>Beds</td>
+              <td>{{ listing["beds"] }}</td>
+              <td>{{ listing["adjustments"]["beds"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+          {% if listing["adjustments"]["baths"] %}
+            <tr>
+              <td>Baths</td>
+              <td>{{ listing["baths"]["total"] }}</td>
+              <td>{{ listing["adjustments"]["baths"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+          {% if listing["adjustments"]["stories"] %}
+            <tr>
+              <td>Stories</td>
+              <td>{{ listing["stories"] }}</td>
+              <td>{{ listing["adjustments"]["stories"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+          {% if listing["adjustments"]["year_built"] %}
+            <tr>
+              <td>Year built</td>
+              <td>{{ listing["year_built"] }}</td>
+              <td>{{ listing["adjustments"]["year_built"]["difference"] }}</td>
+            </tr>
+          {% endif %}
+        </table>
+      </struct>
+      </struct>
+
       <struct class="section" id="synopsis">
         <struct>
           <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"])}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"])}</mark></h4>
@@ -795,7 +850,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj}))
+      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj, "insight" =>  ins}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -1085,7 +1140,7 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def why_an_agent(%{agent_profile: ap}) do
     """
-      <struct class="section" id="why_an_agent">
+      <struct class="section lg:w-4/5 xl:w-2/3" id="why_an_agent">
         <h1 class="muted-color">Why use an agent?</h1>
         <struct class="">
           <struct

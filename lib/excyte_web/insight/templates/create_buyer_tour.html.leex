@@ -6,7 +6,7 @@
     <div class="mb-4 p-4 rounded shadow bg-white">
       <div class="flex flex-wrap lg:-mx-2 form" phx-hook="GeoLocation" id="geo_locator">
         <%= if @autodetected && Map.has_key?(@coords, :lat) do %>
-          <p>Using current location as starting point. <a href="#" phx-click="change_starting" class="fancy">Change starting point</a></p>
+          <p class="px-4 text-base">Using current location as starting point. <a href="#" phx-click="change_starting" class="fancy">Change starting point</a></p>
         <% else %>
           <div class="w-full lg:flex-1 lg:px-2 mt-4">
             <%= live_component @socket, AddressAutocomplete,

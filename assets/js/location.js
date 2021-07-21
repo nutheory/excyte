@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 window.LocationAutocomplete = () => {
-  console.log("called")
   return {
     cursorIndex: -1,
     activeSuggestion: null,

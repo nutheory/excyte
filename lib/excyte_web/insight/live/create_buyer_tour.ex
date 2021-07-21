@@ -25,6 +25,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       coords: %{},
       zip_code: "",
       distance: 20,
+      autodetected: nil,
       listing_ids: "",
       feature_options: Utilities.feature_options(),
       property_options: Utilities.property_options(cu.current_mls.dataset_id),
@@ -41,8 +42,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
     filters =
       if Map.has_key?(val, :price) do
-        low = val.price.low * 1000
-        high = val.price.high * 1000
+        low = val.price.low
+        high = val.price.high
         Map.merge(a.filters, %{price: %{low: low, high: high, type: Integer}})
       else
         Map.merge(a.filters, val)
@@ -50,16 +51,32 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     {:noreply, assign(socket, filters: filters)}
   end
 
-  def handle_event("update_commit", %{"commit" => %{"listing_ids" => lids, "distance" => d}}, socket) do
-    {:noreply, assign(socket, listing_ids: lids, distance: d)}
+  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto}, socket) do
+    {:noreply, assign(socket, coords: %{lat: lat, lng: lng}, autodetected: auto)}
+  end
+
+  def handle_event("current_location_coords", %{"message" => msg, "autodetected" => auto}, socket) do
+    {:noreply, assign(socket, autodetected: auto)}
+  end
+
+  def handle_event("change_starting", _, socket) do
+    {:noreply, assign(socket, coords: %{}, autodetected: nil)}
+  end
+
+  def handle_event("update_commit", %{"commit" => %{"distance" => d}}, socket) do
+    {:noreply, assign(socket, distance: d)}
   end
 
   def handle_event("create_tour", _, %{assigns: a} = socket) do
-    key = "tour#{a.current_user.id}#{System.os_time(:second)}"
-    case Insights.create_insight(insight_data(a.filters, key, a)) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/listings")}
-      {:error, _method, _changeset, _} ->
-          {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    if Map.has_key?(a.coords, :lat) || a.zip_code !== "" do
+      key = "tour#{a.current_user.id}#{System.os_time(:second)}"
+      case Insights.create_insight(insight_data(a.filters, key, a)) do
+        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/listings")}
+        {:error, _method, _changeset, _} ->
+            {:noreply, put_flash(socket, :error, "Something went wrong.")}
+      end
+    else
+      {:noreply, assign(socket, :error, "Please enter a starting point to continue.")}
     end
   end
 

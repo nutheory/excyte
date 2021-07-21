@@ -18956,7 +18956,6 @@ var InitEditor = {
     this.handleEvent("loadContent", function (_ref2) {
       var content = _ref2.content;
       window.editorHook.currentEditor.editor.commands.setContent(content);
-      console.log("CONT", window.editorHook.currentEditor.editor.commands);
     });
   },
   destroyed: function destroyed() {
@@ -19932,6 +19931,56 @@ var InitGallery = {
 
 /***/ }),
 
+/***/ "./js/geo_location.js":
+/*!****************************!*\
+  !*** ./js/geo_location.js ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GeoLocation": () => (/* binding */ GeoLocation)
+/* harmony export */ });
+var GeoLocation = {
+  mounted: function mounted() {
+    var _this = this;
+
+    var getLocation = function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(setPosition, errPosition);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    };
+
+    var setPosition = function setPosition(pos) {
+      console.log("POS", pos);
+
+      if (pos.coords.latitude && pos.coords.longitude) {
+        _this.pushEvent('current_location_coords', {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          autodetected: true
+        });
+      }
+    };
+
+    var errPosition = function errPosition(err) {
+      if (err.code) {
+        _this.pushEvent('current_location_coords', {
+          message: err.message,
+          autodetected: false
+        });
+      }
+    };
+
+    window.setGeoLocation = getLocation();
+  }
+};
+
+/***/ }),
+
 /***/ "./js/location.js":
 /*!************************!*\
   !*** ./js/location.js ***!
@@ -19953,7 +20002,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.LocationAutocomplete = function () {
-  console.log("called");
   return {
     cursorIndex: -1,
     activeSuggestion: null,
@@ -48820,9 +48868,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mobile_sizing__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./mobile_sizing */ "./js/mobile_sizing.js");
 /* harmony import */ var _mux_uploader__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./mux_uploader */ "./js/mux_uploader.js");
 /* harmony import */ var _checkout__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./checkout */ "./js/checkout.js");
-/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./location */ "./js/location.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var _geo_location__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./geo_location */ "./js/geo_location.js");
+/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./location */ "./js/location.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_18__);
 
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
@@ -48853,6 +48902,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var Uploaders = {};
 var Hooks = {};
 Hooks.InitCheckout = _checkout__WEBPACK_IMPORTED_MODULE_15__.InitCheckout;
@@ -48860,12 +48910,13 @@ Hooks.InitSectionSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSectionSor
 Hooks.InitListingSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitListingSortable;
 Hooks.InitGallery = _gallery__WEBPACK_IMPORTED_MODULE_8__.InitGallery;
 Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_9__.InitColorPicker;
-Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_16__.AutocompleteLocation;
+Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_17__.AutocompleteLocation;
 Hooks.ViewportResize = _viewport_resize__WEBPACK_IMPORTED_MODULE_6__.ViewportResize;
 Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_10__.InitEditor;
 Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_11__.InitPreview;
 Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_12__.InitViewer;
 Hooks.MuxUploader = _mux_uploader__WEBPACK_IMPORTED_MODULE_14__.MuxUploader;
+Hooks.GeoLocation = _geo_location__WEBPACK_IMPORTED_MODULE_16__.GeoLocation;
 Hooks.DistanceSelector = {
   mounted: function mounted() {
     var _this = this;
@@ -48957,17 +49008,17 @@ var liveSocket = new (phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default())(
 }); // Show progress bar on live navigation and form submits
 
 var progressTimeout;
-topbar__WEBPACK_IMPORTED_MODULE_17___default().config({
+topbar__WEBPACK_IMPORTED_MODULE_18___default().config({
   barThickness: 5,
   shadowColor: "rgba(0, 0, 0, .6)"
 });
 window.addEventListener("phx:page-loading-start", function () {
   clearTimeout(progressTimeout);
-  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_17___default().show), 100);
+  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_18___default().show), 100);
 });
 window.addEventListener("phx:page-loading-stop", function () {
   clearTimeout(progressTimeout);
-  topbar__WEBPACK_IMPORTED_MODULE_17___default().hide();
+  topbar__WEBPACK_IMPORTED_MODULE_18___default().hide();
 }); // connect if there are any LiveViews on the page
 
 liveSocket.connect(); // expose liveSocket on window for web console debug logs and latency simulation:

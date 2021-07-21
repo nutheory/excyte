@@ -99,7 +99,7 @@ form,
   }
 
   & button.submit:disabled {
-    @apply cursor-wait;
+    @apply cursor-not-allowed bg-gray-400;
   }
 
   & .action {

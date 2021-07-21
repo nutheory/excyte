@@ -27,6 +27,7 @@ import {InitViewer} from "./viewer"
 import {setupSizing} from "./mobile_sizing"
 import {MuxUploader} from "./mux_uploader"
 import {InitCheckout} from "./checkout"
+import {GeoLocation} from "./geo_location"
 import {AutocompleteLocation} from "./location"
 import topbar from "topbar"
 
@@ -44,6 +45,7 @@ Hooks.InitEditor = InitEditor
 Hooks.InitPreview = InitPreview
 Hooks.InitViewer = InitViewer
 Hooks.MuxUploader = MuxUploader
+Hooks.GeoLocation = GeoLocation
 Hooks.DistanceSelector = {
   mounted(){
     const add = this.el.querySelector('.add-distance')

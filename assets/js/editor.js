@@ -189,7 +189,6 @@ export const InitEditor = {
     // console.log("THIS", window.editorHook.currentEditor.editor)
     this.handleEvent("loadContent", ({ content }) => {
       window.editorHook.currentEditor.editor.commands.setContent(content)
-      console.log("CONT", window.editorHook.currentEditor.editor.commands)
     })
   },
   destroyed() {

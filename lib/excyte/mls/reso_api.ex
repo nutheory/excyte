@@ -85,12 +85,13 @@ defmodule Excyte.Mls.ResoApi do
   def listing_properties(mls, %Property{} = subject, opts) do
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
+    types = if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
     mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}", else: ""
     query_str = query.select_str
       <> "$filter="
       <> "(#{mb})%20and%20"
       <> "(#{status(opts.selected_statuses)})%20and%20"
-      <> if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
+      <> "#{types}"
       <> "#{get_by_all_prices(mls, opts)}%20and%20"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
@@ -108,7 +109,6 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   def listing_properties(mls, _subject, opts) do
-    IO.inspect(opts, label: "OPTIONS")
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: opts.coords, distance: opts.distance}, else: %{zip: opts.zip}
     query_str = query.select_str
@@ -148,8 +148,8 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp get_by_price(mls, %{price: price}) do
-    low = if price.low === nil || price.low < 0, do: 0, else: price.low
-    high = if price.high === nil, do: 100_000_000, else: price.high
+    low = if price.low === nil || price.low < 0, do: 0, else: price.low * 1000
+    high = if price.high === nil, do: 100_000_000, else: price.high * 1000
     if price === nil || Enum.empty?(price) do
       ""
     else
@@ -158,8 +158,9 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp get_by_all_prices(mls, %{price: price}) do
-    low = if price.low === nil || price.low < 0, do: 0, else: price.low
-    high = if price.high === nil, do: 100_000_000, else: price.high
+    IO.inspect(price, label: "PRICE")
+    low = if price.low === nil || price.low < 0, do: 0, else: price.low * 1000
+    high = if price.high === nil, do: 100_000_000, else: price.high * 1000
     if price === nil || Enum.empty?(price) do
       ""
     else
@@ -193,6 +194,9 @@ defmodule Excyte.Mls.ResoApi do
 
   # not for chaining
   defp get_simple_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
+    IO.inspect(attr, label: "ATTR")
+    IO.inspect(l, label: "LOW")
+    IO.inspect(h, label: "HIGH")
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do

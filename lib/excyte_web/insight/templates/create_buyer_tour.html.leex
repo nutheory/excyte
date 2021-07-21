@@ -2,13 +2,22 @@
   <div class="mt-32">
     <h2 class="text-center pb-2 mt-32">Create a Buyer Tour</h2>
     <h3 class="text-center text-bgray-400 my-4">Search an Area</h3>
-    <p class="text-center text-bgray-400 mb-4">Find by area and criteria, or enter MLS listing ID's. If you do both we will automatically add properties with ID's to your tour.</p>
+    <p class="text-center text-bgray-400 mb-4">Find by area and criteria. If you have specific ID's you can enter them on the next step.</p>
     <div class="mb-4 p-4 rounded shadow bg-white">
-      <%= live_component @socket, AddressAutocomplete,
-        callback: :starting_point,
-        label: "Enter a starting point",
-        id: :starting_location
-      %>
+      <div class="flex flex-wrap lg:-mx-2 form" phx-hook="GeoLocation" id="geo_locator">
+        <%= if @autodetected && Map.has_key?(@coords, :lat) do %>
+          <p>Using current location as starting point. <a href="#" phx-click="change_starting" class="fancy">Change starting point</a></p>
+        <% else %>
+          <div class="w-full lg:flex-1 lg:px-2 mt-4">
+            <%= live_component @socket, AddressAutocomplete,
+              callback: :starting_point,
+              label: "Enter a starting point",
+              id: :starting_location
+            %>
+          </div>
+        <% end %>
+        <button class="hidden" x-on:click="setGeoLocation">click</button>
+      </div>
       <div class="flex flex-wrap lg:-mx-2">
         <div class="w-full lg:w-1/2 lg:px-2 mt-4">
           <div class="form">
@@ -177,7 +186,11 @@
               <%= text_input f, :distance, class: "text-field w-24", value: @distance %>
             </div>
             <div class="flex-1 flex items-end pb-0.5">
-              <%= submit "Search", class: "submit w-full" %>
+              <%= if Map.has_key?(@coords, :lat) do %>
+                <%= submit "Search", class: "submit w-full" %>
+              <% else %>
+                <%= submit "Search", class: "submit w-full", disabled: "disabled" %>
+              <% end %>
             </div>
           </div>
         </div>

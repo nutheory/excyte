@@ -535,7 +535,12 @@ form button.submit:hover, .form button.submit:hover {
 }
 
 form button.submit:disabled, .form button.submit:disabled {
-  cursor: wait;
+  cursor: not-allowed;
+}
+
+form button.submit:disabled, .form button.submit:disabled {
+  --tw-bg-opacity: 1;
+  background-color: rgba(156, 163, 175, var(--tw-bg-opacity));
 }
 
 form .action, .form .action {

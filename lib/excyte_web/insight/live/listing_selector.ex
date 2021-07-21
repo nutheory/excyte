@@ -67,8 +67,8 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
     filters =
       if Map.has_key?(val, :price) do
-        low = val.price.low * 1000
-        high = val.price.high * 1000
+        low = val.price.low
+        high = val.price.high
         Map.merge(a.filters, %{price: %{low: low, high: high, type: Integer}})
       else
         Map.merge(a.filters, val)

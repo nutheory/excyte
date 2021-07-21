@@ -28,8 +28,8 @@ defmodule ExcyteWeb.Components.RangeInputs do
         {res, _} -> res
         :error -> 0
       end
-    mn = if mn >= mx, do: mx, else: mn
-    mx = if mx <= mn, do: mn, else: mx
+    # mn = if mn >= mx, do: mx, else: mn
+    # mx = if mx <= mn, do: mn, else: mx
     send self(), {a.callback, Map.put(%{}, a.attribute, %{low: mn, high: mx, type: a.type})}
     {:noreply, assign(socket, min: mn, max: mx)}
   end

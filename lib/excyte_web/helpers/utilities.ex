@@ -106,12 +106,12 @@ defmodule ExcyteWeb.Helpers.Utilities do
     %{
       default: true,
       dataset_id: subject.dataset_id,
-      price_min: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
-      price_max: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000),
+      price_min: (if subject.est_price, do: round((subject.est_price/1000) * 0.95), else: 0),
+      price_max: (if subject.est_price, do: round((subject.est_price/1000) * 1.05), else: 100000000),
       price: %{
         type: Integer,
-        low: (if subject.est_price, do: round(subject.est_price * 0.95), else: 0),
-        high: (if subject.est_price, do: round(subject.est_price * 1.05), else: 100000000)
+        low: (if subject.est_price, do: round((subject.est_price/1000) * 0.95), else: 0),
+        high: (if subject.est_price, do: round((subject.est_price/1000) * 1.05), else: 100000000)
       },
       beds: %{
         type: Integer,

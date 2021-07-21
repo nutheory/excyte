@@ -844,7 +844,7 @@ defmodule ExcyteWeb.Helpers.Templates do
 
       <struct class="section" id="synopsis">
         <struct>
-          <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"])}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"])}</mark></h4>
+          <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"], precision: 0)}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"], precision: 0)}</mark></h4>
         </struct>
       </struct>
     """

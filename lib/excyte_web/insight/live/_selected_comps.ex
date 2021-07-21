@@ -18,7 +18,7 @@ defmodule ExcyteWeb.Insight.SelectedComps do
     )}
   end
 
-  def handle_event("validate-cma", %{"suggested_price" => sp}, %{assigns: a} = socket) do
+  def handle_event("validate-cma", _, socket) do
     {:noreply, socket}
   end
 
@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Insight.SelectedComps do
     {:noreply, assign(socket, range: !a.range)}
   end
 
-  def handle_event("range-update", %{"min" => min, "max" => max}, socket) do
+  def handle_event("range-update", %{"suggested_price" => %{"min" => min, "max" => max}}, socket) do
     mn =
       case Integer.parse(min) do
         {res, _} -> res
@@ -37,8 +37,8 @@ defmodule ExcyteWeb.Insight.SelectedComps do
         {res, _} -> res
         :error -> 0
       end
-    mn = if mn >= mx, do: mx, else: mn
-    mx = if mx <= mn, do: mn, else: mx
+    # mn = if mn >= mx, do: mx, else: mn
+    # mx = if mx <= mn, do: mn, else: mx
     {:noreply, assign(socket, suggested_price_min: mn, suggested_price_max: mx)}
   end
 

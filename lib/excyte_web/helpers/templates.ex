@@ -10,7 +10,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   def agent_profile(%{agent_profile: ap}) do
     profile = Excyte.Utils.Methods.stringify_keys(ap)
     """
-      <struct class="section agent max-w-screen-lg w-full lg:w-4/5" id="agent_profile">
+      <struct class="section agent max-w-screen-lg w-full lg:w-4/5 mx-auto" id="agent_profile">
         <h1 class="muted-color">Agent profile</h1>
         <struct class="data-grid">
           <struct class="minor">
@@ -62,7 +62,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   def brokerage_profile(%{brokerage: brk}) do
     profile = Excyte.Utils.Methods.stringify_keys(brk)
     """
-      <struct class="section max-w-screen-lg w-full lg:w-4/5" id="brokerage">
+      <struct class="section max-w-screen-lg w-full lg:w-4/5 mx-auto" id="brokerage">
         <h1 class="muted-color">About {{ brokerage["company_name"]}}</h1>
         <struct class="data-grid">
           <struct class="major">
@@ -110,6 +110,10 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def comparable(%{listing: listing}) do
+    IO.inspect(listing, label: "List")
+    adjustments = Enum.map(listing["custom_adjustments"], fn adj ->
+      Map.merge(adj, %{"display_value" => number_to_delimited(adj["value"], precision: 0)})
+    end)
     media = Jason.encode!(listing["media"])
     """
       <struct class="section comp" id="comparable_#{listing["listing_key"]}">
@@ -239,18 +243,19 @@ defmodule ExcyteWeb.Helpers.Templates do
               </struct>
             </struct>
             <struct class="">
-              {% if listing["custom_adjustments"] %}
+              {% if adjustments %}
                 <h4 class="sub-header-color">Adjustment considerations</h4>
                 <table>
                   <tbody>
-                    {% for ca in listing["custom_adjustments"] %}
-                      <tr>
-                        <td class="label">{{ ca.name }}</td>
-                        <td class="value">{{ ca.value }}</td>
-                      </tr>
+                    {% for adj in adjustments %}
+                    <tr>
+                      <td class="label">{{ adj["name"] }}</td>
+                      <td class="value">${{ adj["display_value"] }}</td>
+                    </tr>
                     {% endfor %}
                   </tbody>
                 </table>
+                #{ number_to_delimited(listing["excyte_suggested_price"], precision: 0)}
               {% endif %}
             </struct>
             <struct class="total">
@@ -317,14 +322,14 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"listing" => listing}))
+      {:ok, template} -> to_string(Solid.render(template, %{"listing" => listing, "adjustments" => adjustments}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
 
   def cover(%{subject: sbj, agent_profile: ag, brokerage: brk}) do
     """
-      <struct class="section cover-wrapper" id="cover">
+      <struct class="section cover-wrapper " id="cover">
         <struct class="mb-6">
           {% if subject.main_photo_url %}
             <struct
@@ -400,11 +405,9 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def showcase(%{insight: ins}) do
-    # IO.inspect(ins["content"]["listings"], label: "LST", limit: :infinity)
     listing =
       case ProcessListings.process_init({:ok, %{listings: ins["content"]["listings"]}}, nil) do
         {:ok, res} ->
-          # IO.inspect(res, label: "LST", limit: :infinity)
           Utilities.format_atom_json(hd(res.listings))
         {:error, err} -> IO.inspect(err)
       end
@@ -641,7 +644,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def subject(%{subject: subject, insight: ins}) do
+  def subject(%{subject: subject}) do
     """
       <struct class="section subject" id="subject">
         <h1 class="muted-color">Subject property</h1>
@@ -785,61 +788,22 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def synopsis(%{subject: sbj, insight: ins}) do
-    IO.inspect(ins, label: "BOO")
+    IO.inspect(ins["content"], label: "BOO")
     """
-    <h1 class="muted-color">Subject property</h1>
-    <struct class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <struct class="summary-table">
-        <table>
-          <tr>
-            <th></th>
-            <th>Listing</th>
-            <th>Difference</th>
-          </tr>
-          {% if listing["adjustments"]["sqft"] %}
-            <tr>
-              <td>Sqft</td>
-              <td>{{ listing["sqft"] }}</td>
-              <td>{{ listing["adjustments"]["sqft"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-          {% if listing["adjustments"]["lotsize"] %}
-            <tr>
-              <td>Lotsize</td>
-              <td>{{ listing["lotsize_sqft"] }}</td>
-              <td>{{ listing["adjustments"]["lotsize"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-          {% if listing["adjustments"]["beds"] %}
-            <tr>
-              <td>Beds</td>
-              <td>{{ listing["beds"] }}</td>
-              <td>{{ listing["adjustments"]["beds"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-          {% if listing["adjustments"]["baths"] %}
-            <tr>
-              <td>Baths</td>
-              <td>{{ listing["baths"]["total"] }}</td>
-              <td>{{ listing["adjustments"]["baths"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-          {% if listing["adjustments"]["stories"] %}
-            <tr>
-              <td>Stories</td>
-              <td>{{ listing["stories"] }}</td>
-              <td>{{ listing["adjustments"]["stories"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-          {% if listing["adjustments"]["year_built"] %}
-            <tr>
-              <td>Year built</td>
-              <td>{{ listing["year_built"] }}</td>
-              <td>{{ listing["adjustments"]["year_built"]["difference"] }}</td>
-            </tr>
-          {% endif %}
-        </table>
-      </struct>
+      <h1 class="muted-color">Synopsis</h1>
+      <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <struct>
+          <h3 class="sub-header-color">Average Days on Market</h3>
+          #{number_to_delimited(ins["content"]["avg_dom"], precision: 0)}
+        </struct>
+        <struct>
+          <h3 class="sub-header-color">Average List Price</h3>
+          #{number_to_delimited(ins["content"]["avg_list"], precision: 0)}
+        </struct>
+        <struct>
+          <h3 class="sub-header-color">Average Close Price</h3>
+          #{number_to_delimited(ins["content"]["avg_close"], precision: 0)}
+        </struct>
       </struct>
 
       <struct class="section" id="synopsis">
@@ -1116,31 +1080,37 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <struct class="section" id="whats_cma">
         <h1 class="muted-color">What is a CMA?</h1>
-        <p><strong>A CMA is</strong> a comparison of the most recent Active, Sold
-        and Pending properties in the same neighborhood. These homes are commonly
-        referred to as Listings. Each listing is detailed with information like
-        square feet, bedrooms, bathrooms and lot size to name a few. I will use
-        this information to determine the Market Value and most accurate listing
-        price for your home.</p>
-        <h3>Where does the data come from?</h3>
-        <p>The information used in your CMA is provided by my local Multiple Listing
-        Service or MLS. MLS data is private and can only be accessed by licensed members,
-        like myself, who pay an annual dues. Brokers, Realtors and Appraisers all used
-        this protected data to arrive at the most accurate listing price.</p>
-        <h3>How Accurate is a CMA?</h3>
-        <p>MLS data is live and the most accurate data that can be used. Listings are
-        entered and updates are realtime. There is No Way to get more accurate data
-        for your home. That's why it's so important to have a Realtor in your corner
-        during one of the most important transactions in your life. The market is
-        constantly changing because houses are bought and sold everyday. As your
-        Realtor my finger is on the Markets pulse the entire time…….Real Time.</p>
+        <struct class="data-grid-fifty">
+          <struct class="fifty">
+            <p><strong>A CMA is</strong> a comparison of the most recent Active, Sold
+            and Pending properties in the same neighborhood. These homes are commonly
+            referred to as Listings. Each listing is detailed with information like
+            square feet, bedrooms, bathrooms and lot size to name a few. I will use
+            this information to determine the Market Value and most accurate listing
+            price for your home.</p>
+            <h4>Where does the data come from?</h4>
+            <p>The information used in your CMA is provided by my local Multiple Listing
+            Service or MLS. MLS data is private and can only be accessed by licensed members,
+            like myself, who pay an annual dues. Brokers, Realtors and Appraisers all used
+            this protected data to arrive at the most accurate listing price.</p>
+          </struct>
+          <struct class="fifty">
+            <h4>How Accurate is a CMA?</h4>
+            <p>MLS data is live and the most accurate data that can be used. Listings are
+            entered and updates are realtime. There is No Way to get more accurate data
+            for your home. That's why it's so important to have a Realtor in your corner
+            during one of the most important transactions in your life. The market is
+            constantly changing because houses are bought and sold everyday. As your
+            Realtor my finger is on the Markets pulse the entire time…….Real Time.</p>
+          </struct>
+        </struct>
       </struct>
     """
   end
 
   def why_an_agent(%{agent_profile: ap}) do
     """
-      <struct class="section lg:w-4/5 xl:w-2/3" id="why_an_agent">
+      <struct class="section lg:w-4/5 xl:w-2/3 max-w-screen-md mx-auto" id="why_an_agent">
         <h1 class="muted-color">Why use an agent?</h1>
         <struct class="">
           <struct

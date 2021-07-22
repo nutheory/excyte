@@ -194,9 +194,6 @@ defmodule Excyte.Mls.ResoApi do
 
   # not for chaining
   defp get_simple_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
-    IO.inspect(attr, label: "ATTR")
-    IO.inspect(l, label: "LOW")
-    IO.inspect(h, label: "HIGH")
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do
@@ -211,7 +208,6 @@ defmodule Excyte.Mls.ResoApi do
 
   # for chaining
   defp get_attr_by_range(mls, %{attr: attr, low: l, high: h}) do
-    IO.inspect(attr, label: "LAST ATTR")
     meta = get_metadata(mls)
     entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
     if Enum.member?(entity.attributes, attr) do

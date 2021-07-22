@@ -42,8 +42,8 @@ defmodule ExcyteWeb.Insight.SelectedComps do
     {:noreply, assign(socket, suggested_price_min: mn, suggested_price_max: mx)}
   end
 
-  def handle_event("save-cma", %{"suggested_price" => sp}, socket) do
-    send self(), {:update_cma, %{suggested_price: sp}}
+  def handle_event("save-cma", _, %{assigns: a} = socket) do
+    send self(), {:update_cma, %{suggested_price: %{min: a.suggested_price_min, max: a.suggested_price_max}}}
     {:noreply, socket}
   end
 

@@ -149,6 +149,10 @@ div.viewer-wrapper {
     @apply my-0;
   }
 
+  & p {
+    @apply mb-4;
+  }
+
   & a.button {
     @apply my-4 block font-bold border-t border-b py-2;
   }
@@ -170,6 +174,10 @@ div.viewer-wrapper {
 
     & .minor {
       @apply h-full;
+
+      & img {
+        @apply mx-auto;
+      }
     }
 
     & .major {
@@ -351,7 +359,6 @@ div.viewer-wrapper {
         & td:nth-child(odd) {
           @apply px-2 py-1 text-right mr-2 text-base;
         }
-        
 
         & td:nth-child(even) {
           @apply px-2 py-1 ml-2 font-bold;

@@ -105,10 +105,26 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   end
 
   def handle_info({:update_cma, %{suggested_price: sp}}, %{assigns: a} = socket) do
+    doms = Enum.reduce(a.selected_listings, [], fn %{days_on_market: dom}, acc ->
+      if dom !== nil, do: [dom | acc], else: acc
+    end)
+    lists = Enum.reduce(a.selected_listings, [], fn %{list_price: list}, acc ->
+      if list !== nil, do: [list | acc], else: acc
+    end)
+    closes = Enum.reduce(a.selected_listings, [], fn %{close_price: close}, acc ->
+      if close !== nil, do: [close | acc], else: acc
+    end)
+
     update = %{
       selected_listing_ids: Enum.map(a.selected_listings, fn c -> c.listing_id end),
       saved_search: %{criteria: a.filters},
-      content: %{listings: a.selected_listings, suggested_subject_price: sp}
+      content: %{
+        listings: a.selected_listings,
+        suggested_subject_price: sp,
+        avg_dom: (if length(doms) > 0, do: trunc(Enum.sum(doms)/length(doms)), else: 0),
+        avg_list: (if length(lists) > 0, do: trunc(Enum.sum(lists)/length(lists)), else: 0),
+        avg_close: (if length(closes) > 0, do: trunc(Enum.sum(closes)/length(closes)), else: 0)
+      }
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}

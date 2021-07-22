@@ -1556,6 +1556,79 @@ h4 {
   }
 }
 
+@layer base {
+  html, body {
+    --tw-bg-opacity: 1;
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  }
+  html, body {
+    --tw-text-opacity: 1;
+    color: rgba(75, 85, 99, var(--tw-text-opacity));
+  }
+  html,
+  body {
+
+    line-height: 1.2;
+    height: 100%;
+  }
+
+  [x-cloak] {
+    display: none;
+  }
+
+  h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
+  h1 {
+    font-weight: 800;
+  }
+
+  h1 {
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+
+  h2 {
+    font-weight: 700;
+  }
+
+  h2 {
+    line-height: 1;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  h3 {
+    font-weight: 700;
+  }
+
+  h3 {
+    line-height: 1;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  h4 {
+    font-weight: 700;
+  }
+
+  h4 {
+    line-height: 1;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -2186,6 +2259,10 @@ h4 {
   width: 1rem;
 }
 
+.w-48 {
+  width: 12rem;
+}
+
 .max-w-screen-xl {
   max-width: 1280px;
 }
@@ -2212,6 +2289,10 @@ h4 {
 
 .max-w-sm {
   max-width: 24rem;
+}
+
+.max-w-screen-md {
+  max-width: 768px;
 }
 
 .flex-1 {
@@ -2979,6 +3060,10 @@ h4 {
 
 .pr-12 {
   padding-right: 3rem;
+}
+
+.pt-10 {
+  padding-top: 2.5rem;
 }
 
 .text-left {
@@ -3843,6 +3928,10 @@ h4 {
 
   .lg\:pt-20 {
     padding-top: 5rem;
+  }
+
+  .lg\:pt-16 {
+    padding-top: 4rem;
   }
 
   .lg\:text-lg {

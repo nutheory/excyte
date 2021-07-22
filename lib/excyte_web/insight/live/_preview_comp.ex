@@ -31,7 +31,7 @@ defmodule ExcyteWeb.Insight.PreviewComp do
     int_val =
       case Integer.parse(val) do
         {int, _} -> int
-        :error -> IO.inspect(val, label: "ERR")
+        :error -> IO.inspect(val, label: "ERR?")
       end
     {:noreply, assign(socket, adj_name: name, adj_value: int_val)}
   end
@@ -71,7 +71,7 @@ defmodule ExcyteWeb.Insight.PreviewComp do
     int_val =
       case Integer.parse(adj) do
         {int, _} -> int
-        :error -> IO.inspect(adj, label: "ERR")
+        :error -> IO.inspect(adj, label: "ERR???")
       end
     {:noreply, assign(socket, excyte_price: int_val)}
   end

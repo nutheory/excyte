@@ -31,8 +31,7 @@
                   <div class="flex-1 p-2">
                     <h4 class="mb-0"><%= sel.street_number %> <%= sel.street_name %></h4>
                     <p class="text-sm">
-                      <%= if sel.excyte_suggested_price === sel.excyte_price, do: "Auto priced", else: "Agent priced" %>
-                      at $<span class="font-bold"><%= number_to_delimited(sel.excyte_price, precision: 0) %></span>
+                      Priced at $<span class="font-bold"><%= number_to_delimited(sel.excyte_price, precision: 0) %></span>
                     </p>
                   </div>
                   <svg

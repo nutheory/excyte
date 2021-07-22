@@ -783,8 +783,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def synopsis(%{subject: sbj, insight: ins}) do
-    IO.inspect(ins["content"], label: "BOO")
+  def synopsis(%{subject: sbj, insight: insight}) do
     """
       <struct class="section" id="synopsis">
         <h1 class="muted-color">Synopsis</h1>
@@ -792,29 +791,29 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <struct>
             <h3 class="sub-header-color">Average Days on Market</h3>
-            #{number_to_delimited(ins["content"]["avg_dom"], precision: 0)}
+            #{number_to_delimited(insight["content"]["avg_dom"], precision: 0)}
           </struct>
-          {% if ins["content"]["avg_list"] %}
+          {% if insight["content"]["avg_list"] %}
             <struct>
               <h3 class="sub-header-color">Average List Price</h3>
-              #{number_to_delimited(ins["content"]["avg_list"], precision: 0)}
+              #{number_to_delimited(insight["content"]["avg_list"], precision: 0)}
             </struct>
           {% endif %}
-          {% if ins["content"]["avg_close"] %}
+          {% if insight["content"]["avg_close"] %}
             <struct>
               <h3 class="sub-header-color">Average Close Price</h3>
-              #{number_to_delimited(ins["content"]["avg_close"], precision: 0)}
+              #{number_to_delimited(insight["content"]["avg_close"], precision: 0)}
             </struct>
           {% endif %}
         </struct>
         <struct>
-            <h4> Your Suggested price range is <h3>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"], precision: 0)}</h3></h4>
+            <h4> Your Suggested price range is <h3>$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h3></h4>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj, "insight" =>  ins}))
+      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj, "insight" =>  insight}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end

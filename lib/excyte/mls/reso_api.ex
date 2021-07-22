@@ -158,7 +158,6 @@ defmodule Excyte.Mls.ResoApi do
   end
 
   defp get_by_all_prices(mls, %{price: price}) do
-    IO.inspect(price, label: "PRICE")
     low = if price.low === nil || price.low < 0, do: 0, else: price.low * 1000
     high = if price.high === nil, do: 100_000_000, else: price.high * 1000
     if price === nil || Enum.empty?(price) do

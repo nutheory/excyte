@@ -123,7 +123,7 @@ sections = [
     component_name: "commission_distribution",
     component_data_types: [],
     name: "Commission Distribution",
-    description: "I dont think we should have this page - Derek",
+    description: "",
     type: "page",
     is_public: true,
     is_excyte_made: true,

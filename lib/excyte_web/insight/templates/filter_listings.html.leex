@@ -6,18 +6,6 @@
     <div class="lg:w-3/5 px-2 md:px-4">
       <div class="flex -mx-2 md:-mx-4">
         <div class="lg:w-3/5 px-2 md:px-4">
-          <%= if @subject do %>
-            <%= live_component @socket, RangeInputs,
-              prefix: "$",
-              suffix: "K",
-              min: elem(String.split_at(Integer.to_string(round(@filters.price.low)), -3), 0),
-              max: elem(String.split_at(Integer.to_string(round(@filters.price.high)), -3), 0),
-              attribute: :price,
-              type: Integer,
-              label: "Close/List Price",
-              callback: :update_filter,
-              id: :price_filter %>
-          <% else %>
             <%= live_component @socket, RangeInputs,
               prefix: "$",
               suffix: "K",
@@ -28,7 +16,6 @@
               label: "Close/List Price",
               callback: :update_filter,
               id: :price_filter %>
-          <% end %>
         </div>
         <div class="lg:w-2/5 px-2 md:px-4">
           <%= live_component @socket, RangeInputs,

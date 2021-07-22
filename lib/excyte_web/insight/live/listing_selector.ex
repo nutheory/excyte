@@ -248,23 +248,27 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       a.sort_by === "ranking" ->
         sorted = Enum.sort_by(listings, &(&1.excyte_ranking.score), :desc)
         price =
-          if subj.est_price === nil || subj.est_price === 0 do
-            Enum.reduce(sorted, [], fn l, acc ->
-              cond do
-                l.close_price !== nil -> [l.close_price | acc]
-                l.list_price !== nil -> [l.list_price | acc]
-                true -> acc
-              end
-            end)
-            |> Enum.take(10)
-            |> average()
+          if Map.has_key?(filters.price, :low) do
+            filters.price
           else
-            subj.est_price
+            if subj.est_price === nil || subj.est_price === 0 do
+              Enum.reduce(sorted, [], fn l, acc ->
+                cond do
+                  l.close_price !== nil -> [l.close_price | acc]
+                  l.list_price !== nil -> [l.list_price | acc]
+                  true -> acc
+                end
+              end)
+              |> Enum.take(10)
+              |> average()
+            else
+              subj.est_price
+            end
+            |> setup_price_filter()
           end
-        price_filters = setup_price_filter(price)
         %{listings: sorted,
-          subject: Map.merge(subj, %{est_price: price}),
-          filters: Map.merge(filters, price_filters),
+          subject: Map.merge(subj, %{est_price: price.low}),
+          filters: filters,
           show_filters: show_filters}
       true -> %{listings: listings, subject: subj, filters: filters, show_filters: show_filters}
     end
@@ -277,9 +281,9 @@ defmodule ExcyteWeb.Insight.ListingSelector do
 
   defp setup_price_filter(price) do
     if price !== nil && price !== 0 do
-      %{ price: %{ type: Integer, low: round(price * 0.95), high: round(price * 1.05) }}
+      %{ price: %{ type: Integer, low: round((price/1000) * 0.95), high: round((price/1000) * 1.05) }}
     else
-      %{ price: %{ type: Integer, low: 0, high: 10_000_000 }}
+      %{ price: %{ type: Integer, low: 0, high: 100_000_000 }}
     end
   end
 

@@ -147,7 +147,7 @@ defmodule Excyte.Mls.ProcessListings do
   end
 
   def main_photo(media) do
-    IO.inspect(media, label: "BOOM")
+    nil
   end
 
   def process_updated_date(datetime) do

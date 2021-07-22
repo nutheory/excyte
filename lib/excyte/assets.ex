@@ -31,7 +31,7 @@ defmodule Excyte.Assets do
   def delete_asset(uid, asset_id) do
     client = Mux.client()
     with %Asset{} = asset <- Repo.get_by!(Asset, %{uploaded_by_id: uid, id: asset_id}),
-         {:ok, _env} <- Mux.Video.Assets.delete(client, asset.source_id),
+         {:ok, _, _env} <- Mux.Video.Assets.delete(client, asset.source_id),
          {:ok, struct} <- Repo.delete(asset) do
       {:ok, struct}
     else

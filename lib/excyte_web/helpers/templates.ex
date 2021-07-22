@@ -110,7 +110,6 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def comparable(%{listing: listing}) do
-    IO.inspect(listing, label: "List")
     adjustments = Enum.map(listing["custom_adjustments"], fn adj ->
       Map.merge(adj, %{"display_value" => number_to_delimited(adj["value"], precision: 0)})
     end)
@@ -242,24 +241,36 @@ defmodule ExcyteWeb.Helpers.Templates do
                 </table>
               </struct>
             </struct>
-            <struct class="">
+            <struct class="mt-12">
               {% if adjustments %}
-                <h4 class="sub-header-color">Adjustment considerations</h4>
+                <struct class="flex border-b accent-color">
+                  <struct class="flex-1">
+                    <h4 class="sub-header-color">Adjustment considerations</h4>
+                  </struct>
+                  <struct class="">
+                    {% if listing["close_price"] %}
+                      Closed for <strong>$#{number_to_delimited(listing["close_price"], precision: 0)}</strong>
+                    {% else %}
+                      {% if listing["list_price"] %}
+                        Listed at <strong>$#{number_to_delimited(listing["list_price"], precision: 0)}</strong>
+                      {% endif %}
+                    {% endif %}
+                  </struct>
+                </struct>
                 <table>
                   <tbody>
                     {% for adj in adjustments %}
                     <tr>
-                      <td class="label">{{ adj["name"] }}</td>
+                      <td class="text-left">{{ adj["name"] }}</td>
                       <td class="value">${{ adj["display_value"] }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
                 </table>
-                #{ number_to_delimited(listing["excyte_suggested_price"], precision: 0)}
+                <struct class="text-right">
+                  Adjusted value <strong>$#{number_to_delimited(listing["excyte_price"], precision: 0)}</strong>
+                </struct>
               {% endif %}
-            </struct>
-            <struct class="total">
-              <h2></h2>
             </struct>
           </struct>
           <struct class="minor">
@@ -696,18 +707,8 @@ defmodule ExcyteWeb.Helpers.Templates do
                     <tr>
                       <td class="label">Baths</td>
                       <td class="value">
-                        {% if subject["baths"] and subject["baths"]["total"] %}
-                          {{ subject["baths"]["total"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Built</td>
-                      <td class="value">
-                        {% if subject["year_built"] %}
-                          {{ subject["year_built"] }}
+                        {% if subject["baths"] %}
+                          {{ subject["baths"] }}
                         {% else %}
                           N/A
                         {% endif %}
@@ -718,6 +719,16 @@ defmodule ExcyteWeb.Helpers.Templates do
                 <table>
                   <tbody>
                     <tr>
+                      <td class="label">Built</td>
+                      <td class="value">
+                        {% if subject["year_built"] %}
+                          {{ subject["year_built"] }}
+                        {% else %}
+                          N/A
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
                       <td class="label">Lot #{String.capitalize(subject["lotsize_preference"])}</td>
                       <td class="value">
                         {% if subject["lotsize_preference"] == "sqft" %}
@@ -727,41 +738,26 @@ defmodule ExcyteWeb.Helpers.Templates do
                         {% endif %}
                       </td>
                     </tr>
+                    {% if subject["parking"] %}
+                      <tr>
+                        <td class="label">Parking</td>
+                        <td class="value">
+                          {% if subject["parking"]["spaces"] == "N/A" %}
+                          {% else %}
+                            (#{subject["parking"]["spaces"]})
+                          {% endif %}
+                        </td>
+                      </tr>
+                    {% endif %}
                     <tr>
-                      <td class="label">Parking</td>
+                      <td class="label">Property Type</td>
                       <td class="value">
-                        {{ subject["parking"]["type"] }}
-                        {% if subject["parking"]["spaces"] == "N/A" %}
-                        {% else %}
-                          (#{subject["parking"]["spaces"]})
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Sub Type</td>
-                      <td class="value">
-                        {% if subject["property_sub_type"] %}
-                          {{ subject["property_sub_type"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Listing ID</td>
-                      <td class="value">
-                        {% if subject["subject_id"] %}
-                          {{ subject["subject_id"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">View on Map</td>
-                      <td class="value">
-                        {% if subject["coords"] and subject["coords"][0] %}
-                          <a href="https://www.google.com/maps/search/?api=1&query={{ subject["coords"][1] }}%2C{{ subject["coords"][0] }}">Click here</a>
+                        {% if subject["property_type"] %}
+                          {% if subject["property_type"] == "single_family" %}
+                            Single Family
+                          {% else %}
+                            {{ subject["property_type"] | capitalize }}
+                          {% endif %}
                         {% else %}
                           N/A
                         {% endif %}
@@ -790,25 +786,29 @@ defmodule ExcyteWeb.Helpers.Templates do
   def synopsis(%{subject: sbj, insight: ins}) do
     IO.inspect(ins["content"], label: "BOO")
     """
-      <h1 class="muted-color">Synopsis</h1>
-      <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <struct>
-          <h3 class="sub-header-color">Average Days on Market</h3>
-          #{number_to_delimited(ins["content"]["avg_dom"], precision: 0)}
-        </struct>
-        <struct>
-          <h3 class="sub-header-color">Average List Price</h3>
-          #{number_to_delimited(ins["content"]["avg_list"], precision: 0)}
-        </struct>
-        <struct>
-          <h3 class="sub-header-color">Average Close Price</h3>
-          #{number_to_delimited(ins["content"]["avg_close"], precision: 0)}
-        </struct>
-      </struct>
-
       <struct class="section" id="synopsis">
+        <h1 class="muted-color">Synopsis</h1>
+        <p>Based on all the Comparable information above along with this information.</p>
+        <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <struct>
+            <h3 class="sub-header-color">Average Days on Market</h3>
+            #{number_to_delimited(ins["content"]["avg_dom"], precision: 0)}
+          </struct>
+          {% if ins["content"]["avg_list"] %}
+            <struct>
+              <h3 class="sub-header-color">Average List Price</h3>
+              #{number_to_delimited(ins["content"]["avg_list"], precision: 0)}
+            </struct>
+          {% endif %}
+          {% if ins["content"]["avg_close"] %}
+            <struct>
+              <h3 class="sub-header-color">Average Close Price</h3>
+              #{number_to_delimited(ins["content"]["avg_close"], precision: 0)}
+            </struct>
+          {% endif %}
+        </struct>
         <struct>
-          <h4>Suggested price range <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"], precision: 0)}</mark> - <mark>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"], precision: 0)}</mark></h4>
+            <h4> Your Suggested price range is <h3>$#{number_to_delimited(ins["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(ins["content"]["suggested_subject_price"]["max"], precision: 0)}</h3></h4>
         </struct>
       </struct>
     """

@@ -151,6 +151,7 @@ defmodule ExcyteWeb.Router do
   scope "/", ExcyteWeb do
     pipe_through [:public]
     live "/", Home
+    live "/privacy", Privacy
     live "/agent/signup", AgentSignup
     live "/brokerage/signup", BrokerageSignup
   end

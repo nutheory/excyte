@@ -4621,6 +4621,10 @@ h4 {
   display: grid;
 }
 
+.contents {
+  display: contents;
+}
+
 .hidden {
   display: none;
 }
@@ -5365,11 +5369,6 @@ h4 {
 .bg-green-200 {
   --tw-bg-opacity: 1;
   background-color: rgba(187, 247, 208, var(--tw-bg-opacity));
-}
-
-.bg-green-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(22, 163, 74, var(--tw-bg-opacity));
 }
 
 .bg-opacity-95 {
@@ -6246,16 +6245,6 @@ h4 {
   .md\:px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
-  }
-
-  .md\:py-4 {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-  }
-
-  .md\:py-2 {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
   }
 
   .md\:py-3 {

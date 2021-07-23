@@ -35,6 +35,9 @@ defmodule Excyte.Assets do
          {:ok, struct} <- Repo.delete(asset) do
       {:ok, struct}
     else
+      {:error, "not_found", ["Not Found"]} ->
+        Repo.get_by!(Asset, %{uploaded_by_id: uid, id: asset_id})
+        |> Repo.delete()
       {:error, err} -> IO.inspect(err, label: "ERR")
     end
   end

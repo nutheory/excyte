@@ -152,6 +152,7 @@ defmodule ExcyteWeb.Router do
     pipe_through [:public]
     live "/", Home
     live "/privacy", Privacy
+    live "/terms", Terms
     live "/agent/signup", AgentSignup
     live "/brokerage/signup", BrokerageSignup
   end

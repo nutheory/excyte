@@ -37,6 +37,10 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 ## Links
 
+[https://app.termly.io/dashboard/website/a8753703-0c59-4716-9c48-dbf36dd964c4/terms-of-service](Termly Terms of service)
+
+[https://www.privacypolicygenerator.info](Privacy Policy)
+
 [https://heroicons.com](Hero Icons)
 
 [https://remixicon.com](Remix Icons)

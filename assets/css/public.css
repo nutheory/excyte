@@ -17,20 +17,24 @@
     display: none;
   }
 
+  p {
+    @apply xl:text-lg;
+  }
+
   h1 {
-    @apply text-3xl leading-none font-extrabold;
+    @apply text-4xl leading-none font-extrabold;
   }
 
   h2 {
-    @apply text-4xl leading-none font-bold;
+    @apply text-3xl font-extrabold;
   }
 
   h3 {
-    @apply text-xl leading-none font-bold;
+    @apply text-2xl leading-none font-bold;
   }
 
   h4 {
-    @apply text-lg leading-none font-bold;
+    @apply text-xl leading-none font-bold;
   }
 }
 

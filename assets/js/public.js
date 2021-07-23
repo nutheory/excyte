@@ -1,12 +1,15 @@
+import '@mux/videojs-kit/dist/index.css'
 import "../css/public.css"
 
 import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
+import videojs from '@mux/videojs-kit'
 import {validatePassword, toggleShowPassword} from "./auth"
 import topbar from "topbar"
 
+console.log('loaded')
 const regPassword = document.querySelector("#invite_password")
 const showPassword = document.querySelector("#show_password_txt")
 

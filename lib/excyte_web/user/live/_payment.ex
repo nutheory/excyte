@@ -10,12 +10,12 @@ defmodule ExcyteWeb.Settings.Payment do
   end
 
   def update(assigns, socket) do
-    account = Accounts.get_account!(assigns.current_user.account_id)
+    account = if @current_user, do: Accounts.get_account!(assigns.current_user.account_id), else: nil
     {:ok, assign(socket,
       intent: nil,
       account: account,
       payment_success: false,
-      plan: plan_details(account.source_plan_id),
+      plan: nil,
       current_user: assigns.current_user
     )}
   end
@@ -57,6 +57,7 @@ defmodule ExcyteWeb.Settings.Payment do
   end
 
   defp plan_details(plan_id) do
+
     Enum.find(Application.get_env(:excyte, :pricing_items), fn p -> p.plan_id === plan_id end)
   end
 end

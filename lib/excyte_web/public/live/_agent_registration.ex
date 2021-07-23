@@ -1,20 +1,16 @@
 defmodule ExcyteWeb.AgentRegistration do
-  use ExcyteWeb, :live_public_view
-  alias Excyte.{Accounts, Accounts.User, Agents.Agent}
-  alias ExcyteWeb.{UserView, Helpers.Utilities}
+  use ExcyteWeb, :live_component
+  alias Excyte.{Accounts, Agents.Agent}
+  alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
-  def render(assigns), do: UserView.render("agent_registration.html", assigns)
+  def render(assigns), do: PublicView.render("agent_registration.html", assigns)
 
-  def mount(params, _sesh, socket) do
+  def update(_assigns, socket) do
     cs = Agent.pre_register_agent(%Agent{}, %{})
-    sp = Enum.find(Application.get_env(:excyte, :pricing_items), fn x ->
-      x.friendly_name === params["plan"]
-    end)
-    plan_id = if sp, do: sp.plan_id, else: nil
 
     {:ok, assign(socket,
       changeset: cs,
-      selected_plan: plan_id,
+      selected_plan: nil,
       current_user: nil,
       password_type: "password",
       password_value: "",

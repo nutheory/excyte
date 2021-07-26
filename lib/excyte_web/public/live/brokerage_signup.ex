@@ -1,21 +1,15 @@
-defmodule ExcyteWeb.BrokerageRegistration do
+defmodule ExcyteWeb.BrokerageSignup do
   use ExcyteWeb, :live_public_view
   alias Excyte.{Accounts, Accounts.User, Agents.Agent}
-  alias ExcyteWeb.{UserView, Helpers.Utilities}
+  alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
-  def render(assigns), do: UserView.render("brokerage_registration.html", assigns)
+  def render(assigns), do: PublicView.render("brokerage_signup.html", assigns)
 
-  def mount(params, _sesh, socket) do
+  def mount(_params, _sesh, socket) do
     cs = Agent.pre_register_brokerage(%Agent{}, %{})
-    sp = Enum.find(Application.get_env(:excyte, :pricing_items), fn x ->
-      x.friendly_name === params["plan"]
-    end)
-    plan_id = if sp, do: sp.plan_id, else: nil
 
     {:ok, assign(socket,
       changeset: cs,
-      selected_plan: plan_id,
-      current_user: nil,
       password_type: "password",
       password_value: "",
       show_text: "show password"

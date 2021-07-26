@@ -3,7 +3,26 @@ defmodule Excyte.Accounts.Billing do
     Methods for interacting with Stripes API
   """
   alias Excyte.{Accounts, Activities}
-  alias Stripe.{Customer, PaymentMethod, Subscription, Plan, Invoice}
+  alias Stripe.{Customer, PaymentMethod, Session, Subscription, Plan, Invoice}
+
+  def create_checkout_session(price_id) do
+    url = Application.get_env(:excyte, :base_url)
+    case Session.create(%{
+      success_url: "#{url}stripe/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "#{url}stripe/canceled",
+      payment_method_types: ["card"],
+      mode: "subscription",
+      line_items: [%{
+        quantity: 1,
+        price: price_id
+      }]
+    }) do
+      {:ok, res} ->
+        IO.inspect(res, label: "RES")
+        res
+      {:error, err} -> Activities.handle_errors(err, "Billing.create_checkout_session")
+    end
+  end
 
   def get_invoice_history(customer_id, limit) do
     limit = if limit === nil, do: 10, else: limit
@@ -85,7 +104,24 @@ defmodule Excyte.Accounts.Billing do
   def cancel_subscription(acc_id) do
     acc = Accounts.get_account!(acc_id)
 
-    with {:ok, _} <- Subscription.delete(acc.source_subscription_id),
+    with {:ok, _} <- Subscription.update(acc.source_subscription_id, %{cancel_at_period_end: true}),
+         {:ok, updated} <-
+           Accounts.update_account_details(acc_id, %{
+             status: "inactive",
+             source_subscription_id: nil,
+             source_plan_id: nil
+           }) do
+      {:ok, updated}
+    else
+      {:error, cancel_err} ->
+        Activities.handle_errors(cancel_err, "Billing.cancel_subscription")
+    end
+  end
+
+  def reactivate_subscription(acc_id) do
+    acc = Accounts.get_account!(acc_id)
+
+    with {:ok, _} <- Subscription.update(acc.source_subscription_id, %{cancel_at_period_end: false}),
          {:ok, updated} <-
            Accounts.update_account_details(acc_id, %{
              status: "inactive",
@@ -123,7 +159,7 @@ defmodule Excyte.Accounts.Billing do
   defp create_initial_subscription(customer_id, plan_id, trial_length) do
     case Subscription.create(%{
       customer: customer_id,
-      items: [%{plan: plan_id}],
+      items: [%{price: plan_id}],
       trial_period_days: trial_length
     },
            expand: ["latest_invoice.payment_intent"]

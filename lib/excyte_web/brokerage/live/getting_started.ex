@@ -25,7 +25,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
       cond do
         params["step"] !== nil -> params["step"]
         length(a.mls_list) === 0 -> "mls"
-        a.current_user.current_account_status !== "active" -> "payment"
+        a.account.current_period_end === nil -> "payment"
         a.brokerage_profile.updated_by_user === false -> "brokerage_profile"
         a.profile.updated_by_user === false -> "agent_profile"
         true -> "completed"
@@ -46,9 +46,5 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
         return_to: "/brokerage/getting-started?step=#{current_step}"
       )}
     end
-  end
-
-  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
-    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
   end
 end

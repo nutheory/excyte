@@ -14,6 +14,7 @@ defmodule Excyte.Accounts.Account do
     field(:source_customer_id, :string)
     field(:source_subscription_id, :string)
     field(:source_plan_id, :string)
+    field(:current_period_end, :utc_datetime)
     timestamps()
   end
 
@@ -25,7 +26,8 @@ defmodule Excyte.Accounts.Account do
       :source_customer_id,
       :source_plan_id,
       :source_subscription_id,
-      :payment_method_id
+      :payment_method_id,
+      :current_period_end
       ])
   end
 
@@ -36,7 +38,8 @@ defmodule Excyte.Accounts.Account do
       :amount,
       :source_plan_id,
       :source_subscription_id,
-      :payment_method_id
+      :payment_method_id,
+      :current_period_end
       ])
   end
 

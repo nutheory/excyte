@@ -1,3 +1,14 @@
+export const getEnv = () => {
+  const loc = window.location.host
+  if (loc.includes('staging.')) {
+    return 'staging'
+  } else if (loc.includes('ngrok') || loc.includes('localhost')) {
+    return 'dev'
+  } else {
+    return 'prod'
+  }
+}
+
 export const verifyLink = (link) => {
   const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
   const regex = new RegExp(expression)
@@ -18,3 +29,4 @@ export function debounce(func, wait, immediate) {
 		if (callNow) func.apply(context, args);
 	};
 };
+

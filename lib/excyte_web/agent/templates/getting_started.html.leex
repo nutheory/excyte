@@ -1,44 +1,39 @@
 <div class="md:px-6 xl:px-8 mt-20 lg:mt-28 mb-6">
   <div class="max-w-2xl mx-auto">
-    <h2>Getting Started</h2>
-    <p class="mt-2 mb-12">This is a one time setup to get you up and running with our product. You can <span class="bg-yellow-200">edit anything done here under settings</span> in the future if you need to.</p>
+    <div class="flex">
+      <div class="flex-1">
+        <h2 class="leading-none mb-0">Getting Started</h2>
+      </div>
+      <div>
+        <h4 class="text-gray-500">Step
+          <span class="text-2xl text-gray-700">
+            <%= case @current_step do %>
+              <% "mls" -> %>1
+              <% "payment" -> %>2
+              <% "profile" -> %>3
+            <% end %>
+          </span> of 3
+        </h4>
+      </div>
+    </div>
+    <p class="mb-8 lg:mb-12">This is a one time setup to get you up and running with our product. You can <span class="bg-yellow-200">edit anything done here under settings</span> in the future if you need to.</p>
   </div>
   <%= case @current_step do %>
     <% "mls" -> %>
       <div class="w-full md:w-1/2 xl:w-1/3 mx-auto">
-        <div class="flex">
-          <div class="flex-1">
-            <h2 class="text-gray-600 font-bold pb-2">Step 1 of 3</h2>
-          </div>
-          <div>
-            <%= if length(@mls_list) > 0 do %>
-              <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "payment") %>
-            <% end %>
-          </div>
-        </div>
-        <%= live_component @socket, MlsAuth, return_to: @return_to, current_user: @current_user, id: :mls %>
-        <%= if length(@mls_list) > 0 do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "payment"), replace: false do %>
-            <div class="action-button my-6">Continue...</div>
-          <% end %>
-        <% end %>
+        <%= live_render @socket, MlsAuth, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :mls_auth_gsa %>
       </div>
 
     <% "payment" -> %>
-      <div class="w-full lg:w-1/2 mx-auto">
-        <div class="flex">
-          <div class="flex-1">
-            <h3 class="text-gray-600 font-bold pb-2 pl-1">Step 2 of 3</h3>
-          </div>
-        </div>
-        <%= if @account.status === "new" do %>
-          <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+      <div class="w-full md:w-1/2 mx-auto">
+        <%= if @account.current_period_end === nil do %>
+          <%= live_render @socket, Subscription, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :agent_subscription %>
         <% else %>
           <div class="text-center">
             <h2 class="py-8 link">This step has been completed</h2>
             <h3><%= live_patch "Click here to edit payment info in settings", to: Routes.live_path(@socket, Settings.Dashboard, section: "billing") %></h3>
         <% end %>
-        <%= if @account.status !== "new" do %>
+        <%= if @account.current_period_end !== nil do %>
           <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false do %>
             <div class="action-button my-6">Continue...</div>
           <% end %>
@@ -47,10 +42,7 @@
 
     <% "profile" -> %>
       <div class="w-full lg:w-2/3 max-w-xl mx-auto">
-        <div class="flex">
-          <div class="flex-1">
-            <h2 class="text-gray-600 font-bold pb-2">Step 3 of 3</h2>
-          </div>
+        <div class="text-right">
           <div>
             <%= if @current_user.completed_setup do %>
               <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, Dashboard) %>

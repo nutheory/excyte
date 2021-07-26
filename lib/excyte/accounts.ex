@@ -571,15 +571,15 @@ defmodule Excyte.Accounts do
   end
 
   defp create_stripe_customer(attrs) do
-    if Application.get_env(:excyte, :env) !== :prod do
-      {:ok, %{id: "cus_IMlPxOZWcb0Y2u"}}
-    else
+    # if Application.get_env(:excyte, :env) !== :prod do
+    #   {:ok, %{id: "cus_IMlPxOZWcb0Y2u"}}
+    # else
       Customer.create(%{
         email: attrs.email,
         description: "Excyte - Agent",
         name: attrs.full_name
       })
-    end
+    # end
   end
 
   defp notify_subscribers({:ok, result}, event) do

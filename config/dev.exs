@@ -1,7 +1,6 @@
 use Mix.Config
 
 import_config "dev_open_id_providers.exs"
-import_config "pricing.exs"
 # import_config "proxies.exs"
 config :excyte, env: :dev
 
@@ -13,11 +12,6 @@ config :excyte, Excyte.Repo,
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
-
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-
 
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
@@ -68,6 +62,66 @@ config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
 config :excyte, :us_real_estate_rapid_api_key, System.get_env("US_REAL_ESTATE_RAPID_API")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
+
+config :excyte, :agent_plans, [
+  %{
+    name: "Monthly",
+    id: "month",
+    price: "24.95",
+    default: true,
+    stripe_id: "price_1JGYHDJYg86TDWnAe4zUaQPb",
+    trial_period: 30
+  }, %{
+    name: "Yearly",
+    id: "year",
+    price: "249.95",
+    default: false,
+    stripe_id: "price_1JGYHDJYg86TDWnAHZ0w9z74",
+    trial_period: 30
+  }
+]
+
+config :excyte, :brokerage_plans, [
+  %{
+    name: "10 - 20 Agents",
+    max_agent_count: 20,
+    order: 1,
+    id: "twenty",
+    price: "199.95",
+    default: true,
+    stripe_id: "price_1JH4vqJYg86TDWnAWVtBgBjh",
+    trial_period: 30
+  }, %{
+    name: "20 - 30 Agents",
+    max_agent_count: 30,
+    order: 2,
+    id: "thirty",
+    price: "299.95",
+    default: false,
+    stripe_id: "price_1JH4vqJYg86TDWnAqyHZK6L4",
+    trial_period: 30
+  }, %{
+    name: "30 - 40 Agents",
+    max_agent_count: 40,
+    order: 3,
+    id: "forty",
+    price: "399.95",
+    default: false,
+    stripe_id: "price_1JH4vqJYg86TDWnARzGeKxAP",
+    trial_period: 30
+  }, %{
+    name: "40 - 50 Agents",
+    max_agent_count: 50,
+    order: 4,
+    id: "fifty",
+    price: "499.95",
+    default: false,
+    stripe_id: "price_1JH4vqJYg86TDWnATXtsb1wy",
+    trial_period: 30
+  }
+]
+
+
 # config :excyte, :twilio_numbers, System.get_env("TWILIO_NUMBERS") |> File.read!()
 # config :excyte, env: "#{Mix.env()}"
 

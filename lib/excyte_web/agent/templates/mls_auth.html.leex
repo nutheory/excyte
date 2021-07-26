@@ -1,19 +1,22 @@
 <div>
   <div class="mb-4 bg-white shadow rounded-md p-4">
-    <p class="text-sm text-gray-700 leading-4 mt-1">Please select your MLS.</p>
+    <h4>Connect to your MLS</h4>
+    <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600">If you dont see your MLS we may not fully support your region yet. Feel free to call us to inquire... (949) 207-8769</p>
     <div class="mt-2">
-      <form phx-submit="authorize" phx-change="get-agents" phx-target="<%= @myself %>">
-        <div class="dropdown">
-          <select name="mls" id="mls_selector" class="dropdown-inner">
-            <option value="" id="no_mls_selection">Select MLS</option>
-            <%= for opt <- @mls_opts do %>
-              <option value="<%= opt.val %>"><%= opt.name %></option>
-            <% end %>
-          </select>
-        </div>
-        <%= if @agents do %>
+      <form phx-submit="authorize">
+        <%= live_component @socket, Dropdown,
+          options: @mls_opts,
+          selected: @mls,
+          attr: :mls,
+          convert_to_range: false,
+          show_top_label: false,
+          callback: :set_mls,
+          label: "Select your MLS",
+          id: :set_mls_dropdown
+        %>
+        <%= if @agents && length(@agents) > 0 do %>
           <div class="my-4">
-            <h4>Do you see your name?</h4>
+            <p class="font-bold text-base">Do you see your name?</p>
             <ul>
               <%= for agent <- @agents do %>
                 <li class="p-2 flex">
@@ -21,38 +24,55 @@
                     <p><%= agent["MemberFirstName"] %> <%= agent["MemberLastName"] %></p>
                     <p>ID: <span class=""><%= agent["MemberLoginId"] %></span></p>
                   </div>
-                  <button class="action block" phx-click="select-agent" phx-value- phx-target="<%= @myself %>">Select</button>
+                  <button class="action block" phx-click="select-agent" phx-value-agent-id="">Select</button>
                 </li>
               <% end %>
               <li>or enter your <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" /></li>
             </ul>
           </div>
-        <% end %>
-        <%= if @show_auth_button do %>
-          <div class="mt-4">
-            <button type="submit" class="submit w-full block">Authorize</button>
+        <% else %>
+          <div class="my-4">
+            <label>Enter your MLS Login ID (recommended)</label>
+            <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" />
           </div>
         <% end %>
+        <div class="mt-4">
+          <%= if @show_auth_button do %>
+            <button type="submit" class="submit w-full block">Authorize</button>
+          <% else %>
+            <button type="submit" class="submit w-full block" disabled>Authorize</button>
+          <% end %>
+        </div>
       </form>
     </div>
+    <%= if length(@mls_list) > 0 do %>
+      <h4 class="text-base leading-none font-bold px-1 mt-6 mb-1">Currently connected</h4>
+      <ul class="border-t border-gray-400">
+        <%= for cred <- @mls_list do %>
+          <li class="border-b border-gray-300 px-1 py-1 flex">
+            <div class="flex-1">
+              <p class="font-bold text-sm leading-none"><%= cred.mls_name %></p>
+              <p class="text-gray-400 text-sm"><%= cred.username %></p>
+            </div>
+            <a href="#" class="text-red-400 block pt-1 mt-1" phx-click="disconnect" phx-value-cred-id="<%= cred.id %>">
+              <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+              </svg>
+              <span class="text-sm leading-none pt-1icon-align">disconnect</span>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
-  <%= if length(@mls_list) > 0 do %>
-    <h3 class="text-lg leading-none font-bold text-green-500 px-2 py-1">Currently connected</h3>
-    <ul class="border-t border-gray-400">
-      <%= for cred <- @mls_list do %>
-        <li class="border-b border-gray-300 px-2 py-2 flex">
-          <div class="flex-1">
-            <p class="font-bold text-sm leading-none"><%= cred.mls_name %></p>
-            <p class="text-gray-400 text-sm"><%= cred.username %></p>
-          </div>
-          <a href="#" class="text-red-400 block pt-1 mt-1" phx-click="disconnect" phx-value-cred-id="<%= cred.id %>" phx-target="<%= @myself %>">
-            <svg class="w-6 h-6 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
-            </svg>
-            <span class="icon-align">disconnect</span>
-          </a>
-        </li>
-      <% end %>
-    </ul>
+  <%= if Map.fetch!(@socket, :id) === "mls_auth_gsa" && length(@mls_list) > 0 do %>
+    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Agent.GettingStarted, step: "payment"), replace: false do %>
+      <div class="action-button my-6">Continue...</div>
+    <% end %>
+  <% end %>
+  <%= if Map.fetch!(@socket, :id) === "mls_auth_gsb" && length(@mls_list) > 0 do %>
+    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "payment"), replace: false do %>
+      <div class="action-button my-6">Continue...</div>
+    <% end %>
   <% end %>
 </div>

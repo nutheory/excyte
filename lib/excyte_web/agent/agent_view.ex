@@ -3,11 +3,12 @@ defmodule ExcyteWeb.AgentView do
   alias ExcyteWeb.Helpers.Utilities
   alias ExcyteWeb.Agent.{
     Dashboard,
-    InsightCard,
     GettingStarted,
+    InsightCard,
     MlsAuth,
     Profile,
-    SendToClient
+    SendToClient,
+    Subscription
   }
   alias ExcyteWeb.Components.{ContactForm, Toggle, JumboButton, Dropdown}
   alias ExcyteWeb.Insight.{CreateCma, CreateShowcase, CreateBuyerTour}

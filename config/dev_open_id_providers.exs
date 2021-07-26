@@ -2,10 +2,10 @@ use Mix.Config
 
 config :excyte,
        :mls_auth_options, [
-         %{val: "miamire", name: "Miami AOR (MIAMIRE)", type: "bridge"},
-         %{val: "riar", name: "Rhode Island (RIAR)", type: "bridge"},
-         %{val: "tmls", name: "Triangle MLS (TMLS)", type: "bridge"},
-         %{val: "test", name: "Test", type: "bridge"}
+         %{value: "miamire", text: "Miami AOR (MIAMIRE)", type: "bridge"},
+         %{value: "riar", text: "Rhode Island (RIAR)", type: "bridge"},
+         %{value: "tmls", text: "Triangle MLS (TMLS)", type: "bridge"},
+         %{value: "test", text: "Test", type: "bridge"}
         ]
 
 config :excyte,

@@ -36,12 +36,12 @@
         </div>
         <%= password_input f, :password, required: true, class: "text-field" %>
       </div>
-      <div class="ml-1 mt-2 flex items-center justify-between">
-        <div class="flex items-center">
-          <%= checkbox f, :remember_me, class: "form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" %>
-          <%= label f, :remember_me, "Remember me", class: "ml-2 block text-sm leading-5 text-gray-900" %>
-        </div>
-      </div>
+      <%# <div class="ml-1 mt-2 flex items-center justify-between">
+        <div class="flex items-center"> %>
+          <%#= checkbox f, :remember_me, class: "form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" %>
+          <%#= label f, :remember_me, "Remember me", class: "ml-2 block text-sm leading-5 text-gray-900" %>
+        <%# </div>
+      </div> %>
       <div class="mt-4">
           <button type="submit" class="submit w-full">Login</button>
       </div>

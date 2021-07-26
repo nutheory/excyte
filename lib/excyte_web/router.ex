@@ -119,6 +119,13 @@ defmodule ExcyteWeb.Router do
     post "/webhooks", WebhookController, :mux_incoming
   end
 
+  scope "/stripe", ExcyteWeb do
+    pipe_through [:hooks]
+    post "/webhooks", WebhookController, :stripe_incoming
+    post "/success", WebhookController, :checkout_success
+    post "/cancel", WebhookController, :checkout_cancel
+  end
+
   scope "/", ExcyteWeb do
     pipe_through [:app_browser, :require_authenticated_user]
     get "/uploader/auth", UploadController, :aws_auth

@@ -25,7 +25,6 @@ defmodule Excyte.Accounts.User do
     field :brokerage_role, :string
     field :excyte_role, :string
     field :password, :string, virtual: true
-    field :current_account_status, :string
     field :contact_settings, MapType
     field :current_mls, MapType
     field :current_avatar, :string
@@ -53,7 +52,6 @@ defmodule Excyte.Accounts.User do
     |> cast(attrs, [
       :current_mls,
       :current_avatar,
-      :current_account_status,
       :completed_setup
     ])
   end

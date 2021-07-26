@@ -96,7 +96,6 @@ defmodule ExcyteWeb.Agent.Profile do
       mls_details = ResoMemberApi.getMemberDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
         %Contact{
-          id: cnt.id,
           temp_id: Utilities.get_temp_id(),
           name: cnt.name,
           content: cnt.content,
@@ -163,7 +162,10 @@ defmodule ExcyteWeb.Agent.Profile do
          {:ok, _agent} <- Accounts.update_user(a.cu_id, %{completed_setup: true, current_avatar: avatar}) do
       {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
     else
-      {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset, label: "HELLO")
+        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 

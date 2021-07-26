@@ -23,7 +23,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def full_insight_type_to_name(type) do
     case type do
-      "cma" -> "Comparable Market Analysis"
+      "cma" -> "Comparitive Market Analysis"
       "buyer_tour" -> "Buyer Tour"
       "showcase" -> "Showcase"
     end
@@ -310,7 +310,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
           "condo" -> [%{name: "Condo", value: "condominium"}]
           _ -> [%{name: "Attached", value: "attached"}]
         end
-      # _ ->
+      _ -> nil
     end
   end
 

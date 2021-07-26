@@ -2,6 +2,32 @@ defmodule ExcyteWeb.WebhookController do
   use ExcyteWeb, :controller
   alias Excyte.{Activities, Assets}
 
+  def stripe_incoming(conn, _params) do
+    secret = Application.get_env(:excyte, :stripe_signing_secret)
+    signature = List.first(get_req_header(conn, "stripe-signature"))
+    payload = List.first(conn.assigns.raw_body)
+    case Stripe.Webhook.construct_event(payload, signature, secret) do
+      {:ok, %Stripe.Event{} = event} ->
+        IO.inspect(event, label: "EV")
+        # case event.type do
+        #   "charge.failed" ->
+        #   "invoice.payment_failed" ->
+        #   "customer.source.expiring" ->
+        #   "customer.deleted" ->
+        # end
+
+      {:error, reason} ->
+        IO.inspect(reason, label: "RE")
+    end
+    send_resp(conn, 200, "")
+  end
+
+  def checkout_success(conn, params) do
+    IO.inspect(conn, label: "Conn")
+    IO.inspect(params, label: "PAR")
+    send_resp(conn, 200, "")
+  end
+
   def mux_incoming(conn, params) do
     secret = Application.get_env(:mux, :signing_secret)
     signature_header = List.first(get_req_header(conn, "mux-signature"))
@@ -17,7 +43,7 @@ defmodule ExcyteWeb.WebhookController do
     send_resp(conn, 200, "")
   end
 
-  def save_created_video(%{"data" => data}) do
+  defp save_created_video(%{"data" => data}) do
     stream = hd(data["playback_ids"])
     case Assets.update_asset(data["passthrough"], %{
       source_id: data["id"],

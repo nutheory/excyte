@@ -53,6 +53,7 @@ defmodule Excyte.Utils.Contact do
         String.match?(content, ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/) -> put_change(changeset, :type, "phone")
         String.match?(content, ~r/^\S+@\S+\.\S+$/) -> put_change(changeset, :type, "email")
         String.match?(content, ~r/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/) -> put_change(changeset, :type, "url")
+        true -> put_change(changeset, :type, "")
       end
     else
       changeset

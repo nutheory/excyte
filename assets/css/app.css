@@ -45,15 +45,15 @@
   }
 
   h2 {
-    @apply md:mb-2 text-bgray-800 text-xl md:text-2xl lg:text-3xl font-extrabold;
+    @apply md:mb-2 text-bgray-700 text-xl md:text-2xl lg:text-3xl font-extrabold;
   }
 
   h3 {
-    @apply md:mb-2 text-bgray-800 text-lg md:text-xl lg:text-2xl font-extrabold;
+    @apply md:mb-2 text-bgray-700 text-lg md:text-xl lg:text-2xl font-extrabold;
   }
 
   h4 {
-    @apply md:mb-2 text-bgray-800 text-base md:text-lg lg:text-xl font-extrabold;
+    @apply md:mb-2 text-bgray-700 text-base md:text-lg lg:text-xl font-extrabold;
   }
 }
 

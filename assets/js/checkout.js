@@ -1,8 +1,10 @@
-const stripe = Stripe('pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb')
+import { getEnv } from './utilities'
+const publishable_key = getEnv() === 'dev' ? 'pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb' : 'pk_live_pX4jrl2SXBESnCScj7xWNQMN00ut7ma0g8'
+const stripe = Stripe(publishable_key)
 export const InitCheckout = {
   mounted() {
     const submitButton = this.el.querySelector('button[type=submit]')
-    const successCallback = paymentMethod => { this.pushEventTo('#payment-form', 'payment-success', paymentMethod, (reply) => {
+    const successCallback = paymentMethod => { this.pushEvent('payment-method-success', paymentMethod, (reply) => {
       submitButton.disabled = false
       submitButton.querySelector('svg').classList.add("hidden")
       submitButton.querySelector('svg').classList.remove("inline-block")

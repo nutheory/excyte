@@ -18654,7 +18654,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "InitCheckout": () => (/* binding */ InitCheckout)
 /* harmony export */ });
-var stripe = Stripe('pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb');
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./js/utilities.js");
+
+var publishable_key = (0,_utilities__WEBPACK_IMPORTED_MODULE_0__.getEnv)() === 'dev' ? 'pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb' : 'pk_live_pX4jrl2SXBESnCScj7xWNQMN00ut7ma0g8';
+var stripe = Stripe(publishable_key);
 var InitCheckout = {
   mounted: function mounted() {
     var _this = this;
@@ -18662,7 +18665,7 @@ var InitCheckout = {
     var submitButton = this.el.querySelector('button[type=submit]');
 
     var successCallback = function successCallback(paymentMethod) {
-      _this.pushEventTo('#payment-form', 'payment-success', paymentMethod, function (reply) {
+      _this.pushEvent('payment-method-success', paymentMethod, function (reply) {
         submitButton.disabled = false;
         submitButton.querySelector('svg').classList.add("hidden");
         submitButton.querySelector('svg').classList.remove("inline-block");
@@ -19411,7 +19414,7 @@ __webpack_require__.r(__webpack_exports__);
       };
 
       if (HTMLAttributes.type === 'url') {
-        button.setAttribute('x-on:click', "window.open('tel:".concat(HTMLAttributes.content, "', '_self')"));
+        button.setAttribute('x-on:click', "window.open('".concat(HTMLAttributes.content, "', '_self')"));
         label.innerHTML = HTMLAttributes.name;
         value.innerHTML = HTMLAttributes.content;
         icon.innerHTML = "<svg class=\"w-10 h-10 accent-svg\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1\"></path>\n          </svg>";
@@ -19425,9 +19428,13 @@ __webpack_require__.r(__webpack_exports__);
         label.innerHTML = HTMLAttributes.name;
         value.innerHTML = HTMLAttributes.content;
         icon.innerHTML = "<svg class=\"w-10 h-10 accent-svg\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\"></path>\n          </svg>";
-      } else {
+      } else if (HTMLAttributes.type === 'address') {
         value.innerHTML = HTMLAttributes.content;
         icon.innerHTML = "<svg class=\"w-10 h-10 accent-svg\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z\"></path>\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 11a3 3 0 11-6 0 3 3 0 016 0z\"></path>\n          </svg>";
+      } else {
+        label.innerHTML = HTMLAttributes.name;
+        value.innerHTML = formatPhone(HTMLAttributes.content);
+        icon.innerHTML = "<svg class=\"w-10 h-10 accent-svg\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\"></path>\n        </svg>";
       }
 
       innerStruct.classList.add('flex');
@@ -20551,9 +20558,21 @@ var InitColorPicker = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getEnv": () => (/* binding */ getEnv),
 /* harmony export */   "verifyLink": () => (/* binding */ verifyLink),
 /* harmony export */   "debounce": () => (/* binding */ debounce)
 /* harmony export */ });
+var getEnv = function getEnv() {
+  var loc = window.location.host;
+
+  if (loc.includes('staging.')) {
+    return 'staging';
+  } else if (loc.includes('ngrok') || loc.includes('localhost')) {
+    return 'dev';
+  } else {
+    return 'prod';
+  }
+};
 var verifyLink = function verifyLink(link) {
   var expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
   var regex = new RegExp(expression);

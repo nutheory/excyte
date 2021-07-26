@@ -1,0 +1,47 @@
+<div class="bg-white mb-12 shadow rounded-md p-4">
+  <h4>Subscription</h4>
+  <p class="text-base">Select a plan</p>
+  <div class="grid grid-cols-2 gap-4 w-full md:w-4/5 mx-auto m-4">
+    <%= for plan <- @plans do %>
+      <%= if @plan.id === plan.id do %>
+        <div class="relative text-center p-2 flex flex-col items-center justify-center rounded border border-cyan-700 text-cyan-700 bg-cyan-50">
+          <h4 class="mb-0">Up to <span class="text-3xl"><%= plan.max_agent_count %></span></h4>
+          <h4 class="mb-1 leading-none">Agents</h4>
+          <h2 class="mb-0 leading-none">$<%= plan.price %></h2>
+          <p class="italic">Monthly</p>
+          <div class="absolute top-1 left-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+      <% else %>
+        <div
+          phx-click="toggle-selected-plan"
+          phx-value-option="<%= plan.id %>"
+          class="text-center p-2 flex flex-col items-center justify-center rounded border border-white cursor-pointer">
+          <h4 class="mb-0">Up to <span class="text-3xl"><%= plan.max_agent_count %></span></h4>
+          <h4 class="mb-1 leading-none">Agents</h4>
+          <h2 class="mb-0 leading-none">$<%= plan.price %></h2>
+          <p class="italic">Monthly</p>
+        </div>
+      <% end %>
+    <% end %>
+    <div class="col-span-2">
+      <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600 ">If you have a brokerage larger than 50 agents we would love to accommodate you also. Give us a call us to inquire... (949) 207-8769</p>
+    </div>
+  </div>
+  <div class="text-base px-1 mt-6 mb-4">
+    <%= case @plan.id do %>
+      <% "twenty" -> %>
+        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$199.95</span>.</p>
+      <% "thirty" -> %>
+        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$299.95</span>.</p>
+      <% "forty" -> %>
+        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$399.95</span>.</p>
+      <% "fifty" -> %>
+        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$499.95</span>.</p>
+    <% end %>
+  </div>
+  <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+</div>

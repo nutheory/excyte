@@ -3,7 +3,7 @@
     <div class="ml-4 flex items-center justify-center h-full">
       <div class="h-10">
         <%= if @current_user do %>
-          <%= link "Back to Dashboard", to: "/agent/dash", class: "fancy" %>
+          <%= link "< Dash", to: "/agent/dash", class: "fancy" %>
         <% end %>
         <%# <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -11,17 +11,16 @@
       </div>
     </div>
     <div class="flex-1 text-right pt-2 lg:pt-4 pr-4">
-    <h4 class="mb-0 leading-none"><%= Utilities.full_insight_type_to_name(@insight_type) %></h4>
+    <h4 class="block md:hidden mb-0 leading-none"><%= Utilities.insight_type_to_name(@insight_type) %></h4>
+    <h4 class="hidden md:block mb-0 -mt-1 leading-none"><%= Utilities.full_insight_type_to_name(@insight_type) %></h4>
     <p><span class="text-sm">created by </span><%= @created_by.full_name %></p>
     </div>
-    <div class="flex items-center justify-center h-full">
-      <div class="text-lg rounded-full flex items-center justify-center font-bold accent-color border-2 lg:border-4 uppercase h-9 w-9 lg:w-14 lg:h-14 z-30 cursor-pointer avatar mr-4">
-        <%= if @created_by.current_avatar do %>
+    <%= if @created_by.current_avatar do %>
+      <div class="flex items-center justify-center h-full">
+        <div class="text-lg rounded-full flex items-center justify-center font-bold accent-color border-2 lg:border-4 uppercase h-9 w-9 lg:w-14 lg:h-14 z-30 cursor-pointer avatar mr-4">
           <div class="rounded-full w-full h-full bg-cover" style="background-image: url(<%= @created_by.current_avatar %>);"></div>
-        <% else %>
-          <%= String.first(@created_by.full_name) %>
-        <% end %>
+        </div>
       </div>
-    </div>
+    <% end %>
   </div>
 </nav>

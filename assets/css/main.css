@@ -97,29 +97,21 @@ nav {
 
 /* Alerts and form errors */
 .alert {
-  position: fixed;
-  top: 0;
-  right: 0;
-  border-bottom: 1px solid transparent;
+  @apply fixed border rounded right-3 bottom-3 py-2 px-3 text-sm lg:text-base cursor-pointer;
+
+  z-index: 100000;
 }
 
 .alert-info {
-  color: #31708f;
-  background-color: #afe2fb;
-  border-color: #31708f;
+  @apply bg-cyan-50 border-cyan-700 text-cyan-700;
 }
 
 .alert-warning {
-  color: #8a6d3b;
-  background-color: #fcf8e3;
-  border-color: #faebcc;
+  @apply bg-yellow-50 border-yellow-600 text-yellow-600;
 }
 
 .alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1;
-  font-size: 0.85rem !important;
+  @apply bg-red-50 border-red-800 text-red-800;
 }
 
 .alert p.inner {

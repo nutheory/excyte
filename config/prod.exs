@@ -29,6 +29,64 @@ config :mux,
   access_token_secret: System.get_env("MUX_SECRET_KEY"),
   signing_secret: System.get_env("MUX_SIGNING_SECRET")
 
+config :excyte, :agent_plans, [
+  %{
+    name: "Monthly",
+    id: "month",
+    price: "24.95",
+    default: true,
+    stripe_id: "price_1JGXyPJYg86TDWnARMsIvm7P",
+    trial_period: 30
+  }, %{
+    name: "Yearly",
+    id: "year",
+    price: "249.95",
+    default: false,
+    stripe_id: "price_1JGXyPJYg86TDWnAbwqMzEdG",
+    trial_period: 30
+  }
+]
+
+config :excyte, :brokerage_plans, [
+  %{
+    name: "10 - 20 Agents",
+    max_agent_count: 20,
+    order: 1,
+    id: "twenty",
+    price: "199.95",
+    default: true,
+    stripe_id: "price_1JH5JTJYg86TDWnAiCRVoNGk",
+    trial_period: 30
+  }, %{
+    name: "20 - 30 Agents",
+    max_agent_count: 30,
+    order: 2,
+    id: "thirty",
+    price: "299.95",
+    default: false,
+    stripe_id: "price_1JH5JTJYg86TDWnApdxUqlCy",
+    trial_period: 30
+  }, %{
+    name: "30 - 40 Agents",
+    max_agent_count: 40,
+    order: 3,
+    id: "forty",
+    price: "399.95",
+    default: false,
+    stripe_id: "price_1JH5JTJYg86TDWnASrEPV9TD",
+    trial_period: 30
+  }, %{
+    name: "40 - 50 Agents",
+    max_agent_count: 50,
+    order: 4,
+    id: "fifty",
+    price: "499.95",
+    default: false,
+    stripe_id: "price_1JH5JUJYg86TDWnAaWIa9xbZ",
+    trial_period: 30
+  }
+]
+
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 # Do not print debug messages in production

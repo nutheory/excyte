@@ -1,7 +1,6 @@
 import Config
 
 import_config "open_id_providers.exs"
-import_config "pricing.exs"
 config :excyte, env: :prod
 
 # For production, don't forget to configure the url host

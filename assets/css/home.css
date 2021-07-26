@@ -25,3 +25,31 @@
 .alert:empty {
   display: none;
 }
+
+.invalid-feedback {
+  color: #a94442;
+  display: block;
+  font-size: 0.75rem !important;
+}
+
+span.icon-align {
+  @apply inline-block pl-1 pt-1 align-top;
+}
+
+.invalid-feedback::first-letter {
+  text-transform: uppercase;
+}
+
+.vjs-tech:focus {
+  outline: none;
+}
+
+.cta {
+  @apply block text-right p-4 md:px-6 md:py-3 shadow bg-gradient-to-br rounded-md ml-4 leading-6 text-white;
+
+  text-shadow: 1px 1px 2px black;
+}
+
+.deep-text-shadow {
+  text-shadow: 1px 1px 2px black;
+}

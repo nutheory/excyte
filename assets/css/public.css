@@ -19,7 +19,12 @@
 
   a:link,
   a:visited {
-    @apply underline text-cyan-700;
+    @apply text-cyan-700;
+  }
+
+  a:hover,
+  a:active {
+    @apply underline text-cyan-800;
   }
 
   p {

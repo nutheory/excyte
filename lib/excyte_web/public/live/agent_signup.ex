@@ -50,9 +50,8 @@ defmodule ExcyteWeb.AgentSignup do
           |> put_flash(:info, "Account created. Please check your email for confirmation instructions.")
           |> redirect(to: Routes.user_session_path(socket, :new))
         }
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+      {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
+
     end
-    {:noreply, socket}
   end
 end

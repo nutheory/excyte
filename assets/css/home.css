@@ -53,3 +53,91 @@ span.icon-align {
 .deep-text-shadow {
   text-shadow: 1px 1px 2px black;
 }
+
+blockquote {
+  font-style: italic;
+  font-family: 'Sanchez', serif;
+  line-height: 1.4 !important;
+  position: relative;
+  text-shadow: 0 1px white;
+}
+
+blockquote p {
+  @apply pl-6 my-4;
+
+  font-size: 1.4rem;
+}
+
+.home-example {
+  & .title {
+    @apply text-bgray-300 mb-2;
+  }
+
+  & .showcase-gallery {
+    @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
+
+    & .main-photo {
+      @apply col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 relative w-full pt-2/3 rounded bg-cover bg-center;
+    }
+
+    & .main-photo::before {
+      @apply rounded;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.25)
+    }
+
+    & .main-photo:hover::before {
+      @apply rounded;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    & .preview {
+      @apply block h-28 relative rounded bg-cover bg-center lg:w-full lg:h-full;
+
+      & .icon {
+        @apply bg-bgray-800 bg-opacity-70 rounded-bl rounded-tr absolute top-0 right-0 p-1.5;
+      }
+    }
+
+    & .preview::before {
+      @apply rounded;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.25)
+    }
+
+    & .preview:hover::before {
+      @apply rounded;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    & img {
+      @apply my-0;
+    }
+  }
+}

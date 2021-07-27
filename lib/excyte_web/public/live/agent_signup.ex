@@ -40,18 +40,24 @@ defmodule ExcyteWeb.AgentSignup do
     case Accounts.register_agent(Utilities.key_to_atom(attrs)) do
       {:ok, user} ->
         {:ok, _} =
-          Accounts.deliver_user_confirmation_instructions(
-            user,
-            &Routes.user_confirmation_path(socket, :confirm, &1)
-          )
+          extract_user_token(fn url ->
+            Accounts.deliver_user_confirmation_instructions(user, url)
+          end)
+          |> Accounts.confirm_user()
 
         {:noreply,
           socket
-          |> put_flash(:info, "Account created. Please check your email for confirmation instructions.")
-          |> redirect(to: Routes.user_session_path(socket, :new))
+          |> put_flash(:info, "Agent account created for #{user.email}.")
+          |> redirect(to: "/agent/dash")
         }
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
 
     end
+  end
+
+  defp extract_user_token(fun) do
+    {:ok, captured} = fun.(&"[TOKEN]#{&1}[TOKEN]")
+    [_, token, _] = String.split(captured.text_body, "[TOKEN]")
+    token
   end
 end

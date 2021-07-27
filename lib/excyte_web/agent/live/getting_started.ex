@@ -10,7 +10,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     profile = Agents.get_agent_profile(cu.id)
-
+    if connected?(socket), do: Accounts.subscribe(account.id)
     {:ok, assign(socket,
       current_user: cu,
       account: account,
@@ -46,7 +46,12 @@ defmodule ExcyteWeb.Agent.GettingStarted do
     end
   end
 
-  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
-    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
+  def handle_info({Accounts, [:account, :update], acc}, socket) do
+    {:noreply, assign(socket, account: acc)}
+  end
+
+
+  def handle_info({Accounts, [:user, _], _}, socket) do
+    {:noreply, socket}
   end
 end

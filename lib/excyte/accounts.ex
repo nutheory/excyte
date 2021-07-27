@@ -24,8 +24,8 @@ defmodule Excyte.Accounts do
     muted_text: "#CBD5E1"
   }
 
-  def subscribe(user_id) do
-    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{user_id}")
+  def subscribe(account_id) do
+    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{account_id}")
   end
 
   ## Database getters
@@ -215,6 +215,7 @@ defmodule Excyte.Accounts do
     Repo.get!(Account, acc_id)
     |> Account.update_changeset(attrs)
     |> Repo.update()
+    |> notify_subscribers([:account, :updated])
   end
 
   @doc """

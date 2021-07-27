@@ -50,5 +50,7 @@
       <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$249.95</span>.</p>
     <% end %>
   </div>
-  <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+  <%= if @payment_success !== true do %>
+    <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+  <% end %>
 </div>

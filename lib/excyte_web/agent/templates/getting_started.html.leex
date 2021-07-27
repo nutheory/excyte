@@ -30,13 +30,12 @@
           <%= live_render @socket, Subscription, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :agent_subscription %>
         <% else %>
           <div class="text-center">
-            <h2 class="py-8 link">This step has been completed</h2>
-            <h3><%= live_patch "Click here to edit payment info in settings", to: Routes.live_path(@socket, Settings.Dashboard, section: "billing") %></h3>
-        <% end %>
-        <%= if @account.current_period_end !== nil do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false do %>
-            <div class="action-button my-6">Continue...</div>
-          <% end %>
+            <h2 class="py-8 link">Thank you, payment method saved.</h2>
+            <h3>We will notify you before your trial ends on <%= Calendar.strftime(@account.current_period_end, "%b %d, %Y") %>.You can edit future payment information in settings.</h3>
+            <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false do %>
+              <div class="action-button my-6">Continue...</div>
+            <% end %>
+          </div>
         <% end %>
       </div>
 

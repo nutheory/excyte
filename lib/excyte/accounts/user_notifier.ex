@@ -5,7 +5,7 @@ defmodule Excyte.Accounts.UserNotifier do
   @base_url Application.get_env(:excyte, :base_url)
   @from_address "no-reply@excyte.io"
   @html_signature """
-    The Excyte CMA Team<br/>
+    Excyte.io<br/>
     <a href="//excyte.io/">https://excyte.io/</a><br/>
     contact@excyte.io<br/>
   """
@@ -24,10 +24,7 @@ defmodule Excyte.Accounts.UserNotifier do
     {:ok, email}
   end
 
-  @doc """
-  Deliver instructions to confirm account.
-  """
-  def deliver_confirmation_instructions(user, url) do
+  def deliver_welcome_email(user) do
     text_body = """
     Hello!
     Welcome from the entire Excyte CMA team! We are here to help anyway possible.
@@ -72,6 +69,37 @@ defmodule Excyte.Accounts.UserNotifier do
     """
 
     deliver(user.email, "Welcome to Excyte CMA", text_body, html_body)
+  end
+
+
+  @doc """
+  Deliver instructions to confirm account.
+  """
+  def deliver_confirmation_instructions(user, url) do
+    text_body = """
+
+    ==============================
+
+    Hi #{user.email},
+
+    You can confirm your account by visiting the url below:
+
+    #{@base_url}#{url}
+
+    If you didn't create an account with us, please ignore this.
+
+    ==============================
+    """
+
+    html_body = """
+    Hi #{user.email},<br/></br/>
+    You can confirm your account by visiting the url below:<br/></br/>
+    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
+    If you didn't create an account with us, please ignore this.<br/></br/>
+    #{@html_signature}
+    """
+
+    deliver(user.email, "Please confirm your account", text_body, html_body)
   end
 
   def deliver_invitation_instructions(user, url) do

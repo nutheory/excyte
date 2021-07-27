@@ -31,7 +31,7 @@
       <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600 ">If you have a brokerage larger than 50 agents we would love to accommodate you also. Give us a call us to inquire... (949) 207-8769</p>
     </div>
   </div>
-  <div class="text-base px-1 mt-6 mb-4">
+  <div class="text-base mt-6 mb-4">
     <%= case @plan.id do %>
       <% "twenty" -> %>
         <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$199.95</span>.</p>
@@ -43,5 +43,9 @@
         <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$499.95</span>.</p>
     <% end %>
   </div>
-  <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+  <%= if @payment_success === true do %>
+    <p>Thank you, payment method saved.</p>
+  <% else %>
+    <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+  <% end %>
 </div>

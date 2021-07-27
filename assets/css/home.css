@@ -50,6 +50,10 @@ span.icon-align {
   text-shadow: 1px 1px 2px black;
 }
 
+.cta:hover {
+  text-decoration: none;
+}
+
 .deep-text-shadow {
   text-shadow: 1px 1px 2px black;
 }

@@ -29,6 +29,7 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     if Enum.find(a.mls_list, fn ds -> ds.dataset_id === mls.value end) do
       {:noreply, socket}
     else
+      IO.inspect(a.current_user, label: "BOOM")
       mls_q = %{access_token: @token, dataset_id: mls.value}
       if mls.type === "bridge" do
         case ResoMemberApi.getMembersByName(mls_q, a.current_user.full_name) do

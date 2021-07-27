@@ -12,7 +12,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    if connected?(socket), do: Accounts.subscribe(cu.id)
+
     {:ok, assign(socket,
       current_user: cu,
       prop_id: nil,

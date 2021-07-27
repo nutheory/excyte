@@ -30,6 +30,7 @@
               <img src="<%= @profile.photo_url %>" class="w-full h-full rounded-md" />
             <% else %>
               <%= if length(@uploads.photo.entries) === 0 do %>
+                <label>Agent photo</label>
                 <div class="w-full h-full rounded-md text-bgray-100 bg-gray-800 flex items-center justify-center text-center ">Upload<br />photo</div>
               <% end %>
             <% end %>

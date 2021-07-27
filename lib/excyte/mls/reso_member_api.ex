@@ -10,12 +10,16 @@ defmodule Excyte.Mls.ResoMemberApi do
 
   def getMembersByName(mls, name) do
     name_arr = String.split(name, " ")
-    get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Office&$filter="
-    <> "endswith(tolower(MemberLastName),%27#{hd(tl(name_arr))}%27)%20and%20startswith(tolower(MemberFirstName),%27#{hd(name_arr)}%27)")
-    |> format_response()
-    |> case do
-      {:ok, %{agents: agents}} -> {:ok, agents}
-      {:error, err} -> {:error, err}
+    if length(name_arr) > 1 do
+      get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Office&$filter="
+      <> "endswith(tolower(MemberLastName),%27#{hd(tl(name_arr))}%27)%20and%20startswith(tolower(MemberFirstName),%27#{hd(name_arr)}%27)")
+      |> format_response()
+      |> case do
+        {:ok, %{agents: agents}} -> {:ok, agents}
+        {:error, err} -> {:error, err}
+      end
+    else
+      {:ok, []}
     end
   end
 

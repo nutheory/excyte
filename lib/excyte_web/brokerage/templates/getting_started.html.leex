@@ -33,12 +33,11 @@
           <%= live_render @socket, Subscription, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :brokerage_subscription %>
         <% else %>
           <div class="text-center">
-            <h2 class="py-8 link">This step has been completed</h2>
-            <%= live_patch "Click here to edit payment info in settings", to: Routes.live_path(@socket, Settings.Dashboard, section: "billing"), class: "text-lg" %>
-        <% end %>
-        <%= if @account.status !== "new" do %>
-          <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "brokerage_profile"), replace: false do %>
-            <div class="action-button my-6">Continue...</div>
+            <h2 class="py-8 link">Thank you, payment method saved.</h2>
+            <h4>We will notify you before your trial ends on <%= Calendar.strftime(@account.current_period_end, "%b %d, %Y") %>.You can edit future payment information in settings.</h4>
+            <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "brokerage_profile"), replace: false do %>
+              <div class="action-button my-6">Continue...</div>
+            </div>
           <% end %>
         <% end %>
       </div>

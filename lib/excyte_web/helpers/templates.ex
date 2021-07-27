@@ -3,7 +3,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   import Excyte.Utils.Methods
   use Timex
   import Number.{Delimit}
-  alias Excyte.{Activities, Mls.ProcessListings}
+  alias Excyte.{Activities, Mls.ProcessReso}
   alias ExcyteWeb.{Helpers.Utilities}
 
 
@@ -417,7 +417,7 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def showcase(%{insight: ins}) do
     listing =
-      case ProcessListings.process_init({:ok, %{listings: ins["content"]["listings"]}}, nil) do
+      case ProcessReso.process_init({:ok, %{listings: ins["content"]["listings"]}}, nil) do
         {:ok, res} ->
           Utilities.format_atom_json(hd(res.listings))
         {:error, err} -> IO.inspect(err)

@@ -1,7 +1,7 @@
 defmodule Excyte.Mls.ResoApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
-  alias Excyte.Mls.{MetaCache, ProcessListings, ResoMemberApi}
+  alias Excyte.Mls.{MetaCache, ProcessReso, ResoMemberApi}
   alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
@@ -40,7 +40,7 @@ defmodule Excyte.Mls.ResoApi do
         <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="
         <> "ListAgentKey%20eq%20%27#{lak}%27")
       |> format_response()
-      |> ProcessListings.simple_process()
+      |> ProcessReso.simple_process()
     else
       ResoMemberApi.getMemberListings(mls)
     end
@@ -53,7 +53,7 @@ defmodule Excyte.Mls.ResoApi do
         if is_nil(body) do
           {:error, %{message: "Could not find property on MLS."}}
         else
-          {:ok, Map.put(body, "MainPhotoUrl", ProcessListings.main_photo(body["Media"]))}
+          {:ok, Map.put(body, "MainPhotoUrl", ProcessReso.main_photo(body["Media"]))}
         end
       {:error, err} -> {:error, err}
     end
@@ -75,7 +75,7 @@ defmodule Excyte.Mls.ResoApi do
       <> "#{state(state)}%20and%20"
       <> zip_code(zip))
     |> format_response()
-    |> ProcessListings.simple_process()
+    |> ProcessReso.simple_process()
   end
 
   def property_by_address(_, _) do
@@ -101,7 +101,7 @@ defmodule Excyte.Mls.ResoApi do
     safe_str = String.trim_trailing(query_str, "%20and%20")
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
     |> format_response()
-    |> ProcessListings.process_init(subject)
+    |> ProcessReso.process_init(subject)
     |> case do
       {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
       {:error, err} -> {:error, err}
@@ -128,7 +128,7 @@ defmodule Excyte.Mls.ResoApi do
     safe_str = String.trim_trailing(query_str, "%20and%20")
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
     |> format_response()
-    |> ProcessListings.process_init(opts)
+    |> ProcessReso.process_init(opts)
     |> case do
       {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
       {:error, err} -> {:error, err}
@@ -249,7 +249,7 @@ defmodule Excyte.Mls.ResoApi do
 
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
     |> format_response()
-    |> ProcessListings.process_init(subject)
+    |> ProcessReso.process_init(subject)
   end
 
   def get_by_listing_ids(mls, ids_array, opts) do
@@ -260,13 +260,13 @@ defmodule Excyte.Mls.ResoApi do
 
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&#{ids_str}")
     |> format_response()
-    |> ProcessListings.process_init(opts)
+    |> ProcessReso.process_init(opts)
   end
 
   def get_by_listing_id(mls, id) do
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$filter=ListingId%20eq%20%27#{URI.encode(id)}%27")
     |> format_response()
-    |> ProcessListings.simple_process()
+    |> ProcessReso.simple_process()
   end
 
   defp listing_id(id) do

@@ -1,4 +1,4 @@
-defmodule Excyte.Mls.ProcessListings do
+defmodule Excyte.Mls.ProcessReso do
   alias Excyte.Properties.{Rankings, Property}
 
   def simple_process({:ok, %{listings: listings} = resp}) do
@@ -396,15 +396,3 @@ defmodule Excyte.Mls.ProcessListings do
   def process_init({:error, err}), do: {:error, err}
   def process_init(_), do: {:error, %{message: "Unknown Error"}}
 end
-
-  # "features" => %{
-  #   "Building" => nil,
-  #   "Community" => nil,
-  #   "Exterior" => nil,
-  #   "Fireplace" => nil,
-  #   "Interior" => ["Entrance Foyer", "Great Room", "Walk-In Closet(s)"],
-  #   "Lot" => nil,
-  #   "PatioAndPorch" => nil,
-  #   "Pool" => nil,
-  #   "Spa" => nil
-  # },

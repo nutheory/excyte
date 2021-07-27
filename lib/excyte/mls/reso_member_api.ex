@@ -1,6 +1,6 @@
 defmodule Excyte.Mls.ResoMemberApi do
   use Tesla, only: [:get], docs: false
-  alias Excyte.Mls.{ProcessListings}
+  alias Excyte.Mls.{ProcessReso}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
@@ -40,7 +40,7 @@ defmodule Excyte.Mls.ResoMemberApi do
       |> case do
         {:ok, %Tesla.Env{:body => %{"value" => agents}}} ->
           agent = hd(agents)
-          ProcessListings.simple_process({:ok, %{listings: agent["Listings"]}})
+          ProcessReso.simple_process({:ok, %{listings: agent["Listings"]}})
         {:error, _err} -> {:ok, %{listings: []}}
       end
     else

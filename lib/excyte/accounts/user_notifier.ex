@@ -70,7 +70,6 @@ defmodule Excyte.Accounts.UserNotifier do
 
     deliver(user.email, "Welcome to Excyte CMA", text_body, html_body)
   end
-  end
 
 
   @doc """

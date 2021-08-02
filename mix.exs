@@ -40,7 +40,7 @@ defmodule Excyte.MixProject do
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.15.4", override: true},
+      {:phoenix_live_view, "~> 0.15.7", override: true},
       {:floki, ">= 0.27.0"},
       {:faker, "~> 0.16", only: [:dev, :test]},
       {:ex_machina, "~> 2.4", only: :test},

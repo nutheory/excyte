@@ -14,7 +14,7 @@ defmodule Excyte.Accounts do
   @topic inspect(__MODULE__)
 
   @default_theme %{
-    font: "Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif",
+    font: "Bodoni MT, Bodoni 72, Didot, Didot LT STD, Hoefler Text, Garamond, Times New Roman, serif",
     background: "#F3F4F6",
     header_text: "#04293A",
     accent: "#0E7490",
@@ -161,6 +161,14 @@ defmodule Excyte.Accounts do
       account_id: acc.id
     }))
     |> Repo.insert()
+  end
+
+  def get_account_with_brokerage_agents(%{brokerage: bk, account: acc}) do
+    if bk do
+      Repo.get!(Account, acc)
+      |> Repo.preload(:agents)
+      |> IO.inspect()
+    end
   end
 
   # def create_brokerage_agent(_repo, _changes, %{brokerage_id: bkid, account_id: accid} = attrs) do
@@ -515,7 +523,7 @@ defmodule Excyte.Accounts do
   end
 
   def change_invitation(%User{} = user, attrs \\ %{}) do
-    User.invitation_changeset(user, attrs)
+    User.accept_invitation_changeset(user, attrs)
   end
 
   def create_brokerage_invitation(attrs) do
@@ -548,11 +556,11 @@ defmodule Excyte.Accounts do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "invitation"),
          %User{} = user <- Repo.one(query),
          {:ok, changeset} <- valid_invitation_changeset(user, user_params),
-         {:ok, %{user: user}} <- Repo.transaction(accept_invitation_multi(user, changeset)) do
-      {:ok, user}
+         {:ok, %{agent: agent}} <- Repo.transaction(accept_invitation_multi(user, changeset)) do
+      {:ok, agent}
     else
       {:error, %Ecto.Changeset{} = ch} -> {:error, ch}
-      _ -> :error
+      err -> :error
     end
   end
 
@@ -566,9 +574,19 @@ defmodule Excyte.Accounts do
   end
 
   defp accept_invitation_multi(user, user_update_changeset) do
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, user_update_changeset)
-    |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["invitation"]))
+    Multi.new()
+    |> Multi.update(:agent, user_update_changeset)
+    |> Multi.insert(:agent_profile, create_invite_profile(user))
+    |> Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["invitation"]))
+  end
+
+  def create_invite_profile(agent) do
+    %Agents.Profile{}
+    |> Agents.Profile.registration_changeset(%{
+      agent_id: agent.id,
+      name: agent.full_name,
+      contacts: [%{content: agent.email, name: "Email", type: "email"}]
+    })
   end
 
   defp create_stripe_customer(attrs) do

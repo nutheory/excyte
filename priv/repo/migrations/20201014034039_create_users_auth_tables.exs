@@ -12,7 +12,7 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
       add :email, :citext, null: false
       add :timezone, :string, default: "America/Los_Angeles"
       add :invite_message, :text
-      add :brokerage_role, :string, default: "agent"
+      add :brokerage_role, :string
       add :excyte_role, :string, default: "user"
       add :current_mls, :map, default: %{}
       add :current_avatar, :text

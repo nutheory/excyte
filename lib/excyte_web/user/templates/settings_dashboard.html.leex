@@ -12,6 +12,10 @@
             <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile"), class: "fancy font-bold block text-lg" %>
             <p class="text-sm">Information about your brokerage we include by default in all reports.</p>
           </div>
+          <div class="bg-white w-full shadow rounded p-4">
+            <%= live_patch "Invite Agents", to: Routes.live_path(@socket, Dashboard, section: "manage_team"), class: "fancy font-bold block text-lg" %>
+            <p class="text-sm">.</p>
+          </div>
         <% end %>
         <div class="bg-white w-full shadow rounded p-4">
           <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme"), class: "fancy font-bold block text-lg" %>
@@ -25,10 +29,12 @@
           <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account"), class: "fancy font-bold block text-lg" %>
           <p class="text-sm">Change your email/password or cancel your account.</p>
         </div>
-        <div class="bg-white w-full shadow rounded p-4">
-          <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment"), class: "fancy font-bold block text-lg" %>
-          <p class="text-sm">Update your payment information.</p>
-        </div>
+        <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
+          <div class="bg-white w-full shadow rounded p-4">
+            <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription"), class: "fancy font-bold block text-lg" %>
+            <p class="text-sm">Update your subscription and payment information.</p>
+          </div>
+        <% end %>
       </div>
     </div>
   <% else %>
@@ -54,6 +60,15 @@
               <% else %>
                 <li class="px-3 py-2 border-t border-gray-100 hover:underline">
                   <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
+                </li>
+              <% end %>
+              <%= if @section === "manage_team" do %>
+                <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
+                  <%= live_patch "Invite Agents", to: Routes.live_path(@socket, Dashboard, section: "manage_team") %>
+                </li>
+              <% else %>
+                <li class="px-3 py-2 border-t border-gray-100 hover:underline">
+                  <%= live_patch "Invite Agents", to: Routes.live_path(@socket, Dashboard, section: "manage_team") %>
                 </li>
               <% end %>
             <% end %>
@@ -84,13 +99,13 @@
                 <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
               </li>
             <% end %>
-            <%= if @section === "payment" do %>
+            <%= if @section === "subscription" do %>
               <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
+                <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription") %>
               </li>
             <% else %>
               <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                <%= live_patch "Payment", to: Routes.live_path(@socket, Dashboard, section: "payment") %>
+                <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription") %>
               </li>
             <% end %>
           </ul>
@@ -104,7 +119,13 @@
                 <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Brokerage Profile</h2>
                 <%= live_render @socket, ExcyteWeb.Brokerage.Profile, session: %{"return_to" =>  "/settings"}, id: :brokerage_profile %>
               </div>
-            <% else %>
+            <% end %>
+          <% "manage_team" -> %>
+            <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
+              <div class="w-full md:w-3/5 lg:w-1/2">
+                <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Manage Team</h2>
+                <%= live_render @socket, ExcyteWeb.Brokerage.ManageTeam, session: %{"return_to" =>  "/settings"}, id: :manage_team %>
+              </div>
             <% end %>
           <% "theme" -> %>
             <div class="w-full lg:w-2/3 xl:w-3/4">
@@ -112,7 +133,7 @@
               <%= live_render @socket, ExcyteWeb.Brokerage.Theme, session: %{"return_to" =>  "/settings"}, id: :theme %>
             </div>
           <% "mls_auth" -> %>
-            <div class="w-full md:w-3/5 lg:w-1/2 xl:w-1/3">
+            <div class="w-full md:w-3/5 lg:w-1/2">
               <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">MLS Authorization</h2>
               <%= live_render @socket, MlsAuth, session: %{"return_to" => "/settings", "user_id" => @current_user}, id: :mls_auth_set %>
             </div>
@@ -121,11 +142,13 @@
               <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Account</h2>
               <%= live_component @socket, Account, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :account_settings %>
             </div>
-          <% "payment" -> %>
-            <div class="w-full lg:w-2/3">
-              <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Payment</h2>
-              <%= live_component @socket, Payment, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :payment %>
-            </div>
+          <% "subscription" -> %>
+            <%= if @current_user.brokerage_id && @current_user.brokerage_role === "owner" do %>
+              <div class="w-full lg:w-2/3">
+                <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Subscription</h2>
+                <%= live_render @socket, ExcyteWeb.Brokerage.Subscription, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :brokerage_subscription %>
+              </div>
+            <% end %>
           <% "agent_profile" -> %>
             <div class="w-full lg:w-2/3 xl:w-3/4">
               <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Agent Profile</h2>

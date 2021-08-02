@@ -55,7 +55,7 @@ defmodule Excyte.Accounts.Billing do
     }
   end
 
-  def create_subscription(%{customer_id: cid, plan_id: pid, payment_id: pmid, trial_length: tl}) do
+  def create_subscription(%{customer_id: cid, price_id: pid, payment_id: pmid, trial_length: tl}) do
     with {:ok, payment_method} <- attach_payment_to_customer(cid, pmid),
          {:ok, _cust_id} <- set_default_payment_for_customer(cid, payment_method.id),
          {:ok, subscription} <- create_initial_subscription(cid, pid, tl) do
@@ -69,8 +69,12 @@ defmodule Excyte.Accounts.Billing do
     end
   end
 
-#   def change_subscription_plan() do
-#   end
+  def update_subscription(%{subscription_id: sub_item_id, price_id: price_id}) do
+    case SubscriptionItem.update(sub_item_id, %{items: [%{price: price_id}]}) do
+      {:ok, subscription} ->
+        {:ok, subscription}
+    end
+  end
 
 #   def change_payment_setup(customer_id) do
 #     case SetupIntent.create(%{customer: customer_id}) do
@@ -165,7 +169,8 @@ defmodule Excyte.Accounts.Billing do
            expand: ["latest_invoice.payment_intent"]
          ) do
       {:ok, sub} ->
-        {:ok, sub}
+        item = hd(sub.items.data)
+        {:ok, %{sub: sub, sub_item: item}}
 
       {:error, sub_err} ->
         Activities.handle_errors(sub_err, "Billing.create_subscription/Subscription.create")

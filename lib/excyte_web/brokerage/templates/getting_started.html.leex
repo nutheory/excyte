@@ -9,9 +9,9 @@
           <span class="text-2xl text-gray-700">
             <%= case @current_step do %>
               <% "mls" -> %>1
-              <% "payment" -> %>2
+              <% "subscription" -> %>2
               <% "brokerage_profile" -> %>3
-              <% "invite_team" -> %>4
+              <% "manage_team" -> %>4
               <% "agent_profile" -> %>5
             <% end %>
           </span> of 5
@@ -22,12 +22,12 @@
   </div>
   <%= case @current_step do %>
     <% "mls" -> %>
-      <div class="w-full md:w-1/2 xl:w-1/3 mx-auto">
+      <div class="w-full md:w-1/2 mx-auto">
         <% IO.inspect(@return_to) %>
         <%= live_render @socket, MlsAuth, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :mls_auth_gsb %>
       </div>
 
-    <% "payment" -> %>
+    <% "subscription" -> %>
       <div class="w-full lg:w-1/2 mx-auto">
         <%= if @account.current_period_end === nil do %>
           <%= live_render @socket, Subscription, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :brokerage_subscription %>
@@ -50,10 +50,10 @@
             <h3 class="text-lg leading-none font-extrabold text-bgray-800">Setup your brokerage profile</h3>
           </div>
         </div>
-        <%= live_render @socket, Brokerage.Profile, session: %{"return_to" => "/brokerage/getting-started?step=invite_team", "user_id" => @current_user.id}, id: "brokerage_profile_form" %>
+        <%= live_render @socket, Brokerage.Profile, session: %{"return_to" => "/brokerage/getting-started?step=manage_team", "user_id" => @current_user.id}, id: "brokerage_profile_form" %>
       </div>
 
-    <% "invite_team" -> %>
+    <% "manage_team" -> %>
       <div class="w-full lg:w-2/3 max-w-xl mx-auto">
         <div class="flex">
           <div class="flex-1">
@@ -64,7 +64,7 @@
             <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "agent_profile") %>
           </div>
         </div>
-        <%= live_render @socket, InviteTeam, session: %{"user_id" => @current_user.id}, id: "invite_team" %>
+        <%= live_render @socket, ManageTeam, session: %{"user_id" => @current_user.id}, id: "manage_team" %>
       </div>
 
     <% "agent_profile" -> %>

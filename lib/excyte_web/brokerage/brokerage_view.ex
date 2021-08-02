@@ -9,8 +9,9 @@ defmodule ExcyteWeb.BrokerageView do
     Brokerage,
     Brokerage.Dashboard,
     Brokerage.GettingStarted,
-    Brokerage.InviteTeam,
-    Brokerage.Subscription
+    Brokerage.ManageTeam,
+    Brokerage.Subscription,
+    Brokerage.TeamMember
   }
   alias ExcyteWeb.Components.{
     ColorPicker,

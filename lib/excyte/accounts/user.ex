@@ -71,6 +71,7 @@ defmodule Excyte.Accounts.User do
       :full_name,
       :email,
       :account_id,
+      :current_mls,
       :invite_message,
       :brokerage_role,
       :brokerage_id,
@@ -78,6 +79,8 @@ defmodule Excyte.Accounts.User do
     ])
     |> validate_required([
       :full_name,
+      :email,
+      :current_mls,
       :invite_message,
       :account_id,
       :brokerage_role,
@@ -153,10 +156,10 @@ defmodule Excyte.Accounts.User do
     now = DateTime.utc_now() |> DateTime.truncate(:second)
     user
     |> cast(attrs, [:full_name, :email, :password])
-    |> validate_required([:full_name])
+    |> validate_required([:full_name, :email, :password])
     |> validate_email()
     |> validate_password()
-    change(user, confirmed_at: now)
+    |> put_change(:confirmed_at, now)
   end
 
   @doc """
@@ -184,6 +187,11 @@ defmodule Excyte.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def get_all_account_agents(acc_id) do
+    from u in __MODULE__,
+    where: u.account_id == ^acc_id
   end
 
   def with_mls(query) do

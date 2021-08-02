@@ -13,6 +13,7 @@ defmodule Excyte.Agents.Agent do
   schema "users" do
     field :full_name, :string
     field :email, :string
+    field :invited_by_id, :integer
     field :brokerage_name, :string, virtual: true
     field :phone, :string, virtual: true
     field :password, :string, virtual: true

@@ -21,7 +21,6 @@ defmodule Excyte.Brokerages.Brokerage do
 
   schema "brokerages" do
     field :name, :string
-    field :agent_limit, :integer
     field :contact_settings, MapType
     field :legal_link, :string
     field :legal_text, :string
@@ -35,7 +34,6 @@ defmodule Excyte.Brokerages.Brokerage do
       :name,
       :contact_settings,
       :account_id,
-      :agent_limit,
       :legal_link,
       :legal_text
     ])

@@ -23,9 +23,9 @@ defmodule Excyte.Mls.ResoMemberApi do
     end
   end
 
-  def getMemberByLoginId(mls, id) do
+  def getMemberByMlsId(mls, id) do
     get("#{mls.dataset_id}/Member?access_token=#{mls.access_token}&$expand=Office&$filter="
-    <> "MemberLoginId%20eq%20%27#{id}%27")
+    <> "MemberMlsId%20eq%20%27#{id}%27")
     |> format_response()
     |> case do
       {:ok, %{agents: agents}} -> {:ok, (if length(agents) > 0, do: hd(agents), else: nil)}

@@ -77,9 +77,12 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   def consume_photo(socket, %Profile{} = profile) do
-    consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end)
-    consume_uploaded_entries(socket, :logo, fn _meta, _entry -> :ok end)
-    {:ok, profile}
+    with _ <- consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end),
+         _ <- consume_uploaded_entries(socket, :logo, fn _meta, _entry -> :ok end) do
+      {:ok, profile}
+    else
+      err -> IO.inspect(err, label: "ERR")
+    end
   end
 
   defp filter_empty_contacts(profile_params) do

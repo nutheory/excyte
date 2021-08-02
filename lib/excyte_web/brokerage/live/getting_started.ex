@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
       cond do
         params["step"] !== nil -> params["step"]
         length(a.mls_list) === 0 -> "mls"
-        a.account.current_period_end === nil -> "payment"
+        a.account.current_period_end === nil -> "subscription"
         a.brokerage_profile.updated_by_user === false -> "brokerage_profile"
         a.profile.updated_by_user === false -> "agent_profile"
         true -> "completed"

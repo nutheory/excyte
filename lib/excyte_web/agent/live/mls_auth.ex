@@ -20,6 +20,7 @@ defmodule ExcyteWeb.Agent.MlsAuth do
       login_id: "",
       agent: nil,
       mls: nil,
+      brokerage_approved: false,
       mls_opts: mls_opts,
       mls_list: mls_list
     )}
@@ -29,7 +30,6 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     if Enum.find(a.mls_list, fn ds -> ds.dataset_id === mls.value end) do
       {:noreply, socket}
     else
-      IO.inspect(a.current_user, label: "BOOM")
       mls_q = %{access_token: @token, dataset_id: mls.value}
       if mls.type === "bridge" do
         case ResoMemberApi.getMembersByName(mls_q, a.current_user.full_name) do
@@ -46,14 +46,18 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     {:noreply, assign(socket, current_user: cu, mls_list: creds)}
   end
 
+  def handle_event("toggle-warning", _, socket) do
+    {:noreply, assign(socket, brokerage_approved: true)}
+  end
+
   def handle_event("select-agent", %{"agent_key" => ak}, %{assigns: a} = socket) do
     agent = Enum.find(a.agents, fn ag -> ag["MemberKey"] === ak end)
     {:noreply, assign(socket, agent: agent)}
   end
 
-  def handle_event("authorize", _, %{assigns: a} = socket) do
+  def handle_event("authorize", %{"login-id" => l_id}, %{assigns: a} = socket) do
     if a.mls.type === "bridge" do
-      with {:ok, agent} <- agent_check(socket),
+      with {:ok, agent} <- agent_check(l_id, socket),
                     _ <- IO.inspect(agent, label: "AG"),
            {:ok, _mls} <- Mls.create_credential(%{
                         agent_id: a.current_user.id,
@@ -94,12 +98,12 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     {:noreply, assign(socket, current_user: socket.assigns.current_user, mls_list: new_creds)}
   end
 
-  defp agent_check(%{assigns: a}) do
+  defp agent_check(login_id, %{assigns: a}) do
     if a.agent do
       {:ok, a.agent}
     else
-      if a.login_id do
-        ResoMemberApi.getMemberByLoginId(%{access_token: @token, dataset_id: a.mls.value}, a.login_id)
+      if login_id do
+        ResoMemberApi.getMemberByMlsId(%{access_token: @token, dataset_id: a.mls.value}, login_id)
       else
         nil
       end

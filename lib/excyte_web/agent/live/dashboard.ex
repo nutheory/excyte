@@ -8,7 +8,7 @@ defmodule ExcyteWeb.Agent.Dashboard do
   def mount(_params,  %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if cu.completed_setup === false do
-      if cu.brokerage_id do
+      if cu.brokerage_id && cu.brokerage_role === "owner" do
         {:ok, push_redirect(socket, to: "/brokerage/getting-started", current_user: cu)}
       else
         {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}

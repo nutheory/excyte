@@ -1,20 +1,22 @@
-defmodule ExcyteWeb.Brokerage.InviteTeam do
+defmodule ExcyteWeb.Brokerage.ManageTeam do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Accounts.User, Brokerages}
   alias ExcyteWeb.{Endpoint, Helpers.Utilities, BrokerageView}
 
-  def render(assigns), do: BrokerageView.render("invite_team.html", assigns)
+  def render(assigns), do: BrokerageView.render("manage_team.html", assigns)
 
   def mount(_params, %{"user_token" => token}, %{assigns: a} = socket) do
     cu = Accounts.get_user_by_session_token(token)
+    acc = Accounts.get_account_with_brokerage_agents(%{brokerage: cu.brokerage_id, account: cu.account_id})
     bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})
     ivts = Brokerages.get_invitations(cu.brokerage_id)
-
+    IO.inspect(acc, label: "ACC")
     {:ok, assign(socket,
       changeset: cs,
       current_user: cu,
       brokerage: bp,
+      account: acc,
       message_user_edited: false,
       invitations: ivts,
       errors: []
@@ -47,26 +49,31 @@ defmodule ExcyteWeb.Brokerage.InviteTeam do
   end
 
   def handle_event("save", %{"user" => ivt}, %{assigns: a} = socket) do
-   if Utilities.authorized?(a.current_user.brokerage_role) do
-      br = if ivt["brokerage_role"] === true, do: "admin", else: "agent"
-      with {:ok, invite} <- Accounts.create_brokerage_invitation(Map.merge(ivt, %{
-                              "brokerage_id" => a.current_user.brokerage_id,
-                              "account_id" => a.current_user.account_id,
-                              "brokerage_role" => br,
-                              "invited_by_id" => a.current_user.id
-                            })),
-           {:ok, _} <- Accounts.deliver_user_invitation_instructions(
-                        invite,
-                        &Routes.user_invitation_url(Endpoint, :accept, &1)
-                      ) do
+    if Utilities.authorized?(a.current_user.brokerage_role) do
+      if length(a.account.agents) + length(a.invitations) <= a.account.agent_limit do
+        br = if ivt["brokerage_role"] === true, do: "admin", else: "agent"
+        with {:ok, invite} <- Accounts.create_brokerage_invitation(Map.merge(ivt, %{
+                                "brokerage_id" => a.current_user.brokerage_id,
+                                "account_id" => a.current_user.account_id,
+                                "brokerage_role" => br,
+                                "current_mls" => a.current_user.current_mls,
+                                "invited_by_id" => a.current_user.id
+                              })),
+            {:ok, _} <- Accounts.deliver_user_invitation_instructions(
+                          invite,
+                          &Routes.user_invitation_url(Endpoint, :accept, &1)
+                        ) do
 
-        {:noreply, put_flash(socket, :info, "Invite sent to #{ivt["email"]}.")
-                   |> assign(invitations: [invite | a.invitations])}
+          {:noreply, put_flash(socket, :info, "Invite sent to #{ivt["email"]}.")
+                    |> assign(invitations: [invite | a.invitations])}
+        else
+          {:error, %Ecto.Changeset{} = err_cs} -> {:noreply, assign(socket, changeset: err_cs)}
+        end
       else
-        {:error, %Ecto.Changeset{} = err_cs} -> {:noreply, assign(socket, changeset: err_cs)}
+        {:noreply, assign(socket, errors: [%{message: "You have maxed out your agent sign ups."}])}
       end
     else
-      {:noreply, assign(socket, errors: [%{message: ""}])}
+      {:noreply, assign(socket, errors: [%{message: "You are not authorized to invite agents to this account."}])}
     end
   end
 

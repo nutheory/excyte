@@ -1,77 +1,118 @@
 <div>
   <div class="mb-4 bg-white shadow rounded-md p-4">
     <h4>Connect to your MLS</h4>
-    <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600">If you dont see your MLS we may not fully support your region yet. Feel free to call us to inquire... (949) 207-8769</p>
-    <div class="mt-2">
-      <form phx-submit="authorize">
-        <%= live_component @socket, Dropdown,
-          options: @mls_opts,
-          selected: @mls,
-          attr: :mls,
-          convert_to_range: false,
-          show_top_label: false,
-          callback: :set_mls,
-          label: "Select your MLS",
-          id: :set_mls_dropdown
-        %>
-        <%= if @agents && length(@agents) > 0 do %>
-          <div class="my-4">
-            <p class="font-bold text-base">Do you see your name?</p>
-            <ul>
-              <%= for agent <- @agents do %>
-                <li class="p-2 flex">
-                  <div class="flex-1">
-                    <p><%= agent["MemberFirstName"] %> <%= agent["MemberLastName"] %></p>
-                    <p>ID: <span class=""><%= agent["MemberLoginId"] %></span></p>
-                  </div>
-                  <button class="action block" phx-click="select-agent" phx-value-agent-id="">Select</button>
-                </li>
+    <%= if @brokerage_approved do %>
+      <div>
+        <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600">If you dont see your MLS we may not fully support your region yet. Feel free to call us to inquire... (949) 207-8769</p>
+        <div class="mt-2">
+          <form phx-submit="authorize">
+            <%= live_component @socket, Dropdown,
+              options: @mls_opts,
+              selected: @mls,
+              attr: :mls,
+              convert_to_range: false,
+              show_top_label: false,
+              callback: :set_mls,
+              label: "Select your MLS",
+              id: :set_mls_dropdown
+            %>
+            <%= if @agents && length(@agents) > 0 do %>
+              <div class="my-4">
+                <p class="font-bold text-base">Do you see your name?</p>
+                <ul>
+                  <%= for agent <- @agents do %>
+                    <li class="p-2 flex">
+                      <div class="flex-1">
+                        <p><%= agent["MemberFirstName"] %> <%= agent["MemberLastName"] %></p>
+                        <p>ID: <span class=""><%= agent["MemberLoginId"] %></span></p>
+                      </div>
+                      <button class="action block" phx-click="select-agent" phx-value-agent-id="">Select</button>
+                    </li>
+                  <% end %>
+                  <li>or enter your <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" /></li>
+                </ul>
+              </div>
+            <% else %>
+              <div class="my-4">
+                <label>Enter your MLS Login ID (recommended)</label>
+                <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" />
+              </div>
+            <% end %>
+            <div class="mt-4">
+              <%= if @show_auth_button do %>
+                <button type="submit" class="submit w-full block">Authorize</button>
+              <% else %>
+                <button type="submit" class="submit w-full block" disabled>Authorize</button>
               <% end %>
-              <li>or enter your <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" /></li>
-            </ul>
-          </div>
-        <% else %>
-          <div class="my-4">
-            <label>Enter your MLS Login ID (recommended)</label>
-            <input type="text" id="login_id" name="login-id" value="<%= @login_id %>" class="text-field" placeholder="Login ID" />
-          </div>
-        <% end %>
-        <div class="mt-4">
-          <%= if @show_auth_button do %>
-            <button type="submit" class="submit w-full block">Authorize</button>
-          <% else %>
-            <button type="submit" class="submit w-full block" disabled>Authorize</button>
-          <% end %>
-        </div>
-      </form>
-    </div>
-    <%= if length(@mls_list) > 0 do %>
-      <h4 class="text-base leading-none font-bold px-1 mt-6 mb-1">Currently connected</h4>
-      <ul class="border-t border-gray-400">
-        <%= for cred <- @mls_list do %>
-          <li class="border-b border-gray-300 px-1 py-1 flex">
-            <div class="flex-1">
-              <p class="font-bold text-sm leading-none"><%= cred.mls_name %></p>
-              <p class="text-gray-400 text-sm"><%= cred.username %></p>
             </div>
-            <a href="#" class="text-red-400 block pt-1 mt-1" phx-click="disconnect" phx-value-cred-id="<%= cred.id %>">
-              <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
-              </svg>
-              <span class="text-sm leading-none pt-1icon-align">disconnect</span>
-            </a>
-          </li>
+          </form>
+        </div>
+        <%= if length(@mls_list) > 0 do %>
+          <h4 class="text-base leading-none font-bold px-1 mt-6 mb-1">Currently connected</h4>
+          <ul class="border-t border-gray-400">
+            <%= for cred <- @mls_list do %>
+              <li class="border-b border-gray-300 px-1 py-1 flex">
+                <div class="flex-1">
+                  <p class="font-bold text-sm leading-none"><%= cred.mls_name %></p>
+                  <p class="text-gray-400 text-sm"><%= cred.username %></p>
+                </div>
+                <a href="#" class="text-red-400 block pt-1 mt-1" phx-click="disconnect" phx-value-cred-id="<%= cred.id %>">
+                  <svg class="w-5 h-5 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                  </svg>
+                  <span class="text-sm leading-none pt-1icon-align">disconnect</span>
+                </a>
+              </li>
+            <% end %>
+          </ul>
         <% end %>
-      </ul>
+      </div>
+    <% else %>
+      <div class="text-sm form">
+        <%# <p class="text-sm mb-4">Mobile first vrs mobile friendly technology for Real Estate Agents and Brokers?</p>
+
+        <p class="text-sm mb-4">If mobile device leads googles search engine an are the majority in terms of web traffic why isn’t your software built for this?</p>
+
+        <p class="text-sm mb-4">Before you buy your next solution the first question you should ask is “Is this mobile friendly or mobile first”?</p>
+
+        <p class="text-sm mb-4">Mobile friendly solutions were built for someone visiting on a mobile device. It’s designed so that a majority of your consumption needs to be from other devices than your mobile device. It’s really a design of the present.</p>
+
+        <p class="text-sm mb-4">Mobile first still works across all 3 devices however the main consumption is made from your mobile device. It takes mobile friendly to a new level.</P>
+
+        <p class="text-sm mb-4">When we created excyte CMA we made this mobile first. It’s the most powerful mobile first presentation software available today. We do work across all 3 devices but are built for the mobile agent.</p>
+
+        <p class="text-sm mb-4">Mobile-friendly is a good start, but mobile-first is the future. Check us out today and strengthen your brand with excyte CMA.</p> %>
+        <p class="text-sm mb-4">Good Day,</p>
+        <p class="text-sm mb-4">Thanks for your interest in excyte.io! Before you can have the most amazing mobile
+        experience with TMLS there is a request that needs to be made by the Broker in Charge.
+        The MLS will send a document to you via docusign. Once that has been signed and returned
+        they will send it to us to sign and return. The processing time is quick! Then your
+        whole office will be ahead of the competition on how they market MLS data from their
+        mobile device.</p>
+        <p class="text-sm mb-4">Give them a call or send them an email to get started. Below is there contact information...</p>
+        <p class="text-sm mb-4">TMLS<br />
+        Tel: <a href="9196545419">(919) 654-5419</a></p>
+        <p class="text-sm mb-4">Or if you would like feel free to contact us and we will help you get things rolling. Below is our contact information...</p>
+        <p class="text-sm mb-4">Tel: <a href="tel:9492078769">(949)207-8769</a><br />
+        Email: <a href="mailto:gary@excyte.io">gary@excyte.io<br />
+        @excytecma</p>
+        <p class="text-sm mb-4">We look forward to hearing from you.</p>
+        <p class="text-sm mb-4">100% Yours,<br />
+        Excyte CMA Team</p>
+
+        <button class="w-full action" phx-click="toggle-warning">
+          If you have completed this step... continue
+        </button>
+      </div>
     <% end %>
   </div>
   <%= if Map.fetch!(@socket, :id) === "mls_auth_gsa" && length(@mls_list) > 0 do %>
-    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Agent.GettingStarted, step: "payment"), replace: false do %>
+    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Agent.GettingStarted, step: "subscription"), replace: false do %>
       <div class="action-button my-6">Continue...</div>
     <% end %>
   <% end %>
   <%= if Map.fetch!(@socket, :id) === "mls_auth_gsb" && length(@mls_list) > 0 do %>
-    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "payment"), replace: false do %>
+    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "subscription"), replace: false do %>
       <div class="action-button my-6">Continue...</div>
     <% end %>
   <% end %>

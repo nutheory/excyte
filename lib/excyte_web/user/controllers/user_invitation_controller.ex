@@ -14,27 +14,22 @@ defmodule ExcyteWeb.UserInvitationController do
         user: user, token: token, password_type: "password",
         password_value: "", show_text: "show password")
 
-      :error ->
-        invalid_token(conn)
+      err -> invalid_token(conn)
     end
   end
 
-  def update_user(conn, %{"user" => user_params, "token" => token}) do
+  def update_user(conn, %{"user" => user_params, "token" => token} = all) do
     case Accounts.accept_invitation(token, user_params) do
       {:ok, user} -> put_flash(conn, :info, "Account created successfully.")
                      |> UserAuth.log_in_user(user)
-
       {:error, %Ecto.Changeset{} = changeset} ->
         case Accounts.fetch_user_from_invitation(token) do
           {:ok, user} ->
-            render(conn, "accept_invitation.html", changeset: changeset, user: user, token: token)
-
-          :error ->
-            invalid_token(conn)
+            render(conn, "accept_invitation.html", changeset: changeset, user: user, token: token,
+            password_type: "password", password_value: "", show_text: "show password")
+          _ -> invalid_token(conn)
         end
-
-      :error ->
-        invalid_token(conn)
+      _ -> invalid_token(conn)
     end
   end
 

@@ -22,9 +22,10 @@ defmodule ExcyteWeb.Agent.GettingStarted do
   def handle_params(params, _uri, %{assigns: a} = socket) do
     current_step =
       cond do
+        a.current_user.invited_by_id -> "profile"
         params["step"] !== nil -> params["step"]
         length(a.mls_list) === 0 -> "mls"
-        a.account.current_period_end === nil -> "payment"
+        a.account.current_period_end === nil -> "subscription"
         a.profile.updated_by_user === false -> "profile"
         true -> "completed"
       end
@@ -46,7 +47,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
     end
   end
 
-  def handle_info({Accounts, [:account, :update], acc}, socket) do
+  def handle_info({Accounts, [:account, :updated], acc}, socket) do
     {:noreply, assign(socket, account: acc)}
   end
 

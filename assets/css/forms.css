@@ -106,6 +106,10 @@ form,
     @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-teal-600 block transition duration-150 ease-in-out;
   }
 
+  & .danger-action {
+    @apply text-white font-bold py-2 px-4 cursor-pointer rounded bg-red-700 block transition duration-150 ease-in-out;
+  }
+
   & .outline-small {
     @apply flex flex-1 items-center rounded border border-gray-400 px-2 cursor-pointer;
   }

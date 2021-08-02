@@ -15,7 +15,9 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid">
           <struct class="minor">
             {% if agent["photo_url"] %}
-              <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
+              <struct class="w-full flex items-center justify-center">
+                <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
+              </struct>
             {% endif %}
             {% if agent["contacts"].size > 0 %}
               <struct class="mt-6">
@@ -346,12 +348,6 @@ defmodule ExcyteWeb.Helpers.Templates do
             <struct
               class="relative rounded-full h-48 w-48 mx-auto bg-cover border-4 accent-color"
               style="background-image: url({{ subject.main_photo_url }});">
-              {% if agent["photo_url"] %}
-                <struct
-                  class="cover-agent accent-color"
-                  style="background-image: url({{ agent.photo_url }});">
-                </struct>
-              {% endif %}
             </struct>
           {% endif %}
         </struct>
@@ -791,23 +787,24 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <struct>
             <h3 class="sub-header-color">Average Days on Market</h3>
-            #{number_to_delimited(insight["content"]["avg_dom"], precision: 0)}
+            <h2>#{number_to_delimited(insight["content"]["avg_dom"], precision: 0)}</h2>
           </struct>
           {% if insight["content"]["avg_list"] %}
             <struct>
               <h3 class="sub-header-color">Average List Price</h3>
-              #{number_to_delimited(insight["content"]["avg_list"], precision: 0)}
+              <h2>$#{number_to_delimited(insight["content"]["avg_list"], precision: 0)}</h2>
             </struct>
           {% endif %}
           {% if insight["content"]["avg_close"] %}
             <struct>
               <h3 class="sub-header-color">Average Close Price</h3>
-              #{number_to_delimited(insight["content"]["avg_close"], precision: 0)}
+              <h2>$#{number_to_delimited(insight["content"]["avg_close"], precision: 0)}</h2>
             </struct>
           {% endif %}
         </struct>
-        <struct>
-            <h4> Your Suggested price range is <h3>$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h3></h4>
+        <struct class="mt-12">
+            <h4> Your Suggested price range is </h4>
+            <h2>$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h2>
         </struct>
       </struct>
     """

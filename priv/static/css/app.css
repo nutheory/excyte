@@ -1975,6 +1975,44 @@ h4 {
   }
 }
 
+div.preview-wrapper,
+div.viewer-wrapper {
+  /* Position child elements relative to this element */
+}
+
+div.preview-wrapper .aspect-ratio-box, div.viewer-wrapper .aspect-ratio-box {
+    position: relative;
+  }
+
+div.preview-wrapper,
+div.viewer-wrapper {
+
+  /* Create a pseudo element that uses padding-bottom to take up space */
+}
+
+div.preview-wrapper .aspect-ratio-box::after, div.viewer-wrapper .aspect-ratio-box::after {
+    display: block;
+    content: "";
+
+    /* 16:9 aspect ratio */
+    padding-bottom: 70%;
+  }
+
+div.preview-wrapper,
+div.viewer-wrapper {
+
+  /* Image is positioned absolutely relative to the parent element */
+}
+
+div.preview-wrapper .aspect-ratio-box img, div.viewer-wrapper .aspect-ratio-box img {
+    /* Image should match parent box size */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
 div.preview-wrapper .cover-wrapper, div.viewer-wrapper .cover-wrapper {
   margin-top: 5rem;
   margin-bottom: 5rem;

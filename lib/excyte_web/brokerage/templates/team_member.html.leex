@@ -1,0 +1,26 @@
+<div class="bg-white w-full shadow rounded-md p-4" id="">
+  <%= if @member.confirmed_at do %>
+    <div class="inner">
+      <div class="header flex">
+        <div class="avatar">
+          <div class="relative text-lg rounded flex items-center justify-center text-bgray-100 font-bold border-teal-500 bg-bgray-800 border-2 uppercase h-9 w-9 lg:w-14 lg:h-14 z-30 cursor-pointer avatar">
+            <%= if @member.current_avatar do %>
+              <div class="rounded-full w-full h-full bg-cover" style="background-image: url(<%= @member.current_avatar %>);"></div>
+            <% else %>
+              <%= String.first(@member.full_name) %>
+            <% end %>
+          </div>
+        </div>
+        <div class="pl-3">
+          <h4><%= @member.full_name %></h4>
+          <p><%= @member.email %></p>
+        </div>
+      </div>
+      <div class="actions">
+        <%# edit %>
+        <%# delete %>
+      </div>
+    </div>
+  <% else %>
+  <% end %>
+</div>

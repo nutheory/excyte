@@ -5549,12 +5549,44 @@ h4 {
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(253, 224, 71, 0));
 }
 
+.from-teal-200 {
+  --tw-gradient-from: #99f6e4;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(153, 246, 228, 0));
+}
+
+.from-teal-400 {
+  --tw-gradient-from: #2dd4bf;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(45, 212, 191, 0));
+}
+
+.from-green-200 {
+  --tw-gradient-from: #bbf7d0;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(187, 247, 208, 0));
+}
+
+.from-yellow-400 {
+  --tw-gradient-from: #facc15;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(250, 204, 21, 0));
+}
+
 .to-blue-600 {
   --tw-gradient-to: #0284c7;
 }
 
 .to-red-600 {
   --tw-gradient-to: #e11d48;
+}
+
+.to-green-600 {
+  --tw-gradient-to: #16a34a;
+}
+
+.to-green-400 {
+  --tw-gradient-to: #4ade80;
+}
+
+.to-green-500 {
+  --tw-gradient-to: #22c55e;
 }
 
 .bg-cover {

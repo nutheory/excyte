@@ -8,6 +8,7 @@ defmodule Excyte.Accounts.UserToken do
   # It is very important to keep the reset password token expiry short,
   # since someone with access to the email may take over the account.
   @reset_password_validity_in_days 1
+  @login_validity_in_days 1
   @confirm_validity_in_days 7
   @invite_validity_in_days 14
   @change_email_validity_in_days 7
@@ -30,6 +31,10 @@ defmodule Excyte.Accounts.UserToken do
   def build_session_token(user) do
     token = :crypto.strong_rand_bytes(@rand_size)
     {token, %Excyte.Accounts.UserToken{token: token, context: "session", user_id: user.id}}
+  end
+
+  def generate_login_token() do
+    :crypto.strong_rand_bytes(40) |> Base.url_encode64()
   end
 
   @doc """
@@ -96,6 +101,7 @@ defmodule Excyte.Accounts.UserToken do
     end
   end
 
+  defp days_for_context("login"), do: @login_validity_in_days
   defp days_for_context("confirm"), do: @confirm_validity_in_days
   defp days_for_context("invitation"), do: @invite_validity_in_days
   defp days_for_context("reset_password"), do: @reset_password_validity_in_days

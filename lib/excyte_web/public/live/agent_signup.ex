@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.AgentSignup do
   use ExcyteWeb, :live_public_view
-  alias Excyte.{Accounts, Agents.Agent}
+  alias Excyte.{Accounts, Accounts.UserNotifier, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
   def render(assigns), do: PublicView.render("agent_signup.html", assigns)
@@ -37,27 +37,20 @@ defmodule ExcyteWeb.AgentSignup do
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
-    case Accounts.register_agent(Utilities.key_to_atom(attrs)) do
-      {:ok, user} ->
-        {:ok, _} =
-          extract_user_token(fn url ->
-            Accounts.deliver_user_confirmation_instructions(user, url)
-          end)
-          |> Accounts.confirm_user()
-
-        {:noreply,
-          socket
-          |> put_flash(:info, "Agent account created for #{user.email}.")
-          |> redirect(to: "/agent/dash")
-        }
-      {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
-
+    with {:ok, %{agent: agent, account: acc}} <- Accounts.register_agent(Utilities.key_to_atom(attrs)),
+         {:ok, _} <- UserNotifier.deliver_welcome_email(agent, acc),
+         {:ok, token} <- Accounts.generate_login_token(agent) do
+      {:noreply,
+        socket
+        |> put_flash(:info, "Account created.")
+        |> redirect(to: Routes.user_session_path(socket, :create_from_token, token, agent.email))
+      }
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset: changeset)}
+      err ->
+        IO.inspect(err, label: "AGENT SIGNUP ERR")
+        {:noreply, socket}
     end
-  end
-
-  defp extract_user_token(fun) do
-    {:ok, captured} = fun.(&"[TOKEN]#{&1}[TOKEN]")
-    [_, token, _] = String.split(captured.text_body, "[TOKEN]")
-    token
   end
 end

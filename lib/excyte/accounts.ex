@@ -14,10 +14,11 @@ defmodule Excyte.Accounts do
   @topic inspect(__MODULE__)
 
   @default_theme %{
-    font: "Bodoni MT, Bodoni 72, Didot, Didot LT STD, Hoefler Text, Garamond, Times New Roman, serif",
+    font: "",
     background: "#F3F4F6",
     header_text: "#04293A",
     accent: "#0E7490",
+    link: "#0E7490",
     highlight_background: "#FEF08A",
     highlight_text: "#475569",
     text: "#475569",
@@ -107,9 +108,15 @@ defmodule Excyte.Accounts do
     |> Multi.run(:brokerage_profile, __MODULE__, :create_brokerage_profile, [attrs])
     |> Repo.transaction()
     |> case do
-      {:ok, %{agent: agent}} -> {:ok, agent}
+      {:ok, %{agent: agent, account: account}} -> {:ok, %{agent: agent, account: account}}
       {:error, _method, changeset, _} -> {:error, changeset}
     end
+  end
+
+  def generate_login_token(user) do
+    {encoded_token, user_token} = UserToken.build_email_token(user, "login")
+    Repo.insert!(user_token)
+    {:ok, encoded_token}
   end
 
   # def register_brokerage_agent(attrs) do
@@ -132,7 +139,7 @@ defmodule Excyte.Accounts do
     |> Multi.run(:agent_profile, __MODULE__, :create_agent_profile, [attrs])
     |> Repo.transaction()
     |> case do
-      {:ok, %{agent: agent}} -> {:ok, agent}
+      {:ok, %{agent: agent, account: account}} -> {:ok, %{agent: agent, account: account}}
       {:error, _method, changeset, _} -> {:error, changeset}
     end
   end
@@ -167,7 +174,6 @@ defmodule Excyte.Accounts do
     if bk do
       Repo.get!(Account, acc)
       |> Repo.preload(:agents)
-      |> IO.inspect()
     end
   end
 
@@ -427,16 +433,16 @@ defmodule Excyte.Accounts do
       {:error, :already_confirmed}
 
   """
-  def deliver_user_confirmation_instructions(%User{} = user, confirmation_url_fun)
-      when is_function(confirmation_url_fun, 1) do
-    if user.confirmed_at do
-      {:error, :already_confirmed}
-    else
-      {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
-      Repo.insert!(user_token)
-      UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
-    end
-  end
+  # def deliver_user_confirmation_instructions(%User{} = user, confirmation_url_fun)
+  #     when is_function(confirmation_url_fun, 1) do
+  #   if user.confirmed_at do
+  #     {:error, :already_confirmed}
+  #   else
+  #     {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
+  #     Repo.insert!(user_token)
+  #     UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
+  #   end
+  # end
 
   @doc """
   Confirms a user by the given token.
@@ -490,6 +496,16 @@ defmodule Excyte.Accounts do
       nil
 
   """
+
+  def get_user_by_email_and_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "login"),
+         %User{} = user <- Repo.one(query) do
+      {:ok, user}
+    else
+      _ -> nil
+    end
+  end
+
   def get_user_by_reset_password_token(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "reset_password"),
          %User{} = user <- Repo.one(query) do
@@ -545,7 +561,7 @@ defmodule Excyte.Accounts do
 
   def fetch_user_from_invitation(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "invitation"),
-         %User{} = user <- Repo.one(query) |> Repo.preload(:brokerage) do
+         %User{} = user <- Repo.one(query) |> Repo.preload([brokerage: :profile]) do
       {:ok, user}
     else
       _ -> :error

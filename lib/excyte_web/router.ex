@@ -144,10 +144,13 @@ defmodule ExcyteWeb.Router do
     pipe_through [:public, :redirect_if_user_is_authenticated, :auth]
     get "/brokerage/invite/:token", UserInvitationController, :accept
     put "/brokerage/invite/:token/:id/invite_update", UserInvitationController, :update_user
+    live "/agent/signup", AgentSignup
+    live "/brokerage/signup", BrokerageSignup
     get "/confirm", UserConfirmationController, :new
     post "/confirm", UserConfirmationController, :create
     get "/confirm/:token", UserConfirmationController, :confirm
     get "/login", UserSessionController, :new
+    get "/login/:token/email/:email", UserSessionController, :create_from_token
     post "/login", UserSessionController, :create
     get "/reset_password", UserResetPasswordController, :new
     post "/reset_password", UserResetPasswordController, :create
@@ -160,7 +163,5 @@ defmodule ExcyteWeb.Router do
     live "/", Home
     live "/privacy", Privacy
     live "/terms", Terms
-    live "/agent/signup", AgentSignup
-    live "/brokerage/signup", BrokerageSignup
   end
 end

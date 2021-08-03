@@ -39,7 +39,8 @@ const init = (form, submitButton, successCallback) => {
       card
     }).then(function(result) {
       if (result.error) {
-        console.log(result.error.message)
+        console.log("ERR REZ-1", result)
+        console.log("ERR REZ-2", result.error.message)
       } else {
         if (result && result.paymentMethod) {
           successCallback(result.paymentMethod)

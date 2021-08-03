@@ -24,14 +24,14 @@ defmodule Excyte.Accounts.UserNotifier do
     {:ok, email}
   end
 
-  def deliver_welcome_email(user) do
+  def deliver_welcome_email(user, acc) do
     text_body = """
     Hello!
     Welcome from the entire Excyte CMA team! We are here to help anyway possible.
     We offer daily webinars, 1st class customer support and a mobile first solution
     like no other presentation software.
 
-    Your free 30 day trial ends 07/26/2016. Information to your membership is located
+    Your free 3 week trial ends 07/26/2016. Information to your membership is located
     in the settings on your dashboard under the Account button. You can change your
     email/password or cancel your account there. We will remind you 10 days prior
     to your account being charged in case you want to make any changes to your plan
@@ -53,11 +53,46 @@ defmodule Excyte.Accounts.UserNotifier do
     We offer daily webinars, 1st class customer support and a mobile first solution
     like no other presentation software.</p>
 
-    <p>Your free 30 day trial ends 07/26/2016. Information to your membership is located
+    <p>Your free 3 week trial ends 07/26/2016. Information to your membership is located
     in the settings on your dashboard under the Account button. You can change your
     email/password or cancel your account there. We will remind you 10 days prior to
     your account being charged in case you want to make any changes to your plan or
     end the free trial.</p>
+
+    <p>We are thrilled to have you aboard and look forward to your feedback. We believe
+    the best way to get better is to grow together.</p>
+
+    <p>We appreciate you,</p>
+
+    #{@html_signature}
+    </div>
+    """
+
+    deliver(user.email, "Welcome to Excyte CMA", text_body, html_body)
+  end
+
+  def deliver_invite_welcome_email(user, brokerage) do
+    text_body = """
+    Hello!
+    Welcome from the entire Excyte CMA team! We are here to help anyway possible.
+    We offer daily webinars, 1st class customer support and a mobile first solution
+    like no other presentation software.
+
+    We are thrilled to have you aboard and look forward to your feedback. We believe
+    the best way to get better is to grow together.
+
+    We appreciate you,
+
+    Excyte CMA Team
+    """
+
+    html_body = """
+    <div style="max-width:'600px';">
+    <p>Hello!</p>
+
+    <p>Welcome from the entire Excyte CMA team! We are here to help anyway possible.
+    We offer daily webinars, 1st class customer support and a mobile first solution
+    like no other presentation software.</p>
 
     <p>We are thrilled to have you aboard and look forward to your feedback. We believe
     the best way to get better is to grow together.</p>

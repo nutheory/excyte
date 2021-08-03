@@ -172,6 +172,20 @@
         <div class="mr-3">
         <%= live_component @socket, ColorPicker,
           callback: :update_theme,
+          instance_id: :link,
+          color: @theme_settings.link,
+          id: :link_picker
+        %>
+        </div>
+        <div class="flex-1">
+          <h4 class="mb-0">Links</h4>
+          <p>Link (clickable items) color.</p>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="mr-3">
+        <%= live_component @socket, ColorPicker,
+          callback: :update_theme,
           instance_id: :muted_text,
           color: @theme_settings.muted_text,
           id: :muted_text_picker

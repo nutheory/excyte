@@ -42,13 +42,22 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% if agent["bio"] %}
               <p class="mt-6">{{ agent["bio"] }}</p>
             {% endif %}
-            <struct class="mt-6">
-              {% if agent["company_name"] %}
-                <p><strong>{{ agent["company_name"] }}</strong></p>
-              {% endif %}
-              {% if agent["job_title"] %}
-                <p><i>{{ agent["job_title"] }}</i></p>
-              {% endif %}
+            <struct class="mt-6 data-grid-fifty">
+              <struct class="">
+                {% if agent["company_name"] %}
+                  <p class="text-lg"><strong>{{ agent["company_name"] }}</strong></p>
+                {% endif %}
+                {% if agent["job_title"] %}
+                  <p><i>{{ agent["job_title"] }}</i></p>
+                {% endif %}
+              </struct>
+              <struct>
+                {% if agent["logo_url"] %}
+                  <struct class="w-full flex items-center justify-center md:justify-end">
+                    <img src="{{ agent["logo_url"] }}" alt="{{ agent["company_name"] }} logo" />
+                  </struct>
+                {% endif %}
+              </struct>
             </struct>
           </struct>
         </struct>
@@ -394,7 +403,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           <struct class="fifty">
             <h4>Above Market Value</h4>
             <p>This pricing startegy can be risky and most seasoned Agents will avoid
-            doing this to Sellers. The 1st 30 days of a listing is the most important
+            doing this to Sellers. The 1st 3 weeks of a listing is the most important
             and over pricing can negativly effect effect this time. You will see less
             Buyers at open houses, less offers and  logner listing times. Ultimately
             this could lead to a price reduction  and lessen your opportunity to

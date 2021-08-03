@@ -4,7 +4,8 @@ defmodule Excyte.Brokerages.Brokerage do
   alias Excyte.{
     Accounts.Account,
     Accounts.User,
-    Utils.MapType,
+    Brokerages.Profile,
+    Utils.MapType
   }
 
   @timestamps_opts [type: :utc_datetime]
@@ -24,6 +25,7 @@ defmodule Excyte.Brokerages.Brokerage do
     field :contact_settings, MapType
     field :legal_link, :string
     field :legal_text, :string
+    has_one(:profile, Profile)
     belongs_to(:account, Account)
     timestamps()
   end

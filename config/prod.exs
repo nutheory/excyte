@@ -35,14 +35,14 @@ config :excyte, :agent_plans, [
     price: "24.95",
     default: true,
     stripe_id: "price_1JGXyPJYg86TDWnARMsIvm7P",
-    trial_period: 30
+    trial_period: 21
   }, %{
     name: "Yearly",
     id: "year",
     price: "249.95",
     default: false,
     stripe_id: "price_1JGXyPJYg86TDWnAbwqMzEdG",
-    trial_period: 30
+    trial_period: 21
   }
 ]
 
@@ -55,7 +55,7 @@ config :excyte, :brokerage_plans, [
     price: "199.95",
     default: true,
     stripe_id: "price_1JH5JTJYg86TDWnAiCRVoNGk",
-    trial_period: 30
+    trial_period: 21
   }, %{
     name: "20 - 30 Agents",
     max_agent_count: 30,
@@ -64,7 +64,7 @@ config :excyte, :brokerage_plans, [
     price: "299.95",
     default: false,
     stripe_id: "price_1JH5JTJYg86TDWnApdxUqlCy",
-    trial_period: 30
+    trial_period: 21
   }, %{
     name: "30 - 40 Agents",
     max_agent_count: 40,
@@ -73,7 +73,7 @@ config :excyte, :brokerage_plans, [
     price: "399.95",
     default: false,
     stripe_id: "price_1JH5JTJYg86TDWnASrEPV9TD",
-    trial_period: 30
+    trial_period: 21
   }, %{
     name: "40 - 50 Agents",
     max_agent_count: 50,
@@ -82,7 +82,7 @@ config :excyte, :brokerage_plans, [
     price: "499.95",
     default: false,
     stripe_id: "price_1JH5JUJYg86TDWnAaWIa9xbZ",
-    trial_period: 30
+    trial_period: 21
   }
 ]
 

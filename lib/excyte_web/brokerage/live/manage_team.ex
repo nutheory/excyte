@@ -11,7 +11,6 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
     bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})
     ivts = Brokerages.get_invitations(cu.brokerage_id)
-    IO.inspect(acc, label: "ACC")
     {:ok, assign(socket,
       changeset: cs,
       current_user: cu,

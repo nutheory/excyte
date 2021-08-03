@@ -20,6 +20,15 @@ defmodule ExcyteWeb.UserSessionController do
     end
   end
 
+  def create_from_token(conn, %{"email" => email, "token" => token}) do
+    case Accounts.get_user_by_email_and_token(token) do
+      {:ok, user} -> UserAuth.log_in_user(conn, user, %{})
+      err ->
+        IO.inspect(err, label: "TOKEN LOGIN ERR")
+        render(conn, "login.html", error_message: "Invalid email or token")
+    end
+  end
+
   def delete(conn, _params) do
     conn
     |> put_flash(:info, "Logged out successfully.")

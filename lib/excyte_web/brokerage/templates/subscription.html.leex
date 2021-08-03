@@ -34,13 +34,13 @@
   <div class="text-base mt-6 mb-4">
     <%= case @plan.id do %>
       <% "twenty" -> %>
-        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$199.95</span>.</p>
+        <p>After your <span class="font-bold italic">3 week trial</span> ends you will be billed <span class="font-bold italic">$199.95</span>.</p>
       <% "thirty" -> %>
-        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$299.95</span>.</p>
+        <p>After your <span class="font-bold italic">3 week trial</span> ends you will be billed <span class="font-bold italic">$299.95</span>.</p>
       <% "forty" -> %>
-        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$399.95</span>.</p>
+        <p>After your <span class="font-bold italic">3 week trial</span> ends you will be billed <span class="font-bold italic">$399.95</span>.</p>
       <% "fifty" -> %>
-        <p>After your <span class="font-bold italic">30 day trial</span> ends you will be billed <span class="font-bold italic">$499.95</span>.</p>
+        <p>After your <span class="font-bold italic">3 week trial</span> ends you will be billed <span class="font-bold italic">$499.95</span>.</p>
     <% end %>
   </div>
   <%= if @payment_success === true do %>

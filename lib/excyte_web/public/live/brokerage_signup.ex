@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.BrokerageSignup do
   use ExcyteWeb, :live_public_view
-  alias Excyte.{Accounts, Accounts.User, Agents.Agent}
+  alias Excyte.{Accounts, Accounts.User, Accounts.UserNotifier, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
   def render(assigns), do: PublicView.render("brokerage_signup.html", assigns)
@@ -37,27 +37,20 @@ defmodule ExcyteWeb.BrokerageSignup do
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
-    case Accounts.register_brokerage(Utilities.key_to_atom(attrs)) do
-      {:ok, user} ->
-        {:ok, _} =
-          extract_user_token(fn url ->
-            Accounts.deliver_user_confirmation_instructions(user, url)
-          end)
-          |> Accounts.confirm_user()
-
-        {:noreply,
-          socket
-          |> put_flash(:info, "Brokerage account created for #{user.email}.")
-          |> redirect(to: "/agent/dash")
-        }
+    with {:ok, %{agent: owner, account: acc}} <- Accounts.register_brokerage(Utilities.key_to_atom(attrs)),
+         {:ok, _} <- UserNotifier.deliver_welcome_email(owner, acc),
+         {:ok, token} <- Accounts.generate_login_token(owner) do
+      {:noreply,
+        socket
+        |> put_flash(:info, "Brokerage account created.")
+        |> redirect(to: Routes.user_session_path(socket, :create_from_token, token, owner.email))
+      }
+    else
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}
+      err ->
+        IO.inspect(err, label: "BROKERAGE SIGNUP ERR")
+        {:noreply, socket}
     end
-  end
-
-  defp extract_user_token(fun) do
-    {:ok, captured} = fun.(&"[TOKEN]#{&1}[TOKEN]")
-    [_, token, _] = String.split(captured.text_body, "[TOKEN]")
-    token
   end
 end

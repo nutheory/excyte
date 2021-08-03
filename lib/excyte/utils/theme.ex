@@ -2,7 +2,7 @@ defmodule Excyte.Utils.Theme do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @fields [:id, :font, :text, :muted_text, :accent, :background, :header_text, :sub_header_text, :highlight_background, :highlight_text]
+  @fields [:id, :font, :text, :muted_text, :accent, :link, :background, :header_text, :sub_header_text, :highlight_background, :highlight_text]
 
   @derive {Jason.Encoder, only: @fields}
 
@@ -16,6 +16,7 @@ defmodule Excyte.Utils.Theme do
     field :highlight_text, :string, default: "#475569"
     field :muted_text, :string, default: "#CBD5E1"
     field :text, :string, default: "#475569"
+    field :link, :string, default: "#475569"
     field :brokerage_default, :boolean, default: false
   end
 

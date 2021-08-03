@@ -22,11 +22,19 @@ defmodule ExcyteWeb.Brokerage.Theme do
     cu = Accounts.get_user_by_session_token(token)
     agent_profile = Agents.get_agent_profile!(cu.id)
     brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
+    theme =
+      if Map.has_key?(brokerage_profile.theme_settings, :link) do
+        Map.from_struct(brokerage_profile.theme_settings)
+      else
+        Map.from_struct(brokerage_profile.theme_settings)
+        |> Map.put(:link, "#0891B2")
+      end
+
     {:ok, assign(socket,
       return_to: rt,
       agent_profile: agent_profile,
       brokerage_profile: brokerage_profile,
-      theme_settings: Map.from_struct(brokerage_profile.theme_settings),
+      theme_settings: theme,
       fonts: @fonts
     )}
   end
@@ -51,7 +59,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
 
   def handle_event("save-theme", _, %{assigns: a} = socket) do
     case Brokerages.update_profile(a.brokerage_profile, %{theme_settings: a.theme_settings}) do
-      {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
+      {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Theme updated.")
                                     |> push_redirect(to: a.return_to)}
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Brokerage.Theme")
     end

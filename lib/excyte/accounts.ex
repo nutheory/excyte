@@ -173,7 +173,7 @@ defmodule Excyte.Accounts do
   def get_account_with_brokerage_agents(%{brokerage: bk, account: acc}) do
     if bk do
       Repo.get!(Account, acc)
-      |> Repo.preload(:agents)
+      |> Repo.preload(:users)
     end
   end
 
@@ -605,16 +605,18 @@ defmodule Excyte.Accounts do
     })
   end
 
+  def delete_user(query_attrs) do
+    user = Repo.get_by!(User, query_attrs)
+    Repo.delete(user)
+  end
+
   defp create_stripe_customer(attrs) do
-    # if Application.get_env(:excyte, :env) !== :prod do
-    #   {:ok, %{id: "cus_IMlPxOZWcb0Y2u"}}
-    # else
-      Customer.create(%{
-        email: attrs.email,
-        description: "Excyte - Agent",
-        name: attrs.full_name
-      })
-    # end
+    desc = if Map.has_key?(attrs, :brokerage_name), do: "Brokerage - #{attrs.brokerage_name}", else: "Agent"
+    Customer.create(%{
+      email: attrs.email,
+      description: "ExcyteCMA - #{desc}",
+      name: attrs.full_name
+    })
   end
 
   defp notify_subscribers({:ok, result}, event) do

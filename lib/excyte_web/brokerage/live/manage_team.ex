@@ -10,16 +10,30 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
     acc = Accounts.get_account_with_brokerage_agents(%{brokerage: cu.brokerage_id, account: cu.account_id})
     bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})
-    ivts = Brokerages.get_invitations(cu.brokerage_id)
     {:ok, assign(socket,
       changeset: cs,
       current_user: cu,
       brokerage: bp,
       account: acc,
       message_user_edited: false,
-      invitations: ivts,
+      members: acc.users,
       errors: []
     )}
+  end
+
+  def handle_event("delete_user", %{"user-id" => uid}, %{assigns: a} = socket) do
+    {id, _} = Integer.parse(uid)
+    if Utilities.authorized?(a.current_user.brokerage_role) do
+      case Accounts.delete_user(%{brokerage_id: a.current_user.brokerage_id, id: id}) do
+        {:ok, user} ->
+          members = Enum.filter(a.members, fn usr -> usr.id !== id end)
+          {:noreply, assign(socket, members: members)}
+        _ ->
+          {:noreply, put_flash(socket, :error, "Could not delete selected user. We'll look into why.")}
+      end
+    else
+      {:noreply, assign(socket, errors: [%{message: "You are not authorized to delete users."}])}
+    end
   end
 
   def handle_event("validate", %{"user" => ivt} = f, %{assigns: a} = socket) do
@@ -49,7 +63,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
 
   def handle_event("save", %{"user" => ivt}, %{assigns: a} = socket) do
     if Utilities.authorized?(a.current_user.brokerage_role) do
-      if length(a.account.agents) + length(a.invitations) <= a.account.agent_limit do
+      if length(a.members) <= a.account.agent_limit do
         br = if ivt["brokerage_role"] === true, do: "admin", else: "agent"
         with {:ok, invite} <- Accounts.create_brokerage_invitation(Map.merge(ivt, %{
                                 "brokerage_id" => a.current_user.brokerage_id,
@@ -64,7 +78,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
                         ) do
 
           {:noreply, put_flash(socket, :info, "Invite sent to #{ivt["email"]}.")
-                    |> assign(invitations: [invite | a.invitations])}
+                    |> assign(members: [invite | a.members])}
         else
           {:error, %Ecto.Changeset{} = err_cs} -> {:noreply, assign(socket, changeset: err_cs)}
         end
@@ -77,6 +91,6 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
   end
 
   defp default_message(%{to: to, from: from, brokerage: brokerage}) do
-    "Dear #{to},\nYou have been invited by #{from} to join the team from #{brokerage} using Excyte.IO..."
+    "Dear #{to},\nYou have been invited by #{from} to join the team from #{brokerage} using ExcyteCMA."
   end
 end

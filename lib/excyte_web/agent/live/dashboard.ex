@@ -8,7 +8,7 @@ defmodule ExcyteWeb.Agent.Dashboard do
   def mount(_params,  %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     if cu.completed_setup === false do
-      if cu.brokerage_id && cu.brokerage_role === "owner" do
+      if String.contains?(cu.brokerage_role, ["owner", "admin"]) do
         {:ok, push_redirect(socket, to: "/brokerage/getting-started", current_user: cu)}
       else
         {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
@@ -37,6 +37,16 @@ defmodule ExcyteWeb.Agent.Dashboard do
       {:error, err} ->
         IO.inspect(err, label: "ERR")
         {:noreply, socket}
+    end
+  end
+
+  def handle_event("delete-insight", %{"ins-id" => iid}, %{assigns: a} = socket) do
+    {id, _} = Integer.parse(iid)
+    case Insights.delete_insight(%{id: id, created_by_id: a.current_user.id}) do
+      {:ok, ins} ->
+        insights = Enum.reject(a.insights, fn i -> i.id === ins.id end)
+        {:noreply, assign(socket, insights: insights)}
+      {:error, err} -> IO.inspect(err, label: "DEL ERR")
     end
   end
 

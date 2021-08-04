@@ -146,7 +146,7 @@ defmodule Excyte.Accounts.UserNotifier do
 
     You can accept your invitation by visiting the url below:
 
-    #{@base_url}#{url}
+    #{url}
 
     If you didn't create an account with us, please ignore this.
 
@@ -156,7 +156,7 @@ defmodule Excyte.Accounts.UserNotifier do
     html_body = """
     #{user.invite_message}<br/></br/>
     You can accept your invitation by visiting the url below:<br/></br/>
-    <a href="#{@base_url}#{url}" target="_blank">#{@base_url}#{url}</a><br/></br/>
+    <a href="#{url}" target="_blank">#{url}</a><br/></br/>
     #{@html_signature}
     """
 

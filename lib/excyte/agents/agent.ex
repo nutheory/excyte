@@ -5,6 +5,7 @@ defmodule Excyte.Agents.Agent do
     Mls.Credential,
     Accounts.Account,
     Accounts.User,
+    Agents.Profile,
     Repo
   }
 
@@ -22,6 +23,7 @@ defmodule Excyte.Agents.Agent do
     field :confirmed_at, :utc_datetime
     belongs_to(:account, Account)
     has_many(:mls_credentials, Credential)
+    has_many(:profiles, Profile, foreign_key: :agent_id)
     timestamps()
   end
 

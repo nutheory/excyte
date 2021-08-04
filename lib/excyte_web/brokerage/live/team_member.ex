@@ -3,13 +3,12 @@ defmodule ExcyteWeb.Brokerage.TeamMember do
   # alias Excyte.{Accounts, Agents, Agents.Contact, Agents.Profile}
   alias ExcyteWeb.BrokerageView
 
-  def render(assigns), do: BrokerageView.render("manage_team.html", assigns)
+  def render(assigns), do: BrokerageView.render("team_member.html", assigns)
 
   def update(assigns, socket) do
     {:ok, assign(socket,
       member: assigns.member,
-      show_controls: false
+      show_actions: assigns.show_actions
     )}
   end
-
 end

@@ -90,7 +90,7 @@ defmodule ExcyteWeb.Insight.Customize do
       end
     {:noreply,
       socket
-      |> put_flash(:info, "#{String.upcase(published.type)} was created and published successfully.")
+      |> put_flash(:info, "#{Utilities.insight_type_to_name(published.type)} was created and published successfully.")
       |> push_redirect(to: "/agent/dash")}
   end
 

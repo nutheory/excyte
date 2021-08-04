@@ -7,7 +7,7 @@ defmodule Excyte.Accounts.Account do
   @timestamps_opts [type: :utc_datetime]
   import Ecto.Changeset
   alias Excyte.{
-    Agents.Agent,
+    Accounts.User,
     Repo
   }
 
@@ -21,7 +21,7 @@ defmodule Excyte.Accounts.Account do
     field(:source_plan_id, :string)
     field(:agent_limit, :integer)
     field(:current_period_end, :utc_datetime)
-    has_many(:agents, Agent)
+    has_many(:users, User)
     timestamps()
   end
 

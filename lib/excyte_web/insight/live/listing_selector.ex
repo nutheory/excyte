@@ -193,7 +193,6 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   end
 
   def handle_event("preview-property", %{"key" => selected_lk}, %{assigns: a} = socket) do
-    IO.inspect(selected_lk, label: "selected_lk")
     already_added = Enum.find(a.selected_listings, fn lk -> lk.listing_key === selected_lk end)
 
     preview =
@@ -201,7 +200,6 @@ defmodule ExcyteWeb.Insight.ListingSelector do
         already_added
       else
         new_listing = Enum.find(a.listings, fn lk -> lk.listing_key === selected_lk end)
-        IO.inspect(new_listing, label: "new_listing")
         if Map.has_key?(a.subject, :__struct__) do
           Adjustments.process_init(new_listing, a.subject)
         else

@@ -1,5 +1,5 @@
 <div>
-  <%= if length(@account.agents) + length(@invitations) < @account.agent_limit do %>
+  <%= if length(@members) < @account.agent_limit do %>
     <%= f = form_for @changeset, "#", [id: "manage_team_form", phx_change: "validate", phx_submit: "save"] %>
       <div class="shadow-md bg-white rounded-md p-4">
         <div class="mt-4">
@@ -37,54 +37,26 @@
     </div>
   <% end %>
   <div class="my-8">
-    <h3 class="text-lg leading-none font-extrabold text-gray-900 mb-2">Invitations</h3>
-    <ul class="border-t border-bgray-500">
-      <%= if length(@invitations) === 0 do %>
+    <div class="flex">
+      <h3 class="flex-1 flex items-end text-lg leading-none font-extrabold text-gray-900 mb-2">Current Team & Invitations</h3>
+      <div>
+        <h4 class="text-gray-500">
+          <span class="text-2xl text-gray-700">
+            <%= length(@members) %>
+          </span> of <%= @account.agent_limit %>
+        </h4>
+      </div>
+    </div>
+    <ul class="">
+      <%= if length(@members) === 0 do %>
         <li class="pt-2">No invitations</li>
       <% else %>
-        <%= for invite <- @invitations do %>
-          <li class="p-2 border-b border-bgray-500">
-            <div class="flex">
-              <div class="flex-1">
-                <div class="flex">
-                  <div class="font-bold flex-1">
-                    <%= invite.full_name %>
-                  </div>
-                  <div class=" ml-6 text-right text-base">
-                    <%= if invite.confirmed_at do %>
-                      Accepted
-                    <% else %>
-                      Awaiting response...
-                    <% end %>
-                  </div>
-                </div>
-                <div class="flex">
-                  <div class="font-bold flex-1">
-                    <%= invite.email %>
-                  </div>
-                  <div class=" ml-6 text-right text-sm">
-                    <%= if invite.confirmed_at do %>
-                      <%= Calendar.strftime(invite.confirmed_at, "%b %d, %Y") %>
-                    <% else %>
-                      Sent: <%= Calendar.strftime(invite.updated_at, "%b %d, %Y") %>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-              <%# <div class="flex-col ">
-                <div class="flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
-                  </svg>
-                </div>
-                <div class="flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-              </div> %>
-            </div>
-          </li>
+        <%= for member <- @members do %>
+          <%= live_component TeamMember,
+            member: member,
+            show_actions: (if @current_user.id !== member.id && String.contains?(@current_user.brokerage_role, ["owner", "admin"]), do: true, else: false),
+            id: "member_#{member.id}"
+          %>
         <% end %>
       <% end %>
     </ul>

@@ -184,6 +184,13 @@ defmodule Excyte.Insights do
     end
   end
 
+  def delete_insight(query_params) do
+    ins = Repo.get_by(Insight, query_params)
+    if ins do
+      Repo.delete(ins)
+    end
+  end
+
   def maybe_brokerage(_repo, %{get_publishing_info: insight}) do
     if insight.brokerage_id do
       {:ok, %{

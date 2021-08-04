@@ -63,10 +63,13 @@
     x-transition:leave-start="opacity-100 transform scale-y-100"
     x-transition:leave-end="opacity-0 transform scale-y-90"
   >
-    <button
-      class="danger-action py-0.5 px-2"
-      phx-click="delete-insight"
-      phx-value-ins-id="<%= @insight.id %>"
-    >Delete</button>
+    <div class="alert-danger rounded p-2 flex">
+      <button
+        class="danger-action py-0.5 px-2 block"
+        phx-click="delete-insight"
+        phx-value-ins-id="<%= @insight.id %>"
+      >Delete</button>
+      <p class="flex-1 ml-2 text-xs">If you delete this report it will no longer be available to anyone you may have shared it with.</p>
+    </div>
   </div>
 </div>

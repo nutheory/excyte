@@ -111,7 +111,7 @@ nav {
 }
 
 .alert-danger {
-  @apply bg-red-50 border-red-800 text-red-800;
+  @apply bg-red-50 border-red-800 border text-red-800;
 }
 
 .alert p.inner {

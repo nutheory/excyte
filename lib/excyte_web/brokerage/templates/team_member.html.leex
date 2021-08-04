@@ -5,7 +5,7 @@
         <div class="avatar">
           <div class="relative text-lg rounded flex items-center justify-center text-bgray-100 font-bold bg-bgray-800 uppercase h-9 w-9 lg:w-14 lg:h-14 z-30 cursor-pointer avatar">
             <%= if @member.current_avatar do %>
-              <div class="rounded-full w-full h-full bg-cover" style="background-image: url(<%= @member.current_avatar %>);"></div>
+              <div class="rounded w-full h-full bg-cover" style="background-image: url(<%= @member.current_avatar %>);"></div>
             <% else %>
               <%= String.first(@member.full_name) %>
             <% end %>
@@ -22,9 +22,9 @@
       <div class="flex mt-2">
         <div class="flex-1 flex items-end">
           <%= if @member.confirmed_at do %>
-            <p class="text-sm">Joined: <span class="font-bold"><%= Calendar.strftime(@member.confirmed_at, "%b %d, %Y") %></span></p>
+            <p class="text-sm w-full">Joined: <span class="font-bold"><%= Calendar.strftime(@member.confirmed_at, "%b %d, %Y") %></span></p>
           <% else %>
-            <p class="text-sm">Joined: <span class="font-bold"><%= Calendar.strftime(@member.inserted_at, "%b %d, %Y") %></span></p>
+            <p class="text-sm w-full">Joined: <span class="font-bold"><%= Calendar.strftime(@member.inserted_at, "%b %d, %Y") %></span></p>
           <% end %>
           <%= if @show_actions do %>
             <div class="actions form">
@@ -59,7 +59,7 @@
       </div>
       <div class="flex mt-2">
         <div class="flex-1 flex items-end">
-          <p class="text-sm">Invitation sent: <span class="font-bold"><%= Calendar.strftime(@member.updated_at, "%b %d, %Y") %></span></p>
+          <p class="text-sm w-full">Invitation sent: <span class="font-bold"><%= Calendar.strftime(@member.updated_at, "%b %d, %Y") %></span></p>
         </div>
         <%= if @show_actions do %>
           <div class="actions form">

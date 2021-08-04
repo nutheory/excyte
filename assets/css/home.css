@@ -58,6 +58,10 @@ span.icon-align {
   text-shadow: 1px 1px 2px black;
 }
 
+.large-text-shadow {
+  text-shadow: 2px 2px 2px #333;
+}
+
 blockquote {
   font-style: italic;
   font-family: 'Sanchez', serif;
@@ -70,6 +74,41 @@ blockquote p {
   @apply pl-6 my-4;
 
   font-size: 1.4rem;
+}
+
+.blue-radial {
+  background: #30ecf8;
+  background: radial-gradient(at top left, #30ecf8, #428bf3);
+}
+
+.blue-radial-text {
+  color: #30b9f8;
+  color: radial-gradient(at top left, #30ecf8, #428bf3);
+}
+
+.pink-radial {
+  background: #ec4798;
+  background: radial-gradient(at top left, #ec4798, #ef406b);
+}
+
+.green-radial {
+  background: #bef04c;
+  background: radial-gradient(at top left, #bef04c, #11ca26);
+}
+
+.green-radial-text {
+  color: #52f04c;
+  color: radial-gradient(at top left, #bef04c, #11ca26);
+}
+
+.orange-radial {
+  background: #faca17;
+  background: radial-gradient(at top left, #faca17, #f97516);
+}
+
+.orange-radial-text {
+  color: #fab217;
+  color: radial-gradient(at top left, #faca17, #f97516);
 }
 
 .home-example {

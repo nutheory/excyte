@@ -2089,6 +2089,121 @@ h4 {
     max-width: 1536px;
   }
 }
+@layer base {
+  html, body {
+
+    --tw-bg-opacity: 1;
+
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  }
+  html, body {
+
+    --tw-text-opacity: 1;
+
+    color: rgba(75, 85, 99, var(--tw-text-opacity));
+  }
+  html,
+  body {
+
+    line-height: 1.2;
+    height: 100%;
+  }
+
+  [x-cloak] {
+    display: none;
+  }
+
+  a:link, a:visited {
+
+    --tw-text-opacity: 1;
+
+    color: rgba(14, 116, 144, var(--tw-text-opacity));
+  }
+
+  a:hover, a:active {
+
+    --tw-text-opacity: 1;
+
+    color: rgba(21, 94, 117, var(--tw-text-opacity));
+  }
+
+  a:hover, a:active {
+
+    text-decoration: underline;
+  }
+
+  @media (min-width: 1280px) {
+    p {
+
+      font-size: 1.125rem;
+
+      line-height: 1.75rem;
+    }
+  }
+
+  h1 {
+
+    font-size: 2.25rem;
+
+    line-height: 2.5rem;
+  }
+
+  h1 {
+
+    font-weight: 800;
+  }
+
+  h1 {
+
+    line-height: 1;
+  }
+
+  h2 {
+
+    font-size: 1.875rem;
+
+    line-height: 2.25rem;
+  }
+
+  h2 {
+
+    font-weight: 800;
+  }
+
+  h3 {
+
+    font-size: 1.5rem;
+
+    line-height: 2rem;
+  }
+
+  h3 {
+
+    font-weight: 700;
+  }
+
+  h3 {
+
+    line-height: 1;
+  }
+
+  h4 {
+
+    font-size: 1.25rem;
+
+    line-height: 1.75rem;
+  }
+
+  h4 {
+
+    font-weight: 700;
+  }
+
+  h4 {
+
+    line-height: 1;
+  }
+}
 .sr-only {
 
   position: absolute;
@@ -3990,6 +4105,12 @@ h4 {
   --tw-text-opacity: 1;
 
   color: rgba(7, 89, 133, var(--tw-text-opacity));
+}
+.text-gray-300 {
+
+  --tw-text-opacity: 1;
+
+  color: rgba(209, 213, 219, var(--tw-text-opacity));
 }
 .text-indigo-600 {
 

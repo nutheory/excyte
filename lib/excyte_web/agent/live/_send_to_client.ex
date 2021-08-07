@@ -4,6 +4,7 @@ defmodule ExcyteWeb.Agent.SendToClient do
   alias ExcyteWeb.AgentView
 
   def render(assigns), do: AgentView.render("send_to_client.html", assigns)
+
   def update(assigns, socket) do
     profile = Agents.get_agent_profile!(assigns.current_user.id)
     activities = Activities.fetch_insight_activities(%{insight_id: assigns.insight.id, agent_id: assigns.current_user.id})

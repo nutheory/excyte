@@ -76,32 +76,17 @@ defmodule Excyte.Accounts.Billing do
     end
   end
 
-#   def change_payment_setup(customer_id) do
-#     case SetupIntent.create(%{customer: customer_id}) do
-#       {:ok, si} -> {:ok, %{secret: si.client_secret}}
-#       {:error, err} -> {:error, err}
-#     end
-#   end
-
   def change_payment_finish(customer_id, pm_id) do
     Customer.update(customer_id, %{invoice_settings: %{default_payment_method: pm_id}})
     {:ok, %{updated: true}}
   end
 
-  def get_payment_method(customer_id) do
-    {:ok, pm} =
-      Customer.retrieve(customer_id, expand: ["invoice_settings.default_payment_method"])
-
-    if pm.invoice_settings.default_payment_method != nil do
-      %{
-        payment_method_id: pm.invoice_settings.default_payment_method.id,
-        last_four: pm.invoice_settings.default_payment_method.card.last4,
-        brand: pm.invoice_settings.default_payment_method.card.brand,
-        exp_month: pm.invoice_settings.default_payment_method.card.exp_month,
-        exp_year: pm.invoice_settings.default_payment_method.card.exp_year
-      }
-    else
-      nil
+  def get_current_payment_method(pm_id) do
+    case PaymentMethod.retrieve(pm_id) do
+      {:ok, pm} -> pm
+      {:error, err} ->
+        Activities.handle_errors(err, "Billing.get_current_method_payment")
+        nil
     end
   end
 

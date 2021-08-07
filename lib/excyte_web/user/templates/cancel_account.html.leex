@@ -1,0 +1,12 @@
+<div class="">
+  <%= f = form_for :cancel_account, "#", [phx_submit: "cancel_submit"] %>
+    <div class="">
+      <div class="">
+        <%= text_input f, :confirm_text, class: "text-field", phx_debounce: "blur" %>
+      </div>
+      <div class="">
+        <%= submit "Cancel your account", class: "danger mt-4 w-full", phx_disable_with: "Thank you for your patronage..." %>
+      </div>
+    </div>
+  </form>
+</div>

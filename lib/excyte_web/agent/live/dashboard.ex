@@ -32,7 +32,9 @@ defmodule ExcyteWeb.Agent.Dashboard do
 
   def handle_info({:save_client, attrs}, %{assigns: a} = socket) do
     case Clients.create_client(attrs) do
-      {:ok, _client} -> {:noreply, put_flash(socket, :info, "#{Utilities.insight_type_to_name(a.insight_to_send.type)}")
+      {:ok, %{new_client: client}} ->
+        IO.inspect(client, label: "CLI")
+        {:noreply, put_flash(socket, :info, "#{Utilities.insight_type_to_name(a.insight_to_send.type)} sent to #{client.email}")
                                   |> assign(show_send_panel: false, insight_to_send: nil)}
       {:error, err} ->
         IO.inspect(err, label: "ERR")

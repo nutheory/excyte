@@ -52,6 +52,7 @@ defmodule Excyte.MixProject do
       {:gettext, "~> 0.11"},
       {:tesla, "~> 1.4"},
       {:quantum, "~> 3.0"},
+      {:csv, "~> 2.4"},
       {:key_convert, "~> 0.5.0"},
       {:hackney, "~> 1.17"},
       {:inflex, "~> 2.0.0"},

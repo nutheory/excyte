@@ -134,8 +134,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
         %{value: "closed", name: "Closed"},
         %{value: "pending", name: "Pending"}
       ],
-      status_updated: %{value: 24, text: "Past 2 years"},
-      distance: 20.0
+      status_updated: %{value: 12, text: "Past year"},
+      distance: 3.0
     }
   end
 

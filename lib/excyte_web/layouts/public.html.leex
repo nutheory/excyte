@@ -9,14 +9,5 @@
     phx-value-key="error"><%= live_flash(@flash, :error) %></p>
     <%= @inner_content %>
   </main>
-  <div class="text-sm text-gray-600 flex justify-center py-1 px-4">
-    <div class="flex mx-auto">
-      <div>&copy; Copyright 2021</div>
-      <div class="mx-2">|</div>
-      <div><%= link "Terms of Service", to: "/terms" %></div>
-      <div class="mx-2">|</div>
-      <div><%= link "Privacy Policy", to: "/privacy" %></div>
-    </div>
-  </div>
   <script defer phx-track-static type="text/javascript" src="/js/public.js"></script>
 </div>

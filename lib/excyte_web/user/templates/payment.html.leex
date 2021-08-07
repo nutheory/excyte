@@ -1,18 +1,20 @@
-<form action="#" method="post" phx-hook="InitCheckout" id="payment-form" phx-target="<%= @myself %>">
-  <div phx-update="ignore">
-    <label for="card-element" class="tag-label px-1">
-      Credit or debit card
-    </label>
-    <div id="card-element" class="tag-input fake-text-field"></div>
-    <div id="card-errors" class="tag-label text-red-400 p-2" role="alert"></div>
-    <div class="flex">
-      <button class="submit w-full" type="submit">
-        <svg id="processing-icon" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span id="submit-text">Save Payment Method<span>
-      </button>
-    </div>
-  </div>
-</form>
+<div class="">
+    <form action="#" method="post" phx-hook="InitCheckout" id="payment-form" phx-target="<%= @myself %>">
+      <div phx-update="ignore">
+        <label for="card-element" class="tag-label px-1">
+          Credit or debit card
+        </label>
+        <div id="card-element" class="tag-input fake-text-field"></div>
+        <div id="card-errors" class="tag-label text-red-400 p-2" role="alert"></div>
+        <div class="flex">
+          <button class="submit w-full" type="submit">
+            <svg id="processing-icon" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="submit-text">Save Payment Method<span>
+          </button>
+        </div>
+      </div>
+    </form>
+</div>

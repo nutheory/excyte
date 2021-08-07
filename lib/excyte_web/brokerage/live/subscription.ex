@@ -16,7 +16,6 @@ defmodule ExcyteWeb.Brokerage.Subscription do
         Enum.find(plans, fn p -> p.default === true end)
       end
 
-    # IO.inspect(plans, label: "PLAN")
     {:ok, assign(socket,
       plans: plans,
       account: account,
@@ -35,7 +34,7 @@ defmodule ExcyteWeb.Brokerage.Subscription do
                         source_plan_id: sub.plan.id,
                         payment_method_id: pm_id,
                         agent_limit: pl.max_agent_count,
-                        current_period_end: DateTime.from_unix!(sub.current_period_end) |> DateTime.add(3*24*60*60, :second),
+                        current_period_end: DateTime.from_unix!(sub.current_period_end),
                         source_subscription_id: sub.id,
                         source_subscription_item_id: item.id
                        }) do
@@ -71,7 +70,7 @@ defmodule ExcyteWeb.Brokerage.Subscription do
         customer_id: acc.source_customer_id,
         price_id: pl.stripe_id,
         payment_id: pm_id,
-        trial_length: 30
+        trial_length: pl.trial_period
       })
     # end
   end

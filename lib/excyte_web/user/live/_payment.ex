@@ -14,8 +14,8 @@ defmodule ExcyteWeb.Settings.Payment do
       end
     {:ok, assign(socket,
       account: acc,
-      payment: pm,
-      status: (if pm, do: card_status(%{exp_month: pm.exp_month, exp_year: pm.exp_year}), else: nil)
+      payment: pm
+      # status: (if pm, do: card_status(%{exp_month: pm.exp_month, exp_year: pm.exp_year}), else: nil)
     )}
   end
 

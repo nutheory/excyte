@@ -3,7 +3,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   use Timex
   import Number.{Delimit}
 
-  def authorized?(role), do: if Enum.member?(["admin", "owner"], role), do: true, else: false
+  def authorized?(role), do: if role && Enum.member?(["admin", "owner"], role), do: true, else: false
 
   def subscribed?(status), do: if Enum.member?(["trialing", "active"], status), do: true, else: false
 

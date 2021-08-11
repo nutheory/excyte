@@ -54,7 +54,7 @@
         <%= for member <- @members do %>
           <%= live_component TeamMember,
             member: member,
-            show_actions: (if @current_user.id !== member.id && String.contains?(@current_user.brokerage_role, ["owner", "admin"]), do: true, else: false),
+            show_actions: (if @current_user.id !== member.id && Utilities.authorized?(@current_user.brokerage_role)),
             id: "member_#{member.id}"
           %>
         <% end %>

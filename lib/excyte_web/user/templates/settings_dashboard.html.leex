@@ -7,7 +7,7 @@
           <%= live_patch "Agent Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile"), class: "fancy font-bold block text-lg" %>
           <p class="text-sm">Information about yourself we include by default in all reports.</p>
         </div>
-        <%= if String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+        <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
           <div class="bg-white w-full shadow rounded p-4">
             <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile"), class: "fancy font-bold block text-lg" %>
             <p class="text-sm">Information about your brokerage we include by default in all reports.</p>
@@ -99,7 +99,7 @@
                 <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
               </li>
             <% end %>
-            <%= if !@current_user.brokerage_id || String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+            <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
               <%= if @section === "subscription" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
                   <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription") %>
@@ -116,14 +116,14 @@
       <div class="flex-1">
         <%= case @section do %>
           <% "brokerage_profile" -> %>
-            <%= if String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+            <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
               <div class="w-full lg:w-2/3 xl:w-3/4">
                 <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Brokerage Profile</h2>
                 <%= live_render @socket, ExcyteWeb.Brokerage.Profile, session: %{"return_to" =>  "/settings"}, id: :brokerage_profile %>
               </div>
             <% end %>
           <% "manage_team" -> %>
-            <%= if String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+            <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
               <div class="w-full md:w-3/5 lg:w-1/2">
                 <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Manage Team</h2>
                 <%= live_render @socket, ExcyteWeb.Brokerage.ManageTeam, session: %{"return_to" =>  "/settings"}, id: :manage_team %>

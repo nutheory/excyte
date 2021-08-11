@@ -4375,13 +4375,6 @@ h4 {
       border-color: rgba(255, 255, 255, var(--tw-border-opacity));
 }
 
-.border-red-700 {
-
-      --tw-border-opacity: 1;
-
-      border-color: rgba(190, 18, 60, var(--tw-border-opacity));
-}
-
 .border-gray-700 {
 
       --tw-border-opacity: 1;

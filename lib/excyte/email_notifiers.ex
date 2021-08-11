@@ -15,7 +15,12 @@ defmodule Excyte.EmailNotifiers do
   end
 
   def deliver_invitation_instructions(user, url) do
-
+    base_email()
+    |> to(user.email)
+    |> subject("Invitation from Excyte")
+    |> assign(:i, %{user: user, url: url})
+    |> render(:welcome)
+    |> Mailer.deliver_later()
   end
 
   def deliver_reset_password_instructions(user, url) do

@@ -1,0 +1,3 @@
+<p><%= @user.invite_message %></p>
+<p>You can accept your invitation by visiting the url below:</p>
+<p><a href="<%= @url %>" target="_blank"><%= @url %></a></p>

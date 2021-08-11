@@ -1,0 +1,11 @@
+    ==============================
+
+    <%= @user.invite_message %>
+
+    You can accept your invitation by visiting the url below:
+
+    <%= @url %>
+
+    If you didn't create an account with us, please ignore this.
+
+    ==============================

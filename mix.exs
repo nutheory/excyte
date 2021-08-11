@@ -70,7 +70,8 @@ defmodule Excyte.MixProject do
       {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
       {:money, "~> 1.8"},
-      {:bamboo, "~> 1.6"},
+      {:bamboo, "~> 2.2.0"},
+      {:bamboo_phoenix, "~> 1.0.0"},
       {:stripity_stripe, "~> 2.10.0"},
       {:openid_connect, "~> 0.2.2"},
       {:ex_twilio, github: "nutheory/ex_twilio"}

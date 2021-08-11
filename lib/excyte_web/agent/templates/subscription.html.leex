@@ -54,15 +54,14 @@
         </p>
       <% end %>
     </div>
-    <%= if @payment_success !== true do %>
+    <%= if @payment_success === true do %>
+      <p>Thank you, payment method saved.</p>
+    <% else %>
       <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
     <% end %>
-  </div>
-  <div class="my-8">
-    <p></p>
-    <%= f = form_for :cancel_subscription, "#", [phx_submit: :cancel] %>
-      <%= text_input f, :confirmation, class: "text-field border border-red-700" %>
-      <%= submit "Cancel Subscription", class: "danger-action" %>
-    </form>
+    <%#= if Utilities.subscribed?(@account.status) do %>
+      <%#= live_component @socket, CancelAccount, current_user: @current_user, account: @account, id: :cancel_subscription %>
+    <%# else %>
+    <%# end %>
   </div>
 </div>

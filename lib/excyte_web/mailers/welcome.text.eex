@@ -1,0 +1,24 @@
+Welcome to excyte cma,
+
+We're so glad you're here. We want you to enjoy making reports for your
+customers from anywhere. Our mobile-first CMA is built for the mobile-first
+Agent. It's easy to make reports that separate you from the competition and
+amaze your Clients.
+
+Your free trial will end on <%= Calendar.strftime(@w.account.current_period_end, "%b %d, %Y") %>
+
+If you need additional help getting started please feel free to join our
+daily webinar using the link below.
+
+Daily Webinar-
+https://my.demio.com/ref/qEnsCaytGIrl9NUI
+
+We do have live chat on our website that can offer support and you can also
+call 949-207-8769 Monday-Friday 9:00 am - 5:00 pm EST.
+
+Thanks again for giving us an opportunity we look forward to earning your business.
+
+We appreciate you,
+excyte cma Team
+https://excyte.io/
+contact@excyte.io

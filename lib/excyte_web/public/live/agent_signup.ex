@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.AgentSignup do
   use ExcyteWeb, :live_public_view
-  alias Excyte.{Accounts, Accounts.UserNotifier, Agents.Agent}
+  alias Excyte.{Accounts, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
   def render(assigns), do: PublicView.render("agent_signup.html", assigns)
@@ -38,7 +38,6 @@ defmodule ExcyteWeb.AgentSignup do
 
   def handle_event("save", %{"agent" => attrs}, socket) do
     with {:ok, %{agent: agent, account: acc}} <- Accounts.register_agent(Utilities.key_to_atom(attrs)),
-         {:ok, _} <- UserNotifier.deliver_welcome_email(agent, acc),
          {:ok, token} <- Accounts.generate_login_token(agent) do
       {:noreply,
         socket

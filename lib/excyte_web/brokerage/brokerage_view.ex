@@ -19,5 +19,9 @@ defmodule ExcyteWeb.BrokerageView do
     SuperSelect,
     Toggle
   }
-  alias ExcyteWeb.{Settings, Settings.Payment}
+  alias ExcyteWeb.{
+    Settings,
+    Settings.Payment,
+    Settings.CancelAccount
+  }
 end

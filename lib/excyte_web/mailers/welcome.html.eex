@@ -1,0 +1,18 @@
+<div style="max-width:640px; margin:auto;">
+  <p style="margin-bottom:20px;">Welcome to excyte cma,</p>
+  <p style="margin-bottom:20px;">We're so glad you're here. We want you to enjoy making reports for your
+  customers from anywhere. Our mobile-first CMA is built for the mobile-first
+  Agent. It's easy to make reports that separate you from the competition and
+  amaze your Clients.</p>
+  <p>Your free trial will end on <%= Calendar.strftime(@w.account.current_period_end, "%b %d, %Y") %></p>
+  <p style="margin-bottom:20px;">If you need additional help getting started please feel free to join our
+  daily webinar using the link below</p>
+  <p style="margin-bottom:20px;"><a href="https://my.demio.com/ref/qEnsCaytGIrl9NUI" target="_blank">https://my.demio.com/ref/qEnsCaytGIrl9NUI</a></p>
+  <p style="margin-bottom:20px;">We do have live chat on our website that can offer support and you can also
+  call 949-207-8769 Monday-Friday 9:00 am - 5:00 pm EST.</p>
+  <p>Thanks again for giving us an opportunity we look forward to earning your business.</p>
+  <p>We appreciate you,</p>
+  <p>ExcyteCMA Team</p>
+  <p><a href="https://excyte.io/">https://excyte.io/</a></p>
+  <p><a href="mailto:contact@excyte.io">contact@excyte.io</a></p>
+</div>

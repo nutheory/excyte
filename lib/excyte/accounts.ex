@@ -6,8 +6,8 @@ defmodule Excyte.Accounts do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Excyte.Repo
-  alias Excyte.Accounts.{Account, User, UserNotifier, UserToken}
-  alias Excyte.{Agents, Brokerages, Agents.Agent, Brokerages.Brokerage}
+  alias Excyte.Accounts.{Account, Billing, User, UserToken}
+  alias Excyte.{Agents, Agents.Agent, Brokerages, Brokerages.Brokerage, EmailNotifiers}
 
   alias Stripe.Customer
 
@@ -343,7 +343,7 @@ defmodule Excyte.Accounts do
     {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
 
     Repo.insert!(user_token)
-    UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
+    EmailNotifiers.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
   end
 
   @doc """
@@ -440,7 +440,7 @@ defmodule Excyte.Accounts do
   #   else
   #     {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
   #     Repo.insert!(user_token)
-  #     UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
+  #     EmailNotifiers.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
   #   end
   # end
 
@@ -481,7 +481,7 @@ defmodule Excyte.Accounts do
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "reset_password")
     Repo.insert!(user_token)
-    UserNotifier.deliver_reset_password_instructions(user, reset_password_url_fun.(encoded_token))
+    EmailNotifiers.deliver_reset_password_instructions(user, reset_password_url_fun.(encoded_token))
   end
 
   @doc """
@@ -555,7 +555,7 @@ defmodule Excyte.Accounts do
     else
       {encoded_token, user_token} = UserToken.build_email_token(user, "invitation")
       Repo.insert!(user_token)
-      UserNotifier.deliver_invitation_instructions(user, invitation_url_fun.(encoded_token))
+      EmailNotifiers.deliver_invitation_instructions(user, invitation_url_fun.(encoded_token))
     end
   end
 
@@ -608,6 +608,21 @@ defmodule Excyte.Accounts do
   def delete_user(query_attrs) do
     user = Repo.get_by!(User, query_attrs)
     Repo.delete(user)
+  end
+
+  def cancel_subscription(account_id) do
+    Multi.new()
+    |> Multi.run(:cancel_subscription, Billing, :cancel_subscription, [account_id])
+    |> Multi.run(:soft_delete, __MODULE__, :soft_delete_account, [account_id])
+    |> Repo.transaction()
+  end
+
+  def soft_delete_account(account_id) do
+    acc = Repo.get_by(Account, %{id: account_id})
+
+    if acc do
+
+    end
   end
 
   defp create_stripe_customer(attrs) do

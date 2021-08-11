@@ -48,4 +48,8 @@
   <% else %>
     <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
   <% end %>
+  <%#= if Utilities.subscribed?(@account.status) do %>
+    <%#= live_component @socket, CancelAccount, current_user: @current_user, account: @account, id: :cancel_subscription %>
+  <%# else %>
+  <%# end %>
 </div>

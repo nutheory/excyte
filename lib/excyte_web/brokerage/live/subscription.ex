@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Brokerage.Subscription do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Accounts.Billing}
+  alias Excyte.{Accounts, Accounts.Billing, EmailNotifiers}
   alias ExcyteWeb.{BrokerageView}
 
   def render(assigns), do: BrokerageView.render("subscription.html", assigns)
@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Brokerage.Subscription do
     )}
   end
 
-  def handle_event("payment-method-success", %{"id" => pm_id}, %{assigns: %{account: acc, plan: pl}} = socket) do
+  def handle_event("payment-method-success", %{"id" => pm_id}, %{assigns: %{account: acc, plan: pl} = a} = socket) do
     with {:ok, %{sub: sub, sub_item: item}} <- create_or_update_stripe_subscription(%{account: acc, plan: pl, payment_id: pm_id}),
          {:ok, _acc} <- Accounts.update_account_details(acc.id, %{
                         status: sub.status,
@@ -37,7 +37,8 @@ defmodule ExcyteWeb.Brokerage.Subscription do
                         current_period_end: DateTime.from_unix!(sub.current_period_end),
                         source_subscription_id: sub.id,
                         source_subscription_item_id: item.id
-                       }) do
+                       }),
+          {:ok, _} <- EmailNotifiers.deliver_welcome_email(a.current_user, acc) do
         receipt = %{
           name: pl.name,
           invoice_pdf: sub.latest_invoice.invoice_pdf,

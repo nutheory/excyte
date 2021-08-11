@@ -5,6 +5,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def authorized?(role), do: if Enum.member?(["admin", "owner"], role), do: true, else: false
 
+  def subscribed?(status), do: if Enum.member?(["trialing", "active"], status), do: true, else: false
+
   def insight_type_to_name(type) do
     case type do
       "cma" -> "CMA"

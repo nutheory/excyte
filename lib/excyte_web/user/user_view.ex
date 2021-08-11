@@ -5,6 +5,7 @@ defmodule ExcyteWeb.UserView do
     Agent.MlsAuth,
     AgentPricing,
     BrokeragePricing,
+    Helpers.Utilities,
     Settings.Dashboard,
     Settings.Account,
     Settings.Payment

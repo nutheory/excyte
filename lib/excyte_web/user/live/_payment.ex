@@ -14,9 +14,14 @@ defmodule ExcyteWeb.Settings.Payment do
       end
     {:ok, assign(socket,
       account: acc,
-      payment: pm
-      # status: (if pm, do: card_status(%{exp_month: pm.exp_month, exp_year: pm.exp_year}), else: nil)
+      card: (if pm === nil, do: nil, else: pm.card),
+      editing: (if pm === nil, do: true, else: false),
+      status: (if pm, do: card_status(%{exp_month: pm.card.exp_month, exp_year: pm.card.exp_year}), else: nil)
     )}
+  end
+
+  def handle_event("toggle-payment-edit", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, editing: !a.editing)}
   end
 
   defp card_status(%{exp_month: exp_month, exp_year: exp_year}) do

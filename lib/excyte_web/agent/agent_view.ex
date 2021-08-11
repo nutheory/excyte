@@ -12,5 +12,9 @@ defmodule ExcyteWeb.AgentView do
   }
   alias ExcyteWeb.Components.{ContactForm, Toggle, JumboButton, Dropdown}
   alias ExcyteWeb.Insight.{CreateCma, CreateShowcase, CreateBuyerTour}
-  alias ExcyteWeb.{Settings, Settings.Payment}
+  alias ExcyteWeb.{
+    Settings,
+    Settings.Payment,
+    Settings.CancelAccount
+  }
 end

@@ -2866,6 +2866,49 @@ div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.v
   outline: none;
 }
 
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #374151;
+  background-color: #e5e7eb;
+}
+
+.main {
+  border-radius: 10px;
+  padding: 14px;
+  margin: 40px auto;
+  width: 80%;
+  max-width: 640px;
+  background-color: #fff;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+a {
+  color: #0891b2;
+}
+
+a:active {
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.header {
+
+}
+
+.body {
+  padding: 24px 0;
+}
+
+.deep-text-shadow {
+  text-shadow: 1px 1px 2px black;
+}
+
 .glightbox-container{width:100%;height:100%;position:fixed;top:0;left:0;z-index:999999!important;overflow:hidden;touch-action:none;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;outline:0;overflow:hidden}
 
 .glightbox-container.inactive{display:none}

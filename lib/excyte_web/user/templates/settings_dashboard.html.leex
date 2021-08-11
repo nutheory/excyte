@@ -29,7 +29,7 @@
           <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account"), class: "fancy font-bold block text-lg" %>
           <p class="text-sm">Change your email/password or cancel your account.</p>
         </div>
-        <%= if !@current_user.brokerage_id || String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+        <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
           <div class="bg-white w-full shadow rounded p-4">
             <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription"), class: "fancy font-bold block text-lg" %>
             <p class="text-sm">Update your subscription and payment information.</p>
@@ -52,7 +52,7 @@
                 <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile") %>
               </li>
             <% end %>
-            <%= if String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+            <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
               <%= if @section === "brokerage_profile" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
                   <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
@@ -145,7 +145,7 @@
               <%= live_component @socket, Account, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :account_settings %>
             </div>
           <% "subscription" -> %>
-            <%= if !@current_user.brokerage_id || String.contains?(@current_user.brokerage_role, ["owner", "admin"]) do %>
+            <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
               <div class="w-full lg:w-2/3">
                 <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Subscription</h2>
                 <%= live_render @socket, ExcyteWeb.Brokerage.Subscription, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :brokerage_subscription %>

@@ -145,11 +145,20 @@
               <%= live_component @socket, Account, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :account_settings %>
             </div>
           <% "subscription" -> %>
-            <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
+            <%= if !@current_user.brokerage_id do %>
               <div class="w-full lg:w-2/3">
                 <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Subscription</h2>
-                <%= live_render @socket, ExcyteWeb.Brokerage.Subscription, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :brokerage_subscription %>
+                <%= live_render @socket, ExcyteWeb.Agent.Subscription, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :agent_subscription %>
               </div>
+            <% else %>
+              <%= if @current_user.brokerage_role === "owner" do %>
+                <div class="w-full lg:w-2/3">
+                  <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Subscription</h2>
+                  <%= live_render @socket, ExcyteWeb.Brokerage.Subscription, current_user: @current_user, session: %{"return_to" =>  "/settings"}, id: :brokerage_subscription %>
+                </div>
+              <% else %>
+                <div>You must be the account owner to access this.</div>
+              <% end %>
             <% end %>
           <% "agent_profile" -> %>
             <div class="w-full lg:w-2/3 xl:w-3/4">

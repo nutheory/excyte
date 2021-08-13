@@ -4901,34 +4901,6 @@ h4 {
       padding-right: 2rem;
 }
 
-.px-24 {
-
-      padding-left: 6rem;
-
-      padding-right: 6rem;
-}
-
-.px-12 {
-
-      padding-left: 3rem;
-
-      padding-right: 3rem;
-}
-
-.px-32 {
-
-      padding-left: 8rem;
-
-      padding-right: 8rem;
-}
-
-.px-16 {
-
-      padding-left: 4rem;
-
-      padding-right: 4rem;
-}
-
 .pl-4 {
 
       padding-left: 1rem;
@@ -5713,6 +5685,11 @@ h4 {
 .hover\:underline:hover {
 
       text-decoration: underline;
+}
+
+.hover\:no-underline:hover {
+
+      text-decoration: none;
 }
 
 .focus\:underline:focus {

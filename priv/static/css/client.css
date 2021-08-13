@@ -4704,13 +4704,6 @@ h4 {
       --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(243, 244, 246, 0));
 }
 
-.from-yellow-300 {
-
-      --tw-gradient-from: #fde047;
-
-      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(253, 224, 71, 0));
-}
-
 .from-cyan-200 {
 
       --tw-gradient-from: #a5f3fc;
@@ -4718,14 +4711,21 @@ h4 {
       --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(165, 243, 252, 0));
 }
 
-.to-green-500 {
+.from-yellow-300 {
 
-      --tw-gradient-to: #22c55e;
+      --tw-gradient-from: #fde047;
+
+      --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(253, 224, 71, 0));
 }
 
 .to-blue-600 {
 
       --tw-gradient-to: #0284c7;
+}
+
+.to-green-500 {
+
+      --tw-gradient-to: #22c55e;
 }
 
 .to-red-600 {
@@ -4894,11 +4894,39 @@ h4 {
       padding-right: 1.5rem;
 }
 
+.px-8 {
+
+      padding-left: 2rem;
+
+      padding-right: 2rem;
+}
+
 .px-24 {
 
       padding-left: 6rem;
 
       padding-right: 6rem;
+}
+
+.px-12 {
+
+      padding-left: 3rem;
+
+      padding-right: 3rem;
+}
+
+.px-32 {
+
+      padding-left: 8rem;
+
+      padding-right: 8rem;
+}
+
+.px-16 {
+
+      padding-left: 4rem;
+
+      padding-right: 4rem;
 }
 
 .pl-4 {
@@ -5743,6 +5771,13 @@ h4 {
             padding-top: 3rem;
 
             padding-bottom: 3rem;
+      }
+
+      .sm\:px-24 {
+
+            padding-left: 6rem;
+
+            padding-right: 6rem;
       }
 }
 

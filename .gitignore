@@ -37,6 +37,8 @@ npm-debug.log
 
 .env
 .env_prod
+.tool-versions
+.vscode/settings.json
 # Environment Variables
 /config/env.local.exs
 /config/prod.secret.exs

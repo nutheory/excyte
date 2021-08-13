@@ -163,5 +163,6 @@ defmodule ExcyteWeb.Router do
     live "/", Home
     live "/privacy", Privacy
     live "/terms", Terms
+    live "/email-proving-grounds!", EmailProvingGrounds
   end
 end

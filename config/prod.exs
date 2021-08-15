@@ -29,7 +29,7 @@ config :mux,
   signing_secret: System.get_env("MUX_SIGNING_SECRET")
 
 config :excyte, :agent_plans, "prod_JuMhdzU3j59SFc"
-config :excyte, :brokerage_plans: "prod_Juv9tYtNIvrWdC"
+config :excyte, :brokerage_plans, "prod_Juv9tYtNIvrWdC"
 
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")

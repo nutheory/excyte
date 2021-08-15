@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.WebhookController do
   use ExcyteWeb, :controller
-  alias Excyte.{Activities, Assets}
+  alias Excyte.{Accounts, Activities, Assets}
 
   def stripe_incoming(conn, _params) do
     secret = Application.get_env(:excyte, :stripe_signing_secret)
@@ -8,13 +8,12 @@ defmodule ExcyteWeb.WebhookController do
     payload = List.first(conn.assigns.raw_body)
     case Stripe.Webhook.construct_event(payload, signature, secret) do
       {:ok, %Stripe.Event{} = event} ->
-        IO.inspect(event, label: "EV")
-        # case event.type do
-        #   "charge.failed" ->
-        #   "invoice.payment_failed" ->
-        #   "customer.source.expiring" ->
-        #   "customer.deleted" ->
-        # end
+        case event.type do
+          # "invoice.paid" -> update_account_standing(event)
+          "customer.subscription.deleted" -> subscription_deleted(event)
+          "customer.subscription.updated" -> subscription_updated(event)
+          _ -> nil
+        end
 
       {:error, reason} ->
         IO.inspect(reason, label: "RE")
@@ -57,5 +56,25 @@ defmodule ExcyteWeb.WebhookController do
       {:ok, _} -> nil
       {:error, err} -> Activities.handle_errors(err, "WebhookController.save_created_video")
     end
+  end
+
+  defp subscription_deleted(%{data: %{object: sub}}) do
+    IO.inspect(sub, label: "TESTING HOOK")
+    Accounts.soft_delete_account(%{
+      account_id: sub.metadata["excyte_account_id"],
+      subscription_id: sub.id
+    })
+  end
+
+  # defp update_account_standing(%{data: %{object: inv}}) do
+  #   line_item = hd(inv.lines.data)
+  #   Accounts.update_account_subscription(inv.subscription, %{
+  #     current_period_end:
+
+  #   }})
+  # end
+
+  defp subscription_updated(_ev) do
+    nil
   end
 end

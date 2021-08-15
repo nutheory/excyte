@@ -33,7 +33,7 @@
         <% else %>
           <div class="text-center">
             <h2 class="py-8 link">Thank you, payment method saved.</h2>
-            <h3>We will notify you before your trial ends on <%= Calendar.strftime(@account.current_period_end, "%b %d, %Y") %>.You can edit future payment information in settings.</h3>
+            <h3>We will notify you before your trial ends on <%= Calendar.strftime(@account.current_period_end, "%b %d, %Y") %>. You can edit future payment information in settings.</h3>
             <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "profile"), replace: false, class: "hover:no-underline" do %>
               <div class="action-button my-6">Continue...</div>
             <% end %>

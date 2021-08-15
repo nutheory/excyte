@@ -236,22 +236,12 @@ end)
 
 # Enum.each(agents, fn a ->
 #   agent = agent_fixture(a)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(agent, url)
-#     end)
-#   Accounts.confirm_user(token)
 #   add_test_mls(agent)
 #   setup_billing(agent)
 # end)
 
 # Enum.each(brokerages, fn b ->
 #   broker = brokerage_fixture(b)
-#   token =
-#     extract_user_token(fn url ->
-#       Accounts.deliver_user_confirmation_instructions(broker, url)
-#     end)
-#   Accounts.confirm_user(token)
 #   add_test_mls(broker)
 #   setup_billing(broker)
 # end)

@@ -5,24 +5,23 @@ defmodule ExcyteWeb.ProtectedHeader do
 
   def render(assigns), do: LayoutView.render("protected_header.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, %{assigns: assigns} = socket) do
+  def mount(params, %{"user_token" => token} = session, %{assigns: assigns} = socket) do
     cu = Accounts.get_user_by_session_token(token)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
-
     if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
-      {:ok, assign(socket, %{
+      {:ok, assign(socket,
         current_user: cu,
         current_mls_id: nil,
         current_mls_name: nil,
         mls_options: mls_list
-      })}
+      )}
     else
-      {:ok, assign(socket, %{
+      {:ok, assign(socket,
         current_user: cu,
         current_mls_id: cu.current_mls.id,
         current_mls_name: cu.current_mls.mls_name,
         mls_options: mls_list
-      })}
+      )}
     end
   end
 

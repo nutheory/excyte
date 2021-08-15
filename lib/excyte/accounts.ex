@@ -610,18 +610,19 @@ defmodule Excyte.Accounts do
     Repo.delete(user)
   end
 
-  def cancel_subscription(account_id) do
-    Multi.new()
-    |> Multi.run(:cancel_subscription, Billing, :cancel_subscription, [account_id])
-    |> Multi.run(:soft_delete, __MODULE__, :soft_delete_account, [account_id])
-    |> Repo.transaction()
-  end
+  # def cancel_subscription(account_id) do
+  #   Multi.new()
+  #   |> Multi.run(:cancel_subscription, Billing, :cancel_subscription, [account_id])
+  #   |> Multi.run(:soft_delete, __MODULE__, :soft_delete_account, [account_id])
+  #   |> Repo.transaction()
+  # end
 
-  def soft_delete_account(account_id) do
-    acc = Repo.get_by(Account, %{id: account_id})
+  def soft_delete_account(%{account_id: acc_id, subscription_id: sub_id}) do
+    acc = Repo.get_by(Account, %{id: acc_id})
 
     if acc do
-
+      Account.update_changeset(acc, %{deleted_at: DateTime.utc_now, status: "canceled"})
+      |> Repo.update()
     end
   end
 

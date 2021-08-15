@@ -4,12 +4,16 @@ const stripe = Stripe(publishable_key)
 export const InitCheckout = {
   mounted() {
     const submitButton = this.el.querySelector('button[type=submit]')
-    const successCallback = paymentMethod => { this.pushEvent('payment-method-success', paymentMethod, (reply) => {
-      submitButton.disabled = false
-      submitButton.querySelector('svg').classList.add("hidden")
-      submitButton.querySelector('svg').classList.remove("inline-block")
-      submitButton.querySelector('span').innerHTML = "Submit Payment"
-    }) }
+    const mode = this.el.querySelector('#mode')
+    const successCallback = paymentMethod => { 
+      paymentMethod.mode = mode.value
+      this.pushEvent('payment-success', paymentMethod, (reply) => {
+        submitButton.disabled = false
+        submitButton.querySelector('svg').classList.add("hidden")
+        submitButton.querySelector('svg').classList.remove("inline-block")
+        submitButton.querySelector('span').innerHTML = "Submit Payment"
+      }) 
+    }
     init(this.el, submitButton, successCallback)
   }
 }
@@ -39,6 +43,10 @@ const init = (form, submitButton, successCallback) => {
       card
     }).then(function(result) {
       if (result.error) {
+        submitButton.disabled = false
+        submitButton.querySelector('svg').classList.add("hidden")
+        submitButton.querySelector('svg').classList.remove("inline-block")
+        submitButton.querySelector('span').innerHTML = "Save Payment Method"
         console.log("ERR REZ-1", result)
         console.log("ERR REZ-2", result.error.message)
       } else {

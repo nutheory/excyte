@@ -8,71 +8,94 @@ defmodule ExcyteWeb.Brokerage.Subscription do
   def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
-    plans = Application.get_env(:excyte, :brokerage_plans)
-    plan =
-      if account.source_plan_id do
-        Enum.find(plans, fn p -> p.stripe_id === account.source_plan_id end)
+    plans = Application.get_env(:excyte, :brokerage_plans) |> Billing.get_plans(true)
+    default_plan = Enum.find(plans, fn pl -> pl.default === true end)
+    current_plan =
+      if account.source_subscription_id do
+        case Billing.get_current_subscription(account.source_subscription_id) do
+          {:ok, sub} -> sub
+          {:error, err} -> {:ok, assign(socket, errors: [err])}
+        end
       else
-        Enum.find(plans, fn p -> p.default === true end)
+        nil
       end
-
     {:ok, assign(socket,
       plans: plans,
       account: account,
       payment_success: false,
+      updating_plan: (if current_plan, do: false, else: true),
+      max_agents: default_plan.max_agents,
       errors: [],
-      plan: plan,
+      selected_plan: default_plan,
+      current_plan: current_plan,
       current_user: cu
     )}
   end
 
-  def handle_event("payment-method-success", %{"id" => pm_id}, %{assigns: %{account: acc, plan: pl} = a} = socket) do
-    with {:ok, %{sub: sub, sub_item: item}} <- create_or_update_stripe_subscription(%{account: acc, plan: pl, payment_id: pm_id}),
-         {:ok, _acc} <- Accounts.update_account_details(acc.id, %{
-                        status: sub.status,
-                        amount: sub.plan.amount,
-                        source_plan_id: sub.plan.id,
-                        payment_method_id: pm_id,
-                        agent_limit: pl.max_agent_count,
-                        current_period_end: DateTime.from_unix!(sub.current_period_end),
-                        source_subscription_id: sub.id,
-                        source_subscription_item_id: item.id
-                       }),
-          {:ok, _} <- EmailNotifiers.deliver_welcome_email(a.current_user, acc) do
-        receipt = %{
-          name: pl.name,
-          invoice_pdf: sub.latest_invoice.invoice_pdf,
-          status: sub.latest_invoice.status,
-          charge: sub.latest_invoice.charge,
-          total: sub.latest_invoice.total,
-          subscription: sub.latest_invoice.subscription,
-        }
-      {:noreply, assign(socket, payment_success: true, receipt: receipt)}
+  def handle_event("payment-success", %{"id" => pm_id, "mode" => "update"}, %{assigns: %{account: acc} = a} = socket) do
+    with {:ok, sub} <- Billing.update_payment_method(%{
+                        customer_id: acc.source_customer_id,
+                        subscription_id: acc.source_subscription_id,
+                        payment_id: pm_id}),
+         {:ok, _} <- Accounts.update_account_details(acc.id, %{payment: pm_id}) do
+      {:noreply, assign(socket, current_plan: sub, payment_success: true,)}
     else
-      {:error, err} -> {:noreply, assign(socket, errors: err)}
+      {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
+    end
+  end
+
+  def handle_event("payment-success", %{"id" => pm_id}, %{assigns: %{account: acc, selected_plan: pl} = a} = socket) do
+    with {:ok, %{sub: sub, sub_item: item}} <-
+            create_subscription(%{account: acc, plan_id: pl.plan_id, payment_id: pm_id, max_agents: a.max_agents}),
+         {:ok, account} <- update_account(acc.id, %{sub: sub, item: item, payment: pm_id, max_agents: a.max_agents}),
+         {:ok, _} <- EmailNotifiers.deliver_welcome_email(a.current_user, account) do
+      {:noreply, assign(socket, payment_success: true)}
+    else
+      {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
+    end
+  end
+
+  def handle_event("update-plan", _, %{assigns: %{account: acc, selected_plan: pl} = a} = socket) do
+    case Billing.update_subscription(%{account: acc, price_id: pl.plan_id, max_agents: a.max_agents}) do
+      {:ok, sub} -> {:noreply, assign(socket, current_plan: sub, updating_plan: false)}
+      {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
   end
 
   def handle_event("toggle-selected-plan", %{"option" => opt}, %{assigns: a} = socket) do
-    plan = Enum.find(a.plans, fn p -> p.id === opt end)
-    {:noreply, assign(socket,  plan: plan)}
+    plan = Enum.find(a.plans, fn pl -> pl.plan_id === opt end)
+    {:noreply, assign(socket, selected_plan: plan, max_agents: plan.max_agents)}
   end
 
-  defp create_or_update_stripe_subscription(%{account: acc, plan: pl, payment_id: pm_id}) do
-    # These need to be seperate actions
-    # if acc.source_subscription_item_id do
-    #   Billing.update_subscription(%{
-    #     subscription_id: acc.source_subscription_id,
-    #     price_id: pl.stripe_id
-    #   })
-    #   |> IO.inspect(label: "SUBS")
-    # else
-      Billing.create_subscription(%{
-        customer_id: acc.source_customer_id,
-        price_id: pl.stripe_id,
-        payment_id: pm_id,
-        trial_length: pl.trial_period
-      })
-    # end
+  def handle_event("toggle-updating-plan", _, %{assigns: a} = socket) do
+    selected = Enum.find(a.plans, fn pl -> pl.plan_id === a.current_plan.plan.id end)
+    {:noreply, assign(socket,
+      updating_plan: !a.updating_plan,
+      selected_plan: selected,
+      max_agents: selected.max_agents
+    )}
+  end
+
+  defp create_subscription(%{account: acc, plan_id: pl_id, payment_id: pm_id, max_agents: max}) do
+    Billing.create_subscription(%{
+      account: acc,
+      price_id: pl_id,
+      payment_id: pm_id,
+      max_agents: max
+    })
+  end
+
+  defp update_account(id, %{sub: sub, item: item, payment: pm_id, max_agents: max}) do
+    Accounts.update_account_details(id, %{
+      status: sub.status,
+      amount: sub.plan.amount,
+      source_plan_id: sub.plan.id,
+      payment_method_id: pm_id,
+      latest_invoice_id: sub.latest_invoice,
+      agent_limit: max,
+      current_period_end: DateTime.from_unix!(sub.current_period_end),
+      source_subscription_id: sub.id,
+      source_subscription_item_id: item.id
+    })
   end
 end

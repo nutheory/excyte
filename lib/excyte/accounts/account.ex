@@ -19,8 +19,10 @@ defmodule Excyte.Accounts.Account do
     field(:source_subscription_id, :string)
     field(:source_subscription_item_id, :string)
     field(:source_plan_id, :string)
+    field(:latest_invoice_id, :string)
     field(:agent_limit, :integer)
     field(:current_period_end, :utc_datetime)
+    field(:deleted_at, :utc_datetime)
     has_many(:users, User)
     timestamps()
   end
@@ -50,7 +52,9 @@ defmodule Excyte.Accounts.Account do
       :source_subscription_item_id,
       :payment_method_id,
       :agent_limit,
-      :current_period_end
+      :current_period_end,
+      :latest_invoice_id,
+      :deleted_at
       ])
   end
 

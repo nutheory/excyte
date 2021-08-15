@@ -18663,9 +18663,12 @@ var InitCheckout = {
     var _this = this;
 
     var submitButton = this.el.querySelector('button[type=submit]');
+    var mode = this.el.querySelector('#mode');
 
     var successCallback = function successCallback(paymentMethod) {
-      _this.pushEvent('payment-method-success', paymentMethod, function (reply) {
+      paymentMethod.mode = mode.value;
+
+      _this.pushEvent('payment-success', paymentMethod, function (reply) {
         submitButton.disabled = false;
         submitButton.querySelector('svg').classList.add("hidden");
         submitButton.querySelector('svg').classList.remove("inline-block");
@@ -18704,6 +18707,10 @@ var init = function init(form, submitButton, successCallback) {
       card: card
     }).then(function (result) {
       if (result.error) {
+        submitButton.disabled = false;
+        submitButton.querySelector('svg').classList.add("hidden");
+        submitButton.querySelector('svg').classList.remove("inline-block");
+        submitButton.querySelector('span').innerHTML = "Save Payment Method";
         console.log("ERR REZ-1", result);
         console.log("ERR REZ-2", result.error.message);
       } else {

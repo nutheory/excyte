@@ -67,7 +67,7 @@
       "password": "postgres"
     }
   ],
-  "workbench.iconTheme": "vscode-icons-mac",
+  "workbench.iconTheme": "bearded-icons",
   "extensions.ignoreRecommendations": true,
   "[json]": {
   

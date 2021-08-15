@@ -7,6 +7,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
+    if !cu.brokerage_id, do: {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
@@ -49,7 +50,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
     end
   end
 
-  def handle_info({Accounts, [:account, :update], acc}, socket) do
+  def handle_info({Accounts, [:account, :updated], acc}, socket) do
     {:noreply, assign(socket, account: acc)}
   end
 

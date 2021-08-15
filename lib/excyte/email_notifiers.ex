@@ -19,7 +19,7 @@ defmodule Excyte.EmailNotifiers do
     |> to(user.email)
     |> subject("Invitation from Excyte")
     |> assign(:i, %{user: user, url: url})
-    |> render(:welcome)
+    |> render(:agent_invitation)
     |> Mailer.deliver_later()
   end
 

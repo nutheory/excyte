@@ -8,21 +8,20 @@ defmodule ExcyteWeb.Agent.Profile do
   def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
     profile = Agents.get_agent_profile!(cu.id)
-    IO.inspect(Enum.empty?(cu.current_mls), label: "WHA")
     if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
       {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
     else
-    cs = maybe_attempt_prefill?(profile, cu.current_mls)
-    {:ok,
-      assign(socket,
-        changeset: cs,
-        cu_id: cu.id,
-        photo_url: profile.photo_url,
-        logo_url: profile.logo_url,
-        return_to: rt,
-        profile: profile)
-      |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_photo/2)
-      |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_logo/2)}
+      cs = maybe_attempt_prefill?(profile, cu.current_mls)
+      {:ok,
+        assign(socket,
+          changeset: cs,
+          cu_id: cu.id,
+          photo_url: profile.photo_url,
+          logo_url: profile.logo_url,
+          return_to: rt,
+          profile: profile)
+        |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_photo/2)
+        |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_logo/2)}
     end
   end
 

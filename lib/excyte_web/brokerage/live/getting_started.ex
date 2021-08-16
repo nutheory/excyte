@@ -7,19 +7,22 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
 
   def mount(_params, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    if !cu.brokerage_id, do: {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
-    account = Accounts.get_account!(cu.account_id)
-    mls_list = Mls.get_credentials(%{agent_id: cu.id})
-    bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
-    profile = Agents.get_agent_profile(cu.id)
-    if connected?(socket), do: Accounts.subscribe(account.id)
-    {:ok, assign(socket,
-      current_user: cu,
-      account: account,
-      mls_list: mls_list,
-      brokerage_profile: bk_profile,
-      profile: profile
-    )}
+    if !cu.brokerage_id do
+      {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
+    else
+      account = Accounts.get_account!(cu.account_id)
+      mls_list = Mls.get_credentials(%{agent_id: cu.id})
+      bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
+      profile = Agents.get_agent_profile(cu.id)
+      if connected?(socket), do: Accounts.subscribe(account.id)
+      {:ok, assign(socket,
+        current_user: cu,
+        account: account,
+        mls_list: mls_list,
+        brokerage_profile: bk_profile,
+        profile: profile
+      )}
+    end
   end
 
   def handle_params(params, _uri, %{assigns: a} = socket) do

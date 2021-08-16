@@ -2,7 +2,9 @@
   <%= if @form do %>
     <div class="mt-2 -mx-1">
       <%= for fc <- inputs_for(@form, :contacts) do %>
-        <%#= hidden_input fc, :id, value: fc.data.id %>
+        <%= if fc.data.id do %>
+          <%= hidden_input fc, :id, value: fc.data.id %>
+        <% end %>
         <div class="border-t border-cyan-200 py-4 relative">
           <%= if Map.has_key?(fc.params, "delete") && fc.params["delete"] == "true" do %>
             <div class="text-xs bg-red-700 text-white absolute top-1 right-0 px-1">marked for delete</div>
@@ -30,7 +32,7 @@
                 <% end %>
               <% else %>
                 <%= hidden_input fc, :temp_id %>
-                <a href="#" class="delete-button mt-5 " phx-click="remove_contact" phx-value-remove="<%= fc.data.temp_id %>">
+                <a href="#" class="delete-button mt-5 " phx-click="remove-contact" phx-value-remove="<%= fc.data.temp_id %>">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
                   </svg>
@@ -47,7 +49,7 @@
         </div>
       <% end %>
       <div class="pt-3 border-t border-cyan-200">
-        <a href="#" class="pl-1 link-button" phx-click="add_contact">Add a Contact</a>
+        <a href="#" class="pl-1 link-button" phx-click="add-contact">Add a Contact</a>
       </div>
     </div>
   <% end %>

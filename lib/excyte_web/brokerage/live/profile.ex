@@ -20,7 +20,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
-    cs = Brokerages.change_profile(a.profile, attrs) |> Map.put(:action, :validate)
+    cs = Brokerages.change_profile(a.profile, attrs)
     {:noreply, assign(socket, changeset: cs)}
   end
 
@@ -36,29 +36,26 @@ defmodule ExcyteWeb.Brokerage.Profile do
     end
   end
 
-  def handle_event("add_contact", _, socket) do
-    existing_contacts = Map.get(socket.assigns.changeset.changes, :contacts, socket.assigns.profile.contacts)
+  def handle_event("add-contact", _, %{assigns: a} = socket) do
+    existing_contacts = Map.get(a.changeset.changes, :contacts, a.profile.contacts)
     contacts =
       existing_contacts
       |> Enum.concat([%Contact{temp_id: Utilities.get_temp_id()}])
 
-    cs = socket.assigns.changeset |> Ecto.Changeset.put_embed(:contacts, contacts)
+    cs = a.changeset |> Ecto.Changeset.put_embed(:contacts, contacts)
 
     {:noreply, assign(socket, changeset: cs)}
   end
 
-  def handle_event("remove_contact", %{"remove" => remove_id}, socket) do
+  def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
     contacts =
-      socket.assigns.changeset.changes.contacts
-      |> Enum.reject(fn %{data: contact} ->
+      Enum.reject(a.changeset.changes.contacts, fn %{data: contact} ->
         contact.temp_id == remove_id
       end)
 
-    changeset =
-      socket.assigns.changeset
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
+    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
 
-    {:noreply, assign(socket, changeset: changeset)}
+    {:noreply, assign(socket, changeset: cs)}
   end
 
   def ext(entry) do

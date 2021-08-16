@@ -42,7 +42,7 @@ defmodule ExcyteWeb.Agent.Profile do
     end
   end
 
-  def handle_event("toggle-logo-delete", _,  %{assigns: a} = socket) do
+  def handle_event("toggle-logo-delete", _, %{assigns: a} = socket) do
     if a.logo_url === nil do
       {:noreply, assign(socket, logo_url: a.profile.logo_url)}
     else
@@ -50,29 +50,24 @@ defmodule ExcyteWeb.Agent.Profile do
     end
   end
 
-  def handle_event("add_contact", _, socket) do
-    existing_contacts = Map.get(socket.assigns.changeset.changes, :contacts, socket.assigns.profile.contacts)
+  def handle_event("add-contact", _, %{assigns: a} = socket) do
+    existing_contacts = Map.get(a.changeset.changes, :contacts, a.profile.contacts)
     contacts =
       existing_contacts
       |> Enum.concat([%Contact{temp_id: Utilities.get_temp_id()}])
 
-    cs = socket.assigns.changeset |> Ecto.Changeset.put_embed(:contacts, contacts)
-
+    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
     {:noreply, assign(socket, changeset: cs)}
   end
 
-  def handle_event("remove_contact", %{"remove" => remove_id}, socket) do
+  def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
     contacts =
-      socket.assigns.changeset.changes.contacts
-      |> Enum.reject(fn %{data: contact} ->
+      Enum.reject(a.changeset.changes.contacts, fn %{data: contact} ->
         contact.temp_id == remove_id
       end)
 
-    changeset =
-      socket.assigns.changeset
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
-
-    {:noreply, assign(socket, changeset: changeset)}
+    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
+    {:noreply, assign(socket, changeset: cs)}
   end
 
   def ext(entry) do
@@ -113,7 +108,7 @@ defmodule ExcyteWeb.Agent.Profile do
       contacts = profile.contacts ++ mls_contacts
       Agents.change_profile(profile, mls_details)
       |> Ecto.Changeset.put_embed(:contacts, contacts)
-      |> Map.put(:action, :validate)
+      # |> Map.put(:action, :validate)
     else
       contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
       Agents.change_profile(profile)

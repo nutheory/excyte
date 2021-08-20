@@ -34,7 +34,7 @@ module.exports = {
         'tiny': '.65rem',
       },
       spacing: {
-        '2/3': '66.666667%'
+        '2/3': '60%'
       },
       maxWidth: {
         '8xl': '90rem',
@@ -48,5 +48,6 @@ module.exports = {
   },
   plugins: [
     require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio')
   ]
 }

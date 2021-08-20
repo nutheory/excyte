@@ -286,7 +286,7 @@ blockquote p {
 }
 .home-example .showcase-gallery .main-photo {
 
-  padding-top: 66.666667%;
+  padding-top: 60%;
 }
 @media (min-width: 1024px) {
 .home-example .showcase-gallery .main-photo {
@@ -2087,121 +2087,6 @@ h4 {
     max-width: 1536px;
   }
 }
-@layer base {
-  html, body {
-
-    --tw-bg-opacity: 1;
-
-    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-  }
-  html, body {
-
-    --tw-text-opacity: 1;
-
-    color: rgba(75, 85, 99, var(--tw-text-opacity));
-  }
-  html,
-  body {
-
-    line-height: 1.2;
-    height: 100%;
-  }
-
-  [x-cloak] {
-    display: none;
-  }
-
-  a:link, a:visited {
-
-    --tw-text-opacity: 1;
-
-    color: rgba(14, 116, 144, var(--tw-text-opacity));
-  }
-
-  a:hover, a:active {
-
-    --tw-text-opacity: 1;
-
-    color: rgba(21, 94, 117, var(--tw-text-opacity));
-  }
-
-  a:hover, a:active {
-
-    text-decoration: underline;
-  }
-
-  @media (min-width: 1280px) {
-    p {
-
-      font-size: 1.125rem;
-
-      line-height: 1.75rem;
-    }
-  }
-
-  h1 {
-
-    font-size: 2.25rem;
-
-    line-height: 2.5rem;
-  }
-
-  h1 {
-
-    font-weight: 800;
-  }
-
-  h1 {
-
-    line-height: 1;
-  }
-
-  h2 {
-
-    font-size: 1.875rem;
-
-    line-height: 2.25rem;
-  }
-
-  h2 {
-
-    font-weight: 800;
-  }
-
-  h3 {
-
-    font-size: 1.5rem;
-
-    line-height: 2rem;
-  }
-
-  h3 {
-
-    font-weight: 700;
-  }
-
-  h3 {
-
-    line-height: 1;
-  }
-
-  h4 {
-
-    font-size: 1.25rem;
-
-    line-height: 1.75rem;
-  }
-
-  h4 {
-
-    font-weight: 700;
-  }
-
-  h4 {
-
-    line-height: 1;
-  }
-}
 .sr-only {
 
   position: absolute;
@@ -2326,10 +2211,6 @@ h4 {
 
   left: 1rem;
 }
-.right-1 {
-
-  right: 0.25rem;
-}
 .z-30 {
 
   z-index: 30;
@@ -2369,6 +2250,10 @@ h4 {
 .col-start-1 {
 
   grid-column-start: 1;
+}
+.float-right {
+
+  float: right;
 }
 .float-left {
 
@@ -2851,6 +2736,14 @@ h4 {
 .w-1\/2 {
 
   width: 50%;
+}
+.w-min {
+
+  width: -webkit-min-content;
+
+  width: -moz-min-content;
+
+  width: min-content;
 }
 .w-48 {
 
@@ -3440,6 +3333,12 @@ h4 {
 
   background-color: rgba(156, 163, 175, var(--tw-bg-opacity));
 }
+.bg-gray-900 {
+
+  --tw-bg-opacity: 1;
+
+  background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
+}
 .bg-indigo-500 {
 
   --tw-bg-opacity: 1;
@@ -3756,7 +3655,7 @@ h4 {
 }
 .pb-2\/3 {
 
-  padding-bottom: 66.666667%;
+  padding-bottom: 60%;
 }
 .pb-1 {
 

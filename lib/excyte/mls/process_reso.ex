@@ -139,8 +139,8 @@ defmodule Excyte.Mls.ProcessReso do
       {int, _} =
         cond do
           is_binary(m["Order"]) -> Integer.parse(m["Order"])
-          is_integer(m["Order"]) -> m["Order"]
-          true -> 1
+          is_integer(m["Order"]) -> {m["Order"], ""}
+          true -> {1, ""}
         end
       m["MediaCategory"] === "Photo" && int === 1
     end)["MediaURL"]

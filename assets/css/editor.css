@@ -98,7 +98,7 @@ div.editor-wrapper {
 }
 
 div.preview-wrapper {
-  @apply max-w-screen-xl w-full xl:w-4/5 mb-8 lg:rounded-md;
+  @apply w-full xl:w-4/5 max-w-screen-lg mb-8 lg:rounded-md;
 }
 
 p {
@@ -148,7 +148,31 @@ div.viewer-wrapper {
   }
 
   & .cover-wrapper {
-    @apply w-full my-20 lg:my-36;
+    @apply w-full relative;
+
+    & .title {
+      @apply text-left absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-50;
+
+      & h1 {
+        @apply px-3 pt-1 mb-0 font-extrabold;
+      }
+
+      & h3 {
+        @apply px-3 pb-2 w-min leading-none p-2;
+      }
+    }
+
+    & .subtitle {
+      @apply absolute text-right bottom-3 right-3 md:bottom-4 md:right-4 lg:bottom-5 lg:right-5 z-50;
+
+      & h1 {
+        @apply px-3 pt-1 mb-0 font-extrabold;
+      }
+
+      & h3 {
+        @apply px-3 pb-2 leading-none p-2 float-right;
+      }
+    }
   }
 
   & .comp {

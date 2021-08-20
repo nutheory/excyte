@@ -351,25 +351,30 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def cover(%{subject: sbj, agent_profile: ag, brokerage: brk}) do
     """
-      <struct class="section cover-wrapper " id="cover">
-        <struct class="mb-6">
+      <struct class="section" id="cover">
+        <struct class="cover-wrapper">
+          <struct class="title">
+            <h1 class="bg-color sub-header-color">Comparative Market</h1>
+            <h3 class="bg-color header-color">Analysis</h3>
+          </struct>
+          <struct class="subtitle header-color">
+            <h1 class="bg-color">
+              {% if subject["street_number"] %}
+                {{ subject["street_number"] }}
+              {% endif %}
+              {% if subject["street_name"] %}
+                {{ subject["street_name"] }}
+              {% endif %}
+            </h1>
+            <h3 class="bg-color sub-header-color">prepared by {{ agent["name"] }}</h3>
+          </struct>
           {% if subject.main_photo_url %}
             <struct
-              class="relative rounded-full h-48 w-48 mx-auto bg-cover border-4 accent-color"
+              class="rounded-md pb-2/3 mx-auto bg-cover"
               style="background-image: url({{ subject.main_photo_url }});">
             </struct>
           {% endif %}
-        </struct>
-        <struct class="text-center">
-          <h1 class="header-color cover-header">Comparative Market Analysis</h1>
-          {% if subject["street_number"] or subject["street_name"] %}
-            <h3 class="sub-header-color cover-address">{{ subject["street_number"] }} {{ subject["street_name"] }}</h3>
-          {% endif %}
-          <struct class="">
-            <struct>
-              <h4 class="cover-name">prepared by <mark>{{ agent["name"] }}</mark></h4>
-            </struct>
-          </struct>
+          <struct class="absolute rounded-md top-0 left-0 right-0 bottom-0 h-full bg-gray-900 bg-opacity-40"></struct>
         </struct>
       </struct>
     """

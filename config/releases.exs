@@ -37,6 +37,8 @@ config :excyte, ExcyteWeb.Endpoint,
   check_origin: [
     "//excyte.io",
     "//www.excyte.io",
+    "//excytecma.com",
+    "//www.excytecma.com",
     "//excyte-re.onrender.com",
     "https://localhost:4000",
     "https://excyte.ngrok.io"

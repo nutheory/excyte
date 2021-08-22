@@ -23,10 +23,10 @@ import {
   ExcyteParagraph,
   ExcyteLink, 
 } from './extensions/modified_extensions'
-import SimpleGallery from './extensions/simple_gallery'
+// import SimpleGallery from './extensions/simple_gallery'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
-import Comparable from './extensions/comparable'
+// import Comparable from './extensions/comparable'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Struct from './extensions/struct'
@@ -70,13 +70,14 @@ window.currentViewer = function (content) {
           TableCell,
           Contact,
           Collapsable,
-          SimpleGallery,
+          // SimpleGallery,
           ShowcaseGallery,
           SimpleVideo,
           Struct,
-          Comparable,
+          // Comparable,
         ],
         content: this.content,
+        autofocus: 'start',
       })
 
       this.viewer = viewer
@@ -88,6 +89,7 @@ window.currentViewer = function (content) {
 export const InitViewer = {
   mounted() {
     window.viewerHook.base = this
+    console.log("THIS", window.viewerHook.currentViewer.viewer)
     this.handleEvent("loadViewer", ({ content, theme }) => {
       setTimeout(() => {
         window.viewerHook.currentViewer.viewer.commands.setContent(content)

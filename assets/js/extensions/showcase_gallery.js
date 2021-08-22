@@ -87,8 +87,8 @@ export default Node.create({
       }
     }
   },
-  onCreate({ editor, event }) {
-    alert("CREATE")
+  onFocus({ editor, event }) {
+    // alert(document.querySelectorAll(".glightbox").length)
     let lightbox = Glightbox({
       touchNavigation: true,
       loop: true,

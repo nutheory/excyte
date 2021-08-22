@@ -12874,70 +12874,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./js/extensions/comparable.js":
-/*!*************************************!*\
-  !*** ./js/extensions/comparable.js ***!
-  \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
-  name: 'compDetails',
-  group: 'block',
-  content: 'block+',
-  addAttributes: function addAttributes() {
-    return {
-      listing: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            listing: element.getAttribute('data-listing-json')
-          };
-        }
-      }
-    };
-  },
-  parseHTML: function parseHTML() {
-    return [{
-      tag: 'div[data-type="compDetails"]'
-    }];
-  },
-  renderHTML: function renderHTML(_ref) {
-    var HTMLAttributes = _ref.HTMLAttributes;
-    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes, {
-      'data-type': 'compDetails'
-    }), 0];
-  },
-  addNodeView: function addNodeView() {
-    return function (_ref2) {
-      var editor = _ref2.editor,
-          node = _ref2.node,
-          getPos = _ref2.getPos,
-          HTMLAttributes = _ref2.HTMLAttributes,
-          decorations = _ref2.decorations,
-          extension = _ref2.extension;
-      var dom = document.createElement('div');
-      var content = document.createElement('div');
-      dom.append(content);
-      return {
-        content: content,
-        contentDOM: content
-      };
-    };
-  }
-}));
-
-/***/ }),
-
 /***/ "./js/extensions/contact.js":
 /*!**********************************!*\
   !*** ./js/extensions/contact.js ***!
@@ -13265,125 +13201,10 @@ __webpack_require__.r(__webpack_exports__);
       };
     };
   },
-  onCreate: function onCreate(_ref3) {
-    var editor = _ref3.editor,
-        event = _ref3.event;
-    alert("CREATE");
-    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
-      touchNavigation: true,
-      loop: true,
-      autoplayVideos: true,
-      selector: ".glightbox"
-    });
-  }
-}));
-
-/***/ }),
-
-/***/ "./js/extensions/simple_gallery.js":
-/*!*****************************************!*\
-  !*** ./js/extensions/simple_gallery.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_1__);
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
-  name: 'simpleGallery',
-  group: 'block',
-  content: 'block+',
-  addAttributes: function addAttributes() {
-    return {
-      images: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            images: element.getAttribute('data-media-json')
-          };
-        }
-      },
-      id: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            id: element.getAttribute('data-listing-id')
-          };
-        }
-      }
-    };
-  },
-  parseHTML: function parseHTML() {
-    return [{
-      tag: 'div[data-type="simpleGallery"]'
-    }];
-  },
-  renderHTML: function renderHTML(_ref) {
-    var HTMLAttributes = _ref.HTMLAttributes;
-    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes, {
-      'data-type': 'simpleGallery'
-    }), 0];
-  },
-  addNodeView: function addNodeView() {
-    return function (_ref2) {
-      var editor = _ref2.editor,
-          node = _ref2.node,
-          getPos = _ref2.getPos,
-          HTMLAttributes = _ref2.HTMLAttributes,
-          decorations = _ref2.decorations,
-          extension = _ref2.extension;
-
-      if (HTMLAttributes.images === null) {
-        return true;
-      }
-
-      var images = JSON.parse(HTMLAttributes.images);
-      var id = HTMLAttributes.id;
-      var dom = document.createElement('div');
-      var icon = document.createElement('div');
-      icon.classList.add("icon");
-      icon.innerHTML = "<svg class=\"w-5 h-5 text-white\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path>\n        </svg>";
-      var init = images.map(function (imag, idx) {
-        var link = document.createElement('a');
-        link.setAttribute("href", imag.media_url);
-        link.setAttribute("data-gallery", "gallery_".concat(id));
-
-        if (imag.short_description) {
-          link.setAttribute("data-description", imag.short_description);
-        }
-
-        link.classList.add("glightbox", "preview");
-        link.style.backgroundImage = "url(".concat(images[idx].media_url, ")");
-
-        if (idx === 0) {
-          link.classList.add('main-photo');
-          link.append(icon);
-          dom.append(link);
-        } else if (idx > 0 && idx < 5) {
-          dom.append(link);
-        } else {
-          var hiddenItem = document.createElement('div');
-          hiddenItem.classList.add('hidden');
-          hiddenItem.append(link);
-          dom.append(hiddenItem);
-        }
-      });
-      dom.classList.add("simple-gallery", "w-full");
-      return {
-        dom: dom
-      };
-    };
-  },
   onFocus: function onFocus(_ref3) {
     var editor = _ref3.editor,
         event = _ref3.event;
+    // alert(document.querySelectorAll(".glightbox").length)
     var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
       touchNavigation: true,
       loop: true,
@@ -13621,15 +13442,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @tiptap/extension-text-align */ "./node_modules/@tiptap/extension-text-align/dist/tiptap-extension-text-align.esm.js");
 /* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
 /* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
-/* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
-/* harmony import */ var _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/showcase_gallery */ "./js/extensions/showcase_gallery.js");
-/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
-/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
-/* harmony import */ var _extensions_collapsable__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/collapsable */ "./js/extensions/collapsable.js");
-/* harmony import */ var _extensions_contact__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/contact */ "./js/extensions/contact.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_28__);
+/* harmony import */ var _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./extensions/showcase_gallery */ "./js/extensions/showcase_gallery.js");
+/* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
+/* harmony import */ var _extensions_collapsable__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/collapsable */ "./js/extensions/collapsable.js");
+/* harmony import */ var _extensions_contact__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/contact */ "./js/extensions/contact.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_26___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_26__);
 
 
 
@@ -13650,10 +13469,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // import SimpleGallery from './extensions/simple_gallery'
 
 
-
-
+ // import Comparable from './extensions/comparable'
 
 
 
@@ -13671,8 +13490,11 @@ window.currentViewer = function (content) {
       var viewer = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
         editable: false,
-        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_27__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_24__.default],
-        content: this.content
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_23__.default, // SimpleGallery,
+        _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default // Comparable,
+        ],
+        content: this.content,
+        autofocus: 'start'
       });
       this.viewer = viewer;
       window.viewerHook.currentViewer = this;
@@ -13683,6 +13505,7 @@ window.currentViewer = function (content) {
 var InitViewer = {
   mounted: function mounted() {
     window.viewerHook.base = this;
+    console.log("THIS", window.viewerHook.currentViewer.viewer);
     this.handleEvent("loadViewer", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme;
@@ -13894,13 +13717,13 @@ var addCss = function addCss(rule) {
         k = "errored",
         b = "joined",
         j = "joining",
-        C = "leaving",
-        E = "phx_close",
+        T = "leaving",
+        C = "phx_close",
         R = "phx_error",
-        T = "phx_join",
-        S = "phx_reply",
-        w = "phx_leave",
-        A = [E, R, T, S, w],
+        E = "phx_join",
+        w = "phx_reply",
+        S = "phx_leave",
+        A = [C, R, E, w, S],
         L = "longpoll",
         x = "websocket",
         O = function (e) {
@@ -13995,7 +13818,7 @@ var addCss = function addCss(rule) {
         _ = function () {
       function e(t, n, i) {
         var o = this;
-        c(this, e), this.state = g, this.topic = t, this.params = O(n || {}), this.socket = i, this.bindings = [], this.bindingRef = 0, this.timeout = this.socket.timeout, this.joinedOnce = !1, this.joinPush = new P(this, T, this.params, this.timeout), this.pushBuffer = [], this.stateChangeRefs = [], this.rejoinTimer = new J(function () {
+        c(this, e), this.state = g, this.topic = t, this.params = O(n || {}), this.socket = i, this.bindings = [], this.bindingRef = 0, this.timeout = this.socket.timeout, this.joinedOnce = !1, this.joinPush = new P(this, E, this.params, this.timeout), this.pushBuffer = [], this.stateChangeRefs = [], this.rejoinTimer = new J(function () {
           o.socket.isConnected() && o.rejoin();
         }, this.socket.rejoinAfterMs), this.stateChangeRefs.push(this.socket.onError(function () {
           return o.rejoinTimer.reset();
@@ -14012,8 +13835,8 @@ var addCss = function addCss(rule) {
         }), this.onError(function (e) {
           o.socket.hasLogger() && o.socket.log("channel", "error ".concat(o.topic), e), o.isJoining() && o.joinPush.reset(), o.state = k, o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
         }), this.joinPush.receive("timeout", function () {
-          o.socket.hasLogger() && o.socket.log("channel", "timeout ".concat(o.topic, " (").concat(o.joinRef(), ")"), o.joinPush.timeout), new P(o, w, O({}), o.timeout).send(), o.state = k, o.joinPush.reset(), o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
-        }), this.on(S, function (e, t) {
+          o.socket.hasLogger() && o.socket.log("channel", "timeout ".concat(o.topic, " (").concat(o.joinRef(), ")"), o.joinPush.timeout), new P(o, S, O({}), o.timeout).send(), o.state = k, o.joinPush.reset(), o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
+        }), this.on(w, function (e, t) {
           o.trigger(o.replyEventName(t), e);
         });
       }
@@ -14028,7 +13851,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "onClose",
         value: function (e) {
-          this.on(E, e);
+          this.on(C, e);
         }
       }, {
         key: "onError",
@@ -14074,12 +13897,12 @@ var addCss = function addCss(rule) {
         value: function () {
           var e = this,
               t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : this.timeout;
-          this.rejoinTimer.reset(), this.joinPush.cancelTimeout(), this.state = C;
+          this.rejoinTimer.reset(), this.joinPush.cancelTimeout(), this.state = T;
 
           var n = function () {
-            e.socket.hasLogger() && e.socket.log("channel", "leave ".concat(e.topic)), e.trigger(E, "leave");
+            e.socket.hasLogger() && e.socket.log("channel", "leave ".concat(e.topic)), e.trigger(C, "leave");
           },
-              i = new P(this, w, O({}), t);
+              i = new P(this, S, O({}), t);
 
           return i.receive("ok", function () {
             return n();
@@ -14158,7 +13981,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "isLeaving",
         value: function () {
-          return this.state === C;
+          return this.state === T;
         }
       }]), e;
     }(),
@@ -14261,7 +14084,7 @@ var addCss = function addCss(rule) {
           join_ref: c,
           ref: u,
           topic: h,
-          event: S,
+          event: w,
           payload: {
             status: l,
             response: f
@@ -14380,10 +14203,15 @@ var addCss = function addCss(rule) {
           });
         }
       }, {
+        key: "heartbeatTimeout",
+        value: function () {
+          this.pendingHeartbeatRef && (this.pendingHeartbeatRef = null, this.hasLogger() && this.log("transport", "heartbeat timeout. Attempting to re-establish connection"), this.abnormalClose("heartbeat timeout"));
+        }
+      }, {
         key: "resetHeartbeat",
         value: function () {
           var e = this;
-          this.conn && this.conn.skipHeartbeat || (this.pendingHeartbeatRef = null, clearInterval(this.heartbeatTimer), this.heartbeatTimer = setInterval(function () {
+          this.conn && this.conn.skipHeartbeat || (this.pendingHeartbeatRef = null, clearTimeout(this.heartbeatTimer), setTimeout(function () {
             return e.sendHeartbeat();
           }, this.heartbeatIntervalMs));
         }
@@ -14419,7 +14247,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "onConnClose",
         value: function (e) {
-          this.hasLogger() && this.log("transport", "close", e), this.triggerChanError(), clearInterval(this.heartbeatTimer), this.closeWasClean || this.reconnectTimer.scheduleTimeout(), this.stateChangeCallbacks.close.forEach(function (t) {
+          this.hasLogger() && this.log("transport", "close", e), this.triggerChanError(), clearTimeout(this.heartbeatTimer), this.closeWasClean || this.reconnectTimer.scheduleTimeout(), this.stateChangeCallbacks.close.forEach(function (t) {
             return (0, r(t, 2)[1])(e);
           });
         }
@@ -14512,20 +14340,20 @@ var addCss = function addCss(rule) {
       }, {
         key: "sendHeartbeat",
         value: function () {
-          if (this.isConnected()) {
-            if (this.pendingHeartbeatRef) return this.pendingHeartbeatRef = null, this.hasLogger() && this.log("transport", "heartbeat timeout. Attempting to re-establish connection"), void this.abnormalClose("heartbeat timeout");
-            this.pendingHeartbeatRef = this.makeRef(), this.push({
-              topic: "phoenix",
-              event: "heartbeat",
-              payload: {},
-              ref: this.pendingHeartbeatRef
-            });
-          }
+          var e = this;
+          this.pendingHeartbeatRef && !this.isConnected() || (this.pendingHeartbeatRef = this.makeRef(), this.push({
+            topic: "phoenix",
+            event: "heartbeat",
+            payload: {},
+            ref: this.pendingHeartbeatRef
+          }), this.heartbeatTimer = setTimeout(function () {
+            return e.heartbeatTimeout();
+          }, this.heartbeatIntervalMs));
         }
       }, {
         key: "abnormalClose",
         value: function (e) {
-          this.closeWasClean = !1, this.conn.readyState === v && this.conn.close(1e3, e);
+          this.closeWasClean = !1, this.isConnected() && this.conn.close(1e3, e);
         }
       }, {
         key: "flushSendBuffer",
@@ -14544,7 +14372,9 @@ var addCss = function addCss(rule) {
                 o = e.payload,
                 s = e.ref,
                 a = e.join_ref;
-            s && s === t.pendingHeartbeatRef && (t.pendingHeartbeatRef = null), t.hasLogger() && t.log("receive", "".concat(o.status || "", " ").concat(n, " ").concat(i, " ").concat(s && "(" + s + ")" || ""), o);
+            s && s === t.pendingHeartbeatRef && (clearTimeout(t.heartbeatTimer), t.pendingHeartbeatRef = null, setTimeout(function () {
+              return t.sendHeartbeat();
+            }, t.heartbeatIntervalMs)), t.hasLogger() && t.log("receive", "".concat(o.status || "", " ").concat(n, " ").concat(i, " ").concat(s && "(" + s + ")" || ""), o);
 
             for (var c = 0; c < t.channels.length; c++) {
               var u = t.channels[c];
@@ -14608,9 +14438,11 @@ var addCss = function addCss(rule) {
             switch (n) {
               case 200:
                 o.forEach(function (t) {
-                  return e.onmessage({
-                    data: t
-                  });
+                  setTimeout(function () {
+                    e.onmessage({
+                      data: t
+                    });
+                  }, 0);
                 }), e.poll();
                 break;
 

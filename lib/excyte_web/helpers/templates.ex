@@ -10,56 +10,46 @@ defmodule ExcyteWeb.Helpers.Templates do
   def agent_profile(%{agent_profile: ap}) do
     profile = Excyte.Utils.Methods.stringify_keys(ap)
     """
-      <struct class="section agent max-w-screen-lg w-full lg:w-4/5 mx-auto" id="agent_profile">
-        <h1 class="muted-color">Agent profile</h1>
-        <struct class="data-grid">
-          <struct class="minor">
-            {% if agent["photo_url"] %}
-              <struct class="w-full flex items-center justify-center">
-                <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
-              </struct>
-            {% endif %}
-            {% if agent["contacts"].size > 0 %}
-              <struct class="mt-6">
-                <h4 class="sub-header-color">Contact</h4>
-                {% for cnt in agent["contacts"] %}
-                  <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
-                {% endfor %}
-              </struct>
-            {% endif %}
-          </struct>
-          <struct class="major">
+      <struct class="section agent w-full lg:w-4/5 mx-auto" id="agent_profile">
+        <struct class="grid grid-cols-4 gap-6">
+          {% if agent["photo_url"] %}
             <struct class="">
-              {% if agent["name"] %}
-                <h2>{{ agent["name"] }}</h2>
-              {% endif %}
-              {% if agent["tagline"] %}
-                <struct class="m-6">
-                  <blockquote>{{ agent["tagline"] }}</blockquote>
-                </struct>
-              {% endif %}
+              <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
             </struct>
-            {% if agent["bio"] %}
-              <p class="mt-6">{{ agent["bio"] }}</p>
+          {% endif %}
+          <struct class="col-span-3">
+            {% if agent["name"] %}
+              <h1 class="header-color">{{ agent["name"] }}</h1>
             {% endif %}
-            <struct class="mt-6 data-grid-fifty">
-              <struct class="">
-                {% if agent["company_name"] %}
-                  <p class="text-lg"><strong>{{ agent["company_name"] }}</strong></p>
-                {% endif %}
-                {% if agent["job_title"] %}
-                  <p><i>{{ agent["job_title"] }}</i></p>
-                {% endif %}
+            {% if agent["tagline"] %}
+              <struct class="my-6">
+                <blockquote>{{ agent["tagline"] }}</blockquote>
               </struct>
-              <struct>
-                {% if agent["logo_url"] %}
-                  <struct class="w-full flex items-center justify-center md:justify-end">
-                    <img src="{{ agent["logo_url"] }}" alt="{{ agent["company_name"] }} logo" />
-                  </struct>
-                {% endif %}
-              </struct>
-            </struct>
+            {% endif %}
+            {% if agent["company_name"] %}
+              <h3 class="mb-0 header-color">{{ agent["company_name"] }}</h3>
+            {% endif %}
+            {% if agent["job_title"] %}
+              <p class="font-semibold"><i>{{ agent["job_title"] }}</i></p>
+            {% endif %}
           </struct>
+        </struct>
+        {% if agent["bio"] %}
+          <p class="mt-4 sub-header-color font-semibold text-lg md:text-xl lg:text-2xl">{{ agent["bio"] }}</p>
+        {% endif %}
+        <struct class="grid md:grid-cols-2 gap-x-6 gap-y-4">
+          {% if agent["contacts"].size > 0 %}
+            <struct class="mt-6">
+              {% for cnt in agent["contacts"] %}
+                <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
+              {% endfor %}
+            </struct>
+          {% endif %}
+          {% if agent["logo_url"] %}
+            <struct class="w-full flex items-center justify-center md:justify-end">
+              <img src="{{ agent["logo_url"] }}" alt="{{ agent["company_name"] }} logo" />
+            </struct>
+          {% endif %}
         </struct>
       </struct>
     """
@@ -73,34 +63,29 @@ defmodule ExcyteWeb.Helpers.Templates do
   def brokerage_profile(%{brokerage: brk}) do
     profile = Excyte.Utils.Methods.stringify_keys(brk)
     """
-      <struct class="section max-w-screen-lg w-full lg:w-4/5 mx-auto" id="brokerage">
-        <h1 class="muted-color">About {{ brokerage["company_name"]}}</h1>
-        <struct class="data-grid">
-          <struct class="major">
-            {% if brokerage["tagline"] %}
-              <struct class="m-6">
-                <blockquote>{{ brokerage["tagline"] }}</blockquote>
-              </struct>
-            {% endif %}
-            {% if brokerage["logo_url"] %}
-              <struct class="w-4/5 mx-auto">
-                <img src="{{ brokerage["logo_url"] }}" alt="logo" />
-              </struct>
-            {% endif %}
-            {% if brokerage["description"] %}
-              <p class="mt-6">{{ brokerage["description"] }}</p>
-            {% endif %}
+      <struct class="section w-full lg:w-4/5 mx-auto" id="brokerage">
+        {% if brokerage["logo_url"] %}
+          <struct class="flex items-center justify-center">
+            <img src="{{ brokerage["logo_url"] }}" alt="logo" />
           </struct>
-          <struct class="minor">
-            {% if brokerage["contacts"] or brokerage["addresses"] %}
-              <h4 class="sub-header-color">Contact</h4>
-              {% for cnt in brokerage["contacts"] %}
-                <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
-              {% endfor %}
-              {% for address in brokerage["addresses"] %}
-              {% endfor %}
-            {% endif %}
+        {% endif %}
+        <h2 class="header-color text-center mt-4">{{ brokerage["company_name"]}}</h2>
+        {% if brokerage["tagline"] %}
+          <struct class="flex items-center justify-center my-4">
+            <blockquote>{{ brokerage["tagline"] }}</blockquote>
           </struct>
+        {% endif %}
+        {% if brokerage["description"] %}
+          <p class="sub-header-color font-semibold text-lg md:text-xl lg:text-2xl">{{ brokerage["description"] }}</p>
+        {% endif %}
+        <struct class="grid md:grid-cols-2 gap-y-2 gap-x-6">
+          {% if brokerage["contacts"] or brokerage["addresses"] %}
+            {% for cnt in brokerage["contacts"] %}
+              <contact type="{{ cnt["type"] }}" content="{{ cnt["content"] }}" name="{{ cnt["name"] }}"></contact>
+            {% endfor %}
+            {% for address in brokerage["addresses"] %}
+            {% endfor %}
+          {% endif %}
         </struct>
       </struct>
     """
@@ -126,225 +111,217 @@ defmodule ExcyteWeb.Helpers.Templates do
     end)
     media = Jason.encode!(listing["media"])
     """
-      <struct class="section comp" id="comparable_#{listing["listing_key"]}">
-        <h1 class="muted-color">Comparable Listing</h1>
-        <struct class="data-grid">
-          <struct class="major left-right-wrapper">
-            {% if listing["street_number"] or listing["street_name"] %}
-              <h3 class="header-color mb-0">{{ listing["street_number"] }} {{ listing["street_name"] }}</h3>
-            {% endif %}
-            {% if listing["city"] %}
-              <h4>{{ listing["city"] }}</h4>
-            {% endif %}
-            <struct class="py-6 lg:py-10">
-              <blockquote>#{summarize_sale_info(listing)}</blockquote>
+      <struct class="section comparable" id="comparable_#{listing["listing_key"]}">
+        <div
+          data-type="showcaseGallery"
+          contenteditable="false"
+          data-title="Comparable Listing"
+          data-media-json='#{media}'
+          data-addr-number='{{ lst["street_number"] }}'
+          data-addr-street='{{ lst["street_name"] }}'
+          data-addr-city='{{ lst["city"] }}'
+          data-listing-id='{{ lst["listing_id"] }}'
+          class="showcase-gallery"></div>
+        <p class="summary  pt-4 sub-header-color">#{summarize_sale_info(listing)}</p>
+        <struct class="main-details">
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if lst["sqft"] %}
+                #{number_to_delimited(listing["sqft"], precision: 0)}
+              {% else %}
+                N/A
+              {% endif %}
+            </h1>
+            <h4 class="sub-header-color">Sqft</h4>
+          </struct>
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if lst["lotsize_preference"] == "sqft" %}
+                #{number_to_delimited(listing["lotsize_sqft"], precision: 0)}
+              {% else %}
+                #{Utilities.sqft_to_acres(listing["lotsize_sqft"])}
+              {% endif %}
+            </h1>
+            <h4 class="sub-header-color">Lot #{String.capitalize(listing["lotsize_preference"])}</h4>
+          </struct>
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if lst["year_built"] %}
+                {{ lst["year_built"] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </h1>
+            <h4 class="sub-header-color">Built</h4>
+          </struct>
+        </struct>
+        <struct class="info-adjustments">
+          <struct class="extra-details">
+            <struct class="extra-info">
+              <struct class="val header-color">
+                {% if lst["beds"] %}
+                  {{ lst["beds"] }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </struct>
+              <struct class="label sub-header-color">Beds</struct>
+              <struct class="val header-color">
+                {% if lst["baths"] and lst["baths"]["total"] %}
+                  {{ lst["baths"]["total"] }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </struct>
+              <struct class="label sub-header-color">Baths</struct>
+              <struct class="val header-color">
+                {% if lst["stories"] %}
+                  {{ lst["stories"] }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </struct>
+              <struct class="label sub-header-color">Stories</struct>
+              <struct class="val header-color">
+                {{ lst["parking"]["type"] }}
+                {% if lst["parking"]["spaces"] == "N/A" %}
+                {% else %}
+                  (#{listing["parking"]["spaces"]})
+                {% endif %}
+              </struct>
+              <struct class="label sub-header-color">Parking</struct>
+              <struct class="val header-color">
+                {% if lst["property_sub_type"] %}
+                  {{ lst["property_sub_type"] }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </struct>
+              <struct class="label sub-header-color">Sub-Type</struct>
             </struct>
-            <struct class="">
-              <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
-              <struct class="data-grid-fifty mb-6">
-                <table>
-                  <tbody>
-                    <tr>
-                      <td class="label">Sqft</td>
-                      <td class="value">
-                        {% if listing["sqft"] %}
-                          #{number_to_delimited(listing["sqft"], precision: 0)}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Stories</td>
-                      <td class="value">
-                        {% if listing["stories"] %}
-                          {{ listing["stories"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Beds</td>
-                      <td class="value">
-                        {% if listing["beds"] %}
-                          {{ listing["beds"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Baths</td>
-                      <td class="value">
-                        {% if listing["baths"] and listing["baths"]["total"] %}
-                          {{ listing["baths"]["total"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Built</td>
-                      <td class="value">
-                        {% if listing["year_built"] %}
-                          {{ listing["year_built"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td class="label">Lot #{String.capitalize(listing["lotsize_preference"])}</td>
-                      <td class="value">
-                        {% if listing["lotsize_preference"] == "sqft" %}
-                          #{number_to_delimited(listing["lotsize_sqft"], precision: 0)}
-                        {% else %}
-                          #{Utilities.sqft_to_acres(listing["lotsize_sqft"])}
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Parking</td>
-                      <td class="value">
-                        {{ listing["parking"]["type"] }}
-                        {% if listing["parking"]["spaces"] == "N/A" %}
-                        {% else %}
-                          (#{listing["parking"]["spaces"]})
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Sub Type</td>
-                      <td class="value">
-                        {% if listing["property_sub_type"] %}
-                          {{ listing["property_sub_type"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Listing ID</td>
-                      <td class="value">
-                        {% if listing["listing_id"] %}
-                          {{ listing["listing_id"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">View on Map</td>
-                      <td class="value">
-                        {% if listing["coords"] and listing["coords"][0] %}
-                          <a href="https://www.google.com/maps/search/?api=1&query={{ listing["coords"][1] }}%2C{{ listing["coords"][0] }}">Click here</a>
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            <struct class="extra-options">
+              <struct>
+                {% if lst["coords"] and lst["coords"][0] %}
+                  <a href="https://www.google.com/maps/search/?api=1&query={{ lst["coords"][1] }}%2C{{ lst["coords"][0] }}">
+                    <img src="/images/map_icon.png" alt="Map this address" />
+                    <span class="block text-sm">Map view</span>
+                  </a>
+                {% else %}
+                  N/A
+                {% endif %}
               </struct>
             </struct>
-            <struct class="mt-12">
-              {% if adjustments %}
-                <struct class="flex border-b accent-color">
-                  <struct class="flex-1">
-                    <h4 class="sub-header-color">Adjustment considerations</h4>
-                  </struct>
-                  <struct class="">
-                    {% if listing["close_price"] %}
-                      Closed for <strong>$#{number_to_delimited(listing["close_price"], precision: 0)}</strong>
-                    {% else %}
-                      {% if listing["list_price"] %}
-                        Listed at <strong>$#{number_to_delimited(listing["list_price"], precision: 0)}</strong>
-                      {% endif %}
-                    {% endif %}
-                  </struct>
-                </struct>
-                <table>
-                  <tbody>
-                    {% for adj in adjustments %}
-                    <tr>
-                      <td class="text-left">{{ adj["name"] }}</td>
-                      <td class="value">${{ adj["display_value"] }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-                <struct class="text-right">
-                  Adjusted value <strong>$#{number_to_delimited(listing["excyte_price"], precision: 0)}</strong>
-                </struct>
-              {% endif %}
-            </struct>
           </struct>
-          <struct class="minor">
-            <div data-type="simpleGallery" contenteditable="false" data-media-json='#{media}' data-listing-id='{{ listing["listing_id"] }}' class="simple-gallery"></div>
-            <h4 class="sub-header-color mt-4">Comparison Summary</h4>
-            <struct class="summary-table">
-              <table>
-                <tr>
-                  <th></th>
-                  <th>Listing</th>
-                  <th>Difference</th>
-                </tr>
-                {% if listing["adjustments"]["sqft"] %}
+          <struct class="adjustments sub-header-color">
+            <h4 class="mb-0">Adjustment considerations</h4>
+            <p class="">Summary of differentiating attributes</p>
+            <table>
+              <tbody>
+                {% if lst["close_price"] %}
+                  <tr>
+                    <td>Closed</td>
+                    <td><strong>$#{number_to_delimited(listing["close_price"], precision: 0)}</strong></td>
+                  </tr>
+                {% else %}
+                  {% if lst["list_price"] %}
+                    <tr>
+                      <td>Listed</td>
+                      <td><strong>$#{number_to_delimited(listing["list_price"], precision: 0)}</strong></td>
+                    </tr>
+                  {% endif %}
+                {% endif %}
+                {% if lst["adjustments"]["sqft"] %}
                   <tr>
                     <td>Sqft</td>
-                    <td>{{ listing["sqft"] }}</td>
-                    <td>{{ listing["adjustments"]["sqft"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["sqft"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["sqft"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["sqft"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-                {% if listing["adjustments"]["lotsize"] %}
+                {% if lst["adjustments"]["lotsize"] %}
                   <tr>
                     <td>Lotsize</td>
-                    <td>{{ listing["lotsize_sqft"] }}</td>
-                    <td>{{ listing["adjustments"]["lotsize"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["lotsize"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["lotsize"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["lotsize"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-                {% if listing["adjustments"]["beds"] %}
+                {% if lst["adjustments"]["beds"] %}
                   <tr>
                     <td>Beds</td>
-                    <td>{{ listing["beds"] }}</td>
-                    <td>{{ listing["adjustments"]["beds"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["beds"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["beds"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["beds"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-                {% if listing["adjustments"]["baths"] %}
+                {% if lst["adjustments"]["baths"] %}
                   <tr>
                     <td>Baths</td>
-                    <td>{{ listing["baths"]["total"] }}</td>
-                    <td>{{ listing["adjustments"]["baths"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["baths"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["baths"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["baths"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-                {% if listing["adjustments"]["stories"] %}
+                {% if lst["adjustments"]["stories"] %}
                   <tr>
                     <td>Stories</td>
-                    <td>{{ listing["stories"] }}</td>
-                    <td>{{ listing["adjustments"]["stories"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["stories"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["stories"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["stories"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-                {% if listing["adjustments"]["year_built"] %}
+                {% if lst["adjustments"]["year_built"] %}
                   <tr>
                     <td>Year built</td>
-                    <td>{{ listing["year_built"] }}</td>
-                    <td>{{ listing["adjustments"]["year_built"]["difference"] }}</td>
+                    <td>
+                      {% if lst["adjustments"]["year_built"]["difference"] < 0 %}
+                        + {{ lst["adjustments"]["year_built"]["difference"] | times: -1 }}
+                      {% else %}
+                        - {{ lst["adjustments"]["year_built"]["difference"] }}
+                      {% endif %}
+                    </td>
                   </tr>
                 {% endif %}
-              </table>
-            </struct>
+                {% for adj in adjustments %}
+                  <tr>
+                    <td class="text-left">{{ adj["name"] }}</td>
+                    <td class="value">${{ adj["display_value"] }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </struct>
+          <struct class="footer sub-header-color">
+            <h1>Adjusted value <span class="header-color">$#{number_to_delimited(listing["excyte_price"], precision: 0)}</span></h1>
           </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"listing" => listing, "adjustments" => adjustments}))
+      {:ok, template} -> to_string(Solid.render(template, %{"lst" => listing, "adjustments" => adjustments}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -668,127 +645,89 @@ defmodule ExcyteWeb.Helpers.Templates do
   def subject(%{subject: subject}) do
     """
       <struct class="section subject" id="subject">
-        <h1 class="muted-color">Subject property</h1>
-        <struct class="data-grid">
-          <struct class="major">
-            <struct class="header">
-              {% if subject["street_number"] or subject["street_name"] %}
-                <h4 class="mb-0">{{ subject["street_number"] }} {{ subject["street_name"] }}</h4>
+        <h1 class="header-color">Understanding Comparable Listings</h1>
+        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold">In explaining the suggested pricing
+        of your home we compare it to local properties with similiar
+        features(sqft, beds, baths) as well as proximity to shopping,
+        schools, recreational facilities, fire and police protection.</p>
+        <struct class="header">
+          {% if sbj["street_number"] or sbj["street_name"] %}
+            <h4 class="mb-0">{{ sbj["street_number"] }} {{ sbj["street_name"] }}</h4>
+          {% endif %}
+        </struct>
+        <struct class="main-details">
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if sbj["sqft"] %}
+                #{number_to_delimited(subject["sqft"], precision: 0)}
+              {% else %}
+                N/A
               {% endif %}
-            </struct>
-            {% if subject["overview"] %}
-              <p>{{ subject["overview"] }}</p>
-            {% endif %}
-            <struct class="mt-6 subject-table">
-              <h3 class="sub-header-color border-b accent-color pb-1">Property Details</h3>
-              <struct class="data-grid-fifty mb-6">
-                <table>
-                  <tbody>
-                    <tr>
-                      <td class="label">Sqft</td>
-                      <td class="value">
-                        {% if subject["sqft"] %}
-                          #{number_to_delimited(subject["sqft"], precision: 0)}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Stories</td>
-                      <td class="value">
-                        {% if subject["stories"] %}
-                          {{ subject["stories"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Beds</td>
-                      <td class="value">
-                        {% if subject["beds"] %}
-                          {{ subject["beds"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Baths</td>
-                      <td class="value">
-                        {% if subject["baths"] %}
-                          {{ subject["baths"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <table>
-                  <tbody>
-                    <tr>
-                      <td class="label">Built</td>
-                      <td class="value">
-                        {% if subject["year_built"] %}
-                          {{ subject["year_built"] }}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="label">Lot #{String.capitalize(subject["lotsize_preference"])}</td>
-                      <td class="value">
-                        {% if subject["lotsize_preference"] == "sqft" %}
-                          #{number_to_delimited(subject["lotsize_sqft"], precision: 0)}
-                        {% else %}
-                          #{Utilities.sqft_to_acres(subject["lotsize_sqft"])}
-                        {% endif %}
-                      </td>
-                    </tr>
-                    {% if subject["parking"] %}
-                      <tr>
-                        <td class="label">Parking</td>
-                        <td class="value">
-                          {% if subject["parking"]["spaces"] == "N/A" %}
-                          {% else %}
-                            (#{subject["parking"]["spaces"]})
-                          {% endif %}
-                        </td>
-                      </tr>
-                    {% endif %}
-                    <tr>
-                      <td class="label">Property Type</td>
-                      <td class="value">
-                        {% if subject["property_type"] %}
-                          {% if subject["property_type"] == "single_family" %}
-                            Single Family
-                          {% else %}
-                            {{ subject["property_type"] | capitalize }}
-                          {% endif %}
-                        {% else %}
-                          N/A
-                        {% endif %}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </struct>
-            </struct>
+            </h1>
+            <h4 class="sub-header-color">Sqft</h4>
           </struct>
-          <struct class="minor">
-            {% if subject["main_photo_url"] %}
-              <img src="{{ subject["main_photo_url"] }}" alt="Subject home" />
-            {% endif %}
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if sbj["lotsize_preference"] == "sqft" %}
+                #{number_to_delimited(subject["lotsize_sqft"], precision: 0)}
+              {% else %}
+                #{Utilities.sqft_to_acres(subject["lotsize_sqft"])}
+              {% endif %}
+            </h1>
+            <h4 class="sub-header-color">Lot #{String.capitalize(subject["lotsize_preference"])}</h4>
+          </struct>
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h1 class="header-color">
+              {% if sbj["year_built"] %}
+                {{ sbj["year_built"] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </h1>
+            <h4 class="sub-header-color">Built</h4>
+          </struct>
+        </struct>
+        <struct class="sub-details">
+          <struct class="detail">
+            <h2 class="header-color">
+              {% if sbj["beds"] %}
+                {{ sbj["beds"] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </h2>
+            <h4 class="sub-header-color">Beds</h4>
+          </struct>
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h2 class="header-color">
+              {% if sbj["baths"] %}
+                {{ sbj["baths"] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </h2>
+            <h4 class="sub-header-color">Baths</h4>
+          </struct>
+          <struct class="flex-1"></struct>
+          <struct class="detail">
+            <h2 class="header-color">
+              {% if sbj["stories"] %}
+                {{ sbj["stories"] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </h2>
+            <h4 class="sub-header-color">Stories</h4>
           </struct>
         </struct>
       </struct>
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"subject" => subject}))
+      {:ok, template} -> to_string(Solid.render(template, %{"sbj" => subject}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -796,8 +735,8 @@ defmodule ExcyteWeb.Helpers.Templates do
   def synopsis(%{subject: sbj, insight: insight}) do
     """
       <struct class="section" id="synopsis">
-        <h1 class="muted-color">Synopsis</h1>
-        <p>Based on all the Comparable information above along with this information.</p>
+        <h1 class="header-color">Synopsis</h1>
+        <p class="">Based on all the Comparable information above along with this information.</p>
         <struct class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <struct>
             <h3 class="sub-header-color">Average Days on Market</h3>
@@ -1088,25 +1027,25 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def whats_cma(_) do
     """
-      <struct class="section" id="whats_cma">
-        <h1 class="muted-color">What is a CMA?</h1>
-        <struct class="data-grid-fifty">
+      <struct class="section whats-cma" id="whats_cma">
+        <p class="text-xl md:text-2xl font-semibold sub-header-color"><span class="font-extrabold header-color">
+        A CMA is</span> a comparison of the most recent Active, Sold
+        and Pending properties in the same neighborhood. These homes are commonly
+        referred to as Listings. Each listing is detailed with information like
+        square feet, bedrooms, bathrooms and lot size to name a few. I will use
+        this information to determine the Market Value and most accurate listing
+        price for your home.</p>
+        <struct class="data-grid-fifty mt-8">
           <struct class="fifty">
-            <p><strong>A CMA is</strong> a comparison of the most recent Active, Sold
-            and Pending properties in the same neighborhood. These homes are commonly
-            referred to as Listings. Each listing is detailed with information like
-            square feet, bedrooms, bathrooms and lot size to name a few. I will use
-            this information to determine the Market Value and most accurate listing
-            price for your home.</p>
             <h4>Where does the data come from?</h4>
-            <p>The information used in your CMA is provided by my local Multiple Listing
+            <p class="md:text-lg font-semibold sub-header-color">The information used in your CMA is provided by my local Multiple Listing
             Service or MLS. MLS data is private and can only be accessed by licensed members,
             like myself, who pay an annual dues. Brokers, Realtors and Appraisers all used
             this protected data to arrive at the most accurate listing price.</p>
           </struct>
           <struct class="fifty">
             <h4>How Accurate is a CMA?</h4>
-            <p>MLS data is live and the most accurate data that can be used. Listings are
+            <p class="md:text-lg font-semibold sub-header-color">MLS data is live and the most accurate data that can be used. Listings are
             entered and updates are realtime. There is No Way to get more accurate data
             for your home. That's why it's so important to have a Realtor in your corner
             during one of the most important transactions in your life. The market is
@@ -1120,14 +1059,11 @@ defmodule ExcyteWeb.Helpers.Templates do
 
   def why_an_agent(%{agent_profile: ap}) do
     """
-      <struct class="section lg:w-4/5 xl:w-2/3 max-w-screen-md mx-auto" id="why_an_agent">
-        <h1 class="muted-color">Why use an agent?</h1>
-        <struct class="">
-          <struct
-            class="why-agent-photo curve accent-color"
-            style="background-image: url('/images/why_agent.jpg');"
-          ></struct>
-          <p>Anyone can go online and find recources that will give them an idea of what the
+      <struct class="section lg:w-4/5 mx-auto" id="why_an_agent">
+        <h1 class="header-color mb-0">Why use an agent?</h1>
+        <struct class="sub-header-color">
+          <p class="text-lg md:text-xl lg:text-2xl font-semibold">Anyone can go online and find
+          recources that will give them an idea of what the
           estimated price your home can sell for in todays market......but whats next?
           Do you have the the knowledge and connections to capitalize in todays market?
           Do you have the tools and experience to market to the right audience?
@@ -1198,12 +1134,12 @@ defmodule ExcyteWeb.Helpers.Templates do
     if listing["list_price"] !== nil || listing["close_price"] !== nil do
       if listing["close_price"] !== nil do
         when_text = time_to_text(listing, "close_date")
-        close = if Map.has_key?(listing, "close_date"), do: " after #{listing["days_on_market"]} days on the market ", else: ""
-        "Closed for $<strong>#{number_to_delimited(listing["close_price"], precision: 0)}</strong>#{close}#{when_text}"
+        close = if Map.has_key?(listing, "close_date"), do: " after <span class=\"header-color\">#{listing["days_on_market"]} days</span> on the market ", else: ""
+        "Closed for <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["close_price"], precision: 0)}</span>#{close}#{when_text}"
       else
         when_text = time_to_text(listing, "on_market_date")
-        listed = if Map.has_key?(listing, "close_date"), do: " with <strong>#{listing["days_on_market"]}</strong> days on the market ", else: ""
-        "Listed for $<strong>#{number_to_delimited(listing["list_price"], precision: 0)}</strong>#{listed}#{when_text}"
+        listed = if Map.has_key?(listing, "close_date"), do: " with <span class=\"header-color\">#{listing["days_on_market"]} days</span> on the market ", else: ""
+        "Listed for <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["list_price"], precision: 0)}</span>#{listed}#{when_text}"
       end
     else
       ""

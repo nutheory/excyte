@@ -9,7 +9,6 @@ import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
-import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
@@ -30,6 +29,7 @@ import Comparable from './extensions/comparable'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Struct from './extensions/struct'
+import Span from './extensions/span'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
 
@@ -74,6 +74,7 @@ window.currentPreview = function (content) {
           ShowcaseGallery,
           SimpleVideo,
           Struct,
+          Span,
           Comparable,
         ],
         content: this.content,
@@ -97,7 +98,7 @@ export const InitPreview = {
             rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
             rule += `div.preview-wrapper a {color: ${theme.link}}`
             rule += `div.preview-wrapper button {color: ${theme.link}}`
-            // rule += `div.preview-wrapper th {border-bottom-color: ${theme.accent}}`
+            rule += `div.preview-wrapper th {border-bottom-color: ${theme.accent}}`
             rule += `div.preview-wrapper .muted-color {color: ${theme.muted_text};}`
             rule += `div.preview-wrapper .muted-border {border-color: ${theme.muted_text};}`
             rule += `div.preview-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`

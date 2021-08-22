@@ -38,7 +38,7 @@
   }
 
   p {
-    @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 lg:leading-7;
+    @apply text-sm md:text-base sm:leading-5 md:leading-6;
   }
 
   h1 {

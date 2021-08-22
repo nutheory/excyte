@@ -122,16 +122,14 @@ window.currentEditor = function (content) {
             class: ""
           }
         },
-        onCreate: () => {
+        onUpdate: ({ editor }) => {
+          this.content = editor.getHTML()
           let lightbox = Glightbox({
             touchNavigation: true,
             loop: true,
             autoplayVideos: true,
             selector: ".glightbox"
           })
-        },
-        onUpdate: ({ editor }) => {
-          this.content = editor.getHTML()
         },
       })
 

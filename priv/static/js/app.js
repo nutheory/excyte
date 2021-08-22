@@ -18888,17 +18888,15 @@ window.currentEditor = function (content) {
             "class": ""
           }
         },
-        onCreate: function onCreate() {
+        onUpdate: function onUpdate(_ref) {
+          var editor = _ref.editor;
+          _this.content = editor.getHTML();
           var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_33___default()({
             touchNavigation: true,
             loop: true,
             autoplayVideos: true,
             selector: ".glightbox"
           });
-        },
-        onUpdate: function onUpdate(_ref) {
-          var editor = _ref.editor;
-          _this.content = editor.getHTML();
         }
       });
       this.editor = editor;

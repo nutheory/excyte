@@ -117,6 +117,7 @@ window.currentEditor = function (content) {
           }),
         ],
         content: this.content,
+        autofocus: 'start',
         editorProps: {
           attributes: {
             class: ""

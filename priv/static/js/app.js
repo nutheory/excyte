@@ -18883,6 +18883,7 @@ window.currentEditor = function (content) {
           element: document.querySelector('#bubbleMenu')
         })],
         content: this.content,
+        autofocus: 'start',
         editorProps: {
           attributes: {
             "class": ""

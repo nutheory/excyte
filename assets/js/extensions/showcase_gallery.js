@@ -87,12 +87,12 @@ export default Node.create({
       }
     }
   },
-  onFocus({ editor, event }) {
-    let lightbox = Glightbox({
-      touchNavigation: true,
-      loop: true,
-      autoplayVideos: true,
-      selector: ".glightbox"
-    })
-  }
+  // onFocus({ editor, event }) {
+  //   let lightbox = Glightbox({
+  //     touchNavigation: true,
+  //     loop: true,
+  //     autoplayVideos: true,
+  //     selector: ".glightbox"
+  //   })
+  // }
 })

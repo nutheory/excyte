@@ -18888,6 +18888,14 @@ window.currentEditor = function (content) {
             "class": ""
           }
         },
+        onCreate: function onCreate() {
+          var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_33___default()({
+            touchNavigation: true,
+            loop: true,
+            autoplayVideos: true,
+            selector: ".glightbox"
+          });
+        },
         onUpdate: function onUpdate(_ref) {
           var editor = _ref.editor;
           _this.content = editor.getHTML();
@@ -19641,17 +19649,15 @@ __webpack_require__.r(__webpack_exports__);
         dom: dom
       };
     };
-  },
-  onFocus: function onFocus(_ref3) {
-    var editor = _ref3.editor,
-        event = _ref3.event;
-    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
-      touchNavigation: true,
-      loop: true,
-      autoplayVideos: true,
-      selector: ".glightbox"
-    });
-  }
+  } // onFocus({ editor, event }) {
+  //   let lightbox = Glightbox({
+  //     touchNavigation: true,
+  //     loop: true,
+  //     autoplayVideos: true,
+  //     selector: ".glightbox"
+  //   })
+  // }
+
 }));
 
 /***/ }),

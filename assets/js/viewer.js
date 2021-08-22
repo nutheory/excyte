@@ -77,7 +77,7 @@ window.currentViewer = function (content) {
           // Comparable,
         ],
         content: this.content,
-        autofocus: 'start',
+        autofocus: true,
       })
 
       this.viewer = viewer
@@ -93,6 +93,13 @@ export const InitViewer = {
     this.handleEvent("loadViewer", ({ content, theme }) => {
       setTimeout(() => {
         window.viewerHook.currentViewer.viewer.commands.setContent(content)
+        // alert(document.querySelectorAll(".glightbox").length)
+        let lightbox = Glightbox({
+          touchNavigation: true,
+          loop: true,
+          autoplayVideos: true,
+          selector: ".glightbox"
+        })
         let rule  = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
             rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
             rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`

@@ -13200,17 +13200,6 @@ __webpack_require__.r(__webpack_exports__);
         dom: dom
       };
     };
-  },
-  onFocus: function onFocus(_ref3) {
-    var editor = _ref3.editor,
-        event = _ref3.event;
-    // alert(document.querySelectorAll(".glightbox").length)
-    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
-      touchNavigation: true,
-      loop: true,
-      autoplayVideos: true,
-      selector: ".glightbox"
-    });
   }
 }));
 
@@ -13494,7 +13483,7 @@ window.currentViewer = function (content) {
         _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default // Comparable,
         ],
         content: this.content,
-        autofocus: 'start'
+        autofocus: true
       });
       this.viewer = viewer;
       window.viewerHook.currentViewer = this;
@@ -13510,7 +13499,14 @@ var InitViewer = {
       var content = _ref.content,
           theme = _ref.theme;
       setTimeout(function () {
-        window.viewerHook.currentViewer.viewer.commands.setContent(content);
+        window.viewerHook.currentViewer.viewer.commands.setContent(content); // alert(document.querySelectorAll(".glightbox").length)
+
+        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_26___default()({
+          touchNavigation: true,
+          loop: true,
+          autoplayVideos: true,
+          selector: ".glightbox"
+        });
         var rule = "div.viewer-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.text, "; font-family: ").concat(theme.font, "}");
         rule += "div.viewer-wrapper .header-color {color: ".concat(theme.header_text, "}");
         rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");

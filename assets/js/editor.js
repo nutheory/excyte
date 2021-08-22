@@ -31,8 +31,8 @@ import {
   ExcyteHeading,
   ExcyteParagraph 
 } from './extensions/modified_extensions'
-import SimpleGallery from './extensions/simple_gallery'
-import Comparable from './extensions/comparable'
+// import SimpleGallery from './extensions/simple_gallery'
+// import Comparable from './extensions/comparable'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -72,10 +72,10 @@ window.currentEditor = function (content) {
           Underline, 
           FontFamily,
           TextAlign,
-          SimpleGallery,
+          // SimpleGallery,
           Gapcursor,
           Struct,
-          Comparable,
+          // Comparable,
           Commands.configure({
             suggestion: {
               items: query => {

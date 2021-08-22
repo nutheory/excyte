@@ -13265,15 +13265,16 @@ __webpack_require__.r(__webpack_exports__);
       };
     };
   },
-  onCreate: function onCreate(_ref3) {// let lightbox = Glightbox({
-    //   touchNavigation: true,
-    //   loop: true,
-    //   autoplayVideos: true,
-    //   selector: ".glightbox"
-    // })
-
+  onCreate: function onCreate(_ref3) {
     var editor = _ref3.editor,
         event = _ref3.event;
+    alert("CREATE");
+    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true,
+      selector: ".glightbox"
+    });
   }
 }));
 

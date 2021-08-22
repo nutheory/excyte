@@ -18782,13 +18782,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! @tiptap/extension-underline */ "./node_modules/@tiptap/extension-underline/dist/tiptap-extension-underline.esm.js");
 /* harmony import */ var _extensions_actions__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./extensions/actions */ "./js/extensions/actions.js");
 /* harmony import */ var _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./extensions/modified_extensions */ "./js/extensions/modified_extensions.js");
-/* harmony import */ var _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./extensions/simple_gallery */ "./js/extensions/simple_gallery.js");
-/* harmony import */ var _extensions_comparable__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./extensions/comparable */ "./js/extensions/comparable.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_33___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_33__);
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./utilities */ "./js/utilities.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var tippy_js__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! tippy.js */ "./node_modules/tippy.js/dist/tippy.esm.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_31__);
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./utilities */ "./js/utilities.js");
 
 
 
@@ -18818,8 +18816,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
+ // import SimpleGallery from './extensions/simple_gallery'
+// import Comparable from './extensions/comparable'
 
 
 
@@ -18840,7 +18838,9 @@ window.currentEditor = function (content) {
 
       var editor = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({
         element: el,
-        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_history__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_29__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_29__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_27__.default, _tiptap_extension_font_family__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_simple_gallery__WEBPACK_IMPORTED_MODULE_30__.default, _tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_32__.default, _extensions_comparable__WEBPACK_IMPORTED_MODULE_31__.default, _extensions_commands__WEBPACK_IMPORTED_MODULE_5__.default.configure({
+        extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_20__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_history__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_29__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_29__.ExcyteParagraph, _tiptap_extension_link__WEBPACK_IMPORTED_MODULE_16__.default, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_27__.default, _tiptap_extension_font_family__WEBPACK_IMPORTED_MODULE_9__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_26__.default, // SimpleGallery,
+        _tiptap_extension_gapcursor__WEBPACK_IMPORTED_MODULE_10__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_30__.default, // Comparable,
+        _extensions_commands__WEBPACK_IMPORTED_MODULE_5__.default.configure({
           suggestion: {
             items: function items(query) {
               return _extensions_actions__WEBPACK_IMPORTED_MODULE_28__.actions;
@@ -18851,7 +18851,7 @@ window.currentEditor = function (content) {
               return {
                 onStart: function onStart(props) {
                   _this.commandProps = props;
-                  popup = (0,tippy_js__WEBPACK_IMPORTED_MODULE_35__.default)('body', {
+                  popup = (0,tippy_js__WEBPACK_IMPORTED_MODULE_33__.default)('body', {
                     getReferenceClientRect: props.clientRect,
                     appendTo: function appendTo() {
                       return document.body;
@@ -18895,7 +18895,7 @@ window.currentEditor = function (content) {
         },
         onFocus: function onFocus() {
           alert("FOCUS");
-          var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_33___default()({
+          var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_31___default()({
             touchNavigation: true,
             loop: true,
             autoplayVideos: true,
@@ -18924,7 +18924,7 @@ window.currentEditor = function (content) {
         ev.preventDefault();
         var url = ev.target.value;
 
-        if ((0,_utilities__WEBPACK_IMPORTED_MODULE_34__.verifyLink)(url)) {
+        if ((0,_utilities__WEBPACK_IMPORTED_MODULE_32__.verifyLink)(url)) {
           proxyThis.editor.chain().focus().setLink({
             href: url
           }).run();
@@ -19652,15 +19652,16 @@ __webpack_require__.r(__webpack_exports__);
       };
     };
   },
-  onCreate: function onCreate(_ref3) {// let lightbox = Glightbox({
-    //   touchNavigation: true,
-    //   loop: true,
-    //   autoplayVideos: true,
-    //   selector: ".glightbox"
-    // })
-
+  onCreate: function onCreate(_ref3) {
     var editor = _ref3.editor,
         event = _ref3.event;
+    alert("CREATE");
+    var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_1___default()({
+      touchNavigation: true,
+      loop: true,
+      autoplayVideos: true,
+      selector: ".glightbox"
+    });
   }
 }));
 

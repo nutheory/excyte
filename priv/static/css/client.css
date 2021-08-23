@@ -583,7 +583,7 @@ div.preview-wrapper .cover-wrapper .title, div.viewer-wrapper .cover-wrapper .ti
 
 div.preview-wrapper .cover-wrapper .title, div.viewer-wrapper .cover-wrapper .title {
 
-      z-index: 50;
+      z-index: 30;
 }
 
 div.preview-wrapper .cover-wrapper .title, div.viewer-wrapper .cover-wrapper .title {
@@ -698,7 +698,7 @@ div.preview-wrapper .cover-wrapper .subtitle, div.viewer-wrapper .cover-wrapper 
 
 div.preview-wrapper .cover-wrapper .subtitle, div.viewer-wrapper .cover-wrapper .subtitle {
 
-      z-index: 50;
+      z-index: 30;
 }
 
 div.preview-wrapper .cover-wrapper .subtitle, div.viewer-wrapper .cover-wrapper .subtitle {
@@ -968,6 +968,11 @@ div.preview-wrapper .comparable .info-adjustments .extra-details, div.viewer-wra
 
 div.preview-wrapper .comparable .info-adjustments .extra-details, div.viewer-wrapper .comparable .info-adjustments .extra-details {
 
+      margin-bottom: 1.5rem;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details, div.viewer-wrapper .comparable .info-adjustments .extra-details {
+
       display: flex;
 }
 
@@ -994,11 +999,6 @@ div.preview-wrapper .comparable .info-adjustments .extra-details, div.viewer-wra
 
             flex: 1 1 0%;
       }
-}
-
-div.preview-wrapper .comparable .info-adjustments .extra-details .extra-info, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-info {
-
-      margin-bottom: 3rem;
 }
 
 div.preview-wrapper .comparable .info-adjustments .extra-details .extra-info, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-info {
@@ -1129,6 +1129,45 @@ div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options,
 div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options {
 
       text-align: center;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options a, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options a {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options a, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options a {
+
+      display: block;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options a, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options a {
+
+      text-align: center;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options img, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options img {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options img, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options img {
+
+      display: block;
+}
+
+div.preview-wrapper .comparable .info-adjustments .extra-details .extra-options img, div.viewer-wrapper .comparable .info-adjustments .extra-details .extra-options img {
+
+      width: 4rem;
+}
+
+div.preview-wrapper .comparable .info-adjustments .adjustments, div.viewer-wrapper .comparable .info-adjustments .adjustments {
+
+      margin-bottom: 1.5rem;
 }
 
 div.preview-wrapper .comparable .info-adjustments .adjustments, div.viewer-wrapper .comparable .info-adjustments .adjustments {
@@ -1351,25 +1390,564 @@ div.preview-wrapper .subject .sub-details .detail h4, div.viewer-wrapper .subjec
       line-height: 1;
 }
 
-div.preview-wrapper,
-div.viewer-wrapper {
-  /* & .comp {
-    & p {
-      @apply my-0;
-    }
-  }
+div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
 
-  & .subject {
-    & img {
-      @apply my-0;
-    }
-  }
+      margin-left: auto;
 
-  & .agent {
-    & img {
-      @apply my-0;
-    }
-  } */
+      margin-right: auto;
+}
+
+div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
+
+      width: 100%;
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
+
+            width: 80%;
+      }
+}
+
+div.preview-wrapper .pricing, div.viewer-wrapper .pricing {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .pricing, div.viewer-wrapper .pricing {
+
+      width: 100%;
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .pricing, div.viewer-wrapper .pricing {
+
+            width: 80%;
+      }
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      margin-top: 1.5rem;
+
+      margin-bottom: 1.5rem;
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      width: 80%;
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      text-align: center;
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      font-size: 1.25rem;
+
+      line-height: 1.75rem;
+}
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+      font-weight: 700;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+            width: 75%;
+      }
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+            font-size: 1.5rem;
+
+            line-height: 2rem;
+      }
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+            margin-top: 2rem;
+
+            margin-bottom: 2rem;
+      }
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .showcase .summary, div.preview-wrapper .tour .summary, div.viewer-wrapper .showcase .summary, div.viewer-wrapper .tour .summary {
+
+            font-size: 1.875rem;
+
+            line-height: 2.25rem;
+      }
+}
+
+div.preview-wrapper .showcase .main-details, div.preview-wrapper .tour .main-details, div.viewer-wrapper .showcase .main-details, div.viewer-wrapper .tour .main-details {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .main-details, div.preview-wrapper .tour .main-details, div.viewer-wrapper .showcase .main-details, div.viewer-wrapper .tour .main-details {
+
+      display: flex;
+}
+
+div.preview-wrapper .showcase .main-details, div.preview-wrapper .tour .main-details, div.viewer-wrapper .showcase .main-details, div.viewer-wrapper .tour .main-details {
+
+      text-align: right;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .main-details, div.preview-wrapper .tour .main-details, div.viewer-wrapper .showcase .main-details, div.viewer-wrapper .tour .main-details {
+
+            width: 80%;
+      }
+}
+
+div.preview-wrapper .showcase .main-details .detail, div.preview-wrapper .tour .main-details .detail, div.viewer-wrapper .showcase .main-details .detail, div.viewer-wrapper .tour .main-details .detail {
+
+      padding: 1rem;
+}
+
+div.preview-wrapper .showcase .main-details .detail h1, div.preview-wrapper .tour .main-details .detail h1, div.viewer-wrapper .showcase .main-details .detail h1, div.viewer-wrapper .tour .main-details .detail h1 {
+
+      margin-bottom: 0px;
+}
+
+div.preview-wrapper .showcase .main-details .detail h4, div.preview-wrapper .tour .main-details .detail h4, div.viewer-wrapper .showcase .main-details .detail h4, div.viewer-wrapper .tour .main-details .detail h4 {
+
+      line-height: 1;
+}
+
+div.preview-wrapper .showcase .sub-details, div.preview-wrapper .tour .sub-details, div.viewer-wrapper .showcase .sub-details, div.viewer-wrapper .tour .sub-details {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .sub-details, div.preview-wrapper .tour .sub-details, div.viewer-wrapper .showcase .sub-details, div.viewer-wrapper .tour .sub-details {
+
+      display: flex;
+}
+
+div.preview-wrapper .showcase .sub-details, div.preview-wrapper .tour .sub-details, div.viewer-wrapper .showcase .sub-details, div.viewer-wrapper .tour .sub-details {
+
+      text-align: right;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .sub-details, div.preview-wrapper .tour .sub-details, div.viewer-wrapper .showcase .sub-details, div.viewer-wrapper .tour .sub-details {
+
+            width: 80%;
+      }
+}
+
+div.preview-wrapper .showcase .sub-details .detail, div.preview-wrapper .tour .sub-details .detail, div.viewer-wrapper .showcase .sub-details .detail, div.viewer-wrapper .tour .sub-details .detail {
+
+      padding: 1rem;
+}
+
+div.preview-wrapper .showcase .sub-details .detail h2, div.preview-wrapper .tour .sub-details .detail h2, div.viewer-wrapper .showcase .sub-details .detail h2, div.viewer-wrapper .tour .sub-details .detail h2 {
+
+      margin-bottom: 0px;
+}
+
+div.preview-wrapper .showcase .sub-details .detail h2, div.preview-wrapper .tour .sub-details .detail h2, div.viewer-wrapper .showcase .sub-details .detail h2, div.viewer-wrapper .tour .sub-details .detail h2 {
+
+      text-align: center;
+}
+
+div.preview-wrapper .showcase .sub-details .detail h4, div.preview-wrapper .tour .sub-details .detail h4, div.viewer-wrapper .showcase .sub-details .detail h4, div.viewer-wrapper .tour .sub-details .detail h4 {
+
+      line-height: 1;
+}
+
+div.preview-wrapper .showcase .info, div.preview-wrapper .tour .info, div.viewer-wrapper .showcase .info, div.viewer-wrapper .tour .info {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .info, div.preview-wrapper .tour .info, div.viewer-wrapper .showcase .info, div.viewer-wrapper .tour .info {
+
+      margin-top: 3rem;
+}
+
+div.preview-wrapper .showcase .info, div.preview-wrapper .tour .info, div.viewer-wrapper .showcase .info, div.viewer-wrapper .tour .info {
+
+      display: flex;
+}
+
+div.preview-wrapper .showcase .info, div.preview-wrapper .tour .info, div.viewer-wrapper .showcase .info, div.viewer-wrapper .tour .info {
+
+      flex-wrap: wrap;
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .showcase .info, div.preview-wrapper .tour .info, div.viewer-wrapper .showcase .info, div.viewer-wrapper .tour .info {
+
+            width: 80%;
+      }
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      margin-bottom: 1.5rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      display: flex;
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      width: 100%;
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      padding-left: 1rem;
+
+      padding-right: 1rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+      padding-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+
+div.preview-wrapper .showcase .info .extra-details, div.preview-wrapper .tour .info .extra-details, div.viewer-wrapper .showcase .info .extra-details, div.viewer-wrapper .tour .info .extra-details {
+
+            flex: 1 1 0%;
+      }
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      display: grid;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      height: 0px;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      flex: 1 1 0%;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      -moz-column-gap: 1rem;
+
+           column-gap: 1rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      row-gap: 0.25rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info, div.preview-wrapper .tour .info .extra-details .extra-info, div.viewer-wrapper .showcase .info .extra-details .extra-info, div.viewer-wrapper .tour .info .extra-details .extra-info {
+
+      padding-left: 0.5rem;
+
+      padding-right: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info p, div.preview-wrapper .tour .info .extra-details .extra-info p, div.viewer-wrapper .showcase .info .extra-details .extra-info p, div.viewer-wrapper .tour .info .extra-details .extra-info p {
+
+      margin-top: 0px;
+
+      margin-bottom: 0px;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .val p, div.preview-wrapper .tour .info .extra-details .extra-info .val p, div.viewer-wrapper .showcase .info .extra-details .extra-info .val p, div.viewer-wrapper .tour .info .extra-details .extra-info .val p {
+
+      text-align: right;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .val p, div.preview-wrapper .tour .info .extra-details .extra-info .val p, div.viewer-wrapper .showcase .info .extra-details .extra-info .val p, div.viewer-wrapper .tour .info .extra-details .extra-info .val p {
+
+      font-size: 1.125rem;
+
+      line-height: 1.75rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .val p, div.preview-wrapper .tour .info .extra-details .extra-info .val p, div.viewer-wrapper .showcase .info .extra-details .extra-info .val p, div.viewer-wrapper .tour .info .extra-details .extra-info .val p {
+
+      font-weight: 800;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .val p, div.preview-wrapper .tour .info .extra-details .extra-info .val p, div.viewer-wrapper .showcase .info .extra-details .extra-info .val p, div.viewer-wrapper .tour .info .extra-details .extra-info .val p {
+
+            font-size: 1.25rem;
+
+            line-height: 1.75rem;
+      }
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .val p, div.preview-wrapper .tour .info .extra-details .extra-info .val p, div.viewer-wrapper .showcase .info .extra-details .extra-info .val p, div.viewer-wrapper .tour .info .extra-details .extra-info .val p {
+
+            font-size: 1.5rem;
+
+            line-height: 2rem;
+      }
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .label p, div.preview-wrapper .tour .info .extra-details .extra-info .label p, div.viewer-wrapper .showcase .info .extra-details .extra-info .label p, div.viewer-wrapper .tour .info .extra-details .extra-info .label p {
+
+      font-size: 1rem;
+
+      line-height: 1.5rem;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .label p, div.preview-wrapper .tour .info .extra-details .extra-info .label p, div.viewer-wrapper .showcase .info .extra-details .extra-info .label p, div.viewer-wrapper .tour .info .extra-details .extra-info .label p {
+
+            font-size: 1.125rem;
+
+            line-height: 1.75rem;
+      }
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .showcase .info .extra-details .extra-info .label p, div.preview-wrapper .tour .info .extra-details .extra-info .label p, div.viewer-wrapper .showcase .info .extra-details .extra-info .label p, div.viewer-wrapper .tour .info .extra-details .extra-info .label p {
+
+            padding-top: 0.25rem;
+      }
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      display: flex;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      width: 9rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      align-items: center;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      justify-content: center;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      padding-left: 1.5rem;
+
+      padding-right: 1.5rem;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options, div.preview-wrapper .tour .info .extra-details .extra-options, div.viewer-wrapper .showcase .info .extra-details .extra-options, div.viewer-wrapper .tour .info .extra-details .extra-options {
+
+      text-align: center;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options a, div.preview-wrapper .tour .info .extra-details .extra-options a, div.viewer-wrapper .showcase .info .extra-details .extra-options a, div.viewer-wrapper .tour .info .extra-details .extra-options a {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options a, div.preview-wrapper .tour .info .extra-details .extra-options a, div.viewer-wrapper .showcase .info .extra-details .extra-options a, div.viewer-wrapper .tour .info .extra-details .extra-options a {
+
+      display: block;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options a, div.preview-wrapper .tour .info .extra-details .extra-options a, div.viewer-wrapper .showcase .info .extra-details .extra-options a, div.viewer-wrapper .tour .info .extra-details .extra-options a {
+
+      text-align: center;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options img, div.preview-wrapper .tour .info .extra-details .extra-options img, div.viewer-wrapper .showcase .info .extra-details .extra-options img, div.viewer-wrapper .tour .info .extra-details .extra-options img {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options img, div.preview-wrapper .tour .info .extra-details .extra-options img, div.viewer-wrapper .showcase .info .extra-details .extra-options img, div.viewer-wrapper .tour .info .extra-details .extra-options img {
+
+      display: block;
+}
+
+div.preview-wrapper .showcase .info .extra-details .extra-options img, div.preview-wrapper .tour .info .extra-details .extra-options img, div.viewer-wrapper .showcase .info .extra-details .extra-options img, div.viewer-wrapper .tour .info .extra-details .extra-options img {
+
+      width: 4rem;
+}
+
+div.preview-wrapper .showcase .info .association, div.preview-wrapper .tour .info .association, div.viewer-wrapper .showcase .info .association, div.viewer-wrapper .tour .info .association {
+
+      margin-bottom: 1.5rem;
+}
+
+div.preview-wrapper .showcase .info .association, div.preview-wrapper .tour .info .association, div.viewer-wrapper .showcase .info .association, div.viewer-wrapper .tour .info .association {
+
+      width: 100%;
+}
+
+@media (min-width: 640px) {
+
+div.preview-wrapper .showcase .info .association, div.preview-wrapper .tour .info .association, div.viewer-wrapper .showcase .info .association, div.viewer-wrapper .tour .info .association {
+
+            width: 40%;
+      }
+}
+
+div.preview-wrapper .showcase .info .association p, div.preview-wrapper .tour .info .association p, div.viewer-wrapper .showcase .info .association p, div.viewer-wrapper .tour .info .association p {
+
+      margin-top: 0px;
+
+      margin-bottom: 0px;
+}
+
+div.preview-wrapper .showcase .info .association table, div.preview-wrapper .tour .info .association table, div.viewer-wrapper .showcase .info .association table, div.viewer-wrapper .tour .info .association table {
+
+      width: 100%;
+}
+
+div.preview-wrapper .showcase .info .association table, div.preview-wrapper .tour .info .association table, div.viewer-wrapper .showcase .info .association table, div.viewer-wrapper .tour .info .association table {
+
+      border-top-width: 1px;
+}
+
+div.preview-wrapper .showcase .info .association table th, div.preview-wrapper .tour .info .association table th, div.viewer-wrapper .showcase .info .association table th, div.viewer-wrapper .tour .info .association table th {
+
+      border-bottom-width: 1px;
+}
+
+div.preview-wrapper .showcase .info .association table th, div.preview-wrapper .tour .info .association table th, div.viewer-wrapper .showcase .info .association table th, div.viewer-wrapper .tour .info .association table th {
+
+      padding: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table th, div.preview-wrapper .tour .info .association table th, div.viewer-wrapper .showcase .info .association table th, div.viewer-wrapper .tour .info .association table th {
+
+      text-align: left;
+}
+
+div.preview-wrapper .showcase .info .association table th, div.preview-wrapper .tour .info .association table th, div.viewer-wrapper .showcase .info .association table th, div.viewer-wrapper .tour .info .association table th {
+
+      font-weight: 700;
+}
+
+div.preview-wrapper .showcase .info .association table tr, div.preview-wrapper .tour .info .association table tr, div.viewer-wrapper .showcase .info .association table tr, div.viewer-wrapper .tour .info .association table tr {
+
+      border-bottom-width: 1px;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(odd), div.preview-wrapper .tour .info .association table td:nth-child(odd), div.viewer-wrapper .showcase .info .association table td:nth-child(odd), div.viewer-wrapper .tour .info .association table td:nth-child(odd) {
+
+      margin-right: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(odd), div.preview-wrapper .tour .info .association table td:nth-child(odd), div.viewer-wrapper .showcase .info .association table td:nth-child(odd), div.viewer-wrapper .tour .info .association table td:nth-child(odd) {
+
+      padding-left: 0.5rem;
+
+      padding-right: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(odd), div.preview-wrapper .tour .info .association table td:nth-child(odd), div.viewer-wrapper .showcase .info .association table td:nth-child(odd), div.viewer-wrapper .tour .info .association table td:nth-child(odd) {
+
+      padding-top: 0.25rem;
+
+      padding-bottom: 0.25rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(odd), div.preview-wrapper .tour .info .association table td:nth-child(odd), div.viewer-wrapper .showcase .info .association table td:nth-child(odd), div.viewer-wrapper .tour .info .association table td:nth-child(odd) {
+
+      font-size: 1rem;
+
+      line-height: 1.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(even), div.preview-wrapper .tour .info .association table td:nth-child(even), div.viewer-wrapper .showcase .info .association table td:nth-child(even), div.viewer-wrapper .tour .info .association table td:nth-child(even) {
+
+      margin-left: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(even), div.preview-wrapper .tour .info .association table td:nth-child(even), div.viewer-wrapper .showcase .info .association table td:nth-child(even), div.viewer-wrapper .tour .info .association table td:nth-child(even) {
+
+      padding-left: 0.5rem;
+
+      padding-right: 0.5rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(even), div.preview-wrapper .tour .info .association table td:nth-child(even), div.viewer-wrapper .showcase .info .association table td:nth-child(even), div.viewer-wrapper .tour .info .association table td:nth-child(even) {
+
+      padding-top: 0.25rem;
+
+      padding-bottom: 0.25rem;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(even), div.preview-wrapper .tour .info .association table td:nth-child(even), div.viewer-wrapper .showcase .info .association table td:nth-child(even), div.viewer-wrapper .tour .info .association table td:nth-child(even) {
+
+      text-align: right;
+}
+
+div.preview-wrapper .showcase .info .association table td:nth-child(even), div.preview-wrapper .tour .info .association table td:nth-child(even), div.viewer-wrapper .showcase .info .association table td:nth-child(even), div.viewer-wrapper .tour .info .association table td:nth-child(even) {
+
+      font-weight: 700;
 }
 
 div.preview-wrapper video, div.viewer-wrapper video {
@@ -1965,7 +2543,7 @@ div.preview-wrapper .section .showcase-gallery .main-photo .title, div.viewer-wr
 
 div.preview-wrapper .section .showcase-gallery .main-photo .title, div.viewer-wrapper .section .showcase-gallery .main-photo .title {
 
-      z-index: 50;
+      z-index: 30;
 }
 
 div.preview-wrapper .section .showcase-gallery .main-photo .title, div.viewer-wrapper .section .showcase-gallery .main-photo .title {
@@ -2366,104 +2944,33 @@ div.preview-wrapper .section, div.viewer-wrapper .section {
         }
       }
     } */
+
+    /* & .left-right-wrapper {
+      & table {
+        @apply w-full;
+
+        & p {
+          @apply my-0;
+        }
+
+        & th {
+          @apply font-bold p-2 border-b-2;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & td:nth-child(odd) {
+          @apply px-2 py-1 text-right mr-2 w-1/2 text-base;
+        }
+
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold w-1/2;
+        }
+      }
+    } */
   }
-
-div.preview-wrapper .section .left-right-wrapper table, div.viewer-wrapper .section .left-right-wrapper table {
-
-      width: 100%;
-}
-
-div.preview-wrapper .section .left-right-wrapper table p, div.viewer-wrapper .section .left-right-wrapper table p {
-
-      margin-top: 0px;
-
-      margin-bottom: 0px;
-}
-
-div.preview-wrapper .section .left-right-wrapper table th, div.viewer-wrapper .section .left-right-wrapper table th {
-
-      border-bottom-width: 2px;
-}
-
-div.preview-wrapper .section .left-right-wrapper table th, div.viewer-wrapper .section .left-right-wrapper table th {
-
-      padding: 0.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table th, div.viewer-wrapper .section .left-right-wrapper table th {
-
-      font-weight: 700;
-}
-
-div.preview-wrapper .section .left-right-wrapper table tr, div.viewer-wrapper .section .left-right-wrapper table tr {
-
-      border-bottom-width: 1px;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      margin-right: 0.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      width: 50%;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      padding-left: 0.5rem;
-
-      padding-right: 0.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      padding-top: 0.25rem;
-
-      padding-bottom: 0.25rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      text-align: right;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(odd), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(odd) {
-
-      font-size: 1rem;
-
-      line-height: 1.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(even) {
-
-      margin-left: 0.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(even) {
-
-      width: 50%;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(even) {
-
-      padding-left: 0.5rem;
-
-      padding-right: 0.5rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(even) {
-
-      padding-top: 0.25rem;
-
-      padding-bottom: 0.25rem;
-}
-
-div.preview-wrapper .section .left-right-wrapper table td:nth-child(even), div.viewer-wrapper .section .left-right-wrapper table td:nth-child(even) {
-
-      font-weight: 700;
-}
 
 [contenteditable="false"]:focus {
   outline: none;
@@ -3405,21 +3912,6 @@ p {
       }
 }
 
-@media (min-width: 1024px) {
-
-      p {
-
-            font-size: 1.125rem;
-
-            line-height: 1.75rem;
-      }
-
-      p {
-
-            line-height: 1.75rem;
-      }
-}
-
 h1 {
 
       font-size: 1.5rem;
@@ -3427,10 +3919,6 @@ h1 {
       line-height: 2rem;
 
       font-weight: 800;
-
-      --tw-text-opacity: 1;
-
-      color: rgba(148, 163, 184, var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
@@ -3465,10 +3953,6 @@ h2 {
       line-height: 1.75rem;
 
       font-weight: 800;
-
-      --tw-text-opacity: 1;
-
-      color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
@@ -3503,10 +3987,6 @@ h3 {
       line-height: 1.75rem;
 
       font-weight: 800;
-
-      --tw-text-opacity: 1;
-
-      color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
@@ -3541,10 +4021,6 @@ h4 {
       line-height: 1.5rem;
 
       font-weight: 800;
-
-      --tw-text-opacity: 1;
-
-      color: rgba(30, 41, 59, var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
@@ -4336,6 +4812,11 @@ h4 {
 .min-h-screen {
 
       min-height: 100vh;
+}
+
+.min-h-0 {
+
+      min-height: 0px;
 }
 
 .w-full {
@@ -6320,6 +6801,11 @@ h4 {
       .sm\:flex-1 {
 
             flex: 1 1 0%;
+      }
+
+      .sm\:grid-cols-2 {
+
+            grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .sm\:px-6 {

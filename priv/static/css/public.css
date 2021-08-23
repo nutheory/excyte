@@ -2350,6 +2350,10 @@ h4 {
 
   grid-column: span 2 / span 2;
 }
+.col-span-3 {
+
+  grid-column: span 3 / span 3;
+}
 .col-span-4 {
 
   grid-column: span 4 / span 4;
@@ -2361,10 +2365,6 @@ h4 {
 .col-span-1 {
 
   grid-column: span 1 / span 1;
-}
-.col-span-3 {
-
-  grid-column: span 3 / span 3;
 }
 .col-start-1 {
 
@@ -2787,6 +2787,10 @@ h4 {
 .min-h-screen {
 
   min-height: 100vh;
+}
+.min-h-0 {
+
+  min-height: 0px;
 }
 .w-full {
 
@@ -4441,6 +4445,10 @@ h4 {
 
     flex: 1 1 0%;
   }
+  .sm\:grid-cols-2 {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .sm\:px-6 {
 
     padding-left: 1.5rem;
@@ -4575,17 +4583,11 @@ h4 {
 
     padding-right: 1rem;
   }
-  .md\:text-base {
+  .md\:text-lg {
 
-    font-size: 1rem;
+    font-size: 1.125rem;
 
-    line-height: 1.5rem;
-  }
-  .md\:text-3xl {
-
-    font-size: 1.875rem;
-
-    line-height: 2.25rem;
+    line-height: 1.75rem;
   }
   .md\:text-2xl {
 
@@ -4593,11 +4595,17 @@ h4 {
 
     line-height: 2rem;
   }
-  .md\:text-lg {
+  .md\:text-3xl {
 
-    font-size: 1.125rem;
+    font-size: 1.875rem;
 
-    line-height: 1.75rem;
+    line-height: 2.25rem;
+  }
+  .md\:text-base {
+
+    font-size: 1rem;
+
+    line-height: 1.5rem;
   }
 }
 @media (min-width: 1024px) {
@@ -4795,6 +4803,10 @@ h4 {
 
     max-width: 36rem;
   }
+  .lg\:max-w-5xl {
+
+    max-width: 64rem;
+  }
   .lg\:max-w-md {
 
     max-width: 28rem;
@@ -4802,10 +4814,6 @@ h4 {
   .lg\:max-w-7xl {
 
     max-width: 80rem;
-  }
-  .lg\:max-w-5xl {
-
-    max-width: 64rem;
   }
   .lg\:flex-none {
 
@@ -4909,6 +4917,12 @@ h4 {
 
     padding-right: 8rem;
   }
+  .lg\:text-3xl {
+
+    font-size: 1.875rem;
+
+    line-height: 2.25rem;
+  }
   .lg\:text-lg {
 
     font-size: 1.125rem;
@@ -4926,12 +4940,6 @@ h4 {
     font-size: 0.875rem;
 
     line-height: 1.25rem;
-  }
-  .lg\:text-3xl {
-
-    font-size: 1.875rem;
-
-    line-height: 2.25rem;
   }
   .lg\:leading-none {
 

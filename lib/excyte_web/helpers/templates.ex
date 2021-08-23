@@ -205,8 +205,7 @@ defmodule ExcyteWeb.Helpers.Templates do
               <struct>
                 {% if lst["coords"] and lst["coords"][0] %}
                   <a href="https://www.google.com/maps/search/?api=1&query={{ lst["coords"][1] }}%2C{{ lst["coords"][0] }}">
-                    <img src="/images/map_icon.png" alt="Map this address" />
-                    <span class="block text-sm">Map view</span>
+                    <img src="/images/map_icon.png" alt="Map this address" /><span class="block text-sm">Map view</span>
                   </a>
                 {% else %}
                   N/A

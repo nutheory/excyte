@@ -13797,13 +13797,13 @@ var addCss = function addCss(rule) {
         k = "errored",
         b = "joined",
         j = "joining",
-        C = "leaving",
-        E = "phx_close",
+        T = "leaving",
+        C = "phx_close",
         R = "phx_error",
-        T = "phx_join",
-        S = "phx_reply",
-        w = "phx_leave",
-        A = [E, R, T, S, w],
+        E = "phx_join",
+        w = "phx_reply",
+        S = "phx_leave",
+        A = [C, R, E, w, S],
         L = "longpoll",
         x = "websocket",
         O = function (e) {
@@ -13898,7 +13898,7 @@ var addCss = function addCss(rule) {
         _ = function () {
       function e(t, n, i) {
         var o = this;
-        c(this, e), this.state = g, this.topic = t, this.params = O(n || {}), this.socket = i, this.bindings = [], this.bindingRef = 0, this.timeout = this.socket.timeout, this.joinedOnce = !1, this.joinPush = new P(this, T, this.params, this.timeout), this.pushBuffer = [], this.stateChangeRefs = [], this.rejoinTimer = new J(function () {
+        c(this, e), this.state = g, this.topic = t, this.params = O(n || {}), this.socket = i, this.bindings = [], this.bindingRef = 0, this.timeout = this.socket.timeout, this.joinedOnce = !1, this.joinPush = new P(this, E, this.params, this.timeout), this.pushBuffer = [], this.stateChangeRefs = [], this.rejoinTimer = new J(function () {
           o.socket.isConnected() && o.rejoin();
         }, this.socket.rejoinAfterMs), this.stateChangeRefs.push(this.socket.onError(function () {
           return o.rejoinTimer.reset();
@@ -13915,8 +13915,8 @@ var addCss = function addCss(rule) {
         }), this.onError(function (e) {
           o.socket.hasLogger() && o.socket.log("channel", "error ".concat(o.topic), e), o.isJoining() && o.joinPush.reset(), o.state = k, o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
         }), this.joinPush.receive("timeout", function () {
-          o.socket.hasLogger() && o.socket.log("channel", "timeout ".concat(o.topic, " (").concat(o.joinRef(), ")"), o.joinPush.timeout), new P(o, w, O({}), o.timeout).send(), o.state = k, o.joinPush.reset(), o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
-        }), this.on(S, function (e, t) {
+          o.socket.hasLogger() && o.socket.log("channel", "timeout ".concat(o.topic, " (").concat(o.joinRef(), ")"), o.joinPush.timeout), new P(o, S, O({}), o.timeout).send(), o.state = k, o.joinPush.reset(), o.socket.isConnected() && o.rejoinTimer.scheduleTimeout();
+        }), this.on(w, function (e, t) {
           o.trigger(o.replyEventName(t), e);
         });
       }
@@ -13931,7 +13931,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "onClose",
         value: function (e) {
-          this.on(E, e);
+          this.on(C, e);
         }
       }, {
         key: "onError",
@@ -13977,12 +13977,12 @@ var addCss = function addCss(rule) {
         value: function () {
           var e = this,
               t = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : this.timeout;
-          this.rejoinTimer.reset(), this.joinPush.cancelTimeout(), this.state = C;
+          this.rejoinTimer.reset(), this.joinPush.cancelTimeout(), this.state = T;
 
           var n = function () {
-            e.socket.hasLogger() && e.socket.log("channel", "leave ".concat(e.topic)), e.trigger(E, "leave");
+            e.socket.hasLogger() && e.socket.log("channel", "leave ".concat(e.topic)), e.trigger(C, "leave");
           },
-              i = new P(this, w, O({}), t);
+              i = new P(this, S, O({}), t);
 
           return i.receive("ok", function () {
             return n();
@@ -14061,7 +14061,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "isLeaving",
         value: function () {
-          return this.state === C;
+          return this.state === T;
         }
       }]), e;
     }(),
@@ -14164,7 +14164,7 @@ var addCss = function addCss(rule) {
           join_ref: c,
           ref: u,
           topic: h,
-          event: S,
+          event: w,
           payload: {
             status: l,
             response: f
@@ -14283,10 +14283,15 @@ var addCss = function addCss(rule) {
           });
         }
       }, {
+        key: "heartbeatTimeout",
+        value: function () {
+          this.pendingHeartbeatRef && (this.pendingHeartbeatRef = null, this.hasLogger() && this.log("transport", "heartbeat timeout. Attempting to re-establish connection"), this.abnormalClose("heartbeat timeout"));
+        }
+      }, {
         key: "resetHeartbeat",
         value: function () {
           var e = this;
-          this.conn && this.conn.skipHeartbeat || (this.pendingHeartbeatRef = null, clearInterval(this.heartbeatTimer), this.heartbeatTimer = setInterval(function () {
+          this.conn && this.conn.skipHeartbeat || (this.pendingHeartbeatRef = null, clearTimeout(this.heartbeatTimer), setTimeout(function () {
             return e.sendHeartbeat();
           }, this.heartbeatIntervalMs));
         }
@@ -14322,7 +14327,7 @@ var addCss = function addCss(rule) {
       }, {
         key: "onConnClose",
         value: function (e) {
-          this.hasLogger() && this.log("transport", "close", e), this.triggerChanError(), clearInterval(this.heartbeatTimer), this.closeWasClean || this.reconnectTimer.scheduleTimeout(), this.stateChangeCallbacks.close.forEach(function (t) {
+          this.hasLogger() && this.log("transport", "close", e), this.triggerChanError(), clearTimeout(this.heartbeatTimer), this.closeWasClean || this.reconnectTimer.scheduleTimeout(), this.stateChangeCallbacks.close.forEach(function (t) {
             return (0, r(t, 2)[1])(e);
           });
         }
@@ -14415,20 +14420,20 @@ var addCss = function addCss(rule) {
       }, {
         key: "sendHeartbeat",
         value: function () {
-          if (this.isConnected()) {
-            if (this.pendingHeartbeatRef) return this.pendingHeartbeatRef = null, this.hasLogger() && this.log("transport", "heartbeat timeout. Attempting to re-establish connection"), void this.abnormalClose("heartbeat timeout");
-            this.pendingHeartbeatRef = this.makeRef(), this.push({
-              topic: "phoenix",
-              event: "heartbeat",
-              payload: {},
-              ref: this.pendingHeartbeatRef
-            });
-          }
+          var e = this;
+          this.pendingHeartbeatRef && !this.isConnected() || (this.pendingHeartbeatRef = this.makeRef(), this.push({
+            topic: "phoenix",
+            event: "heartbeat",
+            payload: {},
+            ref: this.pendingHeartbeatRef
+          }), this.heartbeatTimer = setTimeout(function () {
+            return e.heartbeatTimeout();
+          }, this.heartbeatIntervalMs));
         }
       }, {
         key: "abnormalClose",
         value: function (e) {
-          this.closeWasClean = !1, this.conn.readyState === v && this.conn.close(1e3, e);
+          this.closeWasClean = !1, this.isConnected() && this.conn.close(1e3, e);
         }
       }, {
         key: "flushSendBuffer",
@@ -14447,7 +14452,9 @@ var addCss = function addCss(rule) {
                 o = e.payload,
                 s = e.ref,
                 a = e.join_ref;
-            s && s === t.pendingHeartbeatRef && (t.pendingHeartbeatRef = null), t.hasLogger() && t.log("receive", "".concat(o.status || "", " ").concat(n, " ").concat(i, " ").concat(s && "(" + s + ")" || ""), o);
+            s && s === t.pendingHeartbeatRef && (clearTimeout(t.heartbeatTimer), t.pendingHeartbeatRef = null, setTimeout(function () {
+              return t.sendHeartbeat();
+            }, t.heartbeatIntervalMs)), t.hasLogger() && t.log("receive", "".concat(o.status || "", " ").concat(n, " ").concat(i, " ").concat(s && "(" + s + ")" || ""), o);
 
             for (var c = 0; c < t.channels.length; c++) {
               var u = t.channels[c];
@@ -14511,9 +14518,11 @@ var addCss = function addCss(rule) {
             switch (n) {
               case 200:
                 o.forEach(function (t) {
-                  return e.onmessage({
-                    data: t
-                  });
+                  setTimeout(function () {
+                    e.onmessage({
+                      data: t
+                    });
+                  }, 0);
                 }), e.poll();
                 break;
 

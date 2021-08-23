@@ -303,6 +303,14 @@ div.viewer-wrapper {
     }
   }
 
+  & .avatar {
+    @apply h-40 text-center;
+
+    & img {
+      @apply h-40 block mx-auto;
+    }
+  }
+
   & .synopsis {
     @apply w-full lg:w-4/5 mx-auto;
   }

@@ -13,7 +13,7 @@ defmodule ExcyteWeb.Helpers.Templates do
       <struct class="section agent w-full lg:w-4/5 mx-auto" id="agent_profile">
         <struct class="grid grid-cols-4 gap-6">
           {% if agent["photo_url"] %}
-            <struct class="">
+            <struct class="avatar">
               <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
             </struct>
           {% endif %}

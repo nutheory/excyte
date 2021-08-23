@@ -23,12 +23,11 @@ import {
   ExcyteParagraph,
   ExcyteLink, 
 } from './extensions/modified_extensions'
-// import SimpleGallery from './extensions/simple_gallery'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
-// import Comparable from './extensions/comparable'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
+import Span from './extensions/span'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -60,7 +59,7 @@ window.currentViewer = function (content) {
           Text,
           ExcyteParagraph,
           ExcyteLink,
-          Image,
+          Image.configure({ inline: true }),
           Highlight,
           Underline, 
           TextAlign,
@@ -70,11 +69,10 @@ window.currentViewer = function (content) {
           TableCell,
           Contact,
           Collapsable,
-          // SimpleGallery,
           ShowcaseGallery,
           SimpleVideo,
           Struct,
-          // Comparable,
+          Span,
         ],
         content: this.content,
         autofocus: true,
@@ -93,29 +91,31 @@ export const InitViewer = {
     this.handleEvent("loadViewer", ({ content, theme }) => {
       setTimeout(() => {
         window.viewerHook.currentViewer.viewer.commands.setContent(content)
-        // alert(document.querySelectorAll(".glightbox").length)
+        const styles = buildTheme(theme)
+        addCss(styles)
         let lightbox = Glightbox({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,
           selector: ".glightbox"
         })
-        let rule  = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
-            rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
-            rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
-            rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
-            rule += `div.viewer-wrapper a {color: ${theme.link}}`
-            rule += `div.viewer-wrapper button {color: ${theme.link}}`
-            rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
-            rule += `div.viewer-wrapper .muted-color {color: ${theme.muted_text}}`
-            rule += `div.viewer-wrapper .muted-border {border-color: ${theme.muted_text};}`
-            rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
-            rule += `div.preview-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.muted_text}; font-size: 5.6rem; z-index: -1;}`
-        addCss(rule)
       }, 500)
     })
   },
   destroyed() {},
+}
+
+const buildTheme = (theme) => {
+  let rule = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
+      rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
+      rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
+      rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
+      rule += `div.viewer-wrapper a {color: ${theme.link}}`
+      rule += `div.viewer-wrapper button {color: ${theme.link}}`
+      rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
+      rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+      rule += `div.preview-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.muted_text}; font-size: 5.6rem; z-index: -1;}`
+  return rule
 }
 
 const addCss = (rule) => {

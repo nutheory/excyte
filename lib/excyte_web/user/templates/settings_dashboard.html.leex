@@ -52,7 +52,7 @@
                 <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile") %>
               </li>
             <% end %>
-            <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
+            <%= if @current_user && Utilities.authorized?(@current_user.brokerage_role) do %>
               <%= if @section === "brokerage_profile" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
                   <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>

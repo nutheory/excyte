@@ -77,7 +77,7 @@ export default Node.create({
       title.innerHTML = HTMLAttributes.title
       title.classList.add('sub-header-color')
       buttonState.setAttribute('x-bind:class', "open ? 'transform rotate-180' : ''")
-      buttonState.classList.add('px-3')
+      buttonState.classList.add('px-3', 'mt-1')
       contentWrapper.setAttribute('x-show', 'open')
       contentWrapper.setAttribute('x-transition:enter', 'transition-transform transition-opacity ease-out duration-300')
       contentWrapper.setAttribute('x-transition:enter-start', 'opacity-0 transform -translate-y-2')

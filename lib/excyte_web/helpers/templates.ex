@@ -365,14 +365,14 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <struct class="section pricing" id="pricing_strategy">
         <h1 class="header-color">Home pricing strategies</h1>
-        <p class="text-xl md:text-2xl font-semibold sub-header-color">
+        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">
         <span class="font-extrabold header-color">Currently its a Sellers
         Market</span> and its never been more important having an Agent
         like myself in your corner. I have the market knowledge to
         highlight the value of your home and the connections that can lead
         to a higher selling price.</p>
 
-        <p class="md:text-lg font-semibold sub-header-color">Market value is
+        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">Market value is
         an opinion of what a property would sell for in a competitive market
         based on the features and benefits of that property (the value), the
         overall real estate market, supply and demand, and what other similar
@@ -383,7 +383,7 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid-fifty">
           <struct class="fifty">
             <h4>Above Market Value</h4>
-            <p class="md:text-lg font-semibold sub-header-color">This pricing startegy can be risky and most seasoned Agents will avoid
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">This pricing startegy can be risky and most seasoned Agents will avoid
             doing this to Sellers. The 1st 3 weeks of a listing is the most important
             and over pricing can negativly effect effect this time. You will see less
             Buyers at open houses, less offers and  logner listing times. Ultimately
@@ -392,7 +392,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           </struct>
           <struct class="fifty">
             <h4>Below Market Value</h4>
-            <p class="md:text-lg font-semibold sub-header-color">This senario works best for a Seller when time is of the essence and its
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">This senario works best for a Seller when time is of the essence and its
             important to sell quick. Or maybe there are improvements needed that the
             seller doesnt want to address. In todays market you may leave money on the
             table but you will sell fast.</p>
@@ -1014,7 +1014,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   def whats_cma(_) do
     """
       <struct class="section whats-cma" id="whats_cma">
-        <p class="text-xl md:text-2xl font-semibold sub-header-color"><span class="font-extrabold header-color">
+        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color"><span class="font-extrabold header-color">
         A CMA is</span> a comparison of the most recent Active, Sold
         and Pending properties in the same neighborhood. These homes are commonly
         referred to as Listings. Each listing is detailed with information like
@@ -1024,14 +1024,14 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid-fifty mt-8">
           <struct class="fifty">
             <h4>Where does the data come from?</h4>
-            <p class="md:text-lg font-semibold sub-header-color">The information used in your CMA is provided by my local Multiple Listing
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">The information used in your CMA is provided by my local Multiple Listing
             Service or MLS. MLS data is private and can only be accessed by licensed members,
             like myself, who pay an annual dues. Brokers, Realtors and Appraisers all used
             this protected data to arrive at the most accurate listing price.</p>
           </struct>
           <struct class="fifty">
             <h4>How Accurate is a CMA?</h4>
-            <p class="md:text-lg font-semibold sub-header-color">MLS data is live and the most accurate data that can be used. Listings are
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">MLS data is live and the most accurate data that can be used. Listings are
             entered and updates are realtime. There is No Way to get more accurate data
             for your home. That's why it's so important to have a Realtor in your corner
             during one of the most important transactions in your life. The market is

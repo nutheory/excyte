@@ -303,11 +303,13 @@ div.viewer-wrapper {
     }
   }
 
-  & .avatar {
-    @apply h-40 text-center;
+  & .agent {
+    & .avatar {
+      @apply h-40 text-center;
 
-    & img {
-      @apply h-40 block mx-auto;
+      & img {
+        @apply h-40 block mx-auto;
+      }
     }
   }
 

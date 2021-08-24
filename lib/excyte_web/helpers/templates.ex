@@ -385,8 +385,8 @@ defmodule ExcyteWeb.Helpers.Templates do
             <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">This pricing startegy can be risky and most seasoned Agents will avoid
             doing this to Sellers. The 1st 3 weeks of a listing is the most important
             and over pricing can negativly effect effect this time. You will see less
-            Buyers at open houses, less offers and  logner listing times. Ultimately
-            this could lead to a price reduction  and lessen your opportunity to
+            Buyers at open houses, less offers and longer listing times. Ultimately
+            this could lead to a price reduction and lessen your opportunity to
             capitalize on todays market.</p>
           </struct>
           <struct class="fifty">

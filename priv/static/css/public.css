@@ -3706,6 +3706,12 @@ h4 {
 
   padding-bottom: 0.75rem;
 }
+.px-6 {
+
+  padding-left: 1.5rem;
+
+  padding-right: 1.5rem;
+}
 .py-10 {
 
   padding-top: 2.5rem;
@@ -3735,12 +3741,6 @@ h4 {
   padding-top: 1.5rem;
 
   padding-bottom: 1.5rem;
-}
-.px-6 {
-
-  padding-left: 1.5rem;
-
-  padding-right: 1.5rem;
 }
 .px-8 {
 

@@ -1054,7 +1054,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           Do you have the tools and experience to market to the right audience?
           How do you prepare for and lead the largest transaction you'll ever enter? You
           Hire A Realtor, like myself,  to be in your corner! Todays market is challenging
-          and requires more than negotion skills. I have built a career on the skills needed
+          and requires more than negotiation skills. I have built a career on the skills needed
           to master todays market. As your Agent I will protect you during the transaction
           and get you the most money for your home. I will also put together a plan to take
           advantage of this market and make your next purchase.</p>

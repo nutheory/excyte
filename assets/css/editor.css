@@ -100,7 +100,7 @@ div.preview-wrapper {
 }
 
 p {
-  @apply text-sm md:text-base sm:leading-5 md:leading-6;
+  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6;
 }
 
 h1 {
@@ -116,7 +116,7 @@ h3 {
 }
 
 h4 {
-  @apply md:mb-2 text-base md:text-lg lg:text-xl font-extrabold;
+  @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
 }
 
 div.preview-wrapper,

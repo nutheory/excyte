@@ -11,7 +11,7 @@
   }
 
   body {
-    @apply bg-gray-100 text-bgray-600 text-sm md:text-base lg:text-lg;
+    @apply text-sm md:text-base lg:text-lg;
 
     line-height: 1.2;
   }
@@ -51,6 +51,22 @@
 
   h4 {
     @apply md:mb-2 text-base md:text-lg lg:text-xl font-extrabold;
+  }
+
+  .client-header {
+    @apply relative;
+
+    & .header-bg {
+      @apply absolute top-0 max-w-screen-xl mx-auto h-12 lg:h-18;
+    }
+
+    & .ex-shadow {
+      box-shadow: rgba(33, 35, 38, 0.3) 0px 10px 10px -10px;
+    }
+
+    & .header-main {
+      @apply relative z-40 max-w-screen-xl mx-auto h-12 lg:h-18;
+    }
   }
 }
 

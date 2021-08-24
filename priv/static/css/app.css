@@ -1880,6 +1880,14 @@ p {
   }
 }
 
+@media (min-width: 1024px) {
+
+  p {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+}
+
 h1 {
   font-size: 1.5rem;
   line-height: 2rem;
@@ -1959,8 +1967,8 @@ h3 {
 }
 
 h4 {
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
   font-weight: 800;
 }
 
@@ -1971,7 +1979,7 @@ h4 {
   }
 
   h4 {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     line-height: 1.75rem;
   }
 }
@@ -1979,8 +1987,8 @@ h4 {
 @media (min-width: 1024px) {
 
   h4 {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 }
 

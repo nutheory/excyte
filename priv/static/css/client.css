@@ -382,6 +382,16 @@ p {
       }
 }
 
+@media (min-width: 1024px) {
+
+      p {
+
+            font-size: 1.125rem;
+
+            line-height: 1.75rem;
+      }
+}
+
 h1 {
 
       font-size: 1.5rem;
@@ -486,9 +496,9 @@ h3 {
 
 h4 {
 
-      font-size: 1rem;
+      font-size: 1.125rem;
 
-      line-height: 1.5rem;
+      line-height: 1.75rem;
 
       font-weight: 800;
 }
@@ -502,7 +512,7 @@ h4 {
 
       h4 {
 
-            font-size: 1.125rem;
+            font-size: 1.25rem;
 
             line-height: 1.75rem;
       }
@@ -512,9 +522,9 @@ h4 {
 
       h4 {
 
-            font-size: 1.25rem;
+            font-size: 1.5rem;
 
-            line-height: 1.75rem;
+            line-height: 2rem;
       }
 }
 
@@ -3854,17 +3864,9 @@ html {
 
 body {
 
-      --tw-bg-opacity: 1;
-
-      background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-
       font-size: 0.875rem;
 
       line-height: 1.25rem;
-
-      --tw-text-opacity: 1;
-
-      color: rgba(71, 85, 105, var(--tw-text-opacity));
 }
 
 @media (min-width: 768px) {
@@ -4075,6 +4077,85 @@ h4 {
       }
 }
 
+.client-header {
+
+      position: relative;
+}
+
+.client-header .header-bg {
+
+      position: absolute;
+}
+
+.client-header .header-bg {
+
+      top: 0px;
+}
+
+.client-header .header-bg {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+.client-header .header-bg {
+
+      height: 3rem;
+}
+
+.client-header .header-bg {
+
+      max-width: 1280px;
+}
+
+@media (min-width: 1024px) {
+
+.client-header .header-bg {
+
+            height: 4.5rem;
+      }
+}
+
+.client-header .ex-shadow {
+      box-shadow: rgba(33, 35, 38, 0.3) 0px 10px 10px -10px;
+    }
+
+.client-header .header-main {
+
+      position: relative;
+}
+
+.client-header .header-main {
+
+      z-index: 40;
+}
+
+.client-header .header-main {
+
+      margin-left: auto;
+
+      margin-right: auto;
+}
+
+.client-header .header-main {
+
+      height: 3rem;
+}
+
+.client-header .header-main {
+
+      max-width: 1280px;
+}
+
+@media (min-width: 1024px) {
+
+.client-header .header-main {
+
+            height: 4.5rem;
+      }
+}
+
 .container {
 
       width: 100%;
@@ -4129,23 +4210,9 @@ h4 {
 
   body {
 
-            --tw-bg-opacity: 1;
-
-            background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-      }
-
-  body {
-
             font-size: 0.875rem;
 
             line-height: 1.25rem;
-      }
-
-  body {
-
-            --tw-text-opacity: 1;
-
-            color: rgba(71, 85, 105, var(--tw-text-opacity));
       }
 
   @media (min-width: 768px) {
@@ -4380,6 +4447,85 @@ h4 {
                   font-size: 1.25rem;
 
                   line-height: 1.75rem;
+            }
+      }
+
+  .client-header {
+
+            position: relative;
+      }
+
+    .client-header .header-bg {
+
+            position: absolute;
+      }
+
+    .client-header .header-bg {
+
+            top: 0px;
+      }
+
+    .client-header .header-bg {
+
+            margin-left: auto;
+
+            margin-right: auto;
+      }
+
+    .client-header .header-bg {
+
+            height: 3rem;
+      }
+
+    .client-header .header-bg {
+
+            max-width: 1280px;
+      }
+
+    @media (min-width: 1024px) {
+
+  .client-header .header-bg {
+
+                  height: 4.5rem;
+            }
+      }
+
+    .client-header .ex-shadow {
+      box-shadow: rgba(33, 35, 38, 0.3) 0px 10px 10px -10px;
+    }
+
+    .client-header .header-main {
+
+            position: relative;
+      }
+
+    .client-header .header-main {
+
+            z-index: 40;
+      }
+
+    .client-header .header-main {
+
+            margin-left: auto;
+
+            margin-right: auto;
+      }
+
+    .client-header .header-main {
+
+            height: 3rem;
+      }
+
+    .client-header .header-main {
+
+            max-width: 1280px;
+      }
+
+    @media (min-width: 1024px) {
+
+  .client-header .header-main {
+
+                  height: 4.5rem;
             }
       }
 }
@@ -6208,6 +6354,13 @@ h4 {
       padding-bottom: 0.75rem;
 }
 
+.px-6 {
+
+      padding-left: 1.5rem;
+
+      padding-right: 1.5rem;
+}
+
 .py-10 {
 
       padding-top: 2.5rem;
@@ -6241,13 +6394,6 @@ h4 {
       padding-top: 1.5rem;
 
       padding-bottom: 1.5rem;
-}
-
-.px-6 {
-
-      padding-left: 1.5rem;
-
-      padding-right: 1.5rem;
 }
 
 .px-8 {

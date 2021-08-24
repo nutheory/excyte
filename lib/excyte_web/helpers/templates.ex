@@ -371,7 +371,6 @@ defmodule ExcyteWeb.Helpers.Templates do
         like myself in your corner. I have the market knowledge to
         highlight the value of your home and the connections that can lead
         to a higher selling price.</p>
-
         <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">Market value is
         an opinion of what a property would sell for in a competitive market
         based on the features and benefits of that property (the value), the

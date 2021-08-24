@@ -1,13 +1,24 @@
-<nav class="protected-header fixed top-0 z-30 lg:z-40 w-full h-12 lg:h-18">
-  <div class="bg-color backdrop-blur-sm max-w-screen-xl mx-auto h-12 lg:h-18 border-b accent-color bg-opacity-95 flex">
+<nav class="client-header fixed z-50 top-0 w-full h-12 lg:h-18">
+  <div class="header-bg top-0 ex-shadow bg-color"></div>
+  <div class="header-main bg-color ex-shadow px-6 z-50 h-12 lg:h-18 flex">
     <div class="ml-4 flex items-center justify-center h-full">
-      <div class="h-10">
+      <div class="h-10 flex">
         <%= if @current_user do %>
-          <%= link "< Dash", to: "/agent/dash", class: "fancy" %>
+          <div class="px-2">
+            <%= live_redirect to: "/agent/dash" do %>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <p>Dash</p>
+            <% end %>
+          </div>
         <% end %>
-        <%# <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg> %>
+        <%# <div class="px-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <p>Jump to</p>
+        </div> %>
       </div>
     </div>
     <div class="flex-1 text-right pt-2 lg:pt-4 pr-4">

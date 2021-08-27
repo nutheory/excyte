@@ -26,6 +26,7 @@ import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
+import Divider from './extensions/divider'
 import Struct from './extensions/struct'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
@@ -66,6 +67,7 @@ window.currentPreview = function (content) {
           TableRow,
           TableCell,
           Contact,
+          Divider,
           Collapsable,
           ShowcaseGallery,
           SimpleVideo,
@@ -111,6 +113,7 @@ const buildTheme = (theme) => {
     rule += `div.preview-wrapper .header-color {color: ${theme.header_text};}`
     rule += `div.preview-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
     rule += `div.preview-wrapper .accent-color {border-color: ${theme.accent}}`
+    rule += `div.preview-wrapper .accent-svg-color {stroke: ${theme.accent}}`
     rule += `div.preview-wrapper a {color: ${theme.link}}`
     rule += `div.preview-wrapper button {color: ${theme.link}}`
     rule += `div.preview-wrapper th {border-bottom-color: ${theme.accent}}`

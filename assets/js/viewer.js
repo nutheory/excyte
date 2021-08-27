@@ -27,6 +27,7 @@ import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
+import Divider from './extensions/divider'
 import Span from './extensions/span'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
@@ -67,6 +68,7 @@ window.currentViewer = function (content) {
           TableHeader,
           TableRow,
           TableCell,
+          Divider,
           Contact,
           Collapsable,
           ShowcaseGallery,
@@ -110,6 +112,7 @@ const buildTheme = (theme) => {
       rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
       rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
       rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
+      rule += `div.viewer-wrapper .accent-svg-color {stroke: ${theme.accent}}`
       rule += `div.viewer-wrapper a {color: ${theme.link}}`
       rule += `div.viewer-wrapper button {color: ${theme.link}}`
       rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`

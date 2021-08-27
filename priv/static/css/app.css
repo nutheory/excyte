@@ -2108,9 +2108,7 @@ div.preview-wrapper .cover-wrapper .title h1, div.viewer-wrapper .cover-wrapper 
 }
 
 div.preview-wrapper .cover-wrapper .title h3, div.viewer-wrapper .cover-wrapper .title h3 {
-  width: -webkit-min-content;
-  width: -moz-min-content;
-  width: min-content;
+  float: left;
 }
 
 div.preview-wrapper .cover-wrapper .title h3, div.viewer-wrapper .cover-wrapper .title h3 {
@@ -2691,7 +2689,7 @@ div.preview-wrapper .subject .sub-details .detail h4, div.viewer-wrapper .subjec
 }
 
 div.preview-wrapper .agent .avatar, div.viewer-wrapper .agent .avatar {
-  height: 10rem;
+  height: 15rem;
 }
 
 div.preview-wrapper .agent .avatar, div.viewer-wrapper .agent .avatar {
@@ -2708,7 +2706,7 @@ div.preview-wrapper .agent .avatar img, div.viewer-wrapper .agent .avatar img {
 }
 
 div.preview-wrapper .agent .avatar img, div.viewer-wrapper .agent .avatar img {
-  height: 10rem;
+  height: 15rem;
 }
 
 div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
@@ -5324,10 +5322,6 @@ h4 {
   grid-column: span 2 / span 2;
 }
 
-.col-span-3 {
-  grid-column: span 3 / span 3;
-}
-
 .col-span-4 {
   grid-column: span 4 / span 4;
 }
@@ -6011,6 +6005,10 @@ h4 {
 
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .grid-cols-4 {

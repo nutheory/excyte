@@ -156,7 +156,7 @@ div.viewer-wrapper {
       }
 
       & h3 {
-        @apply px-3 pb-2 w-min leading-none p-2;
+        @apply px-3 pb-2 leading-none p-2 float-left;
       }
     }
 
@@ -305,10 +305,10 @@ div.viewer-wrapper {
 
   & .agent {
     & .avatar {
-      @apply h-40 text-center;
+      @apply h-60 text-center;
 
       & img {
-        @apply h-40 block mx-auto;
+        @apply h-60 block mx-auto;
       }
     }
   }

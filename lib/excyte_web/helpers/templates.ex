@@ -7,31 +7,34 @@ defmodule ExcyteWeb.Helpers.Templates do
   alias ExcyteWeb.{Helpers.Utilities}
 
 
-  def agent_profile(%{agent_profile: ap}) do
+  def agent_profile(%{agent_profile: ap}, type) do
     profile = Excyte.Utils.Methods.stringify_keys(ap)
     """
+      <divider type="#{type}"></divider>
       <struct class="section agent w-full lg:w-4/5 mx-auto" id="agent_profile">
-        <struct class="grid grid-cols-4 gap-6">
+        <struct class="grid grid-cols-3 gap-6">
           {% if agent["photo_url"] %}
             <struct class="avatar">
               <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
             </struct>
           {% endif %}
-          <struct class="col-span-3">
-            {% if agent["name"] %}
-              <h1 class="header-color">{{ agent["name"] }}</h1>
-            {% endif %}
-            {% if agent["tagline"] %}
-              <struct class="my-6">
-                <blockquote>{{ agent["tagline"] }}</blockquote>
-              </struct>
-            {% endif %}
-            {% if agent["company_name"] %}
-              <h3 class="mb-0 header-color">{{ agent["company_name"] }}</h3>
-            {% endif %}
-            {% if agent["job_title"] %}
-              <p class="font-semibold"><i>{{ agent["job_title"] }}</i></p>
-            {% endif %}
+          <struct class="col-span-2 flex items-end">
+            <struct class="">
+              {% if agent["name"] %}
+                <h1 class="header-color">{{ agent["name"] }}</h1>
+              {% endif %}
+              {% if agent["tagline"] %}
+                <struct class="my-6">
+                  <blockquote>{{ agent["tagline"] }}</blockquote>
+                </struct>
+              {% endif %}
+              {% if agent["company_name"] %}
+                <h3 class="mb-0 header-color">{{ agent["company_name"] }}</h3>
+              {% endif %}
+              {% if agent["job_title"] %}
+                <p class="font-semibold"><i>{{ agent["job_title"] }}</i></p>
+              {% endif %}
+            </struct>
           </struct>
         </struct>
         {% if agent["bio"] %}
@@ -60,9 +63,10 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def brokerage_profile(%{brokerage: brk}) do
+  def brokerage_profile(%{brokerage: brk}, type) do
     profile = Excyte.Utils.Methods.stringify_keys(brk)
     """
+      <divider type="#{type}"></divider>
       <struct class="section w-full lg:w-4/5 mx-auto" id="brokerage">
         {% if brokerage["logo_url"] %}
           <struct class="flex items-center justify-center">
@@ -96,7 +100,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def commission_distribution(_) do
+  def commission_distribution(_, type) do
     """
       <struct class="section" id="commission_distribution">
         <struct class="body">
@@ -105,12 +109,13 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
   end
 
-  def comparable(%{listing: listing}) do
+  def comparable(%{listing: listing}, type) do
     adjustments = Enum.map(listing["custom_adjustments"], fn adj ->
       Map.merge(adj, %{"display_value" => number_to_delimited(adj["value"], precision: 0)})
     end)
     media = Jason.encode!(listing["media"])
     """
+      <divider type="#{type}"></divider>
       <struct class="section comparable" id="comparable_#{listing["listing_key"]}">
         <div
           data-type="showcaseGallery"
@@ -325,13 +330,13 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def cover(%{subject: sbj, agent_profile: ag, brokerage: brk}) do
+  def cover(%{subject: sbj, agent_profile: ag, brokerage: brk}, type) do
     """
       <struct class="section" id="cover">
         <struct class="cover-wrapper">
           <struct class="title">
-            <h1 class="bg-color sub-header-color">Comparative Market</h1>
-            <h3 class="bg-color header-color">Analysis</h3>
+            <h1 class="bg-color sub-header-color">Comparative</h1>
+            <h3 class="bg-color header-color">Market Analysis</h3>
           </struct>
           <struct class="subtitle header-color">
             <h1 class="bg-color">
@@ -361,8 +366,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def pricing_strategy(_) do
+  def pricing_strategy(_, type) do
     """
+      <divider type="#{type}"></divider>
       <struct class="section pricing" id="pricing_strategy">
         <h1 class="header-color">Home pricing strategies</h1>
         <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">
@@ -401,7 +407,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
   end
 
-  def showcase(%{insight: ins}) do
+  def showcase(%{insight: ins}, type) do
     listing =
       case ProcessReso.process_init({:ok, %{listings: ins["content"]["listings"]}}, nil) do
         {:ok, res} ->
@@ -411,6 +417,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"])
     """
+      <divider type="#{type}"></divider>
       <struct class="section showcase" id="showcase">
         <div
           data-type="showcaseGallery"
@@ -630,8 +637,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def subject(%{subject: subject}) do
+  def subject(%{subject: subject}, type) do
     """
+      <divider type="#{type}"></divider>
       <struct class="section subject" id="subject">
         <h1 class="header-color">Understanding Comparable Listings</h1>
         <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold">In explaining the suggested pricing
@@ -720,8 +728,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def synopsis(%{subject: sbj, insight: insight}) do
+  def synopsis(%{subject: sbj, insight: insight}, type) do
     """
+      <divider type="#{type}"></divider>
       <struct class="section synopsis" id="synopsis">
         <h1 class="header-color">Synopsis</h1>
         <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold">Based on
@@ -764,11 +773,12 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def tour_stop(%{listing: listing}) do
+  def tour_stop(%{listing: listing}, type) do
     destination_uri = URI.encode("#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]}")
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"])
     """
+      <divider type="#{type}"></divider>
       <struct class="section tour" id="tour_stop">
         <struct class="flex">
           <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Get Directions</a></h4>
@@ -991,7 +1001,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def video_section(%{asset: a}) do
+  def video_section(%{asset: a}, type) do
     asset = Jason.encode!(%{
       title: a.title,
       thumb_url: a.thumb_url,
@@ -999,6 +1009,7 @@ defmodule ExcyteWeb.Helpers.Templates do
       description: a.description,
       video_url: a.video_url})
     """
+      <divider type="#{type}"></divider>
       <struct class="section">
         <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset}'></div>
       </struct>
@@ -1010,8 +1021,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def whats_cma(_) do
+  def whats_cma(_, type) do
     """
+      <divider type="#{type}"></divider>
       <struct class="section whats-cma" id="whats_cma">
         <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color"><span class="font-extrabold header-color">
         A CMA is</span> a comparison of the most recent Active, Sold
@@ -1042,8 +1054,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
   end
 
-  def why_an_agent(%{agent_profile: ap}) do
+  def why_an_agent(%{agent_profile: ap}, type) do
     """
+      <divider type="#{type}"></divider>
       <struct class="section lg:w-4/5 mx-auto" id="why_an_agent">
         <h1 class="header-color mb-0">Why use an agent?</h1>
         <struct class="sub-header-color">
@@ -1069,7 +1082,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
 
-  defp summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps} ) do
+  defp summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps}) do
     """
        has been adjusted <strong>#{number_to_delimited(@adj, precision: 0)}</strong>
       based on a difference of #{diff} at $#{pps} per sqft

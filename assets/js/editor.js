@@ -33,6 +33,7 @@ import {
 } from './extensions/modified_extensions'
 // import SimpleGallery from './extensions/simple_gallery'
 // import Comparable from './extensions/comparable'
+import Divider from './extensions/divider'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -75,6 +76,7 @@ window.currentEditor = function (content) {
           // SimpleGallery,
           Gapcursor,
           Struct,
+          Divider,
           // Comparable,
           Commands.configure({
             suggestion: {

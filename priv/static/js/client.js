@@ -12844,7 +12844,7 @@ __webpack_require__.r(__webpack_exports__);
       var content = document.createElement('div');
       var contentWrapper = document.createElement('div');
       var buttonState = document.createElement('div');
-      buttonState.innerHTML = "<svg class=\"w-6 h-6 accent-svg\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"4\" d=\"M19 9l-7 7-7-7\"></path>\n        </svg>";
+      buttonState.innerHTML = "<svg class=\"w-6 h-6 accent-svg-color\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"4\" d=\"M19 9l-7 7-7-7\"></path>\n        </svg>";
       dom.setAttribute('class', HTMLAttributes["class"]);
       dom.setAttribute('x-data', '{open: window.isLg}');
       headerButton.setAttribute('x-on:click', 'open = !open');
@@ -13013,6 +13013,95 @@ __webpack_require__.r(__webpack_exports__);
       innerStruct.append(icon, content);
       button.append(innerStruct);
       dom.append(button);
+      return {
+        dom: dom
+      };
+    };
+  }
+}));
+
+/***/ }),
+
+/***/ "./js/extensions/divider.js":
+/*!**********************************!*\
+  !*** ./js/extensions/divider.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
+  name: 'divider',
+  group: 'block',
+  content: 'block+',
+  addAttributes: function addAttributes() {
+    return {
+      "class": {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            "class": element.getAttribute('class')
+          };
+        }
+      },
+      type: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            type: element.getAttribute('type')
+          };
+        }
+      }
+    };
+  },
+  parseHTML: function parseHTML() {
+    return [{
+      tag: 'divider'
+    }];
+  },
+  renderHTML: function renderHTML(_ref) {
+    var HTMLAttributes = _ref.HTMLAttributes;
+    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
+  },
+  addNodeView: function addNodeView() {
+    return function (_ref2) {
+      var editor = _ref2.editor,
+          node = _ref2.node,
+          getPos = _ref2.getPos,
+          HTMLAttributes = _ref2.HTMLAttributes,
+          decorations = _ref2.decorations,
+          extension = _ref2.extension;
+      var dom = document.createElement('div');
+      var left = document.createElement('div');
+      var leftLine = document.createElement('div');
+      var right = document.createElement('div');
+      var rightLine = document.createElement('div');
+      var icon = document.createElement('div');
+
+      if (HTMLAttributes.type === 'cma') {
+        icon.innerHTML = "\n          <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 accent-svg-color\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z\" />\n          </svg>\n        ";
+      } else if (HTMLAttributes.type === 'showcase') {
+        icon.innerHTML = "\n          <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 accent-svg-color\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z\" />\n          </svg>\n        ";
+      } else if (HTMLAttributes.type === 'buyer_tour') {
+        icon.innerHTML = "\n          <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 accent-svg-color\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z\" />\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 11a3 3 0 11-6 0 3 3 0 016 0z\" />\n          </svg>\n        ";
+      }
+
+      dom.classList.add('flex', 'w-full');
+      left.classList.add('flex-1');
+      leftLine.classList.add('mt-3', 'mr-3', 'border-t', 'accent-color');
+      right.classList.add('flex-1');
+      rightLine.classList.add('mt-3', 'ml-3', 'border-t', 'accent-color');
+      icon.classList.add('w-6', 'h-6');
+      left.append(leftLine);
+      right.append(rightLine);
+      dom.append(left);
+      dom.append(icon);
+      dom.append(right);
       return {
         dom: dom
       };
@@ -13517,10 +13606,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./extensions/simple_video */ "./js/extensions/simple_video.js");
 /* harmony import */ var _extensions_collapsable__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/collapsable */ "./js/extensions/collapsable.js");
 /* harmony import */ var _extensions_contact__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/contact */ "./js/extensions/contact.js");
-/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_27__);
+/* harmony import */ var _extensions_divider__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/divider */ "./js/extensions/divider.js");
+/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_28__);
+
 
 
 
@@ -13563,7 +13654,7 @@ window.currentViewer = function (content) {
         editable: false,
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default.configure({
           inline: true
-        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_25__.default],
+        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_27__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_26__.default],
         content: this.content,
         autofocus: true
       });
@@ -13584,7 +13675,7 @@ var InitViewer = {
         window.viewerHook.currentViewer.viewer.commands.setContent(content);
         var styles = buildTheme(theme);
         addCss(styles);
-        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_27___default()({
+        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_28___default()({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,
@@ -13601,6 +13692,7 @@ var buildTheme = function buildTheme(theme) {
   rule += "div.viewer-wrapper .header-color {color: ".concat(theme.header_text, "}");
   rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
   rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
+  rule += "div.viewer-wrapper .accent-svg-color {stroke: ".concat(theme.accent, "}");
   rule += "div.viewer-wrapper a {color: ".concat(theme.link, "}");
   rule += "div.viewer-wrapper button {color: ".concat(theme.link, "}");
   rule += "div.viewer-wrapper th {border-bottom-color: ".concat(theme.accent, "}");

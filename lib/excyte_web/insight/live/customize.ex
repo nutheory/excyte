@@ -233,7 +233,7 @@ defmodule ExcyteWeb.Insight.Customize do
             temp_id: i,
             description: "#{Utilities.humanize_component_name(component)} Listing",
             name: "#{listing["street_number"]} #{listing["street_name"]}",
-            html_content: Templates.comparable(%{listing: listing})
+            html_content: Templates.comparable(%{listing: listing}, data.insight["type"])
           }
         end)
       "tour_stop" ->
@@ -249,10 +249,10 @@ defmodule ExcyteWeb.Insight.Customize do
             temp_id: sl["position"],
             description: "#{Utilities.humanize_component_name(component)} Listing",
             name: "#{sl["street_number"]} #{sl["street_name"]}",
-            html_content: Templates.tour_stop(%{listing: sl})
+            html_content: Templates.tour_stop(%{listing: sl}, data.insight["type"])
           }
         end)
-      _ -> apply(Templates, String.to_existing_atom(component), [data])
+      _ -> apply(Templates, String.to_existing_atom(component), [data, data.insight["type"]])
     end
   end
 

@@ -6,20 +6,16 @@ export const MuxUploader = {
     const addingFile = this.el.querySelector('#adding-file')
     const fileName = this.el.querySelector('#filename')
     const progressBar = this.el.querySelector('#upload-progress')
-    const preparing = this.el.querySelector('#preparing')
     let ts = Math.round((new Date()).getTime() / 1000)
     let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
     let upload_data
-    this.handleEvent("idDetails", ({uuid, aid, bid}) => {
+    let file
+    this.handleEvent("directUpload", ({uuid, aid, bid}) => {
       upload_data = {uuid, agent_id: aid, brokerage_id: bid}
-    })
-
-    uploadButton.addEventListener('change', (evt) => {
-      let file = evt.target.files[0]
       upload_data.name = file.name
-      upload_data.size = file.size 
+      upload_data.size = file.size
       upload_data.type = file.type
-      const getUploadUrl = () => 
+      const getUploadUrl = () =>
         fetch('/mux/upload', {
           method: 'POST',
           headers: {
@@ -37,10 +33,11 @@ export const MuxUploader = {
 
       upload.on('error', err => {
         console.error('💥 🙀', err.detail)
+        addingFile.classList.add('hidden')
+        uploadButton.setAttribute('value', "")
       })
 
       upload.on('attempt', attempt => {
-        uploadButton.classList.remove('action')
         uploadButton.classList.add('hidden')
         addingFile.classList.remove('hidden')
         fileName.innerHTML = file.name
@@ -53,8 +50,13 @@ export const MuxUploader = {
       })
 
       upload.on('success', () => {
-        preparing.classList.remove('hidden')
+        addingFile.classList.add('hidden')
+        uploadButton.setAttribute('value', "")
       })
+    })
+
+    uploadButton.addEventListener('change', (evt) => {
+      file = evt.target.files[0]
     })
   }
 }

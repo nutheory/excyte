@@ -22,8 +22,6 @@ defmodule ExcyteWeb.Insight.Customize do
           name: "",
           preview_content: "",
           uploaded_asset: nil,
-          selected_tab: "upload",
-          video_form: %{title: "", description: ""},
           show_video_form: false,
           preview_panel: false,
           loading: true
@@ -51,8 +49,12 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  def handle_info({Assets, [:asset, _], result}, socket) do
-    {:noreply, assign(socket, uploaded_asset: result)}
+  def handle_info({Assets, [:asset, _], result}, %{assigns: a} = socket) do
+    IO.inspect(result, label: "RES")
+    ua = if result.status === "ready", do: nil, else: result
+    assets = if result.status === "ready", do: [result | a.assets], else: a.assets
+
+    {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
   def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
@@ -61,7 +63,8 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
-    content = Templates.video_section(%{asset: Map.from_struct(asset)})
+    IO.inspect(a.insight["type"], label: "INS")
+    content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight["type"])
     section = [%{
         position: (length(a.sections) + 1),
         created_by_id: a.current_user.id,
@@ -73,7 +76,7 @@ defmodule ExcyteWeb.Insight.Customize do
         name: asset.title,
         html_content: content
       }]
-    {:noreply, assign(socket, sections: a.sections ++ section)}
+    {:noreply, assign(socket, show_video_form: false, sections: a.sections ++ section)}
   end
 
   def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
@@ -101,19 +104,6 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, editing_key: "new")}
   end
 
-  def handle_event("update-new-video", %{"video_form" => vf}, %{assigns: a} = socket) do
-    case Assets.update_asset(a.uploaded_asset.uuid, %{title: vf["title"], description: vf["description"]}) do
-      {:ok, upload} ->
-        send self(), {:create_video_section, upload}
-        {:noreply, assign(socket, assets: [upload | a.assets], show_video_form: false, uploaded_asset: nil)}
-      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
-    end
-  end
-
-  def handle_event("validate-video-details", %{"video_form" => vf}, socket) do
-    {:noreply, assign(socket, video_form: %{title: vf["title"], description: vf["description"]})}
-  end
-
   def handle_event("delete_video", %{"value" => _v, "video-id" => id}, %{assigns: a} = socket) do
     asset_id = String.to_integer(id)
     assets =
@@ -133,16 +123,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-video", _, %{assigns: a} = socket) do
-    uuid = "#{a.current_user.id}_#{a.insight["uuid"]}_#{System.os_time(:second)}"
-    if connected?(socket), do: Assets.subscribe(uuid)
-    {:noreply,
-      socket
-      |> push_event("idDetails", %{uuid: uuid, aid: a.current_user.id, bid: a.current_user.brokerage_id})
-      |> assign(show_video_form: !a.show_video_form)}
-  end
-
-  def handle_event("toggle-upload-tab", %{"tab" => tab}, socket) do
-    {:noreply, assign(socket, selected_tab: tab)}
+   {:noreply, assign(socket, show_video_form: !a.show_video_form)}
   end
 
   def handle_event("select-video", %{"uuid" => uuid}, %{assigns: a} = socket) do

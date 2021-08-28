@@ -20197,11 +20197,11 @@ var MuxUploader = {
     var addingFile = this.el.querySelector('#adding-file');
     var fileName = this.el.querySelector('#filename');
     var progressBar = this.el.querySelector('#upload-progress');
-    var preparing = this.el.querySelector('#preparing');
     var ts = Math.round(new Date().getTime() / 1000);
     var csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content");
     var upload_data;
-    this.handleEvent("idDetails", function (_ref) {
+    var file;
+    this.handleEvent("directUpload", function (_ref) {
       var uuid = _ref.uuid,
           aid = _ref.aid,
           bid = _ref.bid;
@@ -20210,9 +20210,6 @@ var MuxUploader = {
         agent_id: aid,
         brokerage_id: bid
       };
-    });
-    uploadButton.addEventListener('change', function (evt) {
-      var file = evt.target.files[0];
       upload_data.name = file.name;
       upload_data.size = file.size;
       upload_data.type = file.type;
@@ -20238,9 +20235,10 @@ var MuxUploader = {
       });
       upload.on('error', function (err) {
         console.error('💥 🙀', err.detail);
+        addingFile.classList.add('hidden');
+        uploadButton.setAttribute('value', "");
       });
       upload.on('attempt', function (attempt) {
-        uploadButton.classList.remove('action');
         uploadButton.classList.add('hidden');
         addingFile.classList.remove('hidden');
         fileName.innerHTML = file.name;
@@ -20251,8 +20249,12 @@ var MuxUploader = {
         progressBar.innerHTML = val;
       });
       upload.on('success', function () {
-        preparing.classList.remove('hidden');
+        addingFile.classList.add('hidden');
+        uploadButton.setAttribute('value', "");
       });
+    });
+    uploadButton.addEventListener('change', function (evt) {
+      file = evt.target.files[0];
     });
   }
 };

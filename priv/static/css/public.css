@@ -2326,6 +2326,18 @@ h4 {
 
   left: 1rem;
 }
+.bottom-3 {
+
+  bottom: 0.75rem;
+}
+.left-3 {
+
+  left: 0.75rem;
+}
+.bottom-1 {
+
+  bottom: 0.25rem;
+}
 .z-30 {
 
   z-index: 30;
@@ -2349,10 +2361,6 @@ h4 {
 .col-span-2 {
 
   grid-column: span 2 / span 2;
-}
-.col-span-3 {
-
-  grid-column: span 3 / span 3;
 }
 .col-span-4 {
 
@@ -3076,13 +3084,13 @@ h4 {
 
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.grid-cols-4 {
-
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
 .grid-cols-3 {
 
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.grid-cols-4 {
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 .flex-col {
 
@@ -3710,11 +3718,17 @@ h4 {
 
   padding-bottom: 0.75rem;
 }
-.py-10 {
+.px-6 {
 
-  padding-top: 2.5rem;
+  padding-left: 1.5rem;
 
-  padding-bottom: 2.5rem;
+  padding-right: 1.5rem;
+}
+.py-6 {
+
+  padding-top: 1.5rem;
+
+  padding-bottom: 1.5rem;
 }
 .py-4 {
 
@@ -3733,18 +3747,6 @@ h4 {
   padding-top: 0.375rem;
 
   padding-bottom: 0.375rem;
-}
-.py-6 {
-
-  padding-top: 1.5rem;
-
-  padding-bottom: 1.5rem;
-}
-.px-6 {
-
-  padding-left: 1.5rem;
-
-  padding-right: 1.5rem;
 }
 .px-8 {
 
@@ -4328,12 +4330,6 @@ h4 {
 
   background-color: rgba(187, 247, 208, var(--tw-bg-opacity));
 }
-.hover\:bg-cyan-100:hover {
-
-  --tw-bg-opacity: 1;
-
-  background-color: rgba(207, 250, 254, var(--tw-bg-opacity));
-}
 .hover\:bg-gray-200:hover {
 
   --tw-bg-opacity: 1;
@@ -4381,6 +4377,12 @@ h4 {
   --tw-bg-opacity: 1;
 
   background-color: rgba(236, 254, 255, var(--tw-bg-opacity));
+}
+.hover\:bg-cyan-100:hover {
+
+  --tw-bg-opacity: 1;
+
+  background-color: rgba(207, 250, 254, var(--tw-bg-opacity));
 }
 .hover\:text-cyan-600:hover {
 
@@ -4459,11 +4461,11 @@ h4 {
 
     padding-right: 1.5rem;
   }
-  .sm\:py-12 {
+  .sm\:py-6 {
 
-    padding-top: 3rem;
+    padding-top: 1.5rem;
 
-    padding-bottom: 3rem;
+    padding-bottom: 1.5rem;
   }
   .sm\:px-24 {
 
@@ -4871,11 +4873,11 @@ h4 {
 
     padding-right: 1.5rem;
   }
-  .lg\:py-16 {
+  .lg\:py-10 {
 
-    padding-top: 4rem;
+    padding-top: 2.5rem;
 
-    padding-bottom: 4rem;
+    padding-bottom: 2.5rem;
   }
   .lg\:px-2 {
 

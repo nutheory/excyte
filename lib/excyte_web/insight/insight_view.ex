@@ -15,7 +15,8 @@ defmodule ExcyteWeb.InsightView do
     SelectedTour,
     SimpleCard,
     SubjectForm,
-    SubjectProperty
+    SubjectProperty,
+    UploadVideo
   }
   alias ExcyteWeb.Components.{
     AddressAutocomplete,

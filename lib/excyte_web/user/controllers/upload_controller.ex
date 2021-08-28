@@ -16,7 +16,6 @@ defmodule ExcyteWeb.UploadController do
   end
 
   def mux_auth_url(conn, params) do
-    IO.inspect(params, label: "PAR")
     client = Mux.client()
     mux_params = %{
       new_asset_settings: %{
@@ -26,26 +25,26 @@ defmodule ExcyteWeb.UploadController do
       cors_origin: Application.get_env(:excyte, :base_url)
     }
 
-  url =
-    with {:ok, res, _} <- Mux.Video.Uploads.create(client, mux_params),
-         {:ok, asset} <- Assets.create_asset(%{
-                           uploaded_by_id: params["agent_id"],
-                           brokerage_id: params["brokerage_id"],
-                           uuid: params["uuid"],
-                           content_type: params["type"],
-                           type: "video",
-                           size: params["size"],
-                           original_name: params["name"],
-                           source_id: res["id"],
-                           status: res["status"]
-                         }) do
-        IO.inspect(res, label: "res")
-        IO.inspect(asset, label: "asset")
-        res["url"]
-    else
-      {:error, err} -> err
-      boom -> IO.inspect(boom, "BOOM")
-    end
+    url =
+      with {:ok, res, _} <- Mux.Video.Uploads.create(client, mux_params),
+          {:ok, asset} <- Assets.update_asset(params["uuid"], %{
+                            uploaded_by_id: params["agent_id"],
+                            brokerage_id: params["brokerage_id"],
+                            uuid: params["uuid"],
+                            content_type: params["type"],
+                            type: "video",
+                            size: params["size"],
+                            original_name: params["name"],
+                            source_id: res["id"],
+                            status: res["status"]
+                          }) do
+          IO.inspect(res, label: "res")
+          IO.inspect(asset, label: "asset")
+          res["url"]
+      else
+        {:error, err} -> err
+        boom -> IO.inspect(boom, "BOOM")
+      end
 
     IO.inspect(url, label: "RES")
     text(conn, url)

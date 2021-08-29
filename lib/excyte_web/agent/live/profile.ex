@@ -26,6 +26,7 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
+    IO.inspect(a.uploads, label: "upload")
     cs = Agents.change_profile(a.profile, attrs) |> Map.put(:action, :validate)
     {:noreply, assign(socket, changeset: cs)}
   end

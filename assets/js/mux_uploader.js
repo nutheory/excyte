@@ -51,6 +51,7 @@ export const MuxUploader = {
 
       upload.on('success', () => {
         addingFile.classList.add('hidden')
+        uploadButton.classList.remove('hidden')
         uploadButton.setAttribute('value', "")
       })
     })

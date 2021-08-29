@@ -19,11 +19,11 @@ import {Socket} from "phoenix"
 import LiveSocket from "phoenix_live_view"
 import {ViewportResize} from "./viewport_resize"
 import {InitSectionSortable, InitListingSortable} from "./sorting"
-import {InitGallery} from "./gallery"
 import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {InitPreview} from "./preview"
 import {InitViewer} from "./viewer"
+import {ImageEditor} from "./image_editor"
 import {setupSizing} from "./mobile_sizing"
 import {MuxUploader} from "./mux_uploader"
 import {InitCheckout} from "./checkout"
@@ -37,13 +37,13 @@ let Hooks = {}
 Hooks.InitCheckout = InitCheckout
 Hooks.InitSectionSortable = InitSectionSortable
 Hooks.InitListingSortable = InitListingSortable
-Hooks.InitGallery = InitGallery
 Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
 Hooks.InitPreview = InitPreview
 Hooks.InitViewer = InitViewer
+Hooks.ImageEditor = ImageEditor
 Hooks.MuxUploader = MuxUploader
 Hooks.GeoLocation = GeoLocation
 Hooks.DistanceSelector = {

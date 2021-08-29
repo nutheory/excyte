@@ -304,6 +304,12 @@ button.jumbo {
   z-index: 1050;
 }
 
+.image-editor{
+  & img {
+    @apply block max-w-full;
+  }
+}
+
 .panel-slidein {
   @apply h-screen;
 

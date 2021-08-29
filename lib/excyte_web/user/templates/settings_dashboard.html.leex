@@ -161,7 +161,7 @@
               <% end %>
             <% end %>
           <% "agent_profile" -> %>
-            <div class="w-full lg:w-2/3 xl:w-3/4">
+            <div class="w-full lg:w-2/3">
               <h2 class="text-2xl leading-none font-bold text-gray-700 mb-2">Agent Profile</h2>
               <%= live_render @socket, ExcyteWeb.Agent.Profile, session: %{"return_to" =>  "/settings"}, id: :_agent_profile %>
             </div>

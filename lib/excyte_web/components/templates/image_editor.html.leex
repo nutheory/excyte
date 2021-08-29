@@ -1,0 +1,30 @@
+<div
+  class="w-full h-full"
+  id="image_editor"
+  data-name="<%= @name %>"
+  phx-target="<%= @myself %>"
+  phx-hook="ImageEditor">
+  <div div class="w-full h-full flex">
+    <div id="photoTarget" class="h-24 w-32"></div>
+    <div class="icons hidden">
+    </div>
+  </div>
+  <p class="alert alert-danger hidden" id="<%= @name %>_error"></p>
+<div
+  class="panel-slidein bg-gray-100 px-2 pt-6 lg:max-w-2xl <%= if @show_image_panel, do: 'right-0', else: '' %>">
+  <div class="flex mb-4">
+    <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <div class="ml-4">
+      <h2><%= @title %></h2>
+      <p></p>
+    </div>
+  </div>
+  <div class="mx-4" id="<%= @name %>_canvas"></div>
+  <div class="flex">
+    <div id="<%= @name %>_confirm">Click me</div>
+  </div>
+</div>

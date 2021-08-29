@@ -108,7 +108,7 @@ export const InitViewer = {
 }
 
 const buildTheme = (theme) => {
-  let rule = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.text}; font-family: ${theme.font}}`
+  let rule = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font}}`
       rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
       rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
       rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
@@ -116,8 +116,8 @@ const buildTheme = (theme) => {
       rule += `div.viewer-wrapper a {color: ${theme.link}}`
       rule += `div.viewer-wrapper button {color: ${theme.link}}`
       rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
-      rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
-      rule += `div.preview-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.muted_text}; font-size: 5.6rem; z-index: -1;}`
+      // rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
+      rule += `div.viewer-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.sub_header_text}; font-size: 5.6rem; z-index: -1;}`
   return rule
 }
 

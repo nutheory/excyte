@@ -14,15 +14,12 @@ defmodule Excyte.Accounts do
   @topic inspect(__MODULE__)
 
   @default_theme %{
-    font: "",
-    background: "#F3F4F6",
-    header_text: "#04293A",
+    font: "Arial, Helvetica Neue, Helvetica, sans-serif",
+    background: "rgba(255, 255, 255, 1)",
+    header_text: "rgba(71, 85, 105, 1)",
+    sub_header_text: "rgba(183, 183, 183, 1)",
     accent: "#0E7490",
-    link: "#0E7490",
-    highlight_background: "#FEF08A",
-    highlight_text: "#475569",
-    text: "#475569",
-    muted_text: "#CBD5E1"
+    link: "#0E7490"
   }
 
   def subscribe(account_id) do

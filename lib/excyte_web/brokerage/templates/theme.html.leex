@@ -1,22 +1,27 @@
 <div class="shadow-md bg-white rounded-md p-4">
   <p class="mb-6 text-base">Styled colors to personalize your reports. <span class="text-red-800"><strong>Note: </strong>If you are an agent within a brokerage, the brokerage theme will override yours (if its set).</span></p>
+  <h4 class="mb-0">Preview</h4>
   <div
     class="preview rounded-md flex items-center justify-center border border-bgray-400"
     style="background-color: <%= @theme_settings.background %>;font-family: <%= @theme_settings.font %>"
   >
-    <div class="w-4/5 flex flex-wrap my-12 xl:my-24">
-      <h1 style="color: <%= @theme_settings.muted_text %>;">Theme Preview</h1>
+    <div class="w-4/5 flex flex-wrap my-12 lg:my-24">
       <div class="">
-        <div
-          class="float-left mr-12 curve rounded-full h-32 w-32 bg-cover border-4"
-          style="background-image: url(<%= @agent_profile.photo_url %>); border-color: <%= @theme_settings.accent %>;"></div>
-        <div class="border-b-2 pb-2" style="border-color: <%= @theme_settings.accent %>;">
-          <h2 class="mb-0" style="color: <%= @theme_settings.header_text %>"><%= @agent_profile.name %></h2>
-          <h3 style="color: <%= @theme_settings.sub_header_text %>; border-color: <%= @theme_settings.accent %>;">Your friendly agent</h3>
-          <p style="color: <%= @theme_settings.text %>;">A Comparative Market Analysis should be as simple to understand and navigate as the process of listing and
-          <span style="background-color: <%= @theme_settings.highlight_background %>;color: <%= @theme_settings.highlight_text %>;">
-          selling your home</span>. I hope you find all the information you need in this document, but if you have questions
-          click the photo in the upper left to contact me.</p>
+        <div class="border-b-2 pb-4" style="border-color: <%= @theme_settings.accent %>;">
+          <h2 class="mb-0 font-extrabold" style="color: <%= @theme_settings.header_text %>">Why use an agent?</h2>
+          <p style="color: <%= @theme_settings.sub_header_text %>;">How do you prepare for and lead the largest transaction you'll ever enter?
+          You Hire A Realtor, like myself, to be in your corner! Todays market is challenging and requires more than negotiation skills.</p>
+          <div class="flex pt-3">
+            <div class="">
+              <svg class="w-10 h-10" style="stroke: <%= @theme_settings.link %>;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div class="ml-4 text-left" style="color: <%= @theme_settings.link %>;">
+              <label class="text-sm uppercase">Email</label>
+              <p class="font-bold leading-none">jsmith@gmail.com</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -109,7 +114,7 @@
         </div>
         <div class="flex-1">
           <h4 class="mb-0">Header Text</h4>
-          <p>Title text color.</p>
+          <p>Title and bolder text color.</p>
         </div>
       </div>
       <div class="flex">
@@ -122,50 +127,8 @@
         %>
         </div>
         <div class="flex-1">
-          <h4 class="mb-0">Sub-header Text</h4>
-          <p>Subtitle text color.</p>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="mr-3">
-        <%= live_component @socket, ColorPicker,
-          callback: :update_theme,
-          instance_id: :highlight_background,
-          color: @theme_settings.highlight_background,
-          id: :highlight_background_picker
-        %>
-        </div>
-        <div class="flex-1">
-          <h4 class="mb-0">Highlight Background</h4>
-          <p>Background color for highlit text.</p>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="mr-3">
-        <%= live_component @socket, ColorPicker,
-          callback: :update_theme,
-          instance_id: :highlight_text,
-          color: @theme_settings.highlight_text,
-          id: :highlight_text_picker
-        %>
-        </div>
-        <div class="flex-1">
-          <h4 class="mb-0">Highlight Text</h4>
-          <p>Foreground Highlit text color.</p>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="mr-3">
-        <%= live_component @socket, ColorPicker,
-          callback: :update_theme,
-          instance_id: :text,
-          color: @theme_settings.text,
-          id: :text_picker
-        %>
-        </div>
-        <div class="flex-1">
-          <h4 class="mb-0">Text</h4>
-          <p>General paragraph text.</p>
+          <h4 class="mb-0"> Regular Text</h4>
+          <p>Labels and regular text color.</p>
         </div>
       </div>
       <div class="flex">
@@ -180,20 +143,6 @@
         <div class="flex-1">
           <h4 class="mb-0">Links</h4>
           <p>Link (clickable items) color.</p>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="mr-3">
-        <%= live_component @socket, ColorPicker,
-          callback: :update_theme,
-          instance_id: :muted_text,
-          color: @theme_settings.muted_text,
-          id: :muted_text_picker
-        %>
-        </div>
-        <div class="flex-1">
-          <h4 class="mb-0">Muted Text</h4>
-          <p>Decorative background text.</p>
         </div>
       </div>
     </div>

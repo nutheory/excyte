@@ -2290,6 +2290,10 @@ h4 {
 
   left: 10rem;
 }
+.left-2 {
+
+  left: 0.5rem;
+}
 .bottom-0 {
 
   bottom: 0px;
@@ -2305,10 +2309,6 @@ h4 {
 .top-2 {
 
   top: 0.5rem;
-}
-.left-2 {
-
-  left: 0.5rem;
 }
 .-left-96 {
 
@@ -2454,12 +2454,6 @@ h4 {
 
   margin-right: 0.75rem;
 }
-.mx-4 {
-
-  margin-left: 1rem;
-
-  margin-right: 1rem;
-}
 .mx-1 {
 
   margin-left: 0.25rem;
@@ -2489,6 +2483,12 @@ h4 {
   margin-top: 2.5rem;
 
   margin-bottom: 2.5rem;
+}
+.mx-4 {
+
+  margin-left: 1rem;
+
+  margin-right: 1rem;
 }
 .mr-4 {
 
@@ -2953,6 +2953,10 @@ h4 {
 .max-w-screen-sm {
 
   max-width: 640px;
+}
+.max-w-full {
+
+  max-width: 100%;
 }
 .flex-1 {
 
@@ -3820,6 +3824,10 @@ h4 {
 
   padding-right: 0.25rem;
 }
+.pb-1 {
+
+  padding-bottom: 0.25rem;
+}
 .pb-0\.5 {
 
   padding-bottom: 0.125rem;
@@ -3843,10 +3851,6 @@ h4 {
 .pb-6 {
 
   padding-bottom: 1.5rem;
-}
-.pb-1 {
-
-  padding-bottom: 0.25rem;
 }
 .pl-6 {
 
@@ -4507,9 +4511,17 @@ h4 {
 
     margin-right: 1.5rem;
   }
+  .md\:ml-6 {
+
+    margin-left: 1.5rem;
+  }
   .md\:block {
 
     display: block;
+  }
+  .md\:flex {
+
+    display: flex;
   }
   .md\:hidden {
 
@@ -4575,6 +4587,10 @@ h4 {
 
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .md\:items-end {
+
+    align-items: flex-end;
+  }
   .md\:gap-6 {
 
     gap: 1.5rem;
@@ -4590,6 +4606,10 @@ h4 {
     padding-left: 1rem;
 
     padding-right: 1rem;
+  }
+  .md\:text-left {
+
+    text-align: left;
   }
   .md\:text-lg {
 

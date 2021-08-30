@@ -38,7 +38,7 @@ blockquote {
 }
 
 blockquote p {
-  @apply pl-6 text-lg md:text-2xl;
+  @apply text-lg md:text-2xl;
 }
 
 a.fancy {
@@ -305,10 +305,15 @@ div.viewer-wrapper {
 
   & .agent {
     & .avatar {
-      @apply h-60 text-center;
+      @apply w-64 mx-auto text-center;
+
+      & p {
+        line-height: 0rem;
+        margin: 0;
+      }
 
       & img {
-        @apply h-60 block mx-auto;
+        @apply block mx-auto;
       }
     }
   }

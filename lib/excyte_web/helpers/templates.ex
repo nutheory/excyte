@@ -12,19 +12,17 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <divider type="#{type}"></divider>
       <struct class="section agent w-full lg:w-4/5 mx-auto" id="agent_profile">
-        <struct class="grid grid-cols-3 gap-6">
+        <struct class="flex flex-wrap">
           {% if agent["photo_url"] %}
-            <struct class="avatar">
-              <img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" />
-            </struct>
+            <struct class="avatar"><img src="{{ agent["photo_url"] }}" alt="{{ agent["name"] }} photo" /></struct>
           {% endif %}
-          <struct class="col-span-2 flex items-end">
-            <struct class="">
+          <struct class="w-full pt-4 md:ml-6 md:flex-1 md:flex md:items-end">
+            <struct class="text-center md:text-left">
               {% if agent["name"] %}
                 <h1 class="header-color">{{ agent["name"] }}</h1>
               {% endif %}
               {% if agent["tagline"] %}
-                <struct class="my-6">
+                <struct class="my-4 lg:my-6">
                   <blockquote>{{ agent["tagline"] }}</blockquote>
                 </struct>
               {% endif %}

@@ -117,7 +117,7 @@ const buildTheme = (theme) => {
       rule += `div.viewer-wrapper button {color: ${theme.link}}`
       rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
       // rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
-      rule += `div.viewer-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.sub_header_text}; font-size: 5.6rem; z-index: -1;}`
+      // rule += `div.viewer-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.sub_header_text}; font-size: 5.6rem; z-index: -1;}`
   return rule
 }
 

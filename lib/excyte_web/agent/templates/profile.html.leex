@@ -6,58 +6,46 @@
   %>
     <div class="shadow-md bg-white rounded-md p-4 relative">
       <p class="text-base mb-4">Information about yourself we include by default in all reports.</p>
-      <div class="flex flex-wrap">
-        <div class="w-24 h-24 relative md:w-28 md:h-28 rounded-md mx-auto lg:mb-0 lg:ml-0 lg:mr-4">
-          <%= if @profile.photo_url || @photo_url do %>
-            <%= if @profile.photo_url && @photo_url do %>
-              <div class="text-red-700 text-sm text-center pb-1 cursor-pointer" phx-click="toggle-photo-delete">delete photo</div>
-            <% else %>
-              <div class="cursor-pointer" phx-click="toggle-photo-delete">
-                <div class="text-white bg-red-700 text-xs px-1">photo marked for delete</div>
-                <div class="text-right link pr-2 text-xs">undo</div>
-              </div>
-            <% end %>
-          <% end %>
-          <div class="w-full h-full" phx-drop-target="<%= @uploads.photo.ref %>">
-            <%= for {_ref, err} <- @uploads.photo.errors do %>
-              <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
-            <% end %>
-            <%= for entry <- @uploads.photo.entries do %>
-              <%= live_img_preview entry, width: 90, class: "w-full h-full rounded-md" %>
-            <% end %>
-            <%= live_file_input @uploads.photo, class: "opacity-0 h-full w-full cursor-pointer absolute top-1 left-2" %>
-            <%= if @profile.photo_url && length(@uploads.photo.entries) === 0 do %>
-              <img src="<%= @profile.photo_url %>" class="w-full h-full rounded-md" />
-            <% else %>
-              <%= if length(@uploads.photo.entries) === 0 do %>
-                <label>Agent photo</label>
-                <div class="w-full h-full rounded-md text-bgray-100 bg-gray-800 flex items-center justify-center text-center ">Upload<br />photo</div>
-              <% end %>
-            <% end %>
+      <div class="w-full lg:flex-1 mt-10 lg:mt-0">
+        <div class="">
+          <%= label f, :name %>
+          <%= text_input f, :name, class: "text-field", phx_debounce: "blur" %>
+          <%= error_tag f, :name %>
+        </div>
+        <div class="mt-4 flex flex-wrap -mx-2">
+          <div class="w-full md:w-1/2">
+            <div class="px-2">
+              <%= label f, :company_name %>
+              <%= text_input f, :company_name, class: "text-field", phx_debounce: "blur" %>
+              <%= error_tag f, :company_name %>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2">
+            <div class="px-2">
+              <%= label f, :job_title %>
+              <%= text_input f, :job_title, class: "text-field", phx_debounce: "blur" %>
+              <%= error_tag f, :job_title %>
+            </div>
           </div>
         </div>
-        <div class="w-full lg:flex-1 mt-10 lg:mt-0">
-          <div class="">
-            <%= label f, :name %>
-            <%= text_input f, :name, class: "text-field", phx_debounce: "blur" %>
-            <%= error_tag f, :name %>
-          </div>
-          <div class="mt-4 flex flex-wrap -mx-2">
-            <div class="w-full md:w-1/2">
-              <div class="px-2">
-                <%= label f, :company_name %>
-                <%= text_input f, :company_name, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :company_name %>
-              </div>
-            </div>
-            <div class="w-full md:w-1/2">
-              <div class="px-2">
-                <%= label f, :job_title %>
-                <%= text_input f, :job_title, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :job_title %>
-              </div>
-            </div>
-          </div>
+      </div>
+      <div class="flex flex-wrap my-4">
+        <div class="w-40 relative md:w-40 rounded-md mx-auto lg:mb-0 lg:ml-0 lg:mr-4">
+          <%= live_component @socket, ImageEditor,
+            show_image_panel: false,
+            name: "photo",
+            title: "Agent Photo",
+            image_url: @profile.photo_url,
+            aspect_ratio: 4/3,
+            upload_text: "Upload<br />Agent Photo",
+            width: 160,
+            height: 120,
+            callback: "assigns.callback",
+            id: :photo_image_editor
+          %>
+        </div>
+        <div class="w-40 h-24 md:w-40 md:h-24 relative rounded-md mx-auto mt-4 mb-6 lg:mb-0 lg:mr-0 lg:ml-4 lg:mt-0">
+
         </div>
       </div>
       <div class="mt-4">
@@ -70,36 +58,6 @@
           <%= label f, :bio %>
           <%= textarea f, :bio, class: "textarea", phx_debounce: "blur" %>
           <%= error_tag f, :bio %>
-        </div>
-        <div class="w-40 h-24 md:w-40 md:h-24 relative rounded-md mx-auto mt-4 mb-6 lg:mb-0 lg:mr-0 lg:ml-4 lg:mt-0">
-          <%= if @profile.logo_url || @logo_url do %>
-            <%= if @profile.logo_url && @logo_url do %>
-              <div class="text-red-700 text-sm text-center pb-1 cursor-pointer" phx-click="toggle-logo-delete">delete logo</div>
-            <% else %>
-              <div class="cursor-pointer" phx-click="toggle-logo-delete">
-                <div class="text-white bg-red-700 text-xs px-1">logo marked for delete</div>
-                <div class="text-right link pr-2 text-xs">undo</div>
-              </div>
-            <% end %>
-          <% else %>
-            <label>Got a logo?</label>
-          <% end %>
-          <div class="w-full h-full relative" phx-drop-target="<%= @uploads.logo.ref %>">
-            <%= for {_ref, err} <- @uploads.logo.errors do %>
-              <p class="alert alert-danger"><%= Phoenix.Naming.humanize(err) %></p>
-            <% end %>
-            <%= for entry <- @uploads.logo.entries do %>
-              <%= live_img_preview entry, width: 90, class: "w-full h-full rounded-md" %>
-            <% end %>
-            <%= live_file_input @uploads.logo, class: "opacity-0 h-full w-full cursor-pointer absolute top-1 left-2" %>
-            <%= if @profile.logo_url && length(@uploads.logo.entries) === 0 do %>
-              <img src="<%= @profile.logo_url %>" class="w-full h-full rounded-md" />
-            <% else %>
-              <%= if length(@uploads.logo.entries) === 0 do %>
-                <div class="w-full h-full rounded-md text-bgray-100 bg-gray-800 flex items-center justify-center text-center ">Upload<br />logo</div>
-              <% end %>
-            <% end %>
-          </div>
         </div>
       </div>
       <div class=" mt-4 sub-form">

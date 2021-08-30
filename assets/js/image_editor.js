@@ -3,20 +3,41 @@ import Dropzone from "dropzone"
 import "cropperjs/dist/cropper.css"
 import "dropzone/dist/dropzone.css"
 
-
+Dropzone.autoDiscover = false
 
 export const ImageEditor = {
   mounted() {
     const name = this.el.dataset.name
-    const image_wrapper = this.el.querySelector(`#${name}_canvas`)
-    const confirm_button = this.el.querySelector(`#${name}_confirm`)
+    const width = parseInt(this.el.dataset.width)
+    const height = parseInt(this.el.dataset.height)
+    const imageUrl = this.el.dataset.imageUrl
+    const uploadText = this.el.dataset.uploadText
+    const aspectRatio = this.el.dataset.aspectRatio
+    const imageWrapper = this.el.querySelector(`#${name}Canvas`)
+    const confirmButton = this.el.querySelector(`#${name}Confirm`)
     let cropper
 
-    // Dropzone.autoDiscover = false
     let dZone = new Dropzone(`#${name}Target`, {
       url: '/uploader/auth',
+      maxFiles: 1,
+      thumbnailWidth: width,
+      thumbnailHeight: height,
+      dictDefaultMessage: uploadText,
+      addRemoveLinks: true,
+      acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
+      init: function () {
+        if (imageUrl !== "" || imageUrl !== null) {
+          var mockFile = { name: "Agent Photo", type: 'image/jpeg' }
+          this.options.addedfile.call(this, mockFile)
+          this.options.thumbnail.call(this, mockFile, imageUrl)
+          const size = mockFile.previewElement.querySelector(`.dz-size`)
+          size.classList.add('hidden')
+          mockFile.previewElement.classList.add('dz-success')
+          mockFile.previewElement.classList.add('dz-complete')
+        }
+      },
       transformFile: function (file, done) {
-        confirm_button.addEventListener('click', function () {
+        confirmButton.addEventListener('click', function () {
           const canvas = cropper.getCroppedCanvas({});
           canvas.toBlob(blob => {
             dZone.createThumbnail(
@@ -40,10 +61,10 @@ export const ImageEditor = {
       this.pushEventTo(this.el, "toggle-upload-editor-panel", {}, reply => { 
         var image = new Image()
         image.src = URL.createObjectURL(file)
-        image_wrapper.appendChild(image)
+        imageWrapper.appendChild(image)
         setTimeout(() => {
           cropper = new Cropper(image, {
-            aspectRatio: 4 / 3,
+            aspectRatio: aspectRatio,
             crop(event) {
               console.log(event.detail.x);
               console.log(event.detail.y);

@@ -7,7 +7,10 @@ defmodule ExcyteWeb.Components.ImageEditor do
   def update(assigns, socket) do
     {:ok, assign(socket,
       show_image_panel: assigns.show_image_panel,
-      # uploads: assigns.uploads,
+      aspect_ratio: assigns.aspect_ratio,
+      upload_text: assigns.upload_text,
+      width: assigns.width,
+      height: assigns.height,
       name: assigns.name,
       title: assigns.title,
       image_url: assigns.image_url,

@@ -310,6 +310,40 @@ button.jumbo {
   }
 }
 
+.dropzone {
+  min-height: 0 !important;
+  border-radius: 0.75rem !important;
+  background: #333 !important;
+  padding: 0 !important;
+  color: #fff !important;
+  border: none !important;
+
+  & .dz-image-preview {
+    background: transparent !important;
+  }
+
+  & .dz-preview {
+    margin: 0 !important;
+    border-radius: 0.75rem !important;
+
+    & .dz-image {
+      border-radius: 0.75rem !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
+  & .dz-remove {
+    position: absolute;
+    padding: 2px 4px;
+    color: #fff;
+    background-color: #c43230;
+    bottom: 8px;
+    right: 8px;
+    z-index: 150;
+  }
+}
+
 .panel-slidein {
   @apply h-screen;
 

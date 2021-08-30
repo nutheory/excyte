@@ -19990,19 +19990,44 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+(dropzone__WEBPACK_IMPORTED_MODULE_1___default().autoDiscover) = false;
 var ImageEditor = {
   mounted: function mounted() {
     var _this = this;
 
     var name = this.el.dataset.name;
-    var image_wrapper = this.el.querySelector("#".concat(name, "_canvas"));
-    var confirm_button = this.el.querySelector("#".concat(name, "_confirm"));
-    var cropper; // Dropzone.autoDiscover = false
-
+    var width = parseInt(this.el.dataset.width);
+    var height = parseInt(this.el.dataset.height);
+    var imageUrl = this.el.dataset.imageUrl;
+    var uploadText = this.el.dataset.uploadText;
+    var aspectRatio = this.el.dataset.aspectRatio;
+    var imageWrapper = this.el.querySelector("#".concat(name, "Canvas"));
+    var confirmButton = this.el.querySelector("#".concat(name, "Confirm"));
+    var cropper;
     var dZone = new (dropzone__WEBPACK_IMPORTED_MODULE_1___default())("#".concat(name, "Target"), {
       url: '/uploader/auth',
+      maxFiles: 1,
+      thumbnailWidth: width,
+      thumbnailHeight: height,
+      dictDefaultMessage: uploadText,
+      addRemoveLinks: true,
+      acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
+      init: function init() {
+        if (imageUrl !== "" || imageUrl !== null) {
+          var mockFile = {
+            name: "Agent Photo",
+            type: 'image/jpeg'
+          };
+          this.options.addedfile.call(this, mockFile);
+          this.options.thumbnail.call(this, mockFile, imageUrl);
+          var size = mockFile.previewElement.querySelector(".dz-size");
+          size.classList.add('hidden');
+          mockFile.previewElement.classList.add('dz-success');
+          mockFile.previewElement.classList.add('dz-complete');
+        }
+      },
       transformFile: function transformFile(file, done) {
-        confirm_button.addEventListener('click', function () {
+        confirmButton.addEventListener('click', function () {
           var canvas = cropper.getCroppedCanvas({});
           canvas.toBlob(function (blob) {
             dZone.createThumbnail(blob, dZone.options.thumbnailWidth, dZone.options.thumbnailHeight, dZone.options.thumbnailMethod, false, function (dataURL) {
@@ -20019,10 +20044,10 @@ var ImageEditor = {
       _this.pushEventTo(_this.el, "toggle-upload-editor-panel", {}, function (reply) {
         var image = new Image();
         image.src = URL.createObjectURL(file);
-        image_wrapper.appendChild(image);
+        imageWrapper.appendChild(image);
         setTimeout(function () {
           cropper = new (cropperjs__WEBPACK_IMPORTED_MODULE_0___default())(image, {
-            aspectRatio: 4 / 3,
+            aspectRatio: aspectRatio,
             crop: function crop(event) {
               console.log(event.detail.x);
               console.log(event.detail.y);

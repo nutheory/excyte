@@ -111,7 +111,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     adjustments = Enum.map(listing["custom_adjustments"], fn adj ->
       Map.merge(adj, %{"display_value" => number_to_delimited(adj["value"], precision: 0)})
     end)
-    media = Jason.encode!(listing["media"])
+    media = Jason.encode!(listing["media"]) |> String.replace("'", "")
     """
       <divider type="#{type}"></divider>
       <struct class="section comparable" id="comparable_#{listing["listing_key"]}">
@@ -413,7 +413,7 @@ defmodule ExcyteWeb.Helpers.Templates do
         {:error, err} -> IO.inspect(err)
       end
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
-    media = Jason.encode!(listing["media"])
+    media = Jason.encode!(listing["media"]) |> String.replace("'", "")
     """
       <divider type="#{type}"></divider>
       <struct class="section showcase" id="showcase">
@@ -774,7 +774,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   def tour_stop(%{listing: listing}, type) do
     destination_uri = URI.encode("#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]}")
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
-    media = Jason.encode!(listing["media"])
+    media = Jason.encode!(listing["media"]) |> String.replace("'", "")
     """
       <divider type="#{type}"></divider>
       <struct class="section tour" id="tour_stop">

@@ -7,6 +7,7 @@ defmodule ExcyteWeb.ProtectedHeader do
 
   def mount(params, %{"user_token" => token} = session, %{assigns: assigns} = socket) do
     cu = Accounts.get_user_by_session_token(token)
+    if connected?(socket), do: Accounts.subscribe(cu.id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
       {:ok, assign(socket,
@@ -25,6 +26,14 @@ defmodule ExcyteWeb.ProtectedHeader do
     end
   end
 
+  @impl true
+  def handle_info({Accounts, [:user, :updated], cu}, socket) do
+    {:noreply, assign(socket, current_user: cu)}
+  end
+
+    def handle_info({Accounts, [:user, _], _}, socket) do
+    {:noreply, socket}
+  end
   def handle_event("switch-mls", %{"mls-id" => mid}, %{assigns: assigns} = socket) do
     mls = Enum.find(assigns.mls_options, fn x -> x.id === String.to_integer(mid) end)
     {:ok, user} = Accounts.update_user(assigns.current_user.id, %{current_mls: %{

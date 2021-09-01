@@ -1,23 +1,67 @@
 import Cropper from "cropperjs"
 import Dropzone from "dropzone"
+import axios from 'axios'
+import { nanoid } from 'nanoid'
 import "cropperjs/dist/cropper.css"
 import "dropzone/dist/dropzone.css"
 
-
+Dropzone.autoDiscover = false
 
 export const ImageEditor = {
   mounted() {
+    const modelId = this.el.dataset.modelId
     const name = this.el.dataset.name
-    const image_wrapper = this.el.querySelector(`#${name}_canvas`)
-    const confirm_button = this.el.querySelector(`#${name}_confirm`)
+    const title = this.el.dataset.title
+    const width = parseInt(this.el.dataset.width)
+    const height = parseInt(this.el.dataset.height)
+    const uploadText = this.el.dataset.uploadText
+    const aspectRatio = this.el.dataset.aspectRatio
+    const bucket = this.el.dataset.bucket
+    const imageWrapper = this.el.querySelector(`#${name}Canvas`)
+    const confirmButton = this.el.querySelector(`#${name}Confirm`)
+    let imageUrl = this.el.dataset.imageUrl
     let cropper
 
-    // Dropzone.autoDiscover = false
     let dZone = new Dropzone(`#${name}Target`, {
-      url: '/uploader/auth',
+      url: '/',
+      maxFiles: 1,
+      method: 'put',
+      parallelUploads: 1,
+      uploadMultiple: false,
+      autoProcessQueue: false,
+      thumbnailWidth: width,
+      thumbnailHeight: height,
+      dictDefaultMessage: uploadText,
+      addRemoveLinks: true,
+      acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
+      sending: function (file, xhr, formData) {
+        let _send = xhr.send
+        xhr.send = () => {
+          _send.call(xhr, file.blob)
+        }
+      },
+      init: function () {
+        if (imageUrl !== "") {
+          var mockFile = { name: title }
+          this.options.addedfile.call(this, mockFile)
+          this.options.thumbnail.call(this, mockFile, imageUrl)
+          const size = mockFile.previewElement.querySelector(`.dz-size`)
+          size.classList.add('hidden')
+          mockFile.previewElement.classList.add('dz-success')
+          mockFile.previewElement.classList.add('dz-complete')
+        }
+      },
+      renameFile: function (_file) {
+        return nanoid(10)
+      },
       transformFile: function (file, done) {
-        confirm_button.addEventListener('click', function () {
-          const canvas = cropper.getCroppedCanvas({});
+        confirmButton.addEventListener('click', function () {
+          let canvas = cropper.getCroppedCanvas({
+            maxWidth: 1600,
+            maxHeight: 1400,
+            fillColor: '#fff',
+            imageSmoothingQuality: 'high',
+          })
           canvas.toBlob(blob => {
             dZone.createThumbnail(
               blob,
@@ -27,59 +71,80 @@ export const ImageEditor = {
               false,
               (dataURL) => {
                 dZone.emit('thumbnail', file, dataURL)
+                file.blob = blob
                 done(blob)
               }
             )
           }, 'image/jpeg', 0.9)
         })
-      }
+      },
+      accept: function (file, done) {
+        axios.get(`/uploader/presigned`, {
+          params: {
+            type: file.type,
+            filename: file.upload.filename,
+            bucket: `${bucket}/${modelId}`
+          }
+        }).then((res) => {
+          file.uploadURL = res.data
+          done()
+          // Manually process each file
+          setTimeout(() => dZone.processFile(file))
+        }).catch((err) => {
+          done('Failed to get an S3 signed upload URL', err)
+        })
+      },
     })
 
     dZone.on("addedfile", file => {
-      console.log("A file has been added")
       this.pushEventTo(this.el, "toggle-upload-editor-panel", {}, reply => { 
         var image = new Image()
         image.src = URL.createObjectURL(file)
-        image_wrapper.appendChild(image)
+        imageWrapper.appendChild(image)
         setTimeout(() => {
           cropper = new Cropper(image, {
-            aspectRatio: 4 / 3,
-            crop(event) {
-              console.log(event.detail.x);
-              console.log(event.detail.y);
-              console.log(event.detail.width);
-              console.log(event.detail.height);
-              console.log(event.detail.rotate);
-              console.log(event.detail.scaleX);
-              console.log(event.detail.scaleY);
-            },
+            aspectRatio: aspectRatio,
           })
         }, 200)
       })
     })
 
+    dZone.on('processing', (file) => {
+      dZone.options.url = file.uploadURL
+    })
 
-    // const image = this.el.querySelector('#file-field');
-    
-    
-    
-    // this.handleEvent("panelTrigger", () => {
-    //   setTimeout(() => {
-    //     const cropper = new Cropper(image, {
-    //       aspectRatio: 4 / 3,
-    //       // viewMode: 3,
-    //       crop(event) {
-    //         console.log(event.detail.x);
-    //         console.log(event.detail.y);
-    //         console.log(event.detail.width);
-    //         console.log(event.detail.height);
-    //         console.log(event.detail.rotate);
-    //         console.log(event.detail.scaleX);
-    //         console.log(event.detail.scaleY);
-    //       },
-    //     })
-    //   }, 200)
-    // })
+    dZone.on('success', (file, _resp) => {
+      this.pushEventTo(this.el, "uploader-callback", {
+        bucket, 
+        name,
+        filename: file.upload.filename,
+        type: file.blob.type,
+        size: file.blob.size,
+      }, reply => {
+        imageUrl = `//excyte.s3.amazonaws.com/${bucket}/${modelId}/${file.upload.filename}`
+      })
+    })
+
+    dZone.on('error', (file, resp, q) => {
+
+    })
+
+    dZone.on('complete', (file, resp) => {
+
+    })
+
+    dZone.on('reset', _file => {
+      this.pushEventTo(this.el, "destroy-callback", { url: imageUrl, name }, reply => {
+
+      })
+    })
+
+    dZone.on("removedFile", _file => {
+      console.log("BOOM", imageUrl)
+      this.pushEventTo(this.el, "destroy-callback", { url: imageUrl, name }, reply => {
+
+      })
+    })
   },
   destroyed() {
     // window.editorHook = null

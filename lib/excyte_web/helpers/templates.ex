@@ -30,13 +30,13 @@ defmodule ExcyteWeb.Helpers.Templates do
                 <h3 class="mb-0 header-color">{{ agent["company_name"] }}</h3>
               {% endif %}
               {% if agent["job_title"] %}
-                <p class="font-semibold"><i>{{ agent["job_title"] }}</i></p>
+                <p class="font-semibold mb-4"><i>{{ agent["job_title"] }}</i></p>
               {% endif %}
             </struct>
           </struct>
         </struct>
         {% if agent["bio"] %}
-          <p class="mt-4 sub-header-color font-semibold text-lg md:text-xl lg:text-2xl">{{ agent["bio"] }}</p>
+          <p class="mt-4 mb-4 sub-header-color font-semibold text-lg md:text-xl lg:text-2xl">{{ agent["bio"] }}</p>
         {% endif %}
         <struct class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
           {% if agent["contacts"].size > 0 %}
@@ -67,18 +67,16 @@ defmodule ExcyteWeb.Helpers.Templates do
       <divider type="#{type}"></divider>
       <struct class="section w-full lg:w-4/5 mx-auto" id="brokerage">
         {% if brokerage["logo_url"] %}
-          <struct class="flex items-center justify-center">
-            <img src="{{ brokerage["logo_url"] }}" alt="logo" />
-          </struct>
+          <struct class="flex items-center justify-center"><img src="{{ brokerage["logo_url"] }}" alt="logo" /></struct>
         {% endif %}
-        <h2 class="header-color text-center mt-4">{{ brokerage["company_name"]}}</h2>
+        <h2 class="header-color text-center">{{ brokerage["company_name"]}}</h2>
         {% if brokerage["tagline"] %}
           <struct class="flex items-center justify-center my-4">
             <blockquote>{{ brokerage["tagline"] }}</blockquote>
           </struct>
         {% endif %}
         {% if brokerage["description"] %}
-          <p class="sub-header-color font-semibold text-lg md:text-xl lg:text-2xl">{{ brokerage["description"] }}</p>
+          <p class="sub-header-color mb-4 font-semibold text-lg md:text-xl lg:text-2xl">{{ brokerage["description"] }}</p>
         {% endif %}
         <struct class="grid sm:grid-cols-2 gap-y-2 gap-x-6">
           {% if brokerage["contacts"] or brokerage["addresses"] %}
@@ -125,7 +123,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           data-addr-city='{{ lst["city"] }}'
           data-listing-id='{{ lst["listing_id"] }}'
           class="showcase-gallery"></div>
-        <p class="summary pt-4 sub-header-color">#{summarize_sale_info(listing)}</p>
+        <p class="summary pt-4 mb-4 sub-header-color">#{summarize_sale_info(listing)}</p>
         <struct class="main-details">
           <struct class="detail">
             <h1 class="header-color">
@@ -218,7 +216,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           </struct>
           <struct class="adjustments sub-header-color">
             <h4 class="mb-0">Adjustment considerations</h4>
-            <p class="">Summary of differentiating attributes</p>
+            <p class="mb-4">Summary of differentiating attributes</p>
             <table>
               <tbody>
                 {% if lst["close_price"] %}
@@ -368,14 +366,14 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <divider type="#{type}"></divider>
       <struct class="section pricing" id="pricing_strategy">
-        <h1 class="header-color">Home pricing strategies</h1>
-        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">
+        <h1 class="header-color">Home Pricing Strategies</h1>
+        <p class="mb-4 text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">
         <span class="font-extrabold header-color">Currently its a Sellers
         Market</span> and its never been more important having an Agent
         like myself in your corner. I have the market knowledge to
         highlight the value of your home and the connections that can lead
         to a higher selling price.</p>
-        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">Market value is
+        <p class="text-lg mb-4 md:text-xl lg:text-2xl font-semibold sub-header-color">Market value is
         an opinion of what a property would sell for in a competitive market
         based on the features and benefits of that property (the value), the
         overall real estate market, supply and demand, and what other similar
@@ -386,7 +384,7 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid-fifty">
           <struct class="fifty">
             <h4>Above Market Value</h4>
-            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">This pricing startegy can be risky and most seasoned Agents will avoid
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color mb-4">This pricing startegy can be risky and most seasoned Agents will avoid
             doing this to Sellers. The 1st 3 weeks of a listing is the most important
             and over pricing can negativly effect effect this time. You will see less
             Buyers at open houses, less offers and longer listing times. Ultimately
@@ -395,7 +393,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           </struct>
           <struct class="fifty">
             <h4>Below Market Value</h4>
-            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">This senario works best for a Seller when time is of the essence and its
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color mb-4">This senario works best for a Seller when time is of the essence and its
             important to sell quick. Or maybe there are improvements needed that the
             seller doesnt want to address. In todays market you may leave money on the
             table but you will sell fast.</p>
@@ -434,9 +432,9 @@ defmodule ExcyteWeb.Helpers.Templates do
           '
           data-listing-id='{{ lst["listing_id"] }}'
           class="showcase-gallery"></div>
-        <p class="summary pt-4 sub-header-color">#{summarize_showcase(listing)}</p>
+        <p class="summary pt-4 sub-header-color mb-4">#{summarize_showcase(listing)}</p>
         {% if lst["public_remarks"] %}
-          <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto">{{ lst["public_remarks"] }}</p>
+          <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4">{{ lst["public_remarks"] }}</p>
         {% endif %}
         <struct class="main-details">
           <struct class="detail">
@@ -596,7 +594,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                 {% for feat in lst["features"] %}
                   <struct class="block">
                     <h4 class="header-color mb-0">{{ feat["name"] }}</h4>
-                    <p class="text-lg md:text-xl font-semibold">{{ feat["human"] }}</p>
+                    <p class="text-lg md:text-xl font-semibold mb-4">{{ feat["human"] }}</p>
                   </struct>
                 {% endfor %}
               </struct>
@@ -610,7 +608,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                     <h4 class="mb-0 header-color">{{ ld["room_name"] }}</h4>
                     {% for attr in ld["values"] %}
                       {% if attr["name"] == "Features" %}
-                        <p class="italic text-lg md:text-xl font-semibold">{{ attr["value"] }}</p>
+                        <p class="italic text-lg md:text-xl font-semibold mb-4">{{ attr["value"] }}</p>
                       {% endif %}
                     {% endfor %}
                     <struct class="flex flex-wrap">
@@ -640,7 +638,7 @@ defmodule ExcyteWeb.Helpers.Templates do
       <divider type="#{type}"></divider>
       <struct class="section subject" id="subject">
         <h1 class="header-color">Understanding Comparable Listings</h1>
-        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold">In explaining the suggested pricing
+        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">In explaining the suggested pricing
         of your home we compare it to local properties with similiar
         features(sqft, beds, baths) as well as proximity to shopping,
         schools, recreational facilities, fire and police protection.</p>
@@ -731,7 +729,7 @@ defmodule ExcyteWeb.Helpers.Templates do
       <divider type="#{type}"></divider>
       <struct class="section synopsis" id="synopsis">
         <h1 class="header-color">Synopsis</h1>
-        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold">Based on
+        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">Based on
         all the comparable listings, local data, and the current market. The following are
         great data points to consider when selling your home.</p>
         <struct class="flex flex-wrap">
@@ -798,9 +796,9 @@ defmodule ExcyteWeb.Helpers.Templates do
           '
           data-listing-id='{{ lst["listing_id"] }}'
           class="showcase-gallery"></div>
-        <p class="summary pt-4 sub-header-color">#{summarize_showcase(listing)}</p>
+        <p class="summary pt-4 sub-header-color mb-4">#{summarize_showcase(listing)}</p>
         {% if lst["public_remarks"] %}
-          <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto">{{ lst["public_remarks"] }}</p>
+          <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4">{{ lst["public_remarks"] }}</p>
         {% endif %}
         <struct class="main-details">
           <struct class="detail">
@@ -960,7 +958,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                 {% for feat in lst["features"] %}
                   <struct class="block">
                     <h4 class="header-color mb-0">{{ feat["name"] }}</h4>
-                    <p class="text-lg md:text-xl font-semibold">{{ feat["human"] }}</p>
+                    <p class="text-lg md:text-xl font-semibold mb-4">{{ feat["human"] }}</p>
                   </struct>
                 {% endfor %}
               </struct>
@@ -974,7 +972,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                     <h4 class="mb-0 header-color">{{ ld["room_name"] }}</h4>
                     {% for attr in ld["values"] %}
                       {% if attr["name"] == "Features" %}
-                        <p class="italic text-lg md:text-xl font-semibold">{{ attr["value"] }}</p>
+                        <p class="italic text-lg md:text-xl font-semibold mb-4">{{ attr["value"] }}</p>
                       {% endif %}
                     {% endfor %}
                     <struct class="flex flex-wrap">
@@ -1023,7 +1021,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <divider type="#{type}"></divider>
       <struct class="section whats-cma" id="whats_cma">
-        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color"><span class="font-extrabold header-color">
+        <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color mb-4"><span class="font-extrabold header-color">
         A CMA is</span> a comparison of the most recent Active, Sold
         and Pending properties in the same neighborhood. These homes are commonly
         referred to as Listings. Each listing is detailed with information like
@@ -1033,14 +1031,14 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="data-grid-fifty mt-8">
           <struct class="fifty">
             <h4>Where does the data come from?</h4>
-            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">The information used in your CMA is provided by my local Multiple Listing
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color mb-4">The information used in your CMA is provided by my local Multiple Listing
             Service or MLS. MLS data is private and can only be accessed by licensed members,
             like myself, who pay an annual dues. Brokers, Realtors and Appraisers all used
             this protected data to arrive at the most accurate listing price.</p>
           </struct>
           <struct class="fifty">
             <h4>How Accurate is a CMA?</h4>
-            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color">MLS data is live and the most accurate data that can be used. Listings are
+            <p class="text-lg md:text-xl lg:text-2xl font-semibold sub-header-color mb-4">MLS data is live and the most accurate data that can be used. Listings are
             entered and updates are realtime. There is No Way to get more accurate data
             for your home. That's why it's so important to have a Realtor in your corner
             during one of the most important transactions in your life. The market is
@@ -1056,9 +1054,9 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <divider type="#{type}"></divider>
       <struct class="section lg:w-4/5 mx-auto" id="why_an_agent">
-        <h1 class="header-color mb-0">Why use an agent?</h1>
+        <h1 class="header-color mb-0">Why Use an Agent?</h1>
         <struct class="sub-header-color">
-          <p class="text-lg md:text-xl lg:text-2xl font-semibold">Anyone can go online and find
+          <p class="text-lg md:text-xl lg:text-2xl font-semibold mb-4">Anyone can go online and find
           recources that will give them an idea of what the
           estimated price your home can sell for in todays market......but whats next?
           Do you have the the knowledge and connections to capitalize in todays market?

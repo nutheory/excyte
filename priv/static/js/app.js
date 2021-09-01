@@ -19458,7 +19458,7 @@ __webpack_require__.r(__webpack_exports__);
           extension = _ref2.extension;
       var dom = document.createElement('div');
       var line = document.createElement('div');
-      line.classList.add('mt-3', 'border-t', 'accent-color');
+      line.classList.add('mt-3', 'border-t-2', 'mx-auto', 'w-2/5', 'accent-color');
       dom.append(line); // const left = document.createElement('div')
       // const leftLine = document.createElement('div')
       // const right = document.createElement('div')
@@ -19919,6 +19919,32 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./js/gallery.js":
+/*!***********************!*\
+  !*** ./js/gallery.js ***!
+  \***********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "InitGallery": () => (/* binding */ InitGallery)
+/* harmony export */ });
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_0__);
+
+window.lightbox = glightbox__WEBPACK_IMPORTED_MODULE_0___default()({
+  touchNavigation: true,
+  loop: true,
+  autoplayVideos: true,
+  selector: ".glightbox"
+});
+var InitGallery = {
+  mounted: function mounted() {}
+};
+
+/***/ }),
+
 /***/ "./js/geo_location.js":
 /*!****************************!*\
   !*** ./js/geo_location.js ***!
@@ -19984,75 +20010,147 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var cropperjs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(cropperjs__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.js");
 /* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dropzone__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var cropperjs_dist_cropper_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! cropperjs/dist/cropper.css */ "./node_modules/cropperjs/dist/cropper.css");
-/* harmony import */ var dropzone_dist_dropzone_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! dropzone/dist/dropzone.css */ "./node_modules/dropzone/dist/dropzone.css");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.dev.js");
+/* harmony import */ var cropperjs_dist_cropper_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! cropperjs/dist/cropper.css */ "./node_modules/cropperjs/dist/cropper.css");
+/* harmony import */ var dropzone_dist_dropzone_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! dropzone/dist/dropzone.css */ "./node_modules/dropzone/dist/dropzone.css");
 
 
 
 
+
+
+(dropzone__WEBPACK_IMPORTED_MODULE_1___default().autoDiscover) = false;
 var ImageEditor = {
   mounted: function mounted() {
     var _this = this;
 
+    var modelId = this.el.dataset.modelId;
     var name = this.el.dataset.name;
-    var image_wrapper = this.el.querySelector("#".concat(name, "_canvas"));
-    var confirm_button = this.el.querySelector("#".concat(name, "_confirm"));
-    var cropper; // Dropzone.autoDiscover = false
-
+    var title = this.el.dataset.title;
+    var width = parseInt(this.el.dataset.width);
+    var height = parseInt(this.el.dataset.height);
+    var uploadText = this.el.dataset.uploadText;
+    var aspectRatio = this.el.dataset.aspectRatio;
+    var bucket = this.el.dataset.bucket;
+    var imageWrapper = this.el.querySelector("#".concat(name, "Canvas"));
+    var confirmButton = this.el.querySelector("#".concat(name, "Confirm"));
+    var imageUrl = this.el.dataset.imageUrl;
+    var cropper;
     var dZone = new (dropzone__WEBPACK_IMPORTED_MODULE_1___default())("#".concat(name, "Target"), {
-      url: '/uploader/auth',
+      url: '/',
+      maxFiles: 1,
+      method: 'put',
+      parallelUploads: 1,
+      uploadMultiple: false,
+      autoProcessQueue: false,
+      thumbnailWidth: width,
+      thumbnailHeight: height,
+      dictDefaultMessage: uploadText,
+      addRemoveLinks: true,
+      acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
+      sending: function sending(file, xhr, formData) {
+        var _send = xhr.send;
+
+        xhr.send = function () {
+          _send.call(xhr, file.blob);
+        };
+      },
+      init: function init() {
+        if (imageUrl !== "") {
+          var mockFile = {
+            name: title
+          };
+          this.options.addedfile.call(this, mockFile);
+          this.options.thumbnail.call(this, mockFile, imageUrl);
+          var size = mockFile.previewElement.querySelector(".dz-size");
+          size.classList.add('hidden');
+          mockFile.previewElement.classList.add('dz-success');
+          mockFile.previewElement.classList.add('dz-complete');
+        }
+      },
+      renameFile: function renameFile(_file) {
+        return (0,nanoid__WEBPACK_IMPORTED_MODULE_5__.nanoid)(10);
+      },
       transformFile: function transformFile(file, done) {
-        confirm_button.addEventListener('click', function () {
-          var canvas = cropper.getCroppedCanvas({});
+        confirmButton.addEventListener('click', function () {
+          var canvas = cropper.getCroppedCanvas({
+            maxWidth: 1600,
+            maxHeight: 1400,
+            fillColor: '#fff',
+            imageSmoothingQuality: 'high'
+          });
           canvas.toBlob(function (blob) {
             dZone.createThumbnail(blob, dZone.options.thumbnailWidth, dZone.options.thumbnailHeight, dZone.options.thumbnailMethod, false, function (dataURL) {
               dZone.emit('thumbnail', file, dataURL);
+              file.blob = blob;
               done(blob);
             });
           }, 'image/jpeg', 0.9);
         });
+      },
+      accept: function accept(file, done) {
+        axios__WEBPACK_IMPORTED_MODULE_2___default().get("/uploader/presigned", {
+          params: {
+            type: file.type,
+            filename: file.upload.filename,
+            bucket: "".concat(bucket, "/").concat(modelId)
+          }
+        }).then(function (res) {
+          file.uploadURL = res.data;
+          done(); // Manually process each file
+
+          setTimeout(function () {
+            return dZone.processFile(file);
+          });
+        })["catch"](function (err) {
+          done('Failed to get an S3 signed upload URL', err);
+        });
       }
     });
     dZone.on("addedfile", function (file) {
-      console.log("A file has been added");
-
       _this.pushEventTo(_this.el, "toggle-upload-editor-panel", {}, function (reply) {
         var image = new Image();
         image.src = URL.createObjectURL(file);
-        image_wrapper.appendChild(image);
+        imageWrapper.appendChild(image);
         setTimeout(function () {
           cropper = new (cropperjs__WEBPACK_IMPORTED_MODULE_0___default())(image, {
-            aspectRatio: 4 / 3,
-            crop: function crop(event) {
-              console.log(event.detail.x);
-              console.log(event.detail.y);
-              console.log(event.detail.width);
-              console.log(event.detail.height);
-              console.log(event.detail.rotate);
-              console.log(event.detail.scaleX);
-              console.log(event.detail.scaleY);
-            }
+            aspectRatio: aspectRatio
           });
         }, 200);
       });
-    }); // const image = this.el.querySelector('#file-field');
-    // this.handleEvent("panelTrigger", () => {
-    //   setTimeout(() => {
-    //     const cropper = new Cropper(image, {
-    //       aspectRatio: 4 / 3,
-    //       // viewMode: 3,
-    //       crop(event) {
-    //         console.log(event.detail.x);
-    //         console.log(event.detail.y);
-    //         console.log(event.detail.width);
-    //         console.log(event.detail.height);
-    //         console.log(event.detail.rotate);
-    //         console.log(event.detail.scaleX);
-    //         console.log(event.detail.scaleY);
-    //       },
-    //     })
-    //   }, 200)
-    // })
+    });
+    dZone.on('processing', function (file) {
+      dZone.options.url = file.uploadURL;
+    });
+    dZone.on('success', function (file, _resp) {
+      _this.pushEventTo(_this.el, "uploader-callback", {
+        bucket: bucket,
+        name: name,
+        filename: file.upload.filename,
+        type: file.blob.type,
+        size: file.blob.size
+      }, function (reply) {
+        imageUrl = "//excyte.s3.amazonaws.com/".concat(bucket, "/").concat(modelId, "/").concat(file.upload.filename);
+      });
+    });
+    dZone.on('error', function (file, resp, q) {});
+    dZone.on('complete', function (file, resp) {});
+    dZone.on('reset', function (_file) {
+      _this.pushEventTo(_this.el, "destroy-callback", {
+        url: imageUrl,
+        name: name
+      }, function (reply) {});
+    });
+    dZone.on("removedFile", function (_file) {
+      console.log("BOOM", imageUrl);
+
+      _this.pushEventTo(_this.el, "destroy-callback", {
+        url: imageUrl,
+        name: name
+      }, function (reply) {});
+    });
   },
   destroyed: function destroyed() {// window.editorHook = null
     // window.currentEditor = null
@@ -39508,6 +39606,151 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
+/***/ "./node_modules/nanoid/index.dev.js":
+/*!******************************************!*\
+  !*** ./node_modules/nanoid/index.dev.js ***!
+  \******************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "nanoid": () => (/* binding */ nanoid),
+/* harmony export */   "customAlphabet": () => (/* binding */ customAlphabet),
+/* harmony export */   "customRandom": () => (/* binding */ customRandom),
+/* harmony export */   "urlAlphabet": () => (/* reexport safe */ _url_alphabet_index_js__WEBPACK_IMPORTED_MODULE_0__.urlAlphabet),
+/* harmony export */   "random": () => (/* binding */ random)
+/* harmony export */ });
+/* harmony import */ var _url_alphabet_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./url-alphabet/index.js */ "./node_modules/nanoid/url-alphabet/index.js");
+// This file replaces `index.js` in bundlers like webpack or Rollup,
+// according to `browser` config in `package.json`.
+
+
+
+if (true) {
+  // All bundlers will remove this block in the production bundle.
+  if (
+    typeof navigator !== 'undefined' &&
+    navigator.product === 'ReactNative' &&
+    typeof crypto === 'undefined'
+  ) {
+    throw new Error(
+      'React Native does not have a built-in secure random generator. ' +
+        'If you don’t need unpredictable IDs use `nanoid/non-secure`. ' +
+        'For secure IDs, import `react-native-get-random-values` ' +
+        'before Nano ID.'
+    )
+  }
+  if (typeof msCrypto !== 'undefined' && typeof crypto === 'undefined') {
+    throw new Error(
+      'Import file with `if (!window.crypto) window.crypto = window.msCrypto`' +
+        ' before importing Nano ID to fix IE 11 support'
+    )
+  }
+  if (typeof crypto === 'undefined') {
+    throw new Error(
+      'Your browser does not have secure random generator. ' +
+        'If you don’t need unpredictable IDs, you can use nanoid/non-secure.'
+    )
+  }
+}
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+
+let customRandom = (alphabet, size, getRandom) => {
+  // First, a bitmask is necessary to generate the ID. The bitmask makes bytes
+  // values closer to the alphabet size. The bitmask calculates the closest
+  // `2^31 - 1` number, which exceeds the alphabet size.
+  // For example, the bitmask for the alphabet size 30 is 31 (00011111).
+  // `Math.clz32` is not used, because it is not available in browsers.
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  // Though, the bitmask solution is not perfect since the bytes exceeding
+  // the alphabet size are refused. Therefore, to reliably generate the ID,
+  // the random bytes redundancy has to be satisfied.
+
+  // Note: every hardware random generator call is performance expensive,
+  // because the system call for entropy collection takes a lot of time.
+  // So, to avoid additional system calls, extra bytes are requested in advance.
+
+  // Next, a step determines how many random bytes to generate.
+  // The number of random bytes gets decided upon the ID size, mask,
+  // alphabet size, and magic number 1.6 (using 1.6 peaks at performance
+  // according to benchmarks).
+
+  // `-~f => Math.ceil(f)` if f is a float
+  // `-~i => i + 1` if i is an integer
+  let step = -~((1.6 * mask * size) / alphabet.length)
+
+  return () => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      // A compact alternative for `for (var i = 0; i < step; i++)`.
+      let j = step
+      while (j--) {
+        // Adding `|| ''` refuses a random byte that exceeds the alphabet size.
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+
+let customAlphabet = (alphabet, size) => customRandom(alphabet, size, random)
+
+let nanoid = (size = 21) => {
+  let id = ''
+  let bytes = crypto.getRandomValues(new Uint8Array(size))
+
+  // A compact alternative for `for (var i = 0; i < step; i++)`.
+  while (size--) {
+    // It is incorrect to use bytes exceeding the alphabet size.
+    // The following mask reduces the random byte in the 0-255 value
+    // range to the 0-63 value range. Therefore, adding hacks, such
+    // as empty string fallback or magic numbers, is unneccessary because
+    // the bitmask trims bytes down to the alphabet size.
+    let byte = bytes[size] & 63
+    if (byte < 36) {
+      // `0-9a-z`
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      // `A-Z`
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte < 63) {
+      id += '_'
+    } else {
+      id += '-'
+    }
+  }
+  return id
+}
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/nanoid/url-alphabet/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/nanoid/url-alphabet/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "urlAlphabet": () => (/* binding */ urlAlphabet)
+/* harmony export */ });
+// This alphabet uses `A-Za-z0-9_-` symbols. The genetic algorithm helped
+// optimize the gzip compression for this alphabet.
+let urlAlphabet =
+  'ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW'
+
+
 
 
 /***/ }),
@@ -63131,18 +63374,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(phoenix_live_view__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _viewport_resize__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./viewport_resize */ "./js/viewport_resize.js");
 /* harmony import */ var _sorting__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sorting */ "./js/sorting.js");
-/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./theme */ "./js/theme.js");
-/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./editor */ "./js/editor.js");
-/* harmony import */ var _preview__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./preview */ "./js/preview.js");
-/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
-/* harmony import */ var _image_editor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./image_editor */ "./js/image_editor.js");
-/* harmony import */ var _mobile_sizing__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./mobile_sizing */ "./js/mobile_sizing.js");
-/* harmony import */ var _mux_uploader__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./mux_uploader */ "./js/mux_uploader.js");
-/* harmony import */ var _checkout__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./checkout */ "./js/checkout.js");
-/* harmony import */ var _geo_location__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./geo_location */ "./js/geo_location.js");
-/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./location */ "./js/location.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
-/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var _gallery__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./gallery */ "./js/gallery.js");
+/* harmony import */ var _theme__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./theme */ "./js/theme.js");
+/* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./editor */ "./js/editor.js");
+/* harmony import */ var _preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./preview */ "./js/preview.js");
+/* harmony import */ var _viewer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./viewer */ "./js/viewer.js");
+/* harmony import */ var _image_editor__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./image_editor */ "./js/image_editor.js");
+/* harmony import */ var _mobile_sizing__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./mobile_sizing */ "./js/mobile_sizing.js");
+/* harmony import */ var _mux_uploader__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./mux_uploader */ "./js/mux_uploader.js");
+/* harmony import */ var _checkout__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./checkout */ "./js/checkout.js");
+/* harmony import */ var _geo_location__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./geo_location */ "./js/geo_location.js");
+/* harmony import */ var _location__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./location */ "./js/location.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! topbar */ "./node_modules/topbar/topbar.min.js");
+/* harmony import */ var topbar__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(topbar__WEBPACK_IMPORTED_MODULE_19__);
 
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
@@ -63174,20 +63418,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var Uploaders = {};
 var Hooks = {};
-Hooks.InitCheckout = _checkout__WEBPACK_IMPORTED_MODULE_15__.InitCheckout;
+Hooks.InitCheckout = _checkout__WEBPACK_IMPORTED_MODULE_16__.InitCheckout;
 Hooks.InitSectionSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitSectionSortable;
 Hooks.InitListingSortable = _sorting__WEBPACK_IMPORTED_MODULE_7__.InitListingSortable;
-Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_8__.InitColorPicker;
-Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_17__.AutocompleteLocation;
+Hooks.InitGallery = _gallery__WEBPACK_IMPORTED_MODULE_8__.InitGallery;
+Hooks.InitColorPicker = _theme__WEBPACK_IMPORTED_MODULE_9__.InitColorPicker;
+Hooks.AutocompleteLocation = _location__WEBPACK_IMPORTED_MODULE_18__.AutocompleteLocation;
 Hooks.ViewportResize = _viewport_resize__WEBPACK_IMPORTED_MODULE_6__.ViewportResize;
-Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_9__.InitEditor;
-Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_10__.InitPreview;
-Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_11__.InitViewer;
-Hooks.ImageEditor = _image_editor__WEBPACK_IMPORTED_MODULE_12__.ImageEditor;
-Hooks.MuxUploader = _mux_uploader__WEBPACK_IMPORTED_MODULE_14__.MuxUploader;
-Hooks.GeoLocation = _geo_location__WEBPACK_IMPORTED_MODULE_16__.GeoLocation;
+Hooks.InitEditor = _editor__WEBPACK_IMPORTED_MODULE_10__.InitEditor;
+Hooks.InitPreview = _preview__WEBPACK_IMPORTED_MODULE_11__.InitPreview;
+Hooks.InitViewer = _viewer__WEBPACK_IMPORTED_MODULE_12__.InitViewer;
+Hooks.ImageEditor = _image_editor__WEBPACK_IMPORTED_MODULE_13__.ImageEditor;
+Hooks.MuxUploader = _mux_uploader__WEBPACK_IMPORTED_MODULE_15__.MuxUploader;
+Hooks.GeoLocation = _geo_location__WEBPACK_IMPORTED_MODULE_17__.GeoLocation;
 Hooks.DistanceSelector = {
   mounted: function mounted() {
     var _this = this;
@@ -63215,9 +63461,9 @@ Hooks.CopyToClipboard = {
     });
   }
 };
-(0,_mobile_sizing__WEBPACK_IMPORTED_MODULE_13__.setupSizing)();
+(0,_mobile_sizing__WEBPACK_IMPORTED_MODULE_14__.setupSizing)();
 window.addEventListener("resize", function () {
-  (0,_mobile_sizing__WEBPACK_IMPORTED_MODULE_13__.setupSizing)();
+  (0,_mobile_sizing__WEBPACK_IMPORTED_MODULE_14__.setupSizing)();
 });
 
 Uploaders.S3 = function (entries, onViewError) {
@@ -63279,17 +63525,17 @@ var liveSocket = new (phoenix_live_view__WEBPACK_IMPORTED_MODULE_5___default())(
 }); // Show progress bar on live navigation and form submits
 
 var progressTimeout;
-topbar__WEBPACK_IMPORTED_MODULE_18___default().config({
+topbar__WEBPACK_IMPORTED_MODULE_19___default().config({
   barThickness: 5,
   shadowColor: "rgba(0, 0, 0, .6)"
 });
 window.addEventListener("phx:page-loading-start", function () {
   clearTimeout(progressTimeout);
-  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_18___default().show), 100);
+  progressTimeout = setTimeout((topbar__WEBPACK_IMPORTED_MODULE_19___default().show), 100);
 });
 window.addEventListener("phx:page-loading-stop", function () {
   clearTimeout(progressTimeout);
-  topbar__WEBPACK_IMPORTED_MODULE_18___default().hide();
+  topbar__WEBPACK_IMPORTED_MODULE_19___default().hide();
 }); // connect if there are any LiveViews on the page
 
 liveSocket.connect(); // expose liveSocket on window for web console debug logs and latency simulation:

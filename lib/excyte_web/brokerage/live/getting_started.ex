@@ -56,8 +56,4 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
   def handle_info({Accounts, [:account, :updated], acc}, socket) do
     {:noreply, assign(socket, account: acc)}
   end
-
-  def handle_info({Accounts, [:user, _], _}, socket) do
-    {:noreply, socket}
-  end
 end

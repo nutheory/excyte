@@ -100,7 +100,7 @@ div.preview-wrapper {
 }
 
 p {
-  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6;
+  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 mb-0;
 }
 
 h1 {
@@ -431,10 +431,6 @@ div.viewer-wrapper {
 
   & video {
     @apply my-0;
-  }
-
-  & p {
-    @apply mb-4;
   }
 
   & a.button {

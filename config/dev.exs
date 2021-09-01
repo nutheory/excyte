@@ -42,12 +42,11 @@ config :ex_twilio,
   api_key: System.get_env("TWILIO_API_KEY"),
   api_secret: System.get_env("TWILIO_API_SECRET")
 
-config :excyte, :aws, %{
+config :ex_aws,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
   host: "s3.amazonaws.com",
   region: "us-west-1"
-}
 
 config :mux,
   access_token_id: System.get_env("MUX_ACCESS_TOKEN"),

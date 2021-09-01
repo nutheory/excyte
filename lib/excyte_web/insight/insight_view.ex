@@ -23,6 +23,7 @@ defmodule ExcyteWeb.InsightView do
     Dropdown,
     Gallery,
     MultiSelect,
-    RangeInputs
+    RangeInputs,
+    ImageEditor
   }
 end

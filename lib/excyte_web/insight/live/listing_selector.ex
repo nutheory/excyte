@@ -206,7 +206,6 @@ defmodule ExcyteWeb.Insight.ListingSelector do
           new_listing
         end
       end
-    IO.inspect(preview, label: "preview")
     {:noreply, assign(socket, preview: preview, show_panel: true)}
   end
 

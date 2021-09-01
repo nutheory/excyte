@@ -28,7 +28,14 @@ defmodule Excyte.Assets do
     |> notify_subscribers([:asset, :updated])
   end
 
-  def delete_asset(uid, asset_id) do
+  def delete_local_aws_asset(uid, url) do
+    case Repo.get_by(Asset, %{uploaded_by_id: uid, large_url: url}) do
+      %Asset{} = ast -> Repo.delete(ast)
+      nil -> nil
+    end
+  end
+
+  def delete_video_asset(uid, asset_id) do
     client = Mux.client()
     with %Asset{} = asset <- Repo.get_by!(Asset, %{uploaded_by_id: uid, id: asset_id}),
          {:ok, _, _env} <- Mux.Video.Assets.delete(client, asset.source_id),

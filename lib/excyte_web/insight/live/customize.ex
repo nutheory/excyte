@@ -50,7 +50,6 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({Assets, [:asset, _], result}, %{assigns: a} = socket) do
-    IO.inspect(result, label: "RES")
     ua = if result.status === "ready", do: nil, else: result
     assets = if result.status === "ready", do: [result | a.assets], else: a.assets
 
@@ -63,7 +62,6 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
-    IO.inspect(a.insight["type"], label: "INS")
     content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight["type"])
     section = [%{
         position: (length(a.sections) + 1),
@@ -107,7 +105,7 @@ defmodule ExcyteWeb.Insight.Customize do
   def handle_event("delete_video", %{"value" => _v, "video-id" => id}, %{assigns: a} = socket) do
     asset_id = String.to_integer(id)
     assets =
-      case Assets.delete_asset(a.current_user.id, asset_id) do
+      case Assets.delete_video_asset(a.current_user.id, asset_id) do
         {:ok, _} -> Enum.filter(a.assets, fn ast -> ast.id !== asset_id end)
         {:error, err} -> err
       end

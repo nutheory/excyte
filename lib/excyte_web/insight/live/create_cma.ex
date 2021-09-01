@@ -45,6 +45,16 @@ defmodule ExcyteWeb.Insight.CreateCma do
     end
   end
 
+  def handle_info({:receive_uploads, %{upload_url: url, name: name}}, %{assigns: a} = socket) do
+    upload_url = Map.put(%{}, String.to_atom("#{name}_url"), url)
+    {:noreply, assign(socket, subject: Map.merge(a.subject, upload_url))}
+  end
+
+  def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
+    destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
+    {:noreply, assign(socket, subject: Map.merge(a.subject, destroy_url))}
+  end
+
   defp insight_data(subject_attrs, key, a) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
     template = Insights.get_document_templates(a.current_user, "cma")

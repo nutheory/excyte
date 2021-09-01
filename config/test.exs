@@ -1,7 +1,6 @@
 use Mix.Config
 
 import_config "dev_open_id_providers.exs"
-import_config "pricing.exs"
 config :excyte, env: :test
 
 # Only in tests, remove the complexity from the password hashing algorithm

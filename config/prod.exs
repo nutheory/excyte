@@ -16,12 +16,16 @@ config :excyte, ExcyteWeb.Endpoint,
   url: [host: System.get_env("RENDER_EXTERNAL_HOSTNAME") || "localhost", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
-config :excyte, :aws, %{
+config :ex_twilio,
+  account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
+  api_key: System.get_env("TWILIO_API_KEY"),
+  api_secret: System.get_env("TWILIO_API_SECRET")
+
+config :ex_aws,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
   host: "s3.amazonaws.com",
   region: "us-west-1"
-}
 
 config :mux,
   access_token_id: System.get_env("MUX_ACCESS_TOKEN"),
@@ -31,7 +35,11 @@ config :mux,
 config :excyte, :agent_plans, "prod_JuMhdzU3j59SFc"
 config :excyte, :brokerage_plans, "prod_Juv9tYtNIvrWdC"
 
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
+config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
+config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
+config :excyte, :us_real_estate_rapid_api_key, System.get_env("US_REAL_ESTATE_RAPID_API")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 # Do not print debug messages in production
 config :logger, level: :info

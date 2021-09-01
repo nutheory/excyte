@@ -34,10 +34,11 @@ export const ImageEditor = {
       dictDefaultMessage: uploadText,
       addRemoveLinks: true,
       acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
-      sending: function (file, xhr, formData) {
+      sending: function (file, xhr) {
+        const img = name === "main_photo" ? file : file.blob
         let _send = xhr.send
         xhr.send = () => {
-          _send.call(xhr, file.blob)
+          _send.call(xhr, img)
         }
       },
       init: function () {
@@ -55,28 +56,32 @@ export const ImageEditor = {
         return nanoid(10)
       },
       transformFile: function (file, done) {
-        confirmButton.addEventListener('click', function () {
-          let canvas = cropper.getCroppedCanvas({
-            maxWidth: 1600,
-            maxHeight: 1400,
-            fillColor: '#fff',
-            imageSmoothingQuality: 'high',
+        if (name !== "main_photo") {
+          confirmButton.addEventListener('click', function () {
+            let canvas = cropper.getCroppedCanvas({
+              maxWidth: 1600,
+              maxHeight: 1400,
+              fillColor: '#fff',
+              imageSmoothingQuality: 'high',
+            })
+            canvas.toBlob(blob => {
+              dZone.createThumbnail(
+                blob,
+                dZone.options.thumbnailWidth,
+                dZone.options.thumbnailHeight,
+                dZone.options.thumbnailMethod,
+                false,
+                (dataURL) => {
+                  dZone.emit('thumbnail', file, dataURL)
+                  file.blob = blob
+                  done(blob)
+                }
+              )
+            }, 'image/jpeg', 0.9)
           })
-          canvas.toBlob(blob => {
-            dZone.createThumbnail(
-              blob,
-              dZone.options.thumbnailWidth,
-              dZone.options.thumbnailHeight,
-              dZone.options.thumbnailMethod,
-              false,
-              (dataURL) => {
-                dZone.emit('thumbnail', file, dataURL)
-                file.blob = blob
-                done(blob)
-              }
-            )
-          }, 'image/jpeg', 0.9)
-        })
+        } else {
+          done()
+        }
       },
       accept: function (file, done) {
         axios.get(`/uploader/presigned`, {
@@ -97,16 +102,18 @@ export const ImageEditor = {
     })
 
     dZone.on("addedfile", file => {
-      this.pushEventTo(this.el, "toggle-upload-editor-panel", {}, reply => { 
-        var image = new Image()
-        image.src = URL.createObjectURL(file)
-        imageWrapper.appendChild(image)
-        setTimeout(() => {
-          cropper = new Cropper(image, {
-            aspectRatio: aspectRatio,
-          })
-        }, 200)
-      })
+      if (name !== "main_photo") {
+        this.pushEventTo(this.el, "toggle-upload-editor-panel", {}, reply => { 
+          var image = new Image()
+          image.src = URL.createObjectURL(file)
+          imageWrapper.appendChild(image)
+          setTimeout(() => {
+            cropper = new Cropper(image, {
+              aspectRatio: aspectRatio,
+            })
+          }, 200)
+        })
+      }
     })
 
     dZone.on('processing', (file) => {

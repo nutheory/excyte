@@ -17,6 +17,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
       current_user: cu,
       prop_id: nil,
       subject: nil,
+      photo: nil,
       errors: nil,
       fetching: false
     )}
@@ -30,7 +31,10 @@ defmodule ExcyteWeb.Insight.CreateCma do
   def handle_info({:setup_subject, %{prop_id: prop_id}}, %{assigns: a} = socket) do
     case Properties.fetch_subject_details(prop_id, a.current_user.id) do
       {:ok, subject} ->
-        {:noreply, assign(socket, subject: subject, fetching: false)}
+        {:noreply, assign(socket,
+          subject: subject,
+          photo: subject.main_photo_url,
+          fetching: false)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
     end
   end
@@ -46,18 +50,17 @@ defmodule ExcyteWeb.Insight.CreateCma do
   end
 
   def handle_info({:receive_uploads, %{upload_url: url, name: name}}, %{assigns: a} = socket) do
-    upload_url = Map.put(%{}, String.to_atom("#{name}_url"), url)
-    {:noreply, assign(socket, subject: Map.merge(a.subject, upload_url))}
+    {:noreply, assign(socket, photo: url)}
   end
 
   def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
-    destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
-    {:noreply, assign(socket, subject: Map.merge(a.subject, destroy_url))}
+    {:noreply, assign(socket, photo: "")}
   end
 
-  defp insight_data(subject_attrs, key, a) do
+  defp insight_data(subject, key, a) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
     template = Insights.get_document_templates(a.current_user, "cma")
+    subject_attrs = Map.merge(subject, %{main_photo_url: a.photo})
     %{
       insight: %{
         uuid: key,

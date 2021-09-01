@@ -347,7 +347,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           </struct>
           {% if subject.main_photo_url %}
             <struct
-              class="rounded-md pb-2/3 mx-auto bg-cover"
+              class="rounded-md pb-2/3 mx-auto bg-cover bg-center"
               style="background-image: url({{ subject.main_photo_url }});">
             </struct>
           {% endif %}

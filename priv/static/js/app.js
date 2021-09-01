@@ -20091,8 +20091,6 @@ var ImageEditor = {
               });
             }, 'image/jpeg', 0.9);
           });
-        } else {
-          done();
         }
       },
       accept: function accept(file, done) {

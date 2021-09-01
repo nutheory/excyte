@@ -79,8 +79,6 @@ export const ImageEditor = {
               )
             }, 'image/jpeg', 0.9)
           })
-        } else {
-          done()
         }
       },
       accept: function (file, done) {

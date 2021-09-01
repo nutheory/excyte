@@ -22,8 +22,8 @@ defmodule Excyte.Accounts do
     link: "#0E7490"
   }
 
-  def subscribe(account_id) do
-    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{account_id}")
+  def subscribe(id) do
+    Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{id}")
   end
 
   ## Database getters

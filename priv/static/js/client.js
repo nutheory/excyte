@@ -13078,7 +13078,7 @@ __webpack_require__.r(__webpack_exports__);
           extension = _ref2.extension;
       var dom = document.createElement('div');
       var line = document.createElement('div');
-      line.classList.add('mt-3', 'border-t', 'accent-color');
+      line.classList.add('mt-3', 'border-t-2', 'mx-auto', 'w-2/5', 'accent-color');
       dom.append(line); // const left = document.createElement('div')
       // const leftLine = document.createElement('div')
       // const right = document.createElement('div')

@@ -33,19 +33,36 @@
         <div class="w-40 relative md:w-40 rounded-md mx-auto lg:mb-0 lg:ml-0 lg:mr-4">
           <%= live_component @socket, ImageEditor,
             show_image_panel: false,
+            current_user: @current_user,
+            model: "profile",
+            model_id: @current_user.id,
             name: "photo",
             title: "Agent Photo",
+            bucket: "agent_photos",
             image_url: @profile.photo_url,
             aspect_ratio: 4/3,
             upload_text: "Upload<br />Agent Photo",
             width: 160,
             height: 120,
-            callback: "assigns.callback",
             id: :photo_image_editor
           %>
         </div>
-        <div class="w-40 h-24 md:w-40 md:h-24 relative rounded-md mx-auto mt-4 mb-6 lg:mb-0 lg:mr-0 lg:ml-4 lg:mt-0">
-
+        <div class="w-60 md:w-60 relative rounded-md mx-auto mt-4 mb-6 lg:mb-0 lg:mr-0 lg:ml-4 lg:mt-0">
+          <%= live_component @socket, ImageEditor,
+            show_image_panel: false,
+            current_user: @current_user,
+            model: "profile",
+            model_id: @current_user.id,
+            name: "logo",
+            title: "Brokerage Logo",
+            bucket: "brokerage_logos",
+            image_url: @profile.logo_url,
+            aspect_ratio: 16/9,
+            upload_text: "Upload<br />Brokerage Logo",
+            width: 206,
+            height: 120,
+            id: :logo_image_editor
+          %>
         </div>
       </div>
       <div class="mt-4">

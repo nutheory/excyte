@@ -310,6 +310,17 @@ button.jumbo {
   }
 }
 
+
+.dz-dark-bg {
+  background: #333 !important;
+  color: #fff !important;
+}
+
+.dz-light-bg {
+  background: #fff !important;
+  color: #333 !important;
+}
+
 .dropzone {
   min-height: 0 !important;
   border-radius: 0.75rem !important;
@@ -323,6 +334,8 @@ button.jumbo {
   }
 
   & .dz-preview {
+    @apply items-center ;
+    display: flex !important;
     margin: 0 !important;
     border-radius: 0.75rem !important;
 
@@ -330,6 +343,10 @@ button.jumbo {
       border-radius: 0.75rem !important;
       width: 100% !important;
       height: 100% !important;
+    }
+
+    & .dz-details {
+      @apply h-full;
     }
   }
 

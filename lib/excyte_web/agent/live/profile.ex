@@ -12,43 +12,39 @@ defmodule ExcyteWeb.Agent.Profile do
       {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
     else
       cs = maybe_attempt_prefill?(profile, cu.current_mls)
-      {:ok,
-        assign(socket,
-          changeset: cs,
-          cu_id: cu.id,
-          photo_url: profile.photo_url,
-          logo_url: profile.logo_url,
-          return_to: rt,
-          profile: profile)
-        |> allow_upload(:photo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_photo/2)
-        |> allow_upload(:logo, accept: ~w(.jpg .jpeg .png), max_file_size: 2_000_000, external: &presign_logo/2)}
+      {:ok, assign(socket,
+        changeset: cs,
+        current_user: cu,
+        return_to: rt,
+        profile: profile)}
+    end
+  end
+
+  def handle_info({:receive_uploads, %{upload_url: url, name: name}}, %{assigns: a} = socket) do
+    upload_url = Map.put(%{}, String.to_atom("#{name}_url"), url)
+    with {:ok, profile} <- Agents.update_profile(a.profile, upload_url),
+         _ <- update_user_avatar?(a.current_user.id, %{upload_url: url, name: name}) do
+      {:noreply, assign(socket, profile: profile)}
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset: changeset)}
+    end
+  end
+
+  def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
+    destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
+    with {:ok, profile} <- Agents.update_profile(a.profile, destroy_url),
+         _ <- update_user_avatar?(a.current_user.id, %{upload_url: "", name: name}) do
+      {:noreply, assign(socket, profile: profile)}
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset: changeset)}
     end
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
-    IO.inspect(a.uploads, label: "upload")
     cs = Agents.change_profile(a.profile, attrs) |> Map.put(:action, :validate)
     {:noreply, assign(socket, changeset: cs)}
-  end
-
-  def handle_event("save", %{"profile" => profile_params}, socket) do
-    save_profile(socket, filter_empty_contacts(profile_params))
-  end
-
-  def handle_event("toggle-photo-delete", _,  %{assigns: a} = socket) do
-    if a.photo_url === nil do
-      {:noreply, assign(socket, photo_url: a.profile.photo_url)}
-    else
-      {:noreply, assign(socket, photo_url: nil)}
-    end
-  end
-
-  def handle_event("toggle-logo-delete", _, %{assigns: a} = socket) do
-    if a.logo_url === nil do
-      {:noreply, assign(socket, logo_url: a.profile.logo_url)}
-    else
-      {:noreply, assign(socket, logo_url: nil)}
-    end
   end
 
   def handle_event("add-contact", _, %{assigns: a} = socket) do
@@ -71,18 +67,19 @@ defmodule ExcyteWeb.Agent.Profile do
     {:noreply, assign(socket, changeset: cs)}
   end
 
-  def ext(entry) do
-    [ext | _] = MIME.extensions(entry.client_type)
-    ext
+  def handle_event("save", %{"profile" => profile_params}, %{assigns: a} = socket) do
+    params = filter_empty_contacts(profile_params)
+    with {:ok, _} <- Agents.update_profile(a.profile, Map.merge(params, %{ "updated_by_user" => true})),
+         {:ok, _} <- Accounts.update_user(a.current_user.id, %{current_avatar: a.photo_url}) do
+      {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
+    else
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, changeset: changeset)}
+    end
   end
 
-  def consume_photo(socket, %Profile{} = profile) do
-    with _ <- consume_uploaded_entries(socket, :photo, fn _meta, _entry -> :ok end),
-         _ <- consume_uploaded_entries(socket, :logo, fn _meta, _entry -> :ok end) do
-      {:ok, profile}
-    else
-      err -> IO.inspect(err, label: "ERR")
-    end
+  defp update_user_avatar?(uid, %{upload_url: url, name: name}) do
+    if name === "photo", do: Accounts.update_user(uid, %{current_avatar: url})
   end
 
   defp filter_empty_contacts(profile_params) do
@@ -114,79 +111,6 @@ defmodule ExcyteWeb.Agent.Profile do
       contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
       Agents.change_profile(profile)
       |> Ecto.Changeset.put_embed(:contacts, contacts)
-    end
-  end
-
-  @bucket "excyte"
-  defp s3_host, do: "//#{@bucket}.s3.amazonaws.com"
-  defp s3_key(entry, user_id), do: "agent_photos/#{user_id}/#{Utilities.get_temp_id()}.#{ext(entry)}"
-
-  defp presign_photo(entry, socket) do
-    uploads = socket.assigns.uploads
-    key = s3_key(entry, socket.assigns.cu_id)
-
-    config = Application.get_env(:excyte, :aws)
-
-    {:ok, fields} =
-      SimpleS3Upload.sign_form_upload(config, @bucket,
-        key: key,
-        content_type: entry.client_type,
-        max_file_size: uploads.photo.max_file_size,
-        expires_in: :timer.hours(1)
-      )
-
-    meta = %{uploader: "S3", key: key, url: s3_host(), fields: fields}
-    {:ok, meta, assign(socket, photo_url: key)}
-  end
-
-  defp presign_logo(entry, socket) do
-    uploads = socket.assigns.uploads
-    key = s3_key(entry, socket.assigns.cu_id)
-
-    config = Application.get_env(:excyte, :aws)
-
-    {:ok, fields} =
-      SimpleS3Upload.sign_form_upload(config, @bucket,
-        key: key,
-        content_type: entry.client_type,
-        max_file_size: uploads.logo.max_file_size,
-        expires_in: :timer.hours(1)
-      )
-
-    meta = %{uploader: "S3", key: key, url: s3_host(), fields: fields}
-    {:ok, meta, assign(socket, logo_url: key)}
-  end
-
-  defp save_profile(%{assigns: a} = socket, profile_params) do
-    logo = logo_url(socket)
-    avatar = photo_url(socket)
-    attrs = Map.merge(profile_params, %{ "updated_by_user" => "true", "photo_url" => avatar, "logo_url" => logo })
-    with {:ok, _profile} <- Agents.update_profile(a.profile, attrs, &consume_photo(socket, &1)),
-         {:ok, _agent} <- Accounts.update_user(a.cu_id, %{completed_setup: true, current_avatar: avatar}) do
-      {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
-    else
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset, label: "HELLO")
-        {:noreply, assign(socket, changeset: changeset)}
-    end
-  end
-
-  defp photo_url(%{assigns: a} = socket) do
-    if a.photo_url do
-      key = String.replace(a.photo_url, s3_host(), "")
-      Path.join(s3_host(), key)
-    else
-      nil
-    end
-  end
-
-  defp logo_url(%{assigns: a} = socket) do
-    if a.logo_url do
-      key = String.replace(a.logo_url, s3_host(), "")
-      Path.join(s3_host(), key)
-    else
-      nil
     end
   end
 end

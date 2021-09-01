@@ -352,6 +352,8 @@ div.preview-wrapper {
 
 p {
 
+      margin-bottom: 0px;
+
       font-size: 0.875rem;
 
       line-height: 1.25rem;
@@ -1993,11 +1995,6 @@ div.preview-wrapper video, div.viewer-wrapper video {
       margin-top: 0px;
 
       margin-bottom: 0px;
-}
-
-div.preview-wrapper p, div.viewer-wrapper p {
-
-      margin-bottom: 1rem;
 }
 
 div.preview-wrapper a.button, div.viewer-wrapper a.button {
@@ -4830,13 +4827,6 @@ h4 {
       margin-right: 0.75rem;
 }
 
-.mx-4 {
-
-      margin-left: 1rem;
-
-      margin-right: 1rem;
-}
-
 .mx-1 {
 
       margin-left: 0.25rem;
@@ -5803,6 +5793,11 @@ h4 {
       border-bottom-width: 2px;
 }
 
+.border-t-2 {
+
+      border-top-width: 2px;
+}
+
 .border-dashed {
 
       border-style: dashed;
@@ -5876,13 +5871,6 @@ h4 {
       --tw-border-opacity: 1;
 
       border-color: rgba(255, 255, 255, var(--tw-border-opacity));
-}
-
-.border-gray-700 {
-
-      --tw-border-opacity: 1;
-
-      border-color: rgba(55, 65, 81, var(--tw-border-opacity));
 }
 
 .border-bgray-400 {
@@ -6489,6 +6477,11 @@ h4 {
       padding-right: 0.25rem;
 }
 
+.pt-4 {
+
+      padding-top: 1rem;
+}
+
 .pb-0\.5 {
 
       padding-bottom: 0.125rem;
@@ -6507,11 +6500,6 @@ h4 {
 .pt-10 {
 
       padding-top: 2.5rem;
-}
-
-.pt-4 {
-
-      padding-top: 1rem;
 }
 
 .pb-6 {
@@ -6800,13 +6788,6 @@ h4 {
       color: rgba(17, 24, 39, var(--tw-text-opacity));
 }
 
-.text-bgray-700 {
-
-      --tw-text-opacity: 1;
-
-      color: rgba(51, 65, 85, var(--tw-text-opacity));
-}
-
 .text-red-800 {
 
       --tw-text-opacity: 1;
@@ -6868,6 +6849,13 @@ h4 {
       --tw-text-opacity: 1;
 
       color: rgba(7, 89, 133, var(--tw-text-opacity));
+}
+
+.text-bgray-700 {
+
+      --tw-text-opacity: 1;
+
+      color: rgba(51, 65, 85, var(--tw-text-opacity));
 }
 
 .text-indigo-600 {
@@ -7315,19 +7303,9 @@ h4 {
             display: block;
       }
 
-      .md\:flex {
-
-            display: flex;
-      }
-
       .md\:hidden {
 
             display: none;
-      }
-
-      .md\:h-24 {
-
-            height: 6rem;
       }
 
       .md\:w-4\/5 {
@@ -7343,6 +7321,11 @@ h4 {
       .md\:w-40 {
 
             width: 10rem;
+      }
+
+      .md\:w-60 {
+
+            width: 15rem;
       }
 
       .md\:w-full {

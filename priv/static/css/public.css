@@ -850,39 +850,39 @@ form textarea.textarea:focus:focus, .form textarea.textarea:focus:focus {
 
   --tw-ring-offset-width: 2px;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   border-radius: 0.25rem;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   --tw-bg-opacity: 1;
 
   background-color: rgba(79, 70, 229, var(--tw-bg-opacity));
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   padding-top: 0.5rem;
 
   padding-bottom: 0.5rem;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   padding-left: 1rem;
 
   padding-right: 1rem;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   font-weight: 700;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   --tw-text-opacity: 1;
 
   color: rgba(255, 255, 255, var(--tw-text-opacity));
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
 
@@ -894,11 +894,11 @@ form button.submit, .form button.submit {
 
   transition-duration: 150ms;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   transition-duration: 150ms;
 }
-form button.submit, .form button.submit {
+form button.submit, form div.submit, .form button.submit, .form div.submit {
 
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -2450,12 +2450,6 @@ h4 {
 
   margin-right: 0.75rem;
 }
-.mx-4 {
-
-  margin-left: 1rem;
-
-  margin-right: 1rem;
-}
 .mx-1 {
 
   margin-left: 0.25rem;
@@ -3238,6 +3232,10 @@ h4 {
 
   border-bottom-width: 2px;
 }
+.border-t-2 {
+
+  border-top-width: 2px;
+}
 .border-dashed {
 
   border-style: dashed;
@@ -3301,12 +3299,6 @@ h4 {
   --tw-border-opacity: 1;
 
   border-color: rgba(255, 255, 255, var(--tw-border-opacity));
-}
-.border-gray-700 {
-
-  --tw-border-opacity: 1;
-
-  border-color: rgba(55, 65, 81, var(--tw-border-opacity));
 }
 .border-bgray-400 {
 
@@ -3816,6 +3808,10 @@ h4 {
 
   padding-right: 0.25rem;
 }
+.pt-4 {
+
+  padding-top: 1rem;
+}
 .pb-0\.5 {
 
   padding-bottom: 0.125rem;
@@ -3831,10 +3827,6 @@ h4 {
 .pt-10 {
 
   padding-top: 2.5rem;
-}
-.pt-4 {
-
-  padding-top: 1rem;
 }
 .pb-6 {
 
@@ -4074,12 +4066,6 @@ h4 {
 
   color: rgba(17, 24, 39, var(--tw-text-opacity));
 }
-.text-bgray-700 {
-
-  --tw-text-opacity: 1;
-
-  color: rgba(51, 65, 85, var(--tw-text-opacity));
-}
 .text-red-800 {
 
   --tw-text-opacity: 1;
@@ -4133,6 +4119,12 @@ h4 {
   --tw-text-opacity: 1;
 
   color: rgba(7, 89, 133, var(--tw-text-opacity));
+}
+.text-bgray-700 {
+
+  --tw-text-opacity: 1;
+
+  color: rgba(51, 65, 85, var(--tw-text-opacity));
 }
 .text-indigo-600 {
 
@@ -4507,17 +4499,9 @@ h4 {
 
     display: block;
   }
-  .md\:flex {
-
-    display: flex;
-  }
   .md\:hidden {
 
     display: none;
-  }
-  .md\:h-24 {
-
-    height: 6rem;
   }
   .md\:w-4\/5 {
 
@@ -4530,6 +4514,10 @@ h4 {
   .md\:w-40 {
 
     width: 10rem;
+  }
+  .md\:w-60 {
+
+    width: 15rem;
   }
   .md\:w-full {
 

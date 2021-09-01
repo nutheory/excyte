@@ -7,6 +7,18 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def subscribed?(status), do: if Enum.member?(["trialing", "active"], status), do: true, else: false
 
+  def build_url(path) do
+    "//excyte.s3.amazonaws.com/#{path}"
+  end
+
+  def dissect_url(url) do
+    full = List.last(String.split(url, "//excyte.s3.amazonaws.com/"))
+    parts = String.split(full, "/")
+    filename = hd(Enum.reverse(parts))
+    path = Enum.join(Enum.reverse(tl(Enum.reverse(parts))), "/")
+    %{full: full, parts: parts, filename: filename, path: path}
+  end
+
   def insight_type_to_name(type) do
     case type do
       "cma" -> "CMA"

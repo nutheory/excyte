@@ -1,7 +1,10 @@
 <div
   class="w-full h-full"
   id="image_editor"
+  data-model-id="<%= @model_id %>"
   data-name="<%= @name %>"
+  data-title="<%= @title %>"
+  data-bucket="<%= @bucket %>"
   data-width="<%= @width %>"
   data-height="<%= @height %>"
   data-image-url="<%= @image_url %>"
@@ -10,7 +13,7 @@
   phx-target="<%= @myself %>"
   phx-hook="ImageEditor">
   <div div class="w-full h-full flex" phx-update="ignore">
-    <div id="photoTarget" class="dropzone" style="width: <%= @width %>px; height: <%= @height %>px;">
+    <div id="<%= @name %>Target" class="dropzone" style="width: <%= @width %>px; height: <%= @height %>px;">
     </div>
     <%= if @image_url do %>
       <div class="icons">
@@ -18,21 +21,28 @@
     <% end %>
   </div>
   <p class="alert alert-danger hidden" id="<%= @name %>Error"></p>
-<div
-  class="panel-slidein bg-gray-100 px-2 pt-6 lg:max-w-2xl <%= if @show_image_panel, do: 'right-0', else: '' %>">
-  <div class="flex mb-4">
-    <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
-      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
+<div class="panel-slidein bg-gray-100 lg:max-w-2xl <%= if @show_image_panel, do: 'right-0', else: '' %>">
+  <div class="flex flex-col h-full p-4">
+    <div class="flex mb-4">
+      <div
+        class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer"
+        phx-click="toggle-upload-editor-panel"
+        phx-target="<%= @myself %>"
+      >
+        <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <h2><%= @title %></h2>
+        <p></p>
+      </div>
     </div>
-    <div class="ml-4">
-      <h2><%= @title %></h2>
-      <p></p>
+    <p class="leading-2 mb-4">Place your logo as big as you can within the spotlit area. Also center it as best you can within the spotlit area. Click upload when you are ready.</p>
+    <div class="flex-1" id="<%= @name %>Canvas"></div>
+    <div class="flex form pt-4">
+      <div class="submit" id="<%= @name %>Confirm">Upload <%= @title %></div>
+      <div class="flex-1"></div>
     </div>
-  </div>
-  <div class="mx-4" id="<%= @name %>Canvas"></div>
-  <div class="flex">
-    <div id="<%= @name %>Confirm">Click me</div>
   </div>
 </div>

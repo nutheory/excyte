@@ -2,6 +2,20 @@ defmodule ExcyteWeb.UploadController do
   use ExcyteWeb, :controller
   alias Excyte.Assets
 
+  def aws_signed_url(conn, params) do
+    query_params = [
+      {"ContentType", "text/json"},
+      {"x-amz-acl", "public-read"}
+    ]
+    presign_options = [query_params: query_params]
+
+    {:ok, url} =
+      ExAws.Config.new(:s3)
+      |> ExAws.S3.presigned_url(:put, "excyte/#{params["bucket"]}", params["filename"], presign_options)
+    text(conn, url)
+  end
+
+  # get signature for evaporate js
   def aws_auth(conn, params) do
     aws = Application.get_env(:excyte, :aws)
     config = %{

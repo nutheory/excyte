@@ -17,7 +17,8 @@ defmodule ExcyteWeb.BrokerageView do
     ColorPicker,
     ContactForm,
     SuperSelect,
-    Toggle
+    Toggle,
+    ImageEditor
   }
   alias ExcyteWeb.{
     Settings,

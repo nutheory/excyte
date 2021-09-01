@@ -44,7 +44,7 @@ export default Node.create({
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       const dom = document.createElement('div')
       const line = document.createElement('div')
-      line.classList.add('mt-3', 'border-t', 'accent-color')
+      line.classList.add('mt-3', 'border-t-2', 'mx-auto', 'w-2/5',  'accent-color')
       dom.append(line)
       // const left = document.createElement('div')
       // const leftLine = document.createElement('div')

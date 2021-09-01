@@ -1,7 +1,6 @@
 defmodule Excyte.Agents do
   import Ecto.Query, warn: false
   alias Excyte.Repo
-
   alias Excyte.{Utils.Contact, Agents.Profile}
 
   def get_agent_profile!(aid) do
@@ -31,16 +30,9 @@ defmodule Excyte.Agents do
     |> Repo.insert()
   end
 
-  def update_profile(%Profile{} = profile, attrs, after_save \\ &{:ok, &1}) do
-    IO.inspect(attrs, label: "BOOM")
+  def update_profile(%Profile{} = profile, attrs) do
     profile
     |> Profile.changeset(attrs)
     |> Repo.update()
-    |> after_save(after_save)
   end
-
-  defp after_save({:ok, profile}, func) do
-    {:ok, _profile} = func.(profile)
-  end
-  defp after_save(error, _func), do: error
 end

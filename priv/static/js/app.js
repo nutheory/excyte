@@ -20051,11 +20051,10 @@ var ImageEditor = {
       addRemoveLinks: true,
       acceptedFiles: "image/jpeg, image/jpg, image/png, image/gif",
       sending: function sending(file, xhr) {
-        var img = name === "main_photo" ? file : file.blob;
         var _send = xhr.send;
 
         xhr.send = function () {
-          _send.call(xhr, img);
+          _send.call(xhr, file.blob);
         };
       },
       init: function init() {
@@ -20075,23 +20074,21 @@ var ImageEditor = {
         return (0,nanoid__WEBPACK_IMPORTED_MODULE_5__.nanoid)(10);
       },
       transformFile: function transformFile(file, done) {
-        if (name !== "main_photo") {
-          confirmButton.addEventListener('click', function () {
-            var canvas = cropper.getCroppedCanvas({
-              maxWidth: 1600,
-              maxHeight: 1400,
-              fillColor: '#fff',
-              imageSmoothingQuality: 'high'
-            });
-            canvas.toBlob(function (blob) {
-              dZone.createThumbnail(blob, dZone.options.thumbnailWidth, dZone.options.thumbnailHeight, dZone.options.thumbnailMethod, false, function (dataURL) {
-                dZone.emit('thumbnail', file, dataURL);
-                file.blob = blob;
-                done(blob);
-              });
-            }, 'image/jpeg', 0.9);
+        confirmButton.addEventListener('click', function () {
+          var canvas = cropper.getCroppedCanvas({
+            maxWidth: 1600,
+            maxHeight: 1400,
+            fillColor: '#fff',
+            imageSmoothingQuality: 'high'
           });
-        }
+          canvas.toBlob(function (blob) {
+            dZone.createThumbnail(blob, dZone.options.thumbnailWidth, dZone.options.thumbnailHeight, dZone.options.thumbnailMethod, false, function (dataURL) {
+              dZone.emit('thumbnail', file, dataURL);
+              file.blob = blob;
+              done(blob);
+            });
+          }, 'image/jpeg', 0.9);
+        });
       },
       accept: function accept(file, done) {
         axios__WEBPACK_IMPORTED_MODULE_2___default().get("/uploader/presigned", {
@@ -20113,18 +20110,16 @@ var ImageEditor = {
       }
     });
     dZone.on("addedfile", function (file) {
-      if (name !== "main_photo") {
-        _this.pushEventTo(_this.el, "toggle-upload-editor-panel", {}, function (reply) {
-          var image = new Image();
-          image.src = URL.createObjectURL(file);
-          imageWrapper.appendChild(image);
-          setTimeout(function () {
-            cropper = new (cropperjs__WEBPACK_IMPORTED_MODULE_0___default())(image, {
-              aspectRatio: aspectRatio
-            });
-          }, 200);
-        });
-      }
+      _this.pushEventTo(_this.el, "toggle-upload-editor-panel", {}, function (reply) {
+        var image = new Image();
+        image.src = URL.createObjectURL(file);
+        imageWrapper.appendChild(image);
+        setTimeout(function () {
+          cropper = new (cropperjs__WEBPACK_IMPORTED_MODULE_0___default())(image, {
+            aspectRatio: aspectRatio
+          });
+        }, 200);
+      });
     });
     dZone.on('processing', function (file) {
       dZone.options.url = file.uploadURL;

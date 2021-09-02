@@ -331,11 +331,11 @@ defmodule ExcyteWeb.Helpers.Templates do
       <struct class="section" id="cover">
         <struct class="cover-wrapper">
           <struct class="title">
-            <h1 class="bg-color sub-header-color">Comparative</h1>
+            <h1 class="bg-color sub-header-color bg-opacity-50">Comparative</h1>
             <h3 class="bg-color header-color">Market Analysis</h3>
           </struct>
           <struct class="subtitle header-color">
-            <h1 class="bg-color">
+            <h1 class="bg-color bg-opacity-50">
               {% if subject["street_number"] %}
                 {{ subject["street_number"] }}
               {% endif %}

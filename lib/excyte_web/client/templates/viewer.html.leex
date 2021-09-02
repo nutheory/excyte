@@ -1,4 +1,4 @@
-<div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="InitViewer" phx-update="ignore">
+<div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="InitViewer">
   <%= live_component @socket, Header,
     current_user: @current_user,
     created_by: @created_by,
@@ -6,6 +6,7 @@
     id: :report_header
   %>
   <div
+    phx-update="ignore"
     class=""
     x-data="currentViewer('')"
     x-init="() => init($refs.viewer)"
@@ -17,4 +18,5 @@
       </div>
     </div>
   </div>
+
 </div>

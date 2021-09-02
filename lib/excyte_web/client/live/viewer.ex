@@ -25,4 +25,9 @@ defmodule ExcyteWeb.Client.Viewer do
     # doc = Enum.reduce(sections, "", fn section, acc -> acc <> section.html_content end)
     {:noreply, push_event(socket, "loadViewer", %{content: sections, theme: a.theme})}
   end
+
+  @impl true
+  def handle_event("toggle-public-info", _payload, socket) do
+    {:noreply, socket}
+  end
 end

@@ -4199,6 +4199,70 @@ h4 {
       }
 }
 
+.aspect-w-1,
+.aspect-w-2,
+.aspect-w-3,
+.aspect-w-4,
+.aspect-w-5,
+.aspect-w-6,
+.aspect-w-7,
+.aspect-w-8,
+.aspect-w-9,
+.aspect-w-10,
+.aspect-w-11,
+.aspect-w-12,
+.aspect-w-13,
+.aspect-w-14,
+.aspect-w-15,
+.aspect-w-16 {
+
+      position: relative;
+
+      padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
+}
+
+.aspect-w-1 > *,
+.aspect-w-2 > *,
+.aspect-w-3 > *,
+.aspect-w-4 > *,
+.aspect-w-5 > *,
+.aspect-w-6 > *,
+.aspect-w-7 > *,
+.aspect-w-8 > *,
+.aspect-w-9 > *,
+.aspect-w-10 > *,
+.aspect-w-11 > *,
+.aspect-w-12 > *,
+.aspect-w-13 > *,
+.aspect-w-14 > *,
+.aspect-w-15 > *,
+.aspect-w-16 > * {
+
+      position: absolute;
+
+      height: 100%;
+
+      width: 100%;
+
+      top: 0;
+
+      right: 0;
+
+      bottom: 0;
+
+      left: 0;
+}
+
+.aspect-w-16 {
+
+      --tw-aspect-w: 16;
+}
+
+.aspect-h-9 {
+
+      --tw-aspect-h: 9;
+}
+
 /* Client styles */
 
 @layer base {
@@ -6185,6 +6249,11 @@ h4 {
       --tw-bg-opacity: 0.8;
 }
 
+.bg-opacity-50 {
+
+      --tw-bg-opacity: 0.5;
+}
+
 .bg-gradient-to-b {
 
       background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
@@ -6482,6 +6551,11 @@ h4 {
       padding-right: 0.25rem;
 }
 
+.pt-4 {
+
+      padding-top: 1rem;
+}
+
 .pb-0\.5 {
 
       padding-bottom: 0.125rem;
@@ -6500,11 +6574,6 @@ h4 {
 .pt-10 {
 
       padding-top: 2.5rem;
-}
-
-.pt-4 {
-
-      padding-top: 1rem;
 }
 
 .pb-6 {
@@ -6671,11 +6740,6 @@ h4 {
       line-height: .75rem;
 }
 
-.leading-tight {
-
-      line-height: 1.25;
-}
-
 .leading-snug {
 
       line-height: 1.375;
@@ -6684,6 +6748,11 @@ h4 {
 .leading-4 {
 
       line-height: 1rem;
+}
+
+.leading-tight {
+
+      line-height: 1.25;
 }
 
 .text-bgray-100 {

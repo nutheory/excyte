@@ -22,8 +22,8 @@
   </div>
   <p class="alert alert-danger hidden" id="<%= @name %>Error"></p>
 <div class="panel-slidein bg-gray-100 lg:max-w-2xl <%= if @show_image_panel, do: 'right-0', else: '' %>">
-  <div class="flex flex-col h-full p-4">
-    <div class="flex mb-4">
+  <div class="flex flex-col h-full px-4 lg:px-6">
+    <div class="flex py-4">
       <div
         class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer"
         phx-click="toggle-upload-editor-panel"
@@ -33,16 +33,18 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </div>
-      <div class="ml-4">
+      <div class="">
         <h2><%= @title %></h2>
-        <p></p>
+        <p class="leading-tight text-base">
+          Place your <%= String.downcase(@title) %> as big as you can <span class="font-bold">within the spotlit area</span>. Also center it as best
+          you can within the spotlit area. Click upload when you are ready.</p>
       </div>
     </div>
-    <p class="leading-2 mb-4">Place your logo as big as you can within the spotlit area. Also center it as best you can within the spotlit area. Click upload when you are ready.</p>
-    <div class="flex-1" id="<%= @name %>Canvas"></div>
-    <div class="flex form pt-4">
+    <div class="flex form mb-3">
       <div class="submit" id="<%= @name %>Confirm">Upload <%= @title %></div>
       <div class="flex-1"></div>
+      <div class="delete-button" id="<%= @name %>Reset">Reset</div>
     </div>
+    <div class="flex-1" id="<%= @name %>Canvas"></div>
   </div>
 </div>

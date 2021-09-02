@@ -20036,6 +20036,7 @@ var ImageEditor = {
     var bucket = this.el.dataset.bucket;
     var imageWrapper = this.el.querySelector("#".concat(name, "Canvas"));
     var confirmButton = this.el.querySelector("#".concat(name, "Confirm"));
+    var resetButton = this.el.querySelector("#".concat(name, "Reset"));
     var imageUrl = this.el.dataset.imageUrl;
     var cropper;
     var dZone = new (dropzone__WEBPACK_IMPORTED_MODULE_1___default())("#".concat(name, "Target"), {
@@ -20074,6 +20075,13 @@ var ImageEditor = {
         return (0,nanoid__WEBPACK_IMPORTED_MODULE_5__.nanoid)(10);
       },
       transformFile: function transformFile(file, done) {
+        resetButton.addEventListener('click', function () {
+          var reset = confirm("Are you sure you want to reset the canvas to its original state?");
+
+          if (reset === true) {
+            cropper.reset();
+          }
+        });
         confirmButton.addEventListener('click', function () {
           var canvas = cropper.getCroppedCanvas({
             maxWidth: 1600,
@@ -20116,7 +20124,8 @@ var ImageEditor = {
         imageWrapper.appendChild(image);
         setTimeout(function () {
           cropper = new (cropperjs__WEBPACK_IMPORTED_MODULE_0___default())(image, {
-            aspectRatio: aspectRatio
+            aspectRatio: aspectRatio,
+            dragMode: 'none'
           });
         }, 200);
       });
@@ -20144,8 +20153,6 @@ var ImageEditor = {
       }, function (reply) {});
     });
     dZone.on("removedFile", function (_file) {
-      console.log("BOOM", imageUrl);
-
       _this.pushEventTo(_this.el, "destroy-callback", {
         url: imageUrl,
         name: name

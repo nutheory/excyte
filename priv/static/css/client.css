@@ -6231,6 +6231,11 @@ h4 {
       background-size: cover;
 }
 
+.bg-center {
+
+      background-position: center;
+}
+
 .fill-current {
 
       fill: currentColor;
@@ -6477,11 +6482,6 @@ h4 {
       padding-right: 0.25rem;
 }
 
-.pt-4 {
-
-      padding-top: 1rem;
-}
-
 .pb-0\.5 {
 
       padding-bottom: 0.125rem;
@@ -6500,6 +6500,11 @@ h4 {
 .pt-10 {
 
       padding-top: 2.5rem;
+}
+
+.pt-4 {
+
+      padding-top: 1rem;
 }
 
 .pb-6 {
@@ -6664,6 +6669,11 @@ h4 {
 .leading-3 {
 
       line-height: .75rem;
+}
+
+.leading-tight {
+
+      line-height: 1.25;
 }
 
 .leading-snug {

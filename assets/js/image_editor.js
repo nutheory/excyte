@@ -19,6 +19,7 @@ export const ImageEditor = {
     const bucket = this.el.dataset.bucket
     const imageWrapper = this.el.querySelector(`#${name}Canvas`)
     const confirmButton = this.el.querySelector(`#${name}Confirm`)
+    const resetButton = this.el.querySelector(`#${name}Reset`)
     let imageUrl = this.el.dataset.imageUrl
     let cropper
 
@@ -55,6 +56,11 @@ export const ImageEditor = {
         return nanoid(10)
       },
       transformFile: function (file, done) {
+        resetButton.addEventListener('click', function () {
+          let reset = confirm("Are you sure you want to reset the canvas to its original state?")
+          if (reset === true) { cropper.reset() }
+        })
+
         confirmButton.addEventListener('click', function () {
           let canvas = cropper.getCroppedCanvas({
             maxWidth: 1600,
@@ -104,6 +110,7 @@ export const ImageEditor = {
         setTimeout(() => {
           cropper = new Cropper(image, {
             aspectRatio: aspectRatio,
+            dragMode: 'none',
           })
         }, 200)
       })
@@ -140,9 +147,7 @@ export const ImageEditor = {
     })
 
     dZone.on("removedFile", _file => {
-      console.log("BOOM", imageUrl)
       this.pushEventTo(this.el, "destroy-callback", { url: imageUrl, name }, reply => {
-
       })
     })
   },

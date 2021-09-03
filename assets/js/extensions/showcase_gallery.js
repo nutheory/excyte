@@ -65,13 +65,13 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: 'div[data-type="showcaseGallery"]',
+        tag: 'showcase-gallery',
       },
     ]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(HTMLAttributes, {'data-type': 'showcaseGallery'}), 0]
+    return ['showcase-gallery', mergeAttributes(HTMLAttributes), 0]
   },
 
   addNodeView() {

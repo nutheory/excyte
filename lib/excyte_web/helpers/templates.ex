@@ -113,8 +113,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
       <divider type="#{type}"></divider>
       <struct class="section comparable" id="comparable_#{listing["listing_key"]}">
-        <div
-          data-type="showcaseGallery"
+        <showcase-gallery
           contenteditable="false"
           data-title="Comparable Listing"
           data-media-json='#{media}'
@@ -122,7 +121,7 @@ defmodule ExcyteWeb.Helpers.Templates do
           data-addr-street='{{ lst["street_name"] }}'
           data-addr-city='{{ lst["city"] }}'
           data-listing-id='{{ lst["listing_id"] }}'
-          class="showcase-gallery"></div>
+          class="showcase-gallery"></showcase-gallery>
         <p class="summary pt-4 mb-4 sub-header-color">#{summarize_sale_info(listing)}</p>
         <struct class="main-details">
           <struct class="detail">
@@ -410,13 +409,13 @@ defmodule ExcyteWeb.Helpers.Templates do
           Utilities.format_atom_json(hd(res.listings))
         {:error, err} -> IO.inspect(err)
       end
+    address_text = "#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]} #{listing["zip"]}"
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"]) |> String.replace("'", "")
     """
       <divider type="#{type}"></divider>
       <struct class="section showcase" id="showcase">
-        <div
-          data-type="showcaseGallery"
+        <showcase-gallery
           contenteditable="false"
           data-title="Showing"
           data-media-json='#{media}'
@@ -431,7 +430,7 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% endif %}
           '
           data-listing-id='{{ lst["listing_id"] }}'
-          class="showcase-gallery"></div>
+          class="showcase-gallery"></showcase-gallery>
         <p class="summary pt-4 sub-header-color mb-4">#{summarize_showcase(listing)}</p>
         {% if lst["public_remarks"] %}
           <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4">{{ lst["public_remarks"] }}</p>
@@ -770,6 +769,7 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def tour_stop(%{listing: listing}, type) do
+    address_text = "#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]} #{listing["zip"]}"
     destination_uri = URI.encode("#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]}")
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"]) |> String.replace("'", "")
@@ -777,10 +777,9 @@ defmodule ExcyteWeb.Helpers.Templates do
       <divider type="#{type}"></divider>
       <struct class="section tour" id="tour_stop">
         <struct class="flex">
-          <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Get Directions</a></h4>
+          <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Map Directions</a></h4>
         </struct>
-        <div
-          data-type="showcaseGallery"
+        <showcase-gallery
           contenteditable="false"
           data-title="Showing"
           data-media-json='#{media}'
@@ -795,7 +794,7 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% endif %}
           '
           data-listing-id='{{ lst["listing_id"] }}'
-          class="showcase-gallery"></div>
+          class="showcase-gallery"></showcase-gallery>
         <p class="summary pt-4 sub-header-color mb-4">#{summarize_showcase(listing)}</p>
         {% if lst["public_remarks"] %}
           <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4">{{ lst["public_remarks"] }}</p>

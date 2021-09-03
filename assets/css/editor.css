@@ -661,58 +661,6 @@ div.viewer-wrapper {
         }
       }
     }
-
-    /* & .adjustment-table {
-      & table {
-        @apply w-full;
-
-        & p {
-          @apply my-0;
-        }
-
-        & th {
-          @apply font-bold p-2 border-b text-left;
-        }
-
-        & tr {
-          @apply border-b;
-        }
-
-        & td:nth-child(odd) {
-          @apply px-2 py-1 mr-2 text-base;
-        }
-
-        & td:nth-child(even) {
-          @apply px-2 py-1 ml-2 font-bold;
-        }
-      }
-    } */
-
-    /* & .left-right-wrapper {
-      & table {
-        @apply w-full;
-
-        & p {
-          @apply my-0;
-        }
-
-        & th {
-          @apply font-bold p-2 border-b-2;
-        }
-
-        & tr {
-          @apply border-b;
-        }
-
-        & td:nth-child(odd) {
-          @apply px-2 py-1 text-right mr-2 w-1/2 text-base;
-        }
-
-        & td:nth-child(even) {
-          @apply px-2 py-1 ml-2 font-bold w-1/2;
-        }
-      }
-    } */
   }
 }
 
@@ -722,4 +670,16 @@ div.viewer-wrapper {
 
 [contenteditable="true"]:focus {
   outline: none;
+}
+
+.panel-slidein {
+  @apply h-screen;
+
+  width: 95%;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: -100%;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s ease-in-out;
 }

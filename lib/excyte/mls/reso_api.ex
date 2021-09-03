@@ -269,6 +269,12 @@ defmodule Excyte.Mls.ResoApi do
     |> ProcessReso.simple_process()
   end
 
+  def get_expanded_by_listing_id(mls, id) do
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$filter=ListingId%20eq%20%27#{URI.encode(id)}%27")
+    |> format_response()
+    # |> ProcessReso.sort_fields()
+  end
+
   defp listing_id(id) do
     "ListingId%20eq%20%27#{URI.encode(id)}%27%20or%20"
   end

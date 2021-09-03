@@ -24,9 +24,11 @@ import {
   ExcyteLink, 
 } from './extensions/modified_extensions'
 import ShowcaseGallery from './extensions/showcase_gallery'
+import PublicData from './extensions/public_data'
 import SimpleVideo from './extensions/simple_video'
 import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
+import Guard from './extensions/guard'
 import Divider from './extensions/divider'
 import Span from './extensions/span'
 import Struct from './extensions/struct'
@@ -68,10 +70,12 @@ window.currentViewer = function (content) {
           TableHeader,
           TableRow,
           TableCell,
+          Guard,
           Divider,
           Contact,
           Collapsable,
           ShowcaseGallery,
+          PublicData,
           SimpleVideo,
           Struct,
           Span,
@@ -89,6 +93,7 @@ window.currentViewer = function (content) {
 export const InitViewer = {
   mounted() {
     window.viewerHook.base = this
+    console.log("THIS", window.viewerHook.base)
     console.log("THIS", window.viewerHook.currentViewer.viewer)
     this.handleEvent("loadViewer", ({ content, theme }) => {
       setTimeout(() => {
@@ -116,8 +121,6 @@ const buildTheme = (theme) => {
       rule += `div.viewer-wrapper a {color: ${theme.link}}`
       rule += `div.viewer-wrapper button {color: ${theme.link}}`
       rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
-      // rule += `div.viewer-wrapper mark {background-color: ${theme.highlight_background}; color: ${theme.highlight_text}}`
-      // rule += `div.viewer-wrapper blockquote::before {content: '\\201C'; position: absolute; top: -2.6rem; left: -1rem; color: ${theme.sub_header_text}; font-size: 5.6rem; z-index: -1;}`
   return rule
 }
 

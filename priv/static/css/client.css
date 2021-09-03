@@ -2952,67 +2952,25 @@ div.preview-wrapper .section .subject-table table td:nth-child(even), div.viewer
       font-weight: 700;
 }
 
-div.preview-wrapper .section, div.viewer-wrapper .section {
-
-    /* & .adjustment-table {
-      & table {
-        @apply w-full;
-
-        & p {
-          @apply my-0;
-        }
-
-        & th {
-          @apply font-bold p-2 border-b text-left;
-        }
-
-        & tr {
-          @apply border-b;
-        }
-
-        & td:nth-child(odd) {
-          @apply px-2 py-1 mr-2 text-base;
-        }
-
-        & td:nth-child(even) {
-          @apply px-2 py-1 ml-2 font-bold;
-        }
-      }
-    } */
-
-    /* & .left-right-wrapper {
-      & table {
-        @apply w-full;
-
-        & p {
-          @apply my-0;
-        }
-
-        & th {
-          @apply font-bold p-2 border-b-2;
-        }
-
-        & tr {
-          @apply border-b;
-        }
-
-        & td:nth-child(odd) {
-          @apply px-2 py-1 text-right mr-2 w-1/2 text-base;
-        }
-
-        & td:nth-child(even) {
-          @apply px-2 py-1 ml-2 font-bold w-1/2;
-        }
-      }
-    } */
-  }
-
 [contenteditable="false"]:focus {
   outline: none;
 }
 
 [contenteditable="true"]:focus {
   outline: none;
+}
+
+.panel-slidein {
+
+      height: 100vh;
+
+  width: 95%;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: -100%;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s ease-in-out;
 }
 
 .glightbox-container{width:100%;height:100%;position:fixed;top:0;left:0;z-index:999999!important;overflow:hidden;touch-action:none;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;outline:0;overflow:hidden}
@@ -4199,70 +4157,6 @@ h4 {
       }
 }
 
-.aspect-w-1,
-.aspect-w-2,
-.aspect-w-3,
-.aspect-w-4,
-.aspect-w-5,
-.aspect-w-6,
-.aspect-w-7,
-.aspect-w-8,
-.aspect-w-9,
-.aspect-w-10,
-.aspect-w-11,
-.aspect-w-12,
-.aspect-w-13,
-.aspect-w-14,
-.aspect-w-15,
-.aspect-w-16 {
-
-      position: relative;
-
-      padding-bottom: calc(var(--tw-aspect-h) / var(--tw-aspect-w) * 100%);
-}
-
-.aspect-w-1 > *,
-.aspect-w-2 > *,
-.aspect-w-3 > *,
-.aspect-w-4 > *,
-.aspect-w-5 > *,
-.aspect-w-6 > *,
-.aspect-w-7 > *,
-.aspect-w-8 > *,
-.aspect-w-9 > *,
-.aspect-w-10 > *,
-.aspect-w-11 > *,
-.aspect-w-12 > *,
-.aspect-w-13 > *,
-.aspect-w-14 > *,
-.aspect-w-15 > *,
-.aspect-w-16 > * {
-
-      position: absolute;
-
-      height: 100%;
-
-      width: 100%;
-
-      top: 0;
-
-      right: 0;
-
-      bottom: 0;
-
-      left: 0;
-}
-
-.aspect-w-16 {
-
-      --tw-aspect-w: 16;
-}
-
-.aspect-h-9 {
-
-      --tw-aspect-h: 9;
-}
-
 /* Client styles */
 
 @layer base {
@@ -5061,6 +4955,11 @@ h4 {
       margin-top: 1.25rem;
 }
 
+.mb-3 {
+
+      margin-bottom: 0.75rem;
+}
+
 .mr-2 {
 
       margin-right: 0.5rem;
@@ -5139,11 +5038,6 @@ h4 {
 .ml-0 {
 
       margin-left: 0px;
-}
-
-.mb-3 {
-
-      margin-bottom: 0.75rem;
 }
 
 .ml-px {
@@ -6239,6 +6133,11 @@ h4 {
       --tw-bg-opacity: 0.4;
 }
 
+.bg-opacity-50 {
+
+      --tw-bg-opacity: 0.5;
+}
+
 .bg-opacity-25 {
 
       --tw-bg-opacity: 0.25;
@@ -6247,11 +6146,6 @@ h4 {
 .bg-opacity-80 {
 
       --tw-bg-opacity: 0.8;
-}
-
-.bg-opacity-50 {
-
-      --tw-bg-opacity: 0.5;
 }
 
 .bg-gradient-to-b {
@@ -6426,18 +6320,18 @@ h4 {
       padding-right: 1.5rem;
 }
 
-.py-6 {
-
-      padding-top: 1.5rem;
-
-      padding-bottom: 1.5rem;
-}
-
 .py-4 {
 
       padding-top: 1rem;
 
       padding-bottom: 1rem;
+}
+
+.py-6 {
+
+      padding-top: 1.5rem;
+
+      padding-bottom: 1.5rem;
 }
 
 .px-1\.5 {
@@ -6551,11 +6445,6 @@ h4 {
       padding-right: 0.25rem;
 }
 
-.pt-4 {
-
-      padding-top: 1rem;
-}
-
 .pb-0\.5 {
 
       padding-bottom: 0.125rem;
@@ -6574,6 +6463,11 @@ h4 {
 .pt-10 {
 
       padding-top: 2.5rem;
+}
+
+.pt-4 {
+
+      padding-top: 1rem;
 }
 
 .pb-6 {
@@ -6740,6 +6634,11 @@ h4 {
       line-height: .75rem;
 }
 
+.leading-tight {
+
+      line-height: 1.25;
+}
+
 .leading-snug {
 
       line-height: 1.375;
@@ -6748,11 +6647,6 @@ h4 {
 .leading-4 {
 
       line-height: 1rem;
-}
-
-.leading-tight {
-
-      line-height: 1.25;
 }
 
 .text-bgray-100 {

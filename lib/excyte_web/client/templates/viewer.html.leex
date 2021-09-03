@@ -18,5 +18,8 @@
       </div>
     </div>
   </div>
-
+  <%= live_component @socket, MoreInfo,
+    current_user: @current_user,
+    id: :more_info_panel
+  %>
 </div>

@@ -15,6 +15,11 @@ defmodule Excyte.Assets do
     |> Repo.all()
   end
 
+  def get_agent_videos(%{agent_id: aid, brokerage_id: bid}) do
+    Asset.all_available_videos(aid, bid)
+    |> Repo.all()
+  end
+
   def create_asset(attrs) do
     %Asset{}
     |> Asset.changeset(attrs)

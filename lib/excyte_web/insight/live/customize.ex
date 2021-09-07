@@ -8,7 +8,7 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    assets = Assets.get_agent_assets(%{agent_id: cu.id, brokerage_id: cu.brokerage_id})
+    videos = Assets.get_agent_videos(%{agent_id: cu.id, brokerage_id: cu.brokerage_id})
     # {:ok, current_state} = Cachex.get(customize_cache, id)
     case Insights.get_minimal_insight(id, cu.id) do
       %Insight{} = ins ->
@@ -17,7 +17,7 @@ defmodule ExcyteWeb.Insight.Customize do
           current_user: cu,
           insight: ins,
           sections: [],
-          assets: assets,
+          assets: videos,
           data: nil,
           name: "",
           preview_content: "",

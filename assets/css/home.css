@@ -44,6 +44,21 @@ span.icon-align {
   outline: none;
 }
 
+.home-header-wrapper {
+  @apply w-full;
+  background: #F8F6E8;
+
+  & .home-header{
+    @apply w-full max-w-7xl mx-auto;
+
+    background: #fff;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+  }
+}
+
 .cta {
   @apply block text-right p-4 md:px-6 md:py-3 shadow bg-gradient-to-br rounded-md leading-6 text-white;
 

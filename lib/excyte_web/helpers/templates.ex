@@ -779,6 +779,9 @@ defmodule ExcyteWeb.Helpers.Templates do
         <struct class="flex">
           <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Map Directions</a></h4>
         </struct>
+        <guard>
+          <public-data data-listing-id='{{ lst["listing_id"] }}' data-address='#{address_text}'></public-data>
+        </guard>
         <showcase-gallery
           contenteditable="false"
           data-title="Showing"

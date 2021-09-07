@@ -1,7 +1,7 @@
 <div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="InitViewer">
   <%= live_component @socket, Header,
     current_user: @current_user,
-    created_by: @created_by,
+    created_by: @agent_profile,
     insight_type: @insight.type,
     id: :report_header
   %>

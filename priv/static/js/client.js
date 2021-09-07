@@ -1,34 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/esm/defineProperty.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ _defineProperty)
-/* harmony export */ });
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-/***/ }),
-
 /***/ "./node_modules/@mux/videojs-kit/dist/index.js":
 /*!*****************************************************!*\
   !*** ./node_modules/@mux/videojs-kit/dist/index.js ***!
@@ -15020,20 +14992,10 @@ __webpack_require__.r(__webpack_exports__);
     }];
   },
   renderHTML: function renderHTML(_ref) {
-    var HTMLAttributes = _ref.HTMLAttributes;
+    var HTMLAttributes = _ref.HTMLAttributes,
+        node = _ref.node;
     console.log("HERE");
-    return ['guard', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0]; // return window.viewerHook.base.pushEvent('check-security', {}, reply => {
-    //   console.log("reply", reply)
-    //   if (reply.logged_in === true) {
-    //     console.log("PASS")
-    //     return ['guard', mergeAttributes(HTMLAttributes), 0]
-    //   } else {
-    //     console.log("FAIL2")
-    //     // node.content = []
-    //     // return ['span']
-    //     return ['guard', mergeAttributes(HTMLAttributes), 0]
-    //   }
-    // })
+    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
   },
   addNodeView: function addNodeView() {
     return function (_ref2) {
@@ -15043,35 +15005,39 @@ __webpack_require__.r(__webpack_exports__);
           HTMLAttributes = _ref2.HTMLAttributes,
           decorations = _ref2.decorations,
           extension = _ref2.extension;
-      var dom = document.createElement('div');
-      var boom = document.createElement('div');
-      boom.innerHTML = "BOOM";
-      dom.append(boom);
-      console.log("VIWE", node);
-      return {
-        dom: dom // contentDOM: boom
+      var dom = document.createElement('div'); // const boom = document.createElement('div')
+      // boom.innerHTML = "BOOM"
+      // dom.append(boom)
+      // const content = document.createElement('div')
+      // content.classList.add('hidden')
+      // dom.append(content)
+      // return {
+      //   dom,
+      //   contentDOM: content
+      // }
 
-      }; // const c = document.createElement('div')
-      // dom.append(c)
-      // console.log("VIWE", node)
-      // return window.viewerHook.base.pushEvent('check-security', {}, reply => {
-      //   console.log("reply", reply)
-      //   const content = document.createElement('div')
-      //   if (reply.logged_in === true) {
-      //     console.log("PASS")
-      //     return {
-      //       dom,
-      //       contentDOM: content
-      //     }
-      //   } else {
-      //     console.log("FAIL")
-      //     node.content = []
-      //     return {
-      //       dom,
-      //       // contentDOM: c
-      //     }
-      //   }
-      // })
+      console.log("RET", window.viewerHook.attrs);
+
+      if (window.viewerHook.attrs.authorized_agent === true) {
+        var content = document.createElement('div');
+        dom.append(content);
+        return {
+          dom: dom,
+          contentDOM: content
+        };
+      } else {
+        console.log("FAIL"); // node.content = null
+
+        var _content = document.createElement('div');
+
+        _content.classList.add('hidden');
+
+        dom.append(_content);
+        return {
+          dom: dom,
+          contentDOM: _content
+        };
+      }
     };
   }
 }));
@@ -15165,21 +15131,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 
 
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_1__.Node.create({
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
   name: 'publicData',
   group: 'block',
   content: 'block+',
   addAttributes: function addAttributes() {
-    var _ref;
-
-    return _ref = {
+    return {
       "class": {
         "default": null,
         parseHTML: function parseHTML(element) {
@@ -15195,47 +15157,41 @@ __webpack_require__.r(__webpack_exports__);
             listingId: element.getAttribute('data-listing-id')
           };
         }
+      },
+      address: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            address: element.getAttribute('data-address')
+          };
+        }
       }
-    }, (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_ref, "listingId", {
-      "default": null,
-      parseHTML: function parseHTML(element) {
-        return {
-          listingId: element.getAttribute('data-listing-id')
-        };
-      }
-    }), (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__.default)(_ref, "address", {
-      "default": null,
-      parseHTML: function parseHTML(element) {
-        return {
-          address: element.getAttribute('data-address')
-        };
-      }
-    }), _ref;
+    };
   },
   parseHTML: function parseHTML() {
     return [{
       tag: 'public-data'
     }];
   },
-  renderHTML: function renderHTML(_ref2) {
-    var HTMLAttributes = _ref2.HTMLAttributes;
-    return ['public-data', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_1__.mergeAttributes)(HTMLAttributes), 0];
+  renderHTML: function renderHTML(_ref) {
+    var HTMLAttributes = _ref.HTMLAttributes;
+    return ['public-data', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
   },
   addNodeView: function addNodeView() {
-    return function (_ref3) {
-      var editor = _ref3.editor,
-          node = _ref3.node,
-          getPos = _ref3.getPos,
-          HTMLAttributes = _ref3.HTMLAttributes,
-          decorations = _ref3.decorations,
-          extension = _ref3.extension;
+    return function (_ref2) {
+      var editor = _ref2.editor,
+          node = _ref2.node,
+          getPos = _ref2.getPos,
+          HTMLAttributes = _ref2.HTMLAttributes,
+          decorations = _ref2.decorations,
+          extension = _ref2.extension;
       var address = HTMLAttributes.address;
       var lId = HTMLAttributes.listingId;
       var dom = document.createElement('div');
       var button = document.createElement('button');
       button.innerHTML = "Showing Information";
       button.addEventListener('click', function (e) {
-        axios__WEBPACK_IMPORTED_MODULE_2___default().get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=".concat(encodeURIComponent(address))).then(function (res) {
+        axios__WEBPACK_IMPORTED_MODULE_1___default().get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=".concat(encodeURIComponent(address))).then(function (res) {
           var pId = res.data.autocomplete[0].mpr_id;
           window.viewerHook.base.pushEventTo('#moreInfoPanel', 'get-more-info', {
             pId: pId,
@@ -15741,8 +15697,16 @@ var InitViewer = {
     console.log("THIS", window.viewerHook.currentViewer.viewer);
     this.handleEvent("loadViewer", function (_ref) {
       var content = _ref.content,
-          theme = _ref.theme;
+          theme = _ref.theme,
+          brokerage = _ref.brokerage,
+          agent = _ref.agent,
+          authorized_agent = _ref.authorized_agent;
       setTimeout(function () {
+        window.viewerHook.attrs = {
+          brokerage: brokerage,
+          agent: agent,
+          authorized_agent: authorized_agent
+        };
         window.viewerHook.currentViewer.viewer.commands.setContent(content);
         var styles = buildTheme(theme);
         addCss(styles);
@@ -15752,7 +15716,7 @@ var InitViewer = {
           autoplayVideos: true,
           selector: ".glightbox"
         });
-      }, 500);
+      }, 200);
     });
   },
   destroyed: function destroyed() {}

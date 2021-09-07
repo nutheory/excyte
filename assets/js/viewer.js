@@ -95,8 +95,9 @@ export const InitViewer = {
     window.viewerHook.base = this
     console.log("THIS", window.viewerHook.base)
     console.log("THIS", window.viewerHook.currentViewer.viewer)
-    this.handleEvent("loadViewer", ({ content, theme }) => {
+    this.handleEvent("loadViewer", ({ content, theme, brokerage, agent, authorized_agent }) => {
       setTimeout(() => {
+        window.viewerHook.attrs = { brokerage, agent, authorized_agent }
         window.viewerHook.currentViewer.viewer.commands.setContent(content)
         const styles = buildTheme(theme)
         addCss(styles)
@@ -106,7 +107,7 @@ export const InitViewer = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
-      }, 500)
+      }, 200)
     })
   },
   destroyed() {},

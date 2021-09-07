@@ -26,14 +26,6 @@ export default Node.create({
           }
         }
       },
-      listingId: {
-        default: null,
-        parseHTML: element => {
-          return {
-            listingId: element.getAttribute('data-listing-id')
-          }
-        }
-      },
       address: {
         default: null,
         parseHTML: element => {

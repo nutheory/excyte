@@ -9,7 +9,9 @@ defmodule ExcyteWeb.Client.MoreInfo do
     {:ok, assign(socket,
       current_user: assigns.current_user,
       listing: nil,
-      show_panel: false
+      search: nil,
+      show_panel: false,
+      search_term: ""
     )}
   end
 
@@ -17,14 +19,17 @@ defmodule ExcyteWeb.Client.MoreInfo do
     {:noreply, assign(socket, show_panel: !a.show_panel)}
   end
 
+  def handle_event("find-key", %{"finder" => %{"term" => term}}, %{assigns: a} = socket) do
+    listing = Enum.filter(a.listing.details, fn {k, _v} -> String.contains?(String.downcase(k), String.downcase(term)) end)
+    {:noreply, assign(socket, search: listing, search_term: term)}
+  end
+
   @impl true
-  def handle_event("get-more-info", %{"pId" => mpr_id, "lId" => id}, %{assigns: a} = socket) do
-    IO.inspect(a.current_user.current_mls, label: "CU")
-    case ResoApi.get_by_listing_id(a.current_user.current_mls, id) do
-      {:ok, %{listing: listing}} -> {:noreply, assign(socket, show_panel: true, listing: listing)}
+  def handle_event("get-more-info", %{"pId" => _mpr_id, "lId" => id}, %{assigns: a} = socket) do
+    case ResoApi.get_expanded_by_listing_id(a.current_user.current_mls, id) do
+      {:ok, listing} ->
+        {:noreply, assign(socket, show_panel: true, listing: listing, search: listing.details)}
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
   end
-
-  # defp
 end

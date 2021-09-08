@@ -51,7 +51,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     {:noreply, assign(socket, filters: filters)}
   end
 
-  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto}, socket) do
+  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = res, socket) do
+    IO.inspect(res, label: "RESSSSS")
     {:noreply, assign(socket, coords: %{lat: lat, lng: lng}, autodetected: auto)}
   end
 

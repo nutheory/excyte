@@ -1,6 +1,7 @@
 defmodule Excyte.Mls.ResoApi do
   use Tesla, only: [:get], docs: false
   import SweetXml
+  import Number.{Delimit}
   alias Excyte.Mls.{MetaCache, ProcessReso, ResoMemberApi}
   alias Excyte.{Properties.Property}
 
@@ -280,6 +281,7 @@ defmodule Excyte.Mls.ResoApi do
           |> Enum.filter(fn {k, v} ->
             cond do
               k === "Media" -> false
+              String.contains?(k, "@") -> false
               is_binary(v) -> true
               is_integer(v) -> true
               is_float(v) -> true
@@ -308,6 +310,11 @@ defmodule Excyte.Mls.ResoApi do
       acc =
         cond do
           is_list(v) -> Map.put(acc, key, Enum.join(v, ", "))
+          String.contains?(key, "Timestamp") ->
+            {:ok, dt} = NaiveDateTime.from_iso8601(v)
+            Map.put(acc, key, Calendar.strftime(dt, "%b %d, %Y at %I:%M:%S%P"))
+          String.contains?(key, "Price") && is_integer(v) ->
+            Map.put(acc, key, "$#{number_to_delimited(v, precision: 0)}")
           true -> Map.put(acc, key, v)
         end
       acc

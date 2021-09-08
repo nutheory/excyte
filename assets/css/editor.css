@@ -695,6 +695,25 @@ div.viewer-wrapper {
   transition: all 0.5s ease-in-out;
 }
 
+#moreInfoPanel {
+  & a[href^="tel:"] {
+    color: tomato;
+  }
+
+  & a[href^="tel:"]:before {
+    content: "\260e";
+    margin-right: 0.5em;
+    color: tomato;
+  }
+
+  & a[href^="mailto:"]:before {
+    @apply text-cyan-600;
+    content: "\2709";
+    margin-right: 0.5em;
+  }
+}
+
+
 input.text-field {
   @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
 }

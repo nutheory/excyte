@@ -4027,6 +4027,26 @@ div.preview-wrapper .section .subject-table table td:nth-child(even), div.viewer
   transition: all 0.5s ease-in-out;
 }
 
+#moreInfoPanel a[href^="tel:"] {
+    color: tomato;
+  }
+
+#moreInfoPanel a[href^="tel:"]:before {
+    content: "\260e";
+    margin-right: 0.5em;
+    color: tomato;
+  }
+
+#moreInfoPanel a[href^="mailto:"]:before {
+  --tw-text-opacity: 1;
+  color: rgba(8, 145, 178, var(--tw-text-opacity));
+}
+
+#moreInfoPanel a[href^="mailto:"]:before {
+    content: "\2709";
+    margin-right: 0.5em;
+  }
+
 input.text-field {
   display: block;
   width: 100%;
@@ -7003,10 +7023,6 @@ h4 {
   padding-top: 2rem;
 }
 
-.pr-28 {
-  padding-right: 7rem;
-}
-
 .text-left {
   text-align: left;
 }
@@ -7255,6 +7271,11 @@ h4 {
 .text-bgray-700 {
   --tw-text-opacity: 1;
   color: rgba(51, 65, 85, var(--tw-text-opacity));
+}
+
+.text-bgray-300 {
+  --tw-text-opacity: 1;
+  color: rgba(203, 213, 225, var(--tw-text-opacity));
 }
 
 .text-indigo-600 {
@@ -7524,6 +7545,10 @@ h4 {
     width: 18rem;
   }
 
+  .sm\:w-4\/5 {
+    width: 80%;
+  }
+
   .sm\:flex-1 {
     flex: 1 1 0%;
   }
@@ -7549,6 +7574,10 @@ h4 {
 
   .sm\:pl-6 {
     padding-left: 1.5rem;
+  }
+
+  .sm\:pr-4 {
+    padding-right: 1rem;
   }
 }
 
@@ -7663,6 +7692,14 @@ h4 {
   .md\:px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .md\:pr-12 {
+    padding-right: 3rem;
+  }
+
+  .md\:pr-6 {
+    padding-right: 1.5rem;
   }
 
   .md\:text-left {

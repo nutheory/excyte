@@ -1,5 +1,3 @@
-
-
 export const GeoLocation = {
   mounted() {
     const getLocation = () => {

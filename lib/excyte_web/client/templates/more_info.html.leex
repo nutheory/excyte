@@ -37,7 +37,18 @@
           </li>
           <%= for {k, v} <- @search do %>
             <li class="text-gray-600 mt-3">
-              <p><span class="font-extrabold text-gray-800"><%= k %>:</span> <%= v %></p>
+              <p><span class="font-extrabold text-gray-800"><%= k %>:&nbsp;</span>
+                <%= case Utilities.assign_contact_type(v) do %>
+                  <% "phone" -> %>
+                    <a href="tel:<%= String.replace(v, "-", "") %>"><%= v %></a>
+                  <% "email" -> %>
+                    <a href="mailto:<%= v %>"><%= v %></a>
+                  <% "url" -> %>
+                    <a href="<%= v %>"><%= v %></a>
+                  <% _ -> %>
+                    <%= v %>
+                <% end %>
+              </p>
             </li>
           <% end %>
         <% else %>

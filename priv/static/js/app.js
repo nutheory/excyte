@@ -19458,44 +19458,9 @@ __webpack_require__.r(__webpack_exports__);
           extension = _ref2.extension;
       var dom = document.createElement('div');
       var line = document.createElement('div');
+      dom.classList.add('divider');
       line.classList.add('mt-3', 'border-t-2', 'mx-auto', 'w-2/5', 'accent-color');
-      dom.append(line); // const left = document.createElement('div')
-      // const leftLine = document.createElement('div')
-      // const right = document.createElement('div')
-      // const rightLine = document.createElement('div')
-      // const icon = document.createElement('div')
-      // if (HTMLAttributes.type === 'cma') {
-      //   icon.innerHTML = `
-      //     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 accent-svg-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      //       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      //     </svg>
-      //   `
-      // } else if (HTMLAttributes.type === 'showcase') {
-      //   icon.innerHTML = `
-      //     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 accent-svg-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      //       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-      //     </svg>
-      //   `
-      // } else if (HTMLAttributes.type === 'buyer_tour') {
-      //   icon.innerHTML = `
-      //     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 accent-svg-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      //       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-      //       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-      //     </svg>
-      //   `
-      // }
-      // dom.classList.add('flex', 'w-full')
-      // left.classList.add('flex-1')
-      // leftLine.classList.add('mt-3', 'mr-3', 'border-t', 'accent-color')
-      // right.classList.add('flex-1')
-      // rightLine.classList.add('mt-3', 'ml-3', 'border-t', 'accent-color')
-      // icon.classList.add('w-6', 'h-6')
-      // left.append(leftLine)
-      // right.append(rightLine)
-      // dom.append(left)
-      // dom.append(icon)
-      // dom.append(right)
-
+      dom.append(line);
       return {
         dom: dom
       };
@@ -19542,7 +19507,6 @@ __webpack_require__.r(__webpack_exports__);
   renderHTML: function renderHTML(_ref) {
     var HTMLAttributes = _ref.HTMLAttributes,
         node = _ref.node;
-    console.log("HERE");
     return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
   },
   addNodeView: function addNodeView() {
@@ -19553,18 +19517,7 @@ __webpack_require__.r(__webpack_exports__);
           HTMLAttributes = _ref2.HTMLAttributes,
           decorations = _ref2.decorations,
           extension = _ref2.extension;
-      var dom = document.createElement('div'); // const boom = document.createElement('div')
-      // boom.innerHTML = "BOOM"
-      // dom.append(boom)
-      // const content = document.createElement('div')
-      // content.classList.add('hidden')
-      // dom.append(content)
-      // return {
-      //   dom,
-      //   contentDOM: content
-      // }
-
-      console.log("RET", window.viewerHook.attrs);
+      var dom = document.createElement('div');
 
       if (window.viewerHook.attrs.authorized_agent === true) {
         var content = document.createElement('div');
@@ -19574,16 +19527,8 @@ __webpack_require__.r(__webpack_exports__);
           contentDOM: content
         };
       } else {
-        console.log("FAIL"); // node.content = null
-
-        var _content = document.createElement('div');
-
-        _content.classList.add('hidden');
-
-        dom.append(_content);
         return {
-          dom: dom,
-          contentDOM: _content
+          dom: dom
         };
       }
     };
@@ -19736,20 +19681,27 @@ __webpack_require__.r(__webpack_exports__);
       var address = HTMLAttributes.address;
       var lId = HTMLAttributes.listingId;
       var dom = document.createElement('div');
+      var adminBox = document.createElement('div');
+      var label = document.createElement('label');
       var button = document.createElement('button');
-      button.innerHTML = "Showing Information";
+      dom.classList.add('admin-box');
+      adminBox.classList.add('border', 'border-gray-600', 'bg-cyan-100', 'font-sans', 'rounded', 'mb-1', 'px-2', 'py-1', 'w-32');
+      label.classList.add('block', 'text-sm', 'text-gray-600');
+      button.classList.add('block', 'text-base', 'text-cyan-600', 'font-bold');
+      label.innerHTML = "Agent Only";
+      button.innerHTML = "Full live data";
       button.addEventListener('click', function (e) {
-        axios__WEBPACK_IMPORTED_MODULE_1___default().get("https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=".concat(encodeURIComponent(address))).then(function (res) {
-          var pId = res.data.autocomplete[0].mpr_id;
-          window.viewerHook.base.pushEventTo('#moreInfoPanel', 'get-more-info', {
-            pId: pId,
-            lId: lId
-          }, function (reply) {
-            console.log("reply", reply);
-          });
-        });
+        // axios.get(`https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=${encodeURIComponent(address)}`)
+        //   .then(res => {
+        //     const pId = res.data.autocomplete[0].mpr_id
+        window.viewerHook.base.pushEventTo('#moreInfoPanel', 'get-more-info', {
+          lId: lId
+        }, function (reply) {
+          console.log("reply", reply);
+        }); // })
       });
-      dom.append(button);
+      adminBox.append(label, button);
+      dom.append(adminBox);
       return {
         dom: dom
       };
@@ -21100,6 +21052,7 @@ var InitViewer = {
 
 var buildTheme = function buildTheme(theme) {
   var rule = "div.viewer-wrapper {background-color: ".concat(theme.background, "; color: ").concat(theme.sub_header_text, "; font-family: ").concat(theme.font, "}");
+  rule += "div.viewer-wrapper .bg-color {background-color: ".concat(theme.background, "}");
   rule += "div.viewer-wrapper .header-color {color: ".concat(theme.header_text, "}");
   rule += "div.viewer-wrapper .sub-header-color {color: ".concat(theme.sub_header_text, "}");
   rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");

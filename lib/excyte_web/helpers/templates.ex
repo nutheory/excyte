@@ -769,13 +769,14 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def tour_stop(%{listing: listing}, type) do
+    IO.inspect(listing, label: "LBL")
     address_text = "#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]} #{listing["zip"]}"
     destination_uri = URI.encode("#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]}")
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
     media = Jason.encode!(listing["media"]) |> String.replace("'", "")
     """
       <divider type="#{type}"></divider>
-      <struct class="section tour" id="tour_stop">
+      <struct class="section tour" id="tour_stop_{{ lst["listing_id"] }}">
         <struct class="flex">
           <h4><a href="https://www.google.com/maps/dir/?api=1&destination=#{destination_uri}">Map Directions</a></h4>
         </struct>
@@ -894,6 +895,12 @@ defmodule ExcyteWeb.Helpers.Templates do
                   {{ lst["walkscore"] }}
                 </struct>
                 <struct class="label sub-header-color">Walkscore</struct>
+              {% endif %}
+              {% if lst["excyte_note"] != "" %}
+                <struct class="mb-4 col-span-2">
+                  <h4 class="mb-0 header-color">Agents Note</h4>
+                  <p class="pr-4 leading-tight">{{ lst["excyte_note"] }}</p>
+                </struct>
               {% endif %}
             </struct>
             <struct class="extra-options">

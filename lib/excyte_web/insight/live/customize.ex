@@ -249,13 +249,14 @@ defmodule ExcyteWeb.Insight.Customize do
     end)
   end
 
-  defp merge_theme(%{brokerage: bk, insight: ins}) do
-    Map.merge(ins, %{"document_attributes" => bk["theme_settings"]})
+  defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins} = inc) do
+    if bk !== nil && bk["theme_settings"][:brokerage_default] === true do
+      Map.merge(ins, %{"document_attributes" => bk["theme_settings"]})
+    else
+      Map.merge(ins, %{"document_attributes" => ag["theme_settings"]})
+    end
   end
 
-  defp merge_theme(%{agent_profile: ag, insight: ins}) do
-    Map.merge(ins, %{"document_attributes" => ag["theme_settings"]})
-  end
 
   defp needs_cover_photo?(ins) do
     if ins["cover_photo_url"] === nil || ins["cover_photo_url"] === "" do

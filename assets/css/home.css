@@ -49,7 +49,7 @@ span.icon-align {
   background: #F8F6E8;
 
   & .home-header{
-    @apply w-full max-w-7xl mx-auto;
+    @apply w-full max-w-7xl mx-auto relative;
 
     background: #fff;
     background-position: center;

@@ -25,10 +25,10 @@ defmodule ExcyteWeb.Client.MoreInfo do
   end
 
   @impl true
-  def handle_event("get-more-info", %{"pId" => _mpr_id, "lId" => id}, %{assigns: a} = socket) do
+  def handle_event("get-more-info", %{"lId" => id} = _more, %{assigns: a} = socket) do
     case ResoApi.get_expanded_by_listing_id(a.current_user.current_mls, id) do
       {:ok, listing} ->
-        {:noreply, assign(socket, show_panel: true, listing: listing, search: listing.details)}
+        {:noreply, assign(socket, show_panel: true, listing: listing, search: listing.details, search_term: "")}
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
   end

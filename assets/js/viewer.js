@@ -115,6 +115,7 @@ export const InitViewer = {
 
 const buildTheme = (theme) => {
   let rule = `div.viewer-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font}}`
+      rule += `div.viewer-wrapper .bg-color {background-color: ${theme.background}}`
       rule += `div.viewer-wrapper .header-color {color: ${theme.header_text}}`
       rule += `div.viewer-wrapper .sub-header-color {color: ${theme.sub_header_text}}`
       rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`

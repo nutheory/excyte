@@ -38,10 +38,7 @@ defmodule ExcyteWeb.Client.Viewer do
   end
 
   @impl true
-  def handle_event("check-security", _payload, %{assigns: a} = socket) do
-    logged_in = if a.current_user, do: true, else: false
-    IO.inspect(label: "RUN")
-    # {:reply, %{logged_in: logged_in}, socket}
+  def handle_event("check-security", _payload, %{assigns: _a} = socket) do
     {:reply, %{logged_in: false}, socket}
   end
 

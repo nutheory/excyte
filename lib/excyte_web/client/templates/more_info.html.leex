@@ -1,20 +1,21 @@
   <div
     id="moreInfoPanel"
     phx-target="<%= @myself %>"
-    class="panel-slidein bg-gray-100 lg:max-w-2xl text-gray-800  <%= if @show_panel, do: 'right-0', else: '' %>"
+    class="panel-slidein font-sans bg-gray-100 lg:max-w-2xl text-gray-800  <%= if @show_panel, do: 'right-0', else: '' %>"
   >
     <div class="flex flex-col h-full px-4 lg:px-6">
       <div class="flex py-4">
         <div
           class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer"
-          phx-click="toggle-public-info"
+          phx-click="toggle-more-info"
+          phx-target="<%= @myself %>"
         >
           <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
         <div class="">
-          <h2>More Info</h2>
+          <h2 class="mb-0">More Info</h2>
           <p class="leading-tight text-base">
             This is information direct from the MLS in real time for agents.</p>
         </div>
@@ -26,10 +27,11 @@
               <p><span class="font-extrabold text-gray-800"><%= k %>:</span> <%= v %></p>
             </li>
           <% end %>
-          <li>
-            <div>
+          <li class="my-6">
+            <div class="py-4 border-t accent-color">
+              <h4>Search MLS Details</h4>
               <%= f = form_for :finder, "#", [phx_change: "find-key", phx_target: @myself] %>
-                <%= text_input f, :term, class: "text-field", placeholder: "Find by term", value: @search_term %>
+                <%= text_input f, :term, class: "text-field", placeholder: "Find by term... ie. list or feature", value: @search_term %>
               </form>
             </div>
           </li>

@@ -54,18 +54,26 @@ export default Node.create({
       const address = HTMLAttributes.address
       const lId = HTMLAttributes.listingId
       const dom = document.createElement('div')
+      const adminBox = document.createElement('div')
+      const label = document.createElement('label')
       const button = document.createElement('button')
-      button.innerHTML = "Showing Information"
+      dom.classList.add('admin-box')
+      adminBox.classList.add('border', 'border-gray-600', 'bg-cyan-100', 'font-sans', 'rounded', 'mb-1', 'px-2', 'py-1', 'w-32')
+      label.classList.add('block', 'text-sm', 'text-gray-600')
+      button.classList.add('block', 'text-base', 'text-cyan-600', 'font-bold')
+      label.innerHTML = "Agent Only"
+      button.innerHTML = "Full live data"
       button.addEventListener('click', (e) => {
-        axios.get(`https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=${encodeURIComponent(address)}`)
-          .then(res => {
-            const pId = res.data.autocomplete[0].mpr_id
-            window.viewerHook.base.pushEventTo('#moreInfoPanel', 'get-more-info', { pId, lId }, reply => {
+        // axios.get(`https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=${encodeURIComponent(address)}`)
+        //   .then(res => {
+        //     const pId = res.data.autocomplete[0].mpr_id
+            window.viewerHook.base.pushEventTo('#moreInfoPanel', 'get-more-info', { lId }, reply => {
               console.log("reply", reply)
             })
-          })
+        // })
       })
-      dom.append(button)
+      adminBox.append(label, button)
+      dom.append(adminBox)
       return {
         dom,
       }

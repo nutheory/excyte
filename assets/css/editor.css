@@ -121,6 +121,17 @@ h4 {
 
 div.preview-wrapper,
 div.viewer-wrapper {
+
+  & .admin-box {
+    & button {
+      @apply text-cyan-700;
+    }
+  }
+
+  & .divider:first-child {
+    display: none;
+  }
+
   /* Position child elements relative to this element */
   & .aspect-ratio-box {
     position: relative;
@@ -365,7 +376,7 @@ div.viewer-wrapper {
     }
 
     & .info {
-      @apply flex flex-wrap mt-12 mx-auto lg:w-4/5;
+      @apply flex flex-wrap mt-12 mx-auto;
 
       & .extra-details {
         @apply mx-auto flex w-full sm:flex-1 px-4 pt-2 mb-6;
@@ -387,7 +398,7 @@ div.viewer-wrapper {
         }
 
         & .extra-options {
-          @apply text-center w-36 flex items-center justify-center px-6;
+          @apply text-center w-36 flex items-center justify-center pl-6 pr-12;
 
           & a {
             @apply block text-center mx-auto;
@@ -682,4 +693,12 @@ div.viewer-wrapper {
   right: -100%;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   transition: all 0.5s ease-in-out;
+}
+
+input.text-field {
+  @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
+}
+
+input.text-field:focus {
+  @apply outline-none focus:ring-1 focus:ring-offset-2;
 }

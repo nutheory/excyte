@@ -4,7 +4,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   @filters %{
-    price: %{low: nil, high: nil},
+    price: %{low: 20, high: 500},
     beds: %{low: nil, high: nil},
     baths: %{low: nil, high: nil},
     sqft: %{low: nil, high: nil},
@@ -24,7 +24,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       current_user: cu,
       coords: %{},
       zip_code: "",
-      distance: 20,
+      distance: 10,
       autodetected: nil,
       listing_ids: "",
       feature_options: Utilities.feature_options(),

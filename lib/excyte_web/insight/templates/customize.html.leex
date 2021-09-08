@@ -176,7 +176,7 @@
     <% else %>
       <div class="preview-wrapper panel-slidein bg-gray-100 <%= if @preview_panel, do: 'right-0', else: '' %>" id="previewWrapper" phx-hook="InitPreview">
         <div
-          class="absolute top-2 left-2 flex cursor-pointer"
+          class="absolute top-0 left-0 flex cursor-pointer z-40 bg-white text-gray-800 px-4 py-2"
           phx-click="toggle-preview"
         >
           <div class="mr-3">
@@ -184,7 +184,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </div>
-          <div>
+          <div class="pt-0.5">
             Close preview
           </div>
         </div>

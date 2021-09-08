@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Brokerage.Theme do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Activities, Agents, Brokerages, Brokerages.Profile}
-  alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, BrokerageView}
+  alias Excyte.{Accounts, Activities, Agents, Brokerages}
+  alias ExcyteWeb.{Helpers.Utilities, BrokerageView}
 
   @fonts [
     %{name: "Arial, Helvetica Neue, Helvetica, sans-serif", family: "Arial, Helvetica Neue, Helvetica, sans-serif"},
@@ -20,20 +20,20 @@ defmodule ExcyteWeb.Brokerage.Theme do
 
   def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
     cu = Accounts.get_user_by_session_token(token)
-    agent_profile = Agents.get_agent_profile!(cu.id)
-    brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
+    agent = Agents.get_agent_profile!(cu.id)
+    brokerage = if cu.brokerage_id, do: Brokerages.get_brokerage_profile(cu.brokerage_id), else: nil
     theme =
-      if Map.has_key?(brokerage_profile.theme_settings, :link) do
-        Map.from_struct(brokerage_profile.theme_settings)
+      if brokerage && Utilities.authorized?(cu.brokerage_role) do
+        Map.from_struct(brokerage.theme_settings)
       else
-        Map.from_struct(brokerage_profile.theme_settings)
-        |> Map.put(:link, "#0891B2")
+        Map.from_struct(agent.theme_settings)
       end
 
     {:ok, assign(socket,
       return_to: rt,
-      agent_profile: agent_profile,
-      brokerage_profile: brokerage_profile,
+      current_user: cu,
+      agent_profile: agent,
+      brokerage_profile: brokerage,
       theme_settings: theme,
       fonts: @fonts
     )}
@@ -43,7 +43,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
     {:noreply, assign(socket, theme_settings: Map.put(a.theme_settings, String.to_atom(id), c))}
   end
 
-  def handle_event("filter-fonts", %{"filter" => filter}, %{assigns: a} = socket) do
+  def handle_event("filter-fonts", %{"filter" => filter}, socket) do
     fonts =
       if String.valid?(filter) do
         Enum.filter(@fonts, fn f -> String.contains?(String.downcase(f.name), String.downcase(filter)) end)
@@ -57,11 +57,24 @@ defmodule ExcyteWeb.Brokerage.Theme do
     {:noreply, assign(socket, theme_settings: Map.put(a.theme_settings, :font, family))}
   end
 
+  def handle_event("toggle-brokerage-default", _, %{assigns: a} = socket) do
+    bd = !a.theme_settings.brokerage_default
+    {:noreply, assign(socket, theme_settings: Map.put(a.theme_settings, :brokerage_default, bd))}
+  end
+
   def handle_event("save-theme", _, %{assigns: a} = socket) do
-    case Brokerages.update_profile(a.brokerage_profile, %{theme_settings: a.theme_settings}) do
-      {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Theme updated.")
-                                    |> push_redirect(to: a.return_to)}
-      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Brokerage.Theme")
+    if a.brokerage_profile && Utilities.authorized?(a.current_user.brokerage_role) do
+      case Brokerages.update_profile(a.brokerage_profile, %{theme_settings: a.theme_settings}) do
+        {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Theme updated.")
+                                      |> push_redirect(to: a.return_to)}
+        {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Brokerage.Theme")
+      end
+    else
+      case Agents.update_profile(a.agent_profile, %{theme_settings: a.theme_settings}) do
+        {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Theme updated.")
+                                      |> push_redirect(to: a.return_to)}
+        {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Brokerage.Theme")
+      end
     end
   end
 

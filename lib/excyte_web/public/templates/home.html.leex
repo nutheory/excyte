@@ -1,15 +1,15 @@
 <div id="home_main" class="w-full">
-  <div class="w-full home-header-wrapper">
-    <div class="home-header" style="background-image: url('/images/home_header.jpg')">
-      <div class="w-full pt-2 flex lg:max-w-7xl mx-auto px-4 z-30">
+  <div class="w-full home-header-wrapper border-b border-gray-400">
+    <div class="home-header pb-2" style="background-image: url('/images/home_header.jpg')">
+      <div class="w-full flex lg:max-w-7xl mx-auto px-4 z-30">
         <div class="flex-1"></div>
-        <div class="flex">
-          <div class="font-bold"><a href="mailto:gary@excyte.io">Contact Us</a></div>
-          <div class="px-3 text-bgray-400">|</div>
-          <div class="font-bold"><%= link "Login", to: "/login", class: "" %></div>
+        <div class="flex py-1 px-3 bg-amber-50 rounded-b shadow">
+          <div class=""><a href="mailto:gary@excyte.io">Contact Us</a></div>
+          <div class="px-2 text-bgray-400">|</div>
+          <div class=""><%= link "Login", to: "/login", class: "" %></div>
         </div>
       </div>
-      <div class="w-full px-4 lg:w-2/3 pt-12">
+      <div class="w-full px-4 lg:w-2/3 pt-8">
         <div class="logo">
           <svg class="w-72 h-24 lg:w-1/2 lg:h-32 lg:ml-0 sm:pl-6" viewBox="0 0 423 114" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <defs>
@@ -81,15 +81,13 @@
             </g>
           </svg>
         </div>
-        <div class="mt-6 sm:pl-6 pr-28 lg:pr-32">
+        <div class="mt-4 sm:pl-6 pr-28 lg:pr-32">
           <div class="heading">
-            <h2>The best way to create rich detailed reports from your mobile device in seconds.</h2>
+            <h2>Modern.&nbsp;&nbsp;Simple.&nbsp;&nbsp;Powerful.&nbsp;&nbsp; Mobile.</h2>
           </div>
           <div class="text">
-            <p class="mt-6 text-xl pr-6">With excyte CMA we have designed our interface for an
-            amazing mobile experience. You can create and deliver reports from your desktop
-            or tablet as well, making excyte CMA the most powerful listing presentation
-            across all 3 devices.</p>
+            <p class="my-2 text-2xl pr-6">The best way to create rich detailed reports from
+            your mobile device in seconds.</p>
           </div>
           <div class="flex p-4">
             <div class="flex-1"></div>
@@ -106,17 +104,32 @@
       </div>
     </div>
   </div>
-  <div class="home-body-wrapper max-w-7xl mx-auto px-4 lg:px-6">
+  <div class="home-body-wrapper max-w-7xl mx-auto px-4 lg:px-8">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-12 lg:my-20 gap-6">
-      <div class="md:col-span-2 lg:col-span-1">
+      <div class="rounded-3xl shadow-lg drop-shadow-xl bg-white bg-opacity-80 p-4">
+        <div class="rounded-2xl w-full border-gray-200 border bg-cover" style="background-image: url('/images/mobile.png');height: 22rem;"></div>
+      </div>
+      <div class="lg:col-span-2 lg:pl-24 pt-6 lg:pt-12">
+        <h2>Create and consume reports from any device</h2>
+        <p class="mt-2">Imagine creating a report from your car that a client can
+        browse from the comfort of their sofa. With excyte CMA we have designed
+        our interface for an amazing mobile experience. You can create and deliver
+        reports from your desktop or tablet as well, making excyte CMA the most
+        powerful listing presentation across all 3 devices. Let convienence and
+        simplicity be just a few of the time saving factors that help drive client
+        engagement.</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-12 lg:my-20 gap-6">
+      <div class="md:col-span-2 lg:col-span-1 mt-6">
         <h2>Make an impression with visually stunning video</h2>
-        <p class="">Everyone uses video to market to customers. Why doesn't your software
+        <p class="mt-2">Everyone uses video to market to customers. Why doesn't your software
         make it easy to include this in your report? Video will reinforce a message with the customer
         long after your appointment is over. It is as easy as clicking a button to bring your report
         to life. Including video in your report may be the reason you won a client over your competition
         today.</p>
       </div>
-      <div phx-update="ignore" class="col-span-2 lg:pl-32">
+      <div phx-update="ignore" class="col-span-2 lg:pl-24">
         <video id="my-player" class="video-js vjs-16-9" controls="controls" preload="auto" width="100%" data-setup='{
             "plugins": {
               "mux": {
@@ -132,25 +145,22 @@
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-10 lg:my-20 gap-6">
-      <div class="col-span-1 rounded-3xl shadow-lg drop-shadow-xl bg-white bg-opacity-80 p-4">
-        <div class="rounded-2xl w-full border-gray-200 border bg-cover" style="background-image: url('/images/home-ss.png');height: 22rem;"></div>
-      </div>
       <div class="rounded-3xl shadow-lg drop-shadow-xl bg-white bg-opacity-80 p-4">
         <div class="rounded-2xl w-full border-gray-200 border bg-cover" style="background-image: url('/images/adjustments.png');height: 22rem;"></div>
       </div>
-      <div class="md:col-span-2 lg:md:col-span-1">
+      <div class="lg:col-span-2 lg:pl-24 pt-6 lg:pt-12">
         <h2>Powerful smart search and custom adjustments</h2>
-        <p class="">The last thing you wanna do when creating a CMA "on the go" is scroll though
+        <p class="mt-2">The last thing you wanna do when creating a CMA "on the go" is scroll though
         dozens of properties to find the most relevant ones for your report. Our search will
         analyze, rank, and sort the results we get back from your MLS so the most relevant
-        results are the fist you see. Once you select a comparable property you are free to
-        add any adjustments you like to better represent that properties current value.
-        These two features together will greatly simplify your daily workflow.</p>
+        results are the first ones you see. Once you select a comparable property you are free to
+        review the recommended adjustment considerations and add any custom adjustments to better
+        represent that properties current value.</p>
       </div>
     </div>
     <div class="my-10 lg:my-20">
-      <h2>Its more than just a CMA.</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 md:gap-6 lg:gap-8 xl:gap-16 mt-4">
+      <h1 class="text-center">Its more than just a CMA.</h1>
+      <div class="grid grid-cols-1 md:grid-cols-3 md:gap-6 lg:gap-8 xl:gap-16 mt-6">
         <div class="col-span-1 pb-8">
           <div class="flex pb-2">
             <div class="pr-2">
@@ -204,15 +214,14 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-10 lg:my-20 gap-6">
       <div class="rounded-3xl shadow-lg drop-shadow-xl bg-white bg-opacity-80 p-4">
-        <div class="rounded-2xl w-full border-gray-200 border bg-cover" style="background-image: url('/images/adjustments.png');height: 22rem;"></div>
+        <div class="rounded-2xl w-full border-gray-200 border bg-cover" style="background-image: url('/images/custom_theme.png');height: 22rem;"></div>
       </div>
-      <div class="lg:col-span-2 lg:pl-24">
-        <h2>Brokerage branding and custom themes</h2>
-        <p class="">Everyone uses video to market to customers. Why doesn't your software
-        make it easy to include this in your report? Video will reinforce a message with the customer
-        long after your appointment is over. It is as easy as clicking a button to bring your report
-        to life. Including video in your report may be the reason you won a client over your competition
-        today.</p>
+      <div class="lg:col-span-2 lg:pl-24 pt-6 lg:pt-12">
+        <h2>Branding and custom themes</h2>
+        <p class="mt-2">Branding can play a crucial role in instilling confidence and making
+        yourself more memorable. That is why every report is not just stamped with your
+        agent photo and brokerage logo, but also custom colors and fonts. Brokerages can
+        just set it up once and it will be adopted by all your agents automatically.</p>
         <h3 class="mt-6 text-right pr-6">Start your free trial now!</h3>
         <div class="flex p-4">
           <div class="flex-1"></div>

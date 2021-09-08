@@ -6,7 +6,7 @@ defmodule Excyte.Accounts do
   import Ecto.Query, warn: false
   alias Ecto.Multi
   alias Excyte.Repo
-  alias Excyte.Accounts.{Account, Billing, User, UserToken}
+  alias Excyte.Accounts.{Account, User, UserToken}
   alias Excyte.{Agents, Agents.Agent, Brokerages, Brokerages.Brokerage, EmailNotifiers}
 
   alias Stripe.Customer
@@ -19,7 +19,8 @@ defmodule Excyte.Accounts do
     header_text: "rgba(71, 85, 105, 1)",
     sub_header_text: "rgba(183, 183, 183, 1)",
     accent: "#0E7490",
-    link: "#0E7490"
+    link: "#0E7490",
+    brokerage_default: false
   }
 
   def subscribe(id) do

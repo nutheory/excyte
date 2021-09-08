@@ -269,6 +269,52 @@ defmodule Excyte.Mls.ResoApi do
     |> ProcessReso.simple_process()
   end
 
+  def get_expanded_by_listing_id(mls, id) do
+    md = ["Directions", "PrivateRemarks", "ShowingInstructions"]
+    get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$filter=ListingId%20eq%20%27#{URI.encode(id)}%27")
+    |> format_response()
+    |> case do
+      {:ok, %{listings: l}} ->
+        sp =
+          Enum.sort(hd(l))
+          |> Enum.filter(fn {k, v} ->
+            cond do
+              k === "Media" -> false
+              is_binary(v) -> true
+              is_integer(v) -> true
+              is_float(v) -> true
+              is_boolean(v) -> true
+              is_list(v) && length(v) > 0 -> true
+              true -> false
+            end
+          end)
+          |> Enum.split_with(fn {k, _v} -> Enum.member?(md, k) end)
+        main = sanatize_dirty_data(elem(sp, 0))
+        details = sanatize_dirty_data(elem(sp, 1))
+        {:ok, %{main: main, details: details}}
+      {:error, err} -> {:error, err}
+    end
+  end
+
+  defp sanatize_dirty_data(list) do
+    Enum.reduce(list, %{}, fn {k, v}, acc ->
+      key =
+        if String.contains?(k, "_") do
+          String.replace(k, "_", " ")
+        else
+          ProcessReso.split_name_by_case(k)
+        end
+
+      acc =
+        cond do
+          is_list(v) -> Map.put(acc, key, Enum.join(v, ", "))
+          true -> Map.put(acc, key, v)
+        end
+      acc
+    end)
+  end
+
+
   defp listing_id(id) do
     "ListingId%20eq%20%27#{URI.encode(id)}%27%20or%20"
   end

@@ -1,11 +1,11 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 
 export default Node.create({
-  name: 'divider',
+  name: 'guard',
 
   group: 'block',
 
-  content: 'block+',
+  content: 'block*',
 
   addAttributes() {
     return {
@@ -17,39 +17,35 @@ export default Node.create({
           }
         }
       },
-      type: {
-        default: null,
-        parseHTML: element => {
-          return {
-            type: element.getAttribute('type')
-          }
-        }
-      },
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: 'divider',
+        tag: 'guard',
       },
     ]
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
     return ['div', mergeAttributes(HTMLAttributes), 0]
   },
 
   addNodeView() {
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       const dom = document.createElement('div')
-      const line = document.createElement('div')
-      dom.classList.add('divider')
-      line.classList.add('mt-3', 'border-t-2', 'mx-auto', 'w-2/5',  'accent-color')
-      dom.append(line)
-
-      return {
-        dom,
+      if (window.viewerHook.attrs.authorized_agent === true) {
+        const content = document.createElement('div')
+        dom.append(content)
+        return {
+          dom,
+          contentDOM: content
+        }
+      } else {
+        return {
+          dom,
+        }
       }
     }
   }

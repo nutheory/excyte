@@ -77,7 +77,10 @@ defmodule Excyte.Mls.ProcessReso do
           carport: l["CarportYN"],
           open_parking: l["OpenParkingYN"]
         }),
+        directions: l["Directions"],
+        private_remarks: l["PrivateRemarks"],
         public_remarks: l["PublicRemarks"],
+        showing_instructions: l["ShowingInstructions"],
         year_built: l["YearBuilt"],
         days_on_market: l["DaysOnMarket"],
         on_market_date: l["OnMarketDate"],

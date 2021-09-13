@@ -63,7 +63,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
   end
 
   def handle_event("save-theme", _, %{assigns: a} = socket) do
-    if a.brokerage_profile && Utilities.authorized?(a.current_user.brokerage_role) do
+    if a.brokerage_profile && Utilities.authorized?(a.current_user.brokerage_role) && a.theme_settings.brokerage_default === true do
       case Brokerages.update_profile(a.brokerage_profile, %{theme_settings: a.theme_settings}) do
         {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Theme updated.")
                                       |> push_redirect(to: a.return_to)}

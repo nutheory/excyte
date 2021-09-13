@@ -138,6 +138,7 @@ defmodule ExcyteWeb.Router do
 
   scope "/client", ExcyteWeb.Client do
     pipe_through [:published_insights]
+    live "/not_found", NotFound
     live "/:insight_id", Viewer
   end
 

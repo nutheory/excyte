@@ -12,9 +12,9 @@ defmodule ExcyteWeb.Client.Viewer do
     r =
       case Insights.get_published_insight(iid) do
         {:ok, ins} -> ins
-        # {:error, err} -> err
+        nil -> {:ok, push_redirect(socket, to: "/client/not_found")}
       end
-    brk = if is_nil(r.brokerage_id), do: nil, else: Brokerages.get_brokerage_profile(r.brokerage_id)
+    brk = if is_nil(r) || is_nil(r.brokerage_id), do: nil, else: Brokerages.get_brokerage_profile(r.brokerage_id)
     agt = Agents.get_agent_profile!(r.created_by_id)
     send self(), {:load_view, %{sections: r.content.html}}
     {:ok, assign(socket,

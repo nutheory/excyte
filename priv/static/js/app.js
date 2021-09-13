@@ -18966,7 +18966,6 @@ window.currentEditor = function (content) {
 var InitEditor = {
   mounted: function mounted() {
     window.editorHook.base = this;
-    console.log("THIS", window.editorHook.currentEditor.editor);
     this.handleEvent("loadContent", function (_ref2) {
       var content = _ref2.content;
       window.editorHook.currentEditor.editor.commands.setContent(content);
@@ -19813,7 +19812,6 @@ __webpack_require__.r(__webpack_exports__);
       titleWrapper.classList.add("title");
       icon.classList.add("icon");
       icon.innerHTML = "<svg class=\"w-5 h-5 text-white\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"></path>\n        </svg>";
-      titleWrapper.innerHTML = "<h3 class=\"bg-color sub-header-color\">".concat(HTMLAttributes.title, "</h3><br />\n        <h2 class=\"bg-color header-color\">").concat(HTMLAttributes.number, " ").concat(HTMLAttributes.street, "</h2><br />\n        <h3 class=\"bg-color header-color\">").concat(HTMLAttributes.city, "</h3><br />");
       var init = images.map(function (imag, idx) {
         var link = document.createElement('a');
         link.setAttribute("href", imag.media_url);
@@ -19829,7 +19827,12 @@ __webpack_require__.r(__webpack_exports__);
         if (idx === 0) {
           link.classList.add("main-photo");
           link.append(icon);
-          link.append(titleWrapper);
+
+          if (HTMLAttributes.title && HTMLAttributes.number && HTMLAttributes.street) {
+            titleWrapper.innerHTML = "<h3 class=\"bg-color sub-header-color\">".concat(HTMLAttributes.title, "</h3><br />\n              <h2 class=\"bg-color header-color\">").concat(HTMLAttributes.number, " ").concat(HTMLAttributes.street, "</h2><br />\n              <h3 class=\"bg-color header-color\">").concat(HTMLAttributes.city, "</h3><br />");
+            link.append(titleWrapper);
+          }
+
           dom.append(link);
         } else if (idx > 0 && idx < 4) {
           dom.append(link);
@@ -20031,6 +20034,32 @@ __webpack_require__.r(__webpack_exports__);
             id: element.getAttribute('id')
           };
         }
+      },
+      title: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            title: element.getAttribute('title')
+          };
+        },
+        renderHTML: function renderHTML(attr) {
+          return {
+            'data-section-title': attr.title
+          };
+        }
+      },
+      subtitle: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            subtitle: element.getAttribute('subtitle')
+          };
+        },
+        renderHTML: function renderHTML(attr) {
+          return {
+            'data-section-subtitle': attr.subtitle
+          };
+        }
       }
     };
   },
@@ -20042,6 +20071,108 @@ __webpack_require__.r(__webpack_exports__);
   renderHTML: function renderHTML(_ref) {
     var HTMLAttributes = _ref.HTMLAttributes;
     return ['div', HTMLAttributes, 0];
+  } // addNodeView() {
+  //   return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
+  //     // console.log("HTMLAttributes", HTMLAttributes)
+  //     const dom = document.createElement('div')
+  //     const content = document.createElement('div')
+  //     dom.setAttribute('class', HTMLAttributes.class)
+  //     dom.setAttribute('id', HTMLAttributes.id)
+  //     dom.setAttribute('style', HTMLAttributes.style)
+  //     // if (HTMLAttributes.title) { 
+  //       // dom.setAttribute('data-section-title', HTMLAttributes.title) 
+  //     // }
+  //     // if (HTMLAttributes.subtitle) { dom.setAttribute('data-section-subtitle', HTMLAttributes.subtitle) }
+  //     // dom.append(content)
+  //     return {
+  //       dom,
+  //       // contentDOM: content
+  //     }
+  //   }
+  // }
+
+}));
+
+/***/ }),
+
+/***/ "./js/extensions/super_cover.js":
+/*!**************************************!*\
+  !*** ./js/extensions/super_cover.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
+  name: 'superCover',
+  group: 'block',
+  content: 'block+',
+  addAttributes: function addAttributes() {
+    return {
+      "class": {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            "class": element.getAttribute('class')
+          };
+        }
+      },
+      style: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            style: element.getAttribute('style')
+          };
+        }
+      },
+      id: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            id: element.getAttribute('id')
+          };
+        }
+      },
+      img: {
+        "default": null,
+        parseHTML: function parseHTML(element) {
+          return {
+            img: element.getAttribute('img')
+          };
+        }
+      }
+    };
+  },
+  parseHTML: function parseHTML() {
+    return [{
+      tag: 'super-cover'
+    }];
+  },
+  renderHTML: function renderHTML(_ref) {
+    var HTMLAttributes = _ref.HTMLAttributes;
+    return ['super-cover', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
+  },
+  addNodeView: function addNodeView() {
+    return function (_ref2) {
+      var editor = _ref2.editor,
+          node = _ref2.node,
+          getPos = _ref2.getPos,
+          HTMLAttributes = _ref2.HTMLAttributes,
+          decorations = _ref2.decorations,
+          extension = _ref2.extension;
+      var bg = HTMLAttributes.img;
+      var dom = document.createElement('div');
+      dom.style.backgroundImage = "url(".concat(bg, ")");
+      dom.classList.add('static');
+      return {
+        dom: dom
+      };
+    };
   }
 }));
 
@@ -20612,9 +20743,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extensions_contact__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/contact */ "./js/extensions/contact.js");
 /* harmony import */ var _extensions_divider__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/divider */ "./js/extensions/divider.js");
 /* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_27___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_27__);
+/* harmony import */ var _extensions_super_cover__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/super_cover */ "./js/extensions/super_cover.js");
+/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_28__);
+
 
 
 
@@ -20657,7 +20790,7 @@ window.currentPreview = function (content) {
         editable: false,
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default.configure({
           inline: true
-        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_17__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_15__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_20__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_26__.default],
+        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_17__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_15__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_20__.default, _extensions_super_cover__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_27__.default],
         content: this.content,
         autofocus: true
       });
@@ -20678,7 +20811,7 @@ var InitPreview = {
         var styles = buildTheme(theme);
         addCss(styles); // bind glightbox images after load
 
-        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_27___default()({
+        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_28___default()({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,
@@ -20960,9 +21093,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extensions_guard__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/guard */ "./js/extensions/guard.js");
 /* harmony import */ var _extensions_divider__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/divider */ "./js/extensions/divider.js");
 /* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
-/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_30___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_30__);
+/* harmony import */ var _extensions_super_cover__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./extensions/super_cover */ "./js/extensions/super_cover.js");
+/* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_31___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_31__);
+
 
 
 
@@ -21008,7 +21143,7 @@ window.currentViewer = function (content) {
         editable: false,
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_17__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_20__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default.configure({
           inline: true
-        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_guard__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_27__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_public_data__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_29__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_28__.default],
+        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_19__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_13__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_15__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_cell__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_guard__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_27__.default, _extensions_contact__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_public_data__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_super_cover__WEBPACK_IMPORTED_MODULE_29__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_30__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_28__.default],
         content: this.content,
         autofocus: true
       });
@@ -21021,8 +21156,6 @@ window.currentViewer = function (content) {
 var InitViewer = {
   mounted: function mounted() {
     window.viewerHook.base = this;
-    console.log("THIS", window.viewerHook.base);
-    console.log("THIS", window.viewerHook.currentViewer.viewer);
     this.handleEvent("loadViewer", function (_ref) {
       var content = _ref.content,
           theme = _ref.theme,
@@ -21038,7 +21171,7 @@ var InitViewer = {
         window.viewerHook.currentViewer.viewer.commands.setContent(content);
         var styles = buildTheme(theme);
         addCss(styles);
-        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_30___default()({
+        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_31___default()({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,
@@ -21058,6 +21191,7 @@ var buildTheme = function buildTheme(theme) {
   rule += "div.viewer-wrapper .accent-color {border-color: ".concat(theme.accent, "}");
   rule += "div.viewer-wrapper .accent-svg-color {stroke: ".concat(theme.accent, "}");
   rule += "div.viewer-wrapper a {color: ".concat(theme.link, "}");
+  rule += "div.viewer-wrapper .link {color: ".concat(theme.link, ", border-color: ").concat(theme.link, "}");
   rule += "div.viewer-wrapper button {color: ".concat(theme.link, "}");
   rule += "div.viewer-wrapper th {border-bottom-color: ".concat(theme.accent, "}");
   return rule;

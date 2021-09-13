@@ -503,7 +503,7 @@ div.viewer-wrapper {
       @apply grid grid-cols-3 grid-rows-4 gap-1;
 
       & .main-photo {
-        @apply relative col-span-3 row-span-3 w-full pt-2/3 rounded bg-cover bg-center;
+        @apply relative col-span-3 row-span-3 w-full pt-2/3 rounded-md bg-cover bg-center;
       }
 
       & .main-photo::before {
@@ -531,10 +531,10 @@ div.viewer-wrapper {
       }
 
       & a.preview {
-        @apply block h-28 relative rounded bg-cover bg-center lg:w-full lg:h-full;
+        @apply block h-28 relative rounded-lg bg-cover bg-center lg:w-full lg:h-full;
 
         & .icon {
-          @apply bg-bgray-800 bg-opacity-70 rounded-bl rounded-tr absolute top-0 right-0 p-1.5;
+          @apply bg-bgray-800 bg-opacity-70 rounded-bl rounded-tr-lg absolute top-0 right-0 p-1.5;
         }
       }
 
@@ -567,7 +567,7 @@ div.viewer-wrapper {
       @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
 
       & .main-photo {
-        @apply relative col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 w-full pt-2/3 rounded bg-cover bg-center;
+        @apply relative col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 w-full pt-2/3 rounded-lg bg-cover bg-center;
 
         & .title {
           @apply w-4/5 text-left absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-30;
@@ -587,7 +587,7 @@ div.viewer-wrapper {
       }
 
       & .main-photo::before {
-        @apply rounded;
+        @apply rounded-lg;
 
         content: "";
         position: absolute;
@@ -599,7 +599,7 @@ div.viewer-wrapper {
       }
 
       & .main-photo:hover::before {
-        @apply rounded;
+        @apply rounded-lg;
 
         content: "";
         position: absolute;
@@ -611,15 +611,15 @@ div.viewer-wrapper {
       }
 
       & a.preview {
-        @apply block h-28 relative rounded bg-cover bg-center lg:w-full lg:h-full;
+        @apply block h-28 relative rounded-lg bg-cover bg-center lg:w-full lg:h-full;
 
         & .icon {
-          @apply bg-bgray-800 bg-opacity-70 rounded-bl rounded-tr absolute top-0 right-0 p-1.5;
+          @apply bg-bgray-800 bg-opacity-70 rounded-bl-md rounded-tr-lg absolute top-0 right-0 p-1.5;
         }
       }
 
       & a.preview::before {
-        @apply rounded;
+        @apply rounded-lg;
 
         content: "";
         position: absolute;
@@ -631,7 +631,7 @@ div.viewer-wrapper {
       }
 
       & a.preview:hover::before {
-        @apply rounded;
+        @apply rounded-lg;
 
         content: "";
         position: absolute;

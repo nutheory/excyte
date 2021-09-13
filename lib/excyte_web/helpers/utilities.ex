@@ -52,11 +52,19 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def insight_dividers(type) do
-
     case type do
       "cma" -> "CMA"
       "buyer_tour" -> "Buyer Tour"
       "showcase" -> "Showcase"
+    end
+  end
+
+  def social_description(ins, agt) do
+    cnt = hd(agt.contacts)
+    case ins.type do
+      "cma" -> "Comparative Market Analysis (CMA) - #{ins.name} created by #{agt.name} (#{cnt.content})"
+      "buyer_tour" -> "Buyer Tour - #{ins.name} created by #{agt.name} (#{cnt.content})"
+      "showcase" -> "Showcase - #{ins.name} created by #{agt.name} (#{cnt.content})"
     end
   end
 

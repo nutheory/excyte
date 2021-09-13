@@ -28,6 +28,7 @@ import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Divider from './extensions/divider'
 import Struct from './extensions/struct'
+import SuperCover from './extensions/super_cover'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -70,6 +71,7 @@ window.currentPreview = function (content) {
           Divider,
           Collapsable,
           ShowcaseGallery,
+          SuperCover,
           SimpleVideo,
           Struct,
           Span,

@@ -189,7 +189,6 @@ window.currentEditor = function (content) {
 export const InitEditor = {
   mounted() {
     window.editorHook.base = this
-    console.log("THIS", window.editorHook.currentEditor.editor)
     this.handleEvent("loadContent", ({ content }) => {
       window.editorHook.currentEditor.editor.commands.setContent(content)
     })

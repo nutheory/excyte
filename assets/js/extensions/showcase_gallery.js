@@ -89,11 +89,6 @@ export default Node.create({
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
         </svg>`
 
-      titleWrapper.innerHTML = 
-        `<h3 class="bg-color sub-header-color">${HTMLAttributes.title}</h3><br />
-        <h2 class="bg-color header-color">${HTMLAttributes.number} ${HTMLAttributes.street}</h2><br />
-        <h3 class="bg-color header-color">${HTMLAttributes.city}</h3><br />`
-
       const init = images.map((imag, idx) => {
         let link = document.createElement('a')
         link.setAttribute("href", imag.media_url)
@@ -106,7 +101,14 @@ export default Node.create({
         if (idx === 0) {
           link.classList.add("main-photo")
           link.append(icon)
-          link.append(titleWrapper)
+
+          if (HTMLAttributes.title && HTMLAttributes.number && HTMLAttributes.street) {
+            titleWrapper.innerHTML =
+              `<h3 class="bg-color sub-header-color">${HTMLAttributes.title}</h3><br />
+              <h2 class="bg-color header-color">${HTMLAttributes.number} ${HTMLAttributes.street}</h2><br />
+              <h3 class="bg-color header-color">${HTMLAttributes.city}</h3><br />`
+            link.append(titleWrapper)
+          }
           dom.append(link)
         } else if (idx > 0 && idx < 4) {
           dom.append(link)

@@ -31,6 +31,7 @@ import Contact from './extensions/contact'
 import Guard from './extensions/guard'
 import Divider from './extensions/divider'
 import Span from './extensions/span'
+import SuperCover from './extensions/super_cover'
 import Struct from './extensions/struct'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
@@ -76,6 +77,7 @@ window.currentViewer = function (content) {
           Collapsable,
           ShowcaseGallery,
           PublicData,
+          SuperCover,
           SimpleVideo,
           Struct,
           Span,
@@ -93,8 +95,6 @@ window.currentViewer = function (content) {
 export const InitViewer = {
   mounted() {
     window.viewerHook.base = this
-    console.log("THIS", window.viewerHook.base)
-    console.log("THIS", window.viewerHook.currentViewer.viewer)
     this.handleEvent("loadViewer", ({ content, theme, brokerage, agent, authorized_agent }) => {
       setTimeout(() => {
         window.viewerHook.attrs = { brokerage, agent, authorized_agent }
@@ -121,6 +121,7 @@ const buildTheme = (theme) => {
       rule += `div.viewer-wrapper .accent-color {border-color: ${theme.accent}}`
       rule += `div.viewer-wrapper .accent-svg-color {stroke: ${theme.accent}}`
       rule += `div.viewer-wrapper a {color: ${theme.link}}`
+      rule += `div.viewer-wrapper .link {color: ${theme.link}, border-color: ${theme.link}}`
       rule += `div.viewer-wrapper button {color: ${theme.link}}`
       rule += `div.viewer-wrapper th {border-bottom-color: ${theme.accent}}`
   return rule

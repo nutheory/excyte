@@ -98,6 +98,7 @@ defmodule Excyte.Accounts do
 
   def register_brokerage(attrs) do
     Multi.new()
+    |> Multi.run(:whitelist_check, __MODULE__, :staging_whitelist_check, [attrs])
     |> Multi.run(:pre_check, __MODULE__, :change_brokerage_registration, [attrs])
     |> Multi.run(:account, __MODULE__, :create_account, [attrs])
     |> Multi.run(:brokerage, __MODULE__, :create_brokerage, [attrs])
@@ -131,6 +132,7 @@ defmodule Excyte.Accounts do
 
   def register_agent(attrs) do
     Multi.new()
+    |> Multi.run(:whitelist_check, __MODULE__, :staging_whitelist_check, [attrs])
     |> Multi.run(:pre_check, __MODULE__, :change_agent_registration, [attrs])
     |> Multi.run(:account, __MODULE__, :create_account, [attrs])
     |> Multi.run(:agent, __MODULE__, :create_agent, [attrs])
@@ -140,6 +142,11 @@ defmodule Excyte.Accounts do
       {:ok, %{agent: agent, account: account}} -> {:ok, %{agent: agent, account: account}}
       {:error, _method, changeset, _} -> {:error, changeset}
     end
+  end
+
+  def staging_whitelist_check(_repo, _changes, attrs \\ %{}) do
+    wl = Application.get_env(:excyte, :whitelist)
+    if Enum.member?(wl, attrs.email), do: {:ok, %{}}, else: {:error, %{message: "Not whitelisted"}}
   end
 
   def create_brokerage(_repo, %{account: acc}, attrs) do

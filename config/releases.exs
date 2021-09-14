@@ -42,6 +42,7 @@ config :excyte, ExcyteWeb.Endpoint,
     "//www.excytecma.com",
     "//staging.excytecma.com",
     "//excyte-re.onrender.com",
+    "//staging-z9u6.onrender.com",
     "https://localhost:4000",
     "https://excyte.ngrok.io"
   ],

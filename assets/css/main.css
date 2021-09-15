@@ -328,6 +328,11 @@ button.jumbo {
   color: #fff !important;
   border: none !important;
 
+  & .dz-message {
+    padding: 1rem 0;
+    margin: 0 !important;
+  }
+
   & .dz-image-preview {
     background: transparent !important;
   }

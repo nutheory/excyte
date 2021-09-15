@@ -13,8 +13,8 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       current_user: cu,
       mls: mls,
       listing_id: nil,
-      addr_results: [],
-      id_results: [],
+      addr_results: nil,
+      id_results: nil,
       recent_results: agent_listings.listings,
       errors: []
     )}
@@ -27,7 +27,11 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       safe_street_name: hd(tl(line)),
       city: address["city"],
       state: address["state"],
-      zip: address["zip"]
+      zip: address["zip"],
+      statuses: [
+        %{value: "active", name: "Active"},
+        %{value: "active_under_contract", name: "Active Under Contract"},
+        %{value: "pending", name: "Pending"}]
     }) do
       {:ok, %{listings: listings}} ->
         {:noreply, assign(socket, addr_results: listings)}

@@ -31,9 +31,10 @@ defmodule ExcyteWeb.ProtectedHeader do
     {:noreply, assign(socket, current_user: cu)}
   end
 
-    def handle_info({Accounts, [:user, _], _}, socket) do
+  def handle_info({Accounts, [_, _], _}, socket) do
     {:noreply, socket}
   end
+
   def handle_event("switch-mls", %{"mls-id" => mid}, %{assigns: assigns} = socket) do
     mls = Enum.find(assigns.mls_options, fn x -> x.id === String.to_integer(mid) end)
     {:ok, user} = Accounts.update_user(assigns.current_user.id, %{current_mls: %{

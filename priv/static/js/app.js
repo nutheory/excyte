@@ -18656,7 +18656,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./js/utilities.js");
 
-var publishable_key = (0,_utilities__WEBPACK_IMPORTED_MODULE_0__.getEnv)() === 'dev' ? 'pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb' : 'pk_live_pX4jrl2SXBESnCScj7xWNQMN00ut7ma0g8';
+var publishable_key = (0,_utilities__WEBPACK_IMPORTED_MODULE_0__.getEnv)() === 'prod' ? 'pk_live_pX4jrl2SXBESnCScj7xWNQMN00ut7ma0g8' : 'pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb';
 var stripe = Stripe(publishable_key);
 var InitCheckout = {
   mounted: function mounted() {

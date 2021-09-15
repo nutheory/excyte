@@ -70,7 +70,7 @@ defmodule ExcyteWeb.Agent.Profile do
   def handle_event("save", %{"profile" => profile_params}, %{assigns: a} = socket) do
     params = filter_empty_contacts(profile_params)
     with {:ok, _} <- Agents.update_profile(a.profile, Map.merge(params, %{ "updated_by_user" => true})),
-         {:ok, _} <- Accounts.update_user(a.current_user.id, %{current_avatar: a.photo_url}) do
+         {:ok, _} <- Accounts.update_user(a.current_user.id, %{current_avatar: a.profile.photo_url}) do
       {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
     else
       {:error, %Ecto.Changeset{} = changeset} ->

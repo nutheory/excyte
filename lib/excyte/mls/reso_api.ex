@@ -38,7 +38,7 @@ defmodule Excyte.Mls.ResoApi do
     query = get_expanded(mls)
     if Enum.member?(entity.attributes, "ListAgentKey") do
       get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=9&"
-        <> "$orderby=ModificationTimestamp%20asc&#{query.select_str}$filter="
+        <> "$orderby=ModificationTimestamp%20desc&#{query.select_str}$filter="
         <> "ListAgentKey%20eq%20%27#{lak}%27")
       |> format_response()
       |> ProcessReso.simple_process()
@@ -65,11 +65,13 @@ defmodule Excyte.Mls.ResoApi do
     safe_street_name: safe_street_name,
     city: city,
     state: state,
-    zip: zip
+    zip: zip,
+    statuses: statuses
   }) do
     query = get_expanded(mls)
     get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&"
       <> "#{query.select_str}$filter="
+      <> "(#{status(statuses)})%20and%20"
       <> "#{number(street_number)}%20and%20"
       <> "#{street(safe_street_name)}%20and%20"
       <> "#{city(city)}%20and%20"
@@ -348,14 +350,14 @@ defmodule Excyte.Mls.ResoApi do
 
   # Active, Active Under Contract, Canceled, Closed, Expired, Pending, Withdrawn
   # ContractStatusChangeDate
-  defp status(status_arr) when is_list(status_arr) do
+  def status(status_arr) when is_list(status_arr) do
     Enum.reduce(status_arr, "", fn st, acc ->
       "#{acc}tolower(StandardStatus)%20eq%20%27#{st.value}%27%20or%20"
     end)
     |> String.trim_trailing("%20or%20")
   end
 
-  defp status(stat) do
+  def status(stat) do
     status([stat])
   end
 

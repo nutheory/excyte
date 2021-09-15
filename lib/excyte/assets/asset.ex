@@ -66,6 +66,7 @@ defmodule Excyte.Assets.Asset do
     where: [uploaded_by_id: ^aid],
     order_by: [desc: a.updated_at]
   end
+
   def all_available_assets(aid, bid) do
     from a in __MODULE__,
     where: [uploaded_by_id: ^aid],
@@ -78,6 +79,7 @@ defmodule Excyte.Assets.Asset do
     where: [uploaded_by_id: ^aid, type: "video"],
     order_by: [desc: a.updated_at]
   end
+
   def all_available_videos(aid, bid) do
     from a in __MODULE__,
     where: [uploaded_by_id: ^aid, type: "video"],

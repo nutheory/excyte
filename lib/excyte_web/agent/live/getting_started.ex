@@ -9,7 +9,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
     cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
-    profile = Agents.get_agent_profile(cu.id)
+    profile = Agents.get_agent_profile!(cu.id)
     if connected?(socket), do: Accounts.subscribe(account.id)
     {:ok, assign(socket,
       current_user: cu,

@@ -13,7 +13,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
       account = Accounts.get_account!(cu.account_id)
       mls_list = Mls.get_credentials(%{agent_id: cu.id})
       bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
-      profile = Agents.get_agent_profile(cu.id)
+      profile = Agents.get_agent_profile!(cu.id)
       if connected?(socket), do: Accounts.subscribe(account.id)
       {:ok, assign(socket,
         current_user: cu,

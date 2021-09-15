@@ -61,10 +61,22 @@ defmodule Excyte.Assets.Asset do
     ])
   end
 
+  def all_available_assets(aid, bid) when is_nil(bid) do
+    from a in __MODULE__,
+    where: [uploaded_by_id: ^aid],
+    order_by: [desc: a.updated_at]
+  end
+
   def all_available_assets(aid, bid) do
     from a in __MODULE__,
     where: [uploaded_by_id: ^aid],
     or_where: [brokerage_id: ^bid, is_shared: true],
+    order_by: [desc: a.updated_at]
+  end
+
+  def all_available_videos(aid, bid) when is_nil(bid) do
+    from a in __MODULE__,
+    where: [uploaded_by_id: ^aid, type: "video"],
     order_by: [desc: a.updated_at]
   end
 

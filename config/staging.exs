@@ -40,8 +40,8 @@ config :mux,
   access_token_secret: System.get_env("MUX_SECRET_KEY"),
   signing_secret: System.get_env("MUX_SIGNING_SECRET")
 
-config :excyte, :agent_plans, "prod_JuMhdzU3j59SFc"
-config :excyte, :brokerage_plans, "prod_Juv9tYtNIvrWdC"
+config :excyte, :agent_plans, "prod_JuN1ffhB572SjI"
+config :excyte, :brokerage_plans, "prod_JuulizEStSJO7L"
 
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")

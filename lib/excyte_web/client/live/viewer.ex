@@ -28,6 +28,7 @@ defmodule ExcyteWeb.Client.Viewer do
 
   @impl true
   def handle_info({:load_view, %{sections: sections}}, %{assigns: a} = socket) do
+    IO.inspect(label: "run after waking up")
     {:noreply, push_event(socket, "loadViewer", %{
       content: sections,
       theme: a.theme,

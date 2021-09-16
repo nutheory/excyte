@@ -21135,7 +21135,6 @@ window.viewerHook = {};
 window.currentViewer = function (content) {
   return {
     content: content,
-    viewer: null,
     toc_visible: false,
     init: function init(el) {
       var viewer = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({

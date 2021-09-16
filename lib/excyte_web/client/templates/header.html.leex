@@ -1,5 +1,7 @@
 <nav class="client-header">
   <div class="header-fixed">
+    <% IO.inspect(@show_menu, label: "@show_menu") %>
+    <% IO.inspect(@toc_sections, label: "@toc_sections") %>
     <div class="menu ex-shadow bg-color <%= if @show_menu === "init", do: "scale-0", else: "scale-#{@show_menu}-tl" %>">
       <div class="pl-20 text-right">
         <h4 class="mb-0"><%= Utilities.insight_type_to_name(@insight_type) %></h4>

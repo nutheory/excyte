@@ -15710,8 +15710,10 @@ var TableOfContents = {
         behavior: "smooth"
       });
     });
+    console.log("run", viewer);
     setTimeout(function () {
       var els = viewer.querySelectorAll('.section');
+      console.log("TO", els);
       var sections = Array.prototype.slice.call(els).map(function (el) {
         return {
           id: el.getAttribute("id"),
@@ -15815,7 +15817,6 @@ window.viewerHook = {};
 window.currentViewer = function (content) {
   return {
     content: content,
-    viewer: null,
     toc_visible: false,
     init: function init(el) {
       var viewer = new _tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Editor({

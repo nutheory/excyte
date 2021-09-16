@@ -42,7 +42,6 @@ window.currentViewer = function (content) {
   
   return {
     content: content,
-    viewer: null,
     toc_visible: false,
 
     init(el) {

@@ -29,11 +29,17 @@
         <p class="text-base">Customize your report by disabling/enabling, sorting, or adding video.</p>
         <ul class="section-nav py-6" phx-hook="InitSectionSortable" id="sections" data-target-id="#sections" data-sections-id="sections">
           <%= for section <- @sections do %>
-            <%= if is_list(section.html_content) do %>
+            <%= if section.content &&
+              Map.has_key?(section.content, :listings) &&
+              is_list(section.content.listings) &&
+              length(section.content.listings) > 1 do %>
               <li class="rounded shadow bg-cyan-50 mb-4"  data-sortable-id="<%= section.temp_id %>" x-data="{ listingsVisible: false }">
                 <div class="">
                   <div class="flex p-4">
-                    <h4 class="mb-0 flex-1"><%= section.name %></h4>
+                    <h4 class="mb-0 flex-1">
+                      <%= Inflex.inflect(section.name, length(section.content.listings)) %>
+                      (<%= length(section.content.listings) %>)
+                    </h4>
                     <div
                       class="cursor-pointer pt-1"
                       @click="listingsVisible = !listingsVisible"
@@ -55,7 +61,7 @@
                     x-transition:leave-start="opacity-100 transform scale-y-100"
                     x-transition:leave-end="opacity-0 transform scale-y-90"
                   >
-                    <%= for listing <- section.html_content do %>
+                    <%= for listing <- section.content.listings do %>
                       <li class="flex" data-listable-id="<%= listing.temp_id %>">
                         <div class="drag-handle grabbable py-2 px-4 flex items-center border-r border-gray-200">
                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -82,15 +88,7 @@
                 </div>
               </li>
             <% else %>
-              <%= live_component @socket, SectionCard,
-                name: section.name,
-                description: section.description,
-                position: section.position,
-                temp_id: section.temp_id,
-                type: section.type,
-                enabled: section.enabled,
-                component_name: section.component_name
-              %>
+              <%= live_component @socket, SectionCard, section: section %>
             <% end %>
           <% end %>
         </ul>
@@ -174,7 +172,7 @@
         </div>
       </div>
     <% else %>
-      <div class="preview-wrapper panel-slidein bg-gray-100 <%= if @preview_panel, do: 'right-0', else: '' %>" id="previewWrapper" phx-hook="InitPreview">
+      <div class="preview-wrapper panel-slidein bg-gray-100 <%= if @preview_panel, do: 'right-0', else: '' %>" id="previewWrapper" >
         <div
           class="absolute top-0 left-0 flex cursor-pointer z-40 bg-white text-gray-800 px-4 py-2"
           phx-click="toggle-preview"
@@ -189,16 +187,26 @@
           </div>
         </div>
         <div class="antialiased h-screen overflow-y-auto" phx-update="ignore">
-          <div
-            class="h-full"
-            x-data="currentPreview('')"
-            x-init="() => init($refs.preview)"
-            x-on:click.away="inFocus = false"
-          >
+          <div class="h-full">
             <div class="px-4 pt-10 sm:px-6 lg:max-w-5xl lg:pt-16 lg:px-8">
               <div class="mx-auto">
-                <div x-ref="preview"></div>
-                <div class="md:flex-1 rounded-md md:ml-6 md:items-end grid-cols-3 md:text-left bg-center bg-opacity-50 col-span-2 sm:grid-cols-2 min-h-0 w-10 h-10 h-full lg:grid-cols-2 sm:w-1/4 w-1/2 md:text-lg md:w-4/5 md:text-2xl md:text-3xl lg:text-3xl max-w-screen-lg m-6 bg-gray-900 bg-opacity-40 float-right w-min lg:w-4/5 xl:w-2/3 max-w-screen-md w-48 hidden"></div>
+                <div x-ref="preview">
+                  <%= for section <- @sections do %>
+                    <%= if section.enabled do %>
+                      <div class="divider">
+                        <div class="mt-3 border-t-2 mx-auto w-2/5 accent-color"></div>
+                      </div>
+                      <%= live_component @socket, TemplateRender,
+                        current_user: @current_user,
+                        type: @insight.type,
+                        brokerage: @data.brokerage,
+                        agent: @data.agent_profile,
+                        section: section,
+                        id: "template_#{section.component_name}"
+                      %>
+                    <% end %>
+                  <% end %>
+                </div>
               </div>
             </div>
           </div>

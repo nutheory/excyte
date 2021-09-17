@@ -4,15 +4,15 @@ defmodule ExcyteWeb.Insight.SectionCard do
 
   def render(assigns), do: InsightView.render("section_card.html", assigns)
 
-  def update(assigns, socket) do
+  def update(%{section: section}, socket) do
     {:ok, assign(socket,
-      name: assigns.name,
-      description: assigns.description,
-      type: assigns.type,
-      enabled: assigns.enabled,
-      position: assigns.position,
-      temp_id: assigns.temp_id,
-      component_name: assigns.component_name
+      name: section.name,
+      description: section.description,
+      type: section.type,
+      enabled: section.enabled,
+      position: section.position,
+      temp_id: section.temp_id,
+      component_name: section.component_name
     )}
   end
 end

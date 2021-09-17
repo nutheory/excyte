@@ -1,7 +1,10 @@
 defmodule ExcyteWeb.InsightView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/insight/templates", path: ""]}
   import Number.{Delimit}
-  alias ExcyteWeb.Helpers.Utilities
+  alias ExcyteWeb.{
+    Helpers.Utilities,
+    Client.TemplateRender
+  }
   alias ExcyteWeb.Insight.{
     EditorMenuBubble,
     EditorMenuCommands,

@@ -1,0 +1,48 @@
+<div class="section agent w-full lg:w-4/5 mx-auto" id="agent_profile">
+  <div class="flex flex-wrap">
+    <%= if @agent.photo_url do %>
+      <div class="avatar"><img src="<%= @agent.photo_url %>" alt="<%= @agent.name %> photo" /></div>
+    <% end %>
+    <div class="w-full pt-4 md:ml-6 md:flex-1 md:flex md:items-end">
+      <div class="text-center md:text-left">
+        <%= if @agent.name do %>
+          <h1 class="header-color"><%= @agent.name %></h1>
+        <% end %>
+        <%= if @agent.tagline do %>
+          <div class="my-4 lg:my-6">
+            <blockquote><%= @agent.tagline %></blockquote>
+          </div>
+        <% end %>
+        <%= if @agent.company_name do %>
+          <h3 class="mb-0 header-color"><%= @agent.company_name %></h3>
+        <% end %>
+        <%= if @agent.job_title do %>
+          <p class="font-semibold mb-4"><i><%= @agent.job_title %></i></p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <%= if @agent.bio do %>
+    <p class="mt-4 mb-4 sub-header-color font-semibold text-lg md:text-xl lg:text-2xl"><%= @agent.bio %></p>
+  <% end %>
+  <div class="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+    <%= if length(@agent.contacts) > 0 do %>
+      <div class="mt-6">
+        <%= for cnt <- @agent.contacts do %>
+          <%= live_component @socket, ContactView,
+            type: cnt.type,
+            content: cnt.content,
+            title: cnt.name,
+            default: nil,
+            id: cnt.id
+          %>
+        <% end %>
+      </div>
+    <% end %>
+    <%= if @agent.logo_url do %>
+      <div class="w-full flex items-center justify-center md:justify-end">
+        <img src="<%= @agent.logo_url %>" alt="<%= @agent.company_name %> logo" />
+      </div>
+    <% end %>
+  </div>
+</div>

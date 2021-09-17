@@ -1,0 +1,29 @@
+<div class="section w-full lg:w-4/5 mx-auto" id="brk_<%= @brokerage.id %>">
+  <%= if @brokerage.logo_url do %>
+    <div class="flex items-center justify-center"><img src="<%= @brokerage.logo_url %>" alt="logo" /></div>
+  <% end %>
+  <h2 class="header-color text-center"><%= @brokerage.company_name %></h2>
+  <%= if @brokerage.tagline do %>
+    <div class="flex items-center justify-center my-4">
+      <blockquote><%= @brokerage.tagline %></blockquote>
+    </div>
+  <% end %>
+  <%= if @brokerage.description do %>
+    <p class="sub-header-color mb-4 font-semibold text-lg md:text-xl lg:text-2xl"><%= @brokerage.description %></p>
+  <% end %>
+  <div class="grid sm:grid-cols-2 gap-y-2 gap-x-6">
+    <%= if length(@brokerage.contacts) > 0 do %>
+      <div class="mt-6">
+        <%= for cnt <- @brokerage.contacts do %>
+          <%= live_component @socket, ContactView,
+            type: cnt.type,
+            content: cnt.content,
+            title: cnt.name,
+            default: nil,
+            id: cnt.id
+          %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

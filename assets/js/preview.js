@@ -28,10 +28,12 @@ import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Divider from './extensions/divider'
 import Struct from './extensions/struct'
+import SysChart from './extensions/chart'
 import SuperCover from './extensions/super_cover'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
+import { synopsisChart } from './chart'
 
 window.previewHook = {}
 
@@ -68,6 +70,7 @@ window.currentPreview = function (content) {
           TableRow,
           TableCell,
           Contact,
+          SysChart,
           Divider,
           Collapsable,
           ShowcaseGallery,
@@ -100,6 +103,8 @@ export const InitPreview = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
+        console.log("LST", content)
+        synopsisChart({ listings: content.listings, theme })
       }, 500)
     })
   },

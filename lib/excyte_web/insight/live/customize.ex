@@ -56,7 +56,7 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
-  def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
+  def handle_info({:load_preview, %{sections: sections, theme: theme}}, %{assigns: a} = socket) do
     doc = stitch_preview(sections)
     {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
   end

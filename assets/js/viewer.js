@@ -33,6 +33,7 @@ import Divider from './extensions/divider'
 import Span from './extensions/span'
 import SuperCover from './extensions/super_cover'
 import Struct from './extensions/struct'
+import SysChart from './extensions/chart'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
 
@@ -73,6 +74,7 @@ window.currentViewer = function (content) {
           TableCell,
           Guard,
           Divider,
+          SysChart,
           Contact,
           Collapsable,
           ShowcaseGallery,

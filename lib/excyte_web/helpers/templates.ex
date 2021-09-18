@@ -757,6 +757,21 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def synopsis(%{subject: sbj, insight: insight}, type) do
+    listings =
+      Enum.map(insight["content"]["listings"], fn lst ->
+        %{
+          list: lst["list_price"],
+          close: (if lst["close_price"], do: lst["close_price"], else: 0),
+          dom: lst["days_on_market"],
+          label: "#{lst["street_number"]} #{lst["street_name"]} (#{lst["days_on_market"]} DoM)",
+        }
+      end)
+      |> Enum.sort_by(&(&1.dom))
+
+    prices = Enum.reduce(listings, [], fn lst, acc -> [lst.list, lst.close] ++ acc end)
+    high = round(Enum.max(prices) * 1.25)
+    low = round(Enum.min(Enum.filter(prices, fn lp -> lp !== nil && lp !== 0 end)) * 0.7)
+    chart_data = Jason.encode!(%{attrs: insight["document_attributes"], min: low, max: high, listings: listings})
     """
       <divider type="#{type}"></divider>
       <struct class="section synopsis" id="synopsis" title="Synopsis">
@@ -764,6 +779,7 @@ defmodule ExcyteWeb.Helpers.Templates do
         <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">Based on
         all the comparable listings, local data, and the current market. The following are
         great data points to consider when selling your home.</p>
+
         <struct class="flex flex-wrap">
           <struct class="w-full lg:flex-1 flex items-center justify-center py-6">
             <struct>
@@ -788,6 +804,7 @@ defmodule ExcyteWeb.Helpers.Templates do
             </struct>
           {% endif %}
         </struct>
+        <synopsis-chart data-chart='#{chart_data}' class="w-full my-6"></synopsis-chart>
         <struct class="mt-8">
             <h4 class="sub-header-color text-center"> Your Suggested price range is </h4>
             <h1 class="header-color text-center">$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h1>

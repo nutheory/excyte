@@ -29,7 +29,7 @@ import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Divider from './extensions/divider'
 import Struct from './extensions/struct'
-import SysChart from './extensions/chart'
+// import SysChart from './extensions/chart'
 import SuperCover from './extensions/super_cover'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
@@ -71,7 +71,6 @@ window.currentPreview = function (content) {
           TableRow,
           ExcyteTableCell,
           Contact,
-          SysChart,
           Divider,
           Collapsable,
           ShowcaseGallery,

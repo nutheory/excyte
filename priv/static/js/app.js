@@ -19098,104 +19098,6 @@ var actions = [{
 
 /***/ }),
 
-/***/ "./js/extensions/chart.js":
-/*!********************************!*\
-  !*** ./js/extensions/chart.js ***!
-  \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _tiptap_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tiptap/core */ "./node_modules/@tiptap/core/dist/tiptap-core.esm.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.Node.create({
-  name: 'synopsis-chart',
-  group: 'block',
-  content: 'block+',
-  addAttributes: function addAttributes() {
-    return {
-      "class": {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            "class": element.getAttribute('class')
-          };
-        }
-      },
-      style: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            style: element.getAttribute('style')
-          };
-        }
-      },
-      id: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            id: element.getAttribute('id')
-          };
-        }
-      },
-      data: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            data: element.getAttribute('data-chart')
-          };
-        } // renderHTML: attributes => {
-        //   return {
-        //     'data-chart': attributes.data,
-        //   }
-        // }
-
-      },
-      title: {
-        "default": null,
-        parseHTML: function parseHTML(element) {
-          return {
-            title: element.getAttribute('title')
-          };
-        }
-      }
-    };
-  },
-  parseHTML: function parseHTML() {
-    return [{
-      tag: 'synopsis-chart'
-    }];
-  },
-  renderHTML: function renderHTML(_ref) {
-    var HTMLAttributes = _ref.HTMLAttributes;
-    return ['div', (0,_tiptap_core__WEBPACK_IMPORTED_MODULE_0__.mergeAttributes)(HTMLAttributes), 0];
-  },
-  addNodeView: function addNodeView() {
-    return function (_ref2) {
-      var editor = _ref2.editor,
-          node = _ref2.node,
-          getPos = _ref2.getPos,
-          HTMLAttributes = _ref2.HTMLAttributes,
-          decorations = _ref2.decorations,
-          extension = _ref2.extension;
-      var dom = document.createElement('div');
-      var canvas = document.createElement('canvas');
-      canvas.setAttribute('id', 'synopsisChart');
-      console.log(HTMLAttributes.data);
-      canvas.setAttribute('data-chart', HTMLAttributes.data);
-      dom.append(canvas);
-      return {
-        dom: dom
-      };
-    };
-  }
-}));
-
-/***/ }),
-
 /***/ "./js/extensions/collapsable.js":
 /*!**************************************!*\
   !*** ./js/extensions/collapsable.js ***!
@@ -20867,11 +20769,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _extensions_contact__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./extensions/contact */ "./js/extensions/contact.js");
 /* harmony import */ var _extensions_divider__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./extensions/divider */ "./js/extensions/divider.js");
 /* harmony import */ var _extensions_struct__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./extensions/struct */ "./js/extensions/struct.js");
-/* harmony import */ var _extensions_chart__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/chart */ "./js/extensions/chart.js");
-/* harmony import */ var _extensions_super_cover__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/super_cover */ "./js/extensions/super_cover.js");
-/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
-/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_29___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_29__);
+/* harmony import */ var _extensions_super_cover__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./extensions/super_cover */ "./js/extensions/super_cover.js");
+/* harmony import */ var _extensions_span__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./extensions/span */ "./js/extensions/span.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! glightbox */ "./node_modules/glightbox/dist/js/glightbox.min.js");
+/* harmony import */ var glightbox__WEBPACK_IMPORTED_MODULE_28___default = /*#__PURE__*/__webpack_require__.n(glightbox__WEBPACK_IMPORTED_MODULE_28__);
 
 
 
@@ -20897,7 +20798,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+ // import SysChart from './extensions/chart'
 
 
 
@@ -20917,7 +20818,7 @@ window.currentPreview = function (content) {
         editable: false,
         extensions: [_tiptap_extension_italic__WEBPACK_IMPORTED_MODULE_8__.default, _tiptap_extension_bold__WEBPACK_IMPORTED_MODULE_2__.default, _tiptap_extension_blockquote__WEBPACK_IMPORTED_MODULE_1__.default, _tiptap_extension_strike__WEBPACK_IMPORTED_MODULE_11__.default, _tiptap_extension_document__WEBPACK_IMPORTED_MODULE_4__.default, _tiptap_extension_bullet_list__WEBPACK_IMPORTED_MODULE_3__.default, _tiptap_extension_ordered_list__WEBPACK_IMPORTED_MODULE_10__.default, _tiptap_extension_list_item__WEBPACK_IMPORTED_MODULE_9__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteHeading, _tiptap_extension_hard_break__WEBPACK_IMPORTED_MODULE_5__.default, _tiptap_extension_text__WEBPACK_IMPORTED_MODULE_16__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteParagraph, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteLink, _tiptap_extension_image__WEBPACK_IMPORTED_MODULE_7__.default.configure({
           inline: true
-        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_17__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_13__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteTableCell, _extensions_contact__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_chart__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_20__.default, _extensions_super_cover__WEBPACK_IMPORTED_MODULE_27__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_28__.default],
+        }), _tiptap_extension_highlight__WEBPACK_IMPORTED_MODULE_6__.default, _tiptap_extension_underline__WEBPACK_IMPORTED_MODULE_18__.default, _tiptap_extension_text_align__WEBPACK_IMPORTED_MODULE_17__.default, _tiptap_extension_table__WEBPACK_IMPORTED_MODULE_12__.default, _tiptap_extension_table_header__WEBPACK_IMPORTED_MODULE_14__.default, _tiptap_extension_table_row__WEBPACK_IMPORTED_MODULE_13__.default, _extensions_modified_extensions__WEBPACK_IMPORTED_MODULE_19__.ExcyteTableCell, _extensions_contact__WEBPACK_IMPORTED_MODULE_23__.default, _extensions_divider__WEBPACK_IMPORTED_MODULE_24__.default, _extensions_collapsable__WEBPACK_IMPORTED_MODULE_22__.default, _extensions_showcase_gallery__WEBPACK_IMPORTED_MODULE_20__.default, _extensions_super_cover__WEBPACK_IMPORTED_MODULE_26__.default, _extensions_simple_video__WEBPACK_IMPORTED_MODULE_21__.default, _extensions_struct__WEBPACK_IMPORTED_MODULE_25__.default, _extensions_span__WEBPACK_IMPORTED_MODULE_27__.default],
         content: this.content,
         autofocus: true
       });
@@ -20938,7 +20839,7 @@ var InitPreview = {
         var styles = buildTheme(theme);
         addCss(styles); // bind glightbox images after load
 
-        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_29___default()({
+        var lightbox = glightbox__WEBPACK_IMPORTED_MODULE_28___default()({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,

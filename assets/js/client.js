@@ -12,6 +12,7 @@ import topbar from "topbar"
 
 let Hooks = {}
 
+
 Hooks.InitViewer = InitViewer
 Hooks.TableOfContents = TableOfContents
 

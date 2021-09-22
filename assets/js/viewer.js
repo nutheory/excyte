@@ -75,7 +75,6 @@ window.currentViewer = function (content) {
           ExcyteTableCell,
           Guard,
           Divider,
-          SysChart,
           Contact,
           Collapsable,
           ShowcaseGallery,

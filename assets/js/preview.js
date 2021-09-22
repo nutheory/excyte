@@ -20,7 +20,8 @@ import Underline from '@tiptap/extension-underline'
 import { 
   ExcyteHeading,
   ExcyteParagraph,
-  ExcyteLink, 
+  ExcyteLink,
+  ExcyteTableCell,
 } from './extensions/modified_extensions'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
@@ -33,7 +34,7 @@ import SuperCover from './extensions/super_cover'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
-import { synopsisChart } from './chart'
+// import { synopsisChart } from './chart'
 
 window.previewHook = {}
 
@@ -68,7 +69,7 @@ window.currentPreview = function (content) {
           Table,
           TableHeader,
           TableRow,
-          TableCell,
+          ExcyteTableCell,
           Contact,
           SysChart,
           Divider,
@@ -103,8 +104,8 @@ export const InitPreview = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
-        console.log("LST", content)
-        synopsisChart({ listings: content.listings, theme })
+        // console.log("LST", content)
+        // synopsisChart({ listings: content.listings, theme })
       }, 500)
     })
   },

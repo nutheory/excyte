@@ -9,19 +9,20 @@ import Image from '@tiptap/extension-image'
 import Italic from '@tiptap/extension-italic'
 import ListItem from '@tiptap/extension-list-item'
 import OrderedList from '@tiptap/extension-ordered-list'
-import Paragraph from '@tiptap/extension-paragraph'
+// import Paragraph from '@tiptap/extension-paragraph'
 import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableHeader from '@tiptap/extension-table-header'
-import TableCell from '@tiptap/extension-table-cell'
+// import TableCell from '@tiptap/extension-table-cell'
 import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { 
   ExcyteHeading,
   ExcyteParagraph,
-  ExcyteLink, 
+  ExcyteLink,
+  ExcyteTableCell,
 } from './extensions/modified_extensions'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import PublicData from './extensions/public_data'
@@ -33,7 +34,7 @@ import Divider from './extensions/divider'
 import Span from './extensions/span'
 import SuperCover from './extensions/super_cover'
 import Struct from './extensions/struct'
-import SysChart from './extensions/chart'
+// import SysChart from './extensions/chart'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
 
@@ -71,7 +72,7 @@ window.currentViewer = function (content) {
           Table,
           TableHeader,
           TableRow,
-          TableCell,
+          ExcyteTableCell,
           Guard,
           Divider,
           SysChart,
@@ -109,6 +110,7 @@ export const InitViewer = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
+        // synopsisChart({ listings: content.listings, theme })
       }, 200)
     })
   },

@@ -331,6 +331,28 @@ div.viewer-wrapper {
 
   & .synopsis {
     @apply w-full lg:w-4/5 mx-auto;
+
+    & .sold-table {
+      @apply my-12;
+
+      & table {
+        @apply w-full;
+
+        & td {
+          @apply p-2;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & tr:first-child {
+          & p {
+            @apply text-lg font-bold;
+          }
+        }
+      }
+    }
   }
 
   & .pricing {

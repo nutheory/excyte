@@ -1462,6 +1462,40 @@ div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
       }
 }
 
+div.preview-wrapper .synopsis .sold-table, div.viewer-wrapper .synopsis .sold-table {
+
+      margin-top: 3rem;
+
+      margin-bottom: 3rem;
+}
+
+div.preview-wrapper .synopsis .sold-table table, div.viewer-wrapper .synopsis .sold-table table {
+
+      width: 100%;
+}
+
+div.preview-wrapper .synopsis .sold-table table td, div.viewer-wrapper .synopsis .sold-table table td {
+
+      padding: 0.5rem;
+}
+
+div.preview-wrapper .synopsis .sold-table table tr, div.viewer-wrapper .synopsis .sold-table table tr {
+
+      border-bottom-width: 1px;
+}
+
+div.preview-wrapper .synopsis .sold-table table tr:first-child p, div.viewer-wrapper .synopsis .sold-table table tr:first-child p {
+
+      font-size: 1.125rem;
+
+      line-height: 1.75rem;
+}
+
+div.preview-wrapper .synopsis .sold-table table tr:first-child p, div.viewer-wrapper .synopsis .sold-table table tr:first-child p {
+
+      font-weight: 700;
+}
+
 div.preview-wrapper .pricing, div.viewer-wrapper .pricing {
 
       margin-left: auto;
@@ -5968,6 +6002,11 @@ h4 {
 .w-4 {
 
       width: 1rem;
+}
+
+.w-1\/3 {
+
+      width: 33.333333%;
 }
 
 .max-w-screen-xl {

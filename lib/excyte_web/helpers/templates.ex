@@ -103,6 +103,88 @@ defmodule ExcyteWeb.Helpers.Templates do
   #   """
   # end
 
+  def closed_analysis(%{insight: insight}, type) do
+    closed = Enum.filter(insight["content"]["listings"], fn lst -> lst["status"] === "Closed" end)
+    closed_averages = format_averages(calculated_averages(closed))
+
+    closed_listings =
+      Enum.map(closed, fn lst ->
+        %{
+          "address" => "#{lst["street_number"]} #{lst["street_name"]}",
+          "percent" => (if lst["close_price"], do: Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1), else: nil),
+          "list" => "$#{number_to_delimited(lst["list_price"], precision: 0)}",
+          "dom" => lst["days_on_market"],
+          "close" => (if lst["close_price"], do: "$#{number_to_delimited(lst["close_price"], precision: 0)}", else: 0),
+          "per_sqft" => "$#{number_to_delimited(lst["adjustments"]["sqft"]["price_per_sqft"], precision: 0)}"
+        }
+      end)
+      |> Enum.sort_by(&(&1["dom"]))
+
+    data_points =
+      Enum.map(closed, fn lst ->
+        %{
+           list: lst["list_price"],
+           close: (if lst["close_price"], do: lst["close_price"], else: 0),
+           dom: lst["days_on_market"],
+           label: "#{lst["days_on_market"]} DoM"
+         }
+      end)
+      |> Enum.sort_by(&(&1.dom))
+
+    chart_data = Jason.encode!(%{
+      min: round(closed_averages["min"] * 0.85),
+      max: round(closed_averages["max"] * 1.15),
+      attrs: insight["document_attributes"],
+      listings: data_points
+    })
+
+
+    """
+      <divider type="#{type}"></divider>
+      <struct class="section closed-analysis" id="closed_analysis" title="Closed Listings Analysis">
+        <h1 class="header-color">Closed Listings Analysis</h1>
+        <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">
+        Overview and comparison of closed properties and their relevant information.</p>
+        <closed-listings-chart class="my-12" data-chart='#{chart_data}'></closed-listings-chart>
+        <struct class="sold-table">
+          <table>
+            <tr>
+              <td class="text-left font-bold text-lg">Address</td>
+              <td class="text-center font-bold text-lg">List price</td>
+              <td class="text-center font-bold text-lg">Close price</td>
+              <td class="text-center font-bold text-lg">% of list</td>
+              <td class="text-center font-bold text-lg">DOM</td>
+              <td class="text-center font-bold text-lg">$ per sqft</td>
+            </tr>
+            {% for cl in closed %}
+              <tr>
+                <td>{{ cl['address'] }}</td>
+                <td class="text-center">{{ cl['list'] }}</td>
+                <td class="text-center">{{ cl['close'] }}</td>
+                <td class="text-center">{{ cl['percent'] }}</td>
+                <td class="text-center">{{ cl['dom'] }}</td>
+                <td class="text-center">{{ cl['per_sqft'] }}</td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td>Averages</td>
+              <td class="text-center">{{ avgs['avg_list'] }}</td>
+              <td class="text-center">{{ avgs['avg_close'] }}</td>
+              <td class="text-center">{{ avgs['avg_percent'] }}</td>
+              <td class="text-center">{{ avgs['avg_dom'] }}</td>
+              <td class="text-center">{{ avgs['avg_sqft'] }}</td>
+            </tr>
+          </table>
+        </struct>
+      </struct>
+    """
+    |> Solid.parse()
+    |> case do
+      {:ok, template} -> to_string(Solid.render(template, %{"closed" => closed_listings, "avgs" => closed_averages}))
+      {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
+    end
+  end
+
   def comparable(%{listing: listing}, type) do
     adjustments = Enum.map(listing["custom_adjustments"], fn adj ->
       Map.merge(adj, %{"display_value" => number_to_delimited(adj["value"], precision: 0)})
@@ -756,127 +838,54 @@ defmodule ExcyteWeb.Helpers.Templates do
     end
   end
 
-  def synopsis(%{subject: sbj, insight: insight}, type) do
+  def suggested_price(%{subject: sbj, insight: insight}, type) do
     averages =
       Enum.group_by(insight["content"]["listings"], fn lst -> lst["status"] end)
-      |> Enum.filter(fn {k, _v} -> Enum.member?(["Active", "Pending", "Closed"], k) end)
-      |> Enum.map(fn {_k, v} ->
-        Enum.reduce(v, %{list_prices: [], close_prices: [], doms: [], percents: [], pp_sqfts: [], count: 0}, fn lst, acc ->
-          ppsqft = lst["adjustments"]["sqft"]["price_per_sqft"]
-          %{
-            status: lst["status"],
-            pp_sqfts: (if ppsqft !== nil, do: [ppsqft | acc.pp_sqfts], else: []),
-            percents: (if lst["close_price"] !== nil, do: [Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1) | acc.percents], else: acc.percents),
-            list_prices: (if lst["list_price"] !== nil, do: [lst["list_price"] | acc.list_prices], else: acc.list_prices),
-            close_prices: (if lst["close_price"] !== nil, do: [lst["close_price"] | acc.close_prices], else: acc.close_prices),
-            doms: (if lst["days_on_market"] !== nil, do: [lst["days_on_market"] | acc.doms], else: acc.doms),
-            count: acc.count + 1
-          }
-        end)
-      end)
-      |> Enum.map(fn grp ->
-        %{
-          "status" => grp.status,
-          "count" => grp.count,
-          "avg_sqft" => (if length(grp.pp_sqfts) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.pp_sqfts) / length(grp.pp_sqfts)), precision: 0)}", else: 0),
-          "avg_dom" => (if length(grp.doms) > 0, do: "#{number_to_delimited(round(Enum.sum(grp.doms) / length(grp.doms)), precision: 0)}", else: nil),
-          "avg_list" => (if length(grp.list_prices) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.list_prices) / length(grp.list_prices)), precision: 0)}", else: nil),
-          "avg_close" => (if length(grp.close_prices) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.close_prices) / length(grp.close_prices)), precision: 0)}", else: nil),
-          "avg_percent" => (if length(grp.percents) > 0, do: "#{number_to_delimited(Float.round((Enum.sum(grp.percents) / length(grp.percents)), 1), precision: 1)}", else: nil),
-        }
-      end)
+      |> Enum.map(fn {_k, v} -> calculated_averages(v) end)
+      |> Enum.map(fn avgs -> format_averages(avgs) end)
+      |> Enum.sort_by(&(&1["order"]))
 
-    sold_listings =
-      Enum.filter(insight["content"]["listings"], fn lst -> lst["status"] === "Closed" end)
-      |> Enum.map(fn lst ->
-        %{
-          "address" => "#{lst["street_number"]} #{lst["street_name"]}",
-          "percent" => (if lst["close_price"], do: Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1), else: nil),
-          "list" => "$#{number_to_delimited(lst["list_price"], precision: 0)}",
-          "dom" => lst["days_on_market"],
-          "close" => (if lst["close_price"], do: "$#{number_to_delimited(lst["close_price"], precision: 0)}", else: 0),
-          "per_sqft" => "$#{number_to_delimited(lst["adjustments"]["sqft"]["price_per_sqft"], precision: 0)}"
-        }
-      end)
-
-    synopsis_data =
-      %{
-        "closed_listings" => sold_listings,
-        "closed_avgs" => Enum.find(averages, fn lst -> lst["status"] === "Closed" end),
-        "pending_avgs" => Enum.find(averages, fn lst -> lst["status"] === "Pending" end),
-        "active_avgs" => Enum.find(averages, fn lst -> lst["status"] === "Active" end)
-      }
     """
       <divider type="#{type}"></divider>
-      <struct class="section synopsis" id="synopsis" title="Synopsis">
-        <h1 class="header-color">Synopsis</h1>
+      <struct class="section suggested-price" id="suggested_price" title="Suggested List Price">
+        <h1 class="header-color">Suggested List Price</h1>
         <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">Based on
         all the comparable listings, local data, and the current market. The following are
         great data points to consider when selling your home.</p>
-        <struct class="sold-table">
-          <h2>Closed Sales Analysis</h2>
-          <table>
-            <tr>
-              <td class="text-left font-bold text-lg">Address</td>
-              <td class="text-center font-bold text-lg">List price</td>
-              <td class="text-center font-bold text-lg">Close price</td>
-              <td class="text-center font-bold text-lg">% of list</td>
-              <td class="text-center font-bold text-lg">DOM</td>
-              <td class="text-center font-bold text-lg">$ per sqft</td>
-            </tr>
-            {% for syn in synop['closed_listings'] %}
-              <tr>
-                <td>{{ syn['address'] }}</td>
-                <td class="text-center">{{ syn['list'] }}</td>
-                <td class="text-center">{{ syn['close'] }}</td>
-                <td class="text-center">{{ syn['percent'] }}</td>
-                <td class="text-center">{{ syn['dom'] }}</td>
-                <td class="text-center">{{ syn['per_sqft'] }}</td>
-              </tr>
-            {% endfor %}
-          </table>
-          <struct class="flex flex-wrap my-6 w-full">
-            <struct class="w-1/3 text-center">
-              <p class="font-bold leading-tight mb-0">Avg close price</p>
-              <h2 class="header-color">{{ synop['closed_avgs']['avg_close'] }}</h2>
-            </struct>
-            <struct class="w-1/3 text-center">
-              <p class="font-bold leading-tight mb-0">Avg list price</p>
-              <h2 class="header-color">{{ synop['closed_avgs']['avg_close'] }}</h2>
-            </struct>
-            <struct class="w-1/3 text-center">
-              <p class="font-bold leading-tight mb-0">Avg % of list</p>
-              <h2 class="header-color">{{ synop['closed_avgs']['avg_percent'] }}</h2>
-            </struct>
-            <struct class="w-1/2 pt-6 text-center">
-              <p class="font-bold leading-tight mb-0">Avg DOM</p>
-              <h2 class="header-color">{{ synop['closed_avgs']['avg_dom'] }}</h2>
-            </struct>
-            <struct class="w-1/2 pt-6 text-center">
-              <p class="font-bold leading-tight mb-0">Avg per sqft</p>
-              <h2 class="header-color">{{ synop['closed_avgs']['avg_sqft'] }}</h2>
-            </struct>
-          </struct>
-        </struct>
         <struct class="my-8 lg:my-20">
-          <struct class="flex flex-wrap w-full">
-            {% if synop['pending_avgs']['count'] > 0 %}
-              <struct class="px-4 text-center flex-1">
-                <h4 class="mb-0">{{ synop['pending_avgs']['count'] }} {{ synop['pending_avgs']['status'] }}</h4>
-                <p class="font-bold leading-tight">Avg list price</p>
-                <h2 class="header-color">{{ synop['pending_avgs']['avg_list'] }}</h2>
+          <struct class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            {% for avg in avgs %}
+              <struct class="border rounded-md px-4 py-2">
+                <h3 class="mb-0">{{ avg["count"] }} {{ avg["status"] }}</h3>
+                <struct class="flex">
+                  {% if avg["avg_close"] %}
+                    <struct class="">
+                      <p class="font-bold leading-none">Close price</p>
+                      <h2 class="header-color mb-0">{{ avg["avg_close"] }}</h2>
+                    </struct>
+                    <struct class="slash flex items-center">/</struct>
+                    <struct class="mt-1 ml-1">
+                      <p class="font-bold leading-none">List price</p>
+                      <h3 class="header-color mb-0">{{ avg["avg_list"] }}</h3>
+                    </struct>
+                  {% else %}
+                    <struct class="">
+                      <p class="font-bold leading-none">List price</p>
+                      <h2 class="header-color mb-0">{{ avg["avg_list"] }}</h2>
+                    </struct>
+                    <struct class="flex items-end">
+                      <p class="font-bold pl-2 pb-0.5"><span class="header-color">{{ avg["avg_sqft"] }}</span> per sqft</p>
+                    </struct>
+                  {% endif %}
+                </struct>
+                {% if avg["avg_dom"] %}
+                  <h4 class="mb-0">Average days on market is <span class="header-color">{{ avg["avg_dom"] }}</span></h4>
+                {% endif %}
               </struct>
-            {% endif %}
-            {% if synop['active_avgs']['count'] > 0 %}
-              <struct class="px-4 text-center  flex-1">
-                <h4 class="mb-0">{{ synop['active_avgs']['count'] }} {{ synop['active_avgs']['status'] }}</h4>
-                <p class="font-bold leading-tight">Avg list price</p>
-                <h2 class="header-color">{{ synop['active_avgs']['avg_list'] }}</h2>
-              </struct>
-            {% endif %}
+            {% endfor %}
           </stuct>
         </struct>
-        <struct class="mt-12 lg:mt-16">
+        <struct class="mt-12 md:mt-24">
             <h4 class="sub-header-color text-center"> Your Suggested price range is </h4>
             <h1 class="header-color text-center">$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h1>
         </struct>
@@ -884,7 +893,7 @@ defmodule ExcyteWeb.Helpers.Templates do
     """
     |> Solid.parse()
     |> case do
-      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj, "insight" =>  insight, "synop" => synopsis_data}))
+      {:ok, template} -> to_string(Solid.render(template, %{"subject" => sbj, "insight" =>  insight, "avgs" => averages}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
   end
@@ -1205,6 +1214,48 @@ defmodule ExcyteWeb.Helpers.Templates do
       {:ok, template} -> to_string(Solid.render(template, %{"agent_profile" => ap}))
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Helpers.Templates")
     end
+  end
+
+  defp calculated_averages(listings_list) do
+    Enum.reduce(listings_list, %{list_prices: [], close_prices: [], doms: [], percents: [], pp_sqfts: [], count: 0}, fn lst, acc ->
+      ppsqft = lst["adjustments"]["sqft"]["price_per_sqft"]
+      %{
+        status: lst["status"],
+        pp_sqfts: (if ppsqft !== nil, do: [ppsqft | acc.pp_sqfts], else: []),
+        percents: (if lst["close_price"] !== nil, do: [Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1) | acc.percents], else: acc.percents),
+        list_prices: (if lst["list_price"] !== nil, do: [lst["list_price"] | acc.list_prices], else: acc.list_prices),
+        close_prices: (if lst["close_price"] !== nil, do: [lst["close_price"] | acc.close_prices], else: acc.close_prices),
+        doms: (if lst["days_on_market"] !== nil, do: [lst["days_on_market"] | acc.doms], else: acc.doms),
+        count: acc.count + 1
+      }
+    end)
+  end
+
+  def format_averages(grp) do
+    prices = grp.list_prices ++ grp.close_prices
+    order =
+      case grp.status do
+        "Active" -> 3
+        "Active Under Contract" -> 5
+        "Canceled" -> 7
+        "Closed" -> 1
+        "Expired" -> 4
+        "Pending" -> 2
+        "Withdrawn" -> 6
+      end
+
+    %{
+      "order" => order,
+      "count" => grp.count,
+      "min" => Enum.min(prices),
+      "max" => Enum.max(prices),
+      "status" => grp.status,
+      "avg_sqft" => (if length(grp.pp_sqfts) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.pp_sqfts) / length(grp.pp_sqfts)), precision: 0)}", else: 0),
+      "avg_dom" => (if length(grp.doms) > 0, do: "#{number_to_delimited(round(Enum.sum(grp.doms) / length(grp.doms)), precision: 0)}", else: nil),
+      "avg_list" => (if length(grp.list_prices) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.list_prices) / length(grp.list_prices)), precision: 0)}", else: nil),
+      "avg_close" => (if length(grp.close_prices) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.close_prices) / length(grp.close_prices)), precision: 0)}", else: nil),
+      "avg_percent" => (if length(grp.percents) > 0, do: "#{number_to_delimited(Float.round((Enum.sum(grp.percents) / length(grp.percents)), 1), precision: 1)}", else: nil),
+    }
   end
 
   defp time_to_text(listing, key) do

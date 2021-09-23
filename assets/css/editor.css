@@ -329,11 +329,11 @@ div.viewer-wrapper {
     }
   }
 
-  & .synopsis {
+  & .closed-analysis {
     @apply w-full lg:w-4/5 mx-auto;
 
     & .sold-table {
-      @apply my-12;
+      @apply mt-12;
 
       & table {
         @apply w-full;
@@ -351,6 +351,24 @@ div.viewer-wrapper {
             @apply text-lg font-bold;
           }
         }
+
+        & tr:last-child {
+          @apply border-b-0;
+
+          & p {
+            @apply text-lg font-bold;
+          }
+        }
+      }
+    }
+  }
+
+  & .suggested-price {
+    @apply w-full lg:w-4/5 mx-auto;
+
+    & .slash {
+      & p {
+        font-size: 4rem;
       }
     }
   }

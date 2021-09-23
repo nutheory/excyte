@@ -1,20 +1,15 @@
 import Chart from 'chart.js/auto'
 
 export const synopsisChart = () => {
-  const canvas = document.getElementById('synopsisChart')
+  const canvas = document.getElementById('closedListingsChart')
   const d = JSON.parse(canvas.dataset.chart)
-  let labels = []
-  let listings = []
-  for (const [key, value] of Object.entries(d.groups)) {
-    console.log("DDDD", key)
-    console.log("DDDD", value)
-    labels = labels.concat(key)
-    listings = listings.concat(value)
-  }
+  const listings = d.listings
+  console.log("LSTINGS", listings)
+  // for (const [key, value] of Object.entries(d.groups)) {
+  //   labels = labels.concat(key)
+  //   listings = listings.concat(value)
+  // }
   Chart.defaults.color = d.attrs.header_text
-  
-  console.log("labels", labels)
-  console.log("listings", listings)
 
   const chart = new Chart(canvas, {
     type: 'bar',
@@ -26,7 +21,7 @@ export const synopsisChart = () => {
         backgroundColor: d.attrs.accent,
       }, {
         label: 'Close Price',
-        data: listings.map(d => d.close),
+        data: listings.map(lst => lst.close),
         backgroundColor: d.attrs.link,
       }]
     },

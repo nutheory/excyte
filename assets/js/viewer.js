@@ -34,9 +34,10 @@ import Divider from './extensions/divider'
 import Span from './extensions/span'
 import SuperCover from './extensions/super_cover'
 import Struct from './extensions/struct'
-// import SysChart from './extensions/chart'
+import SysChart from './extensions/chart'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
+import { synopsisChart } from './chart'
 
 window.viewerHook = {}
 
@@ -73,6 +74,7 @@ window.currentViewer = function (content) {
           TableHeader,
           TableRow,
           ExcyteTableCell,
+          SysChart,
           Guard,
           Divider,
           Contact,
@@ -109,7 +111,7 @@ export const InitViewer = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
-        // synopsisChart({ listings: content.listings, theme })
+        synopsisChart({ listings: content.listings, theme })
       }, 200)
     })
   },

@@ -1,7 +1,7 @@
 import { Node, mergeAttributes } from '@tiptap/core'
 
 export default Node.create({
-  name: 'synopsis-chart',
+  name: 'closed-listings-chart',
 
   group: 'block',
 
@@ -40,11 +40,6 @@ export default Node.create({
             data: element.getAttribute('data-chart')
           }
         },
-        // renderHTML: attributes => {
-        //   return {
-        //     'data-chart': attributes.data,
-        //   }
-        // }
       },
       title: {
         default: null,
@@ -60,7 +55,7 @@ export default Node.create({
   parseHTML() {
     return [
       {
-        tag: 'synopsis-chart',
+        tag: 'closed-listings-chart',
       },
     ]
   },
@@ -74,8 +69,8 @@ export default Node.create({
     return ({ editor, node, getPos, HTMLAttributes, decorations, extension }) => {
       const dom = document.createElement('div')
       const canvas = document.createElement('canvas')
-      canvas.setAttribute('id', 'synopsisChart')
-      console.log(HTMLAttributes.data)
+      canvas.setAttribute('id', 'closedListingsChart')
+      dom.setAttribute('class', HTMLAttributes.class)
       canvas.setAttribute('data-chart', HTMLAttributes.data)
 
       dom.append(canvas)

@@ -366,6 +366,11 @@ div.viewer-wrapper {
   & .suggested-price {
     @apply w-full lg:w-4/5 mx-auto;
 
+
+    & h1.price-value {
+      @apply md:mb-2 text-3xl md:text-4xl lg:text-5xl font-extrabold
+    }
+
     & .slash {
       & p {
         font-size: 4rem;

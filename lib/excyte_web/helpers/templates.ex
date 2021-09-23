@@ -885,9 +885,9 @@ defmodule ExcyteWeb.Helpers.Templates do
             {% endfor %}
           </stuct>
         </struct>
-        <struct class="mt-12 md:mt-24">
-            <h4 class="sub-header-color text-center"> Your Suggested price range is </h4>
-            <h1 class="header-color text-center">$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h1>
+        <struct class="mt-12 md:mb-6 md:mt-24 md:mb-10">
+          <h3 class="sub-header-color text-center"> Your Suggested price range is </h3>
+          <h1 class="header-color text-center price-value">$#{number_to_delimited(insight["content"]["suggested_subject_price"]["min"], precision: 0)} - $#{number_to_delimited(insight["content"]["suggested_subject_price"]["max"], precision: 0)}</h1>
         </struct>
       </struct>
     """

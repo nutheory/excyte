@@ -21,7 +21,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
   end
 
   def handle_info({:property_search, %{parsed: address}}, %{assigns: a} = socket) do
-    line = String.split(address["addr"], " ", parts: 2)
+    line = String.split(address["addr"], " ")
     case ResoApi.property_by_address(a.mls, %{
       street_number: hd(line),
       safe_street_name: hd(tl(line)),

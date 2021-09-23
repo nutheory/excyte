@@ -329,8 +329,53 @@ div.viewer-wrapper {
     }
   }
 
-  & .synopsis {
+  & .closed-analysis {
     @apply w-full lg:w-4/5 mx-auto;
+
+    & .sold-table {
+      @apply mt-12;
+
+      & table {
+        @apply w-full;
+
+        & td {
+          @apply p-2;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & tr:first-child {
+          & p {
+            @apply text-lg font-bold;
+          }
+        }
+
+        & tr:last-child {
+          @apply border-b-0;
+
+          & p {
+            @apply text-lg font-bold;
+          }
+        }
+      }
+    }
+  }
+
+  & .suggested-price {
+    @apply w-full lg:w-4/5 mx-auto;
+
+
+    & h1.price-value {
+      @apply md:mb-2 text-3xl md:text-4xl lg:text-5xl font-extrabold
+    }
+
+    & .slash {
+      & p {
+        font-size: 4rem;
+      }
+    }
   }
 
   & .pricing {

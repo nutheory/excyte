@@ -13,14 +13,15 @@ import Strike from '@tiptap/extension-strike'
 import Table from '@tiptap/extension-table'
 import TableRow from '@tiptap/extension-table-row'
 import TableHeader from '@tiptap/extension-table-header'
-import TableCell from '@tiptap/extension-table-cell'
+// import TableCell from '@tiptap/extension-table-cell'
 import Text from '@tiptap/extension-text'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import { 
   ExcyteHeading,
   ExcyteParagraph,
-  ExcyteLink, 
+  ExcyteLink,
+  ExcyteTableCell,
 } from './extensions/modified_extensions'
 import ShowcaseGallery from './extensions/showcase_gallery'
 import SimpleVideo from './extensions/simple_video'
@@ -28,10 +29,12 @@ import Collapsable from './extensions/collapsable'
 import Contact from './extensions/contact'
 import Divider from './extensions/divider'
 import Struct from './extensions/struct'
+import SysChart from './extensions/chart'
 import SuperCover from './extensions/super_cover'
 import Span from './extensions/span'
 import tippy from 'tippy.js'
 import Glightbox from 'glightbox'
+import { synopsisChart } from './chart'
 
 window.previewHook = {}
 
@@ -66,9 +69,10 @@ window.currentPreview = function (content) {
           Table,
           TableHeader,
           TableRow,
-          TableCell,
+          ExcyteTableCell,
           Contact,
           Divider,
+          SysChart,
           Collapsable,
           ShowcaseGallery,
           SuperCover,
@@ -100,6 +104,8 @@ export const InitPreview = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
+        console.log("LST", content)
+        synopsisChart({ listings: content.listings, theme })
       }, 500)
     })
   },

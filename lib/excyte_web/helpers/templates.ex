@@ -802,7 +802,6 @@ defmodule ExcyteWeb.Helpers.Templates do
   end
 
   def tour_stop(%{listing: listing}, type) do
-    IO.inspect(listing, label: "LBL")
     address_text = "#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]} #{listing["zip"]}"
     destination_uri = URI.encode("#{listing["street_number"]} #{listing["street_name"]}, #{listing["city"]}, #{listing["state"]}")
     address_uri = URI.encode("#{listing["city"]}, #{listing["state"]}, United States")

@@ -1,0 +1,80 @@
+<div class="section subject" id="subject" title="Subject" subtitle="<%= @subject["street_number"] %> <%= @subject["street_name"] %>">
+  <h1 class="header-color">Understanding Comparable Listings</h1>
+  <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">In explaining the suggested pricing
+  of your home we compare it to local properties with similiar
+  features(sqft, beds, baths) as well as proximity to shopping,
+  schools, recreational facilities, fire and police protection.</p>
+  <div class="header">
+    <%= if @subject["street_number"] or @subject["street_name"] do %>
+      <h4 class="mb-0"><%= @subject["street_number"] %> <%= @subject["street_name"] %></h4>
+    <% end %>
+  </div>
+  <div class="main-details">
+    <div class="detail">
+      <h1 class="header-color">
+        <%= if @subject["sqft"] do %>
+          <%= number_to_delimited(@subject["sqft"], precision: 0) %>
+        <% else %>
+          N/A
+        <% end %>
+      </h1>
+      <h4 class="sub-header-color">Sqft</h4>
+    </div>
+    <div class="flex-1"></div>
+    <div class="detail">
+      <h1 class="header-color">
+        <%= if @subject["lotsize_preference"] == "sqft" do %>
+          <%= number_to_delimited(@subject["lotsize_sqft"], precision: 0) %>
+        <% else %>
+          <%= Utilities.sqft_to_acres(@subject["lotsize_sqft"]) %>
+        <% end %>
+      </h1>
+      <h4 class="sub-header-color">Lot <%= String.capitalize(@subject["lotsize_preference"]) %></h4>
+    </div>
+    <div class="flex-1"></div>
+    <div class="detail">
+      <h1 class="header-color">
+        <%= if @subject["year_built"] do %>
+          <%= @subject["year_built"] %>
+        <% else %>
+          N/A
+        <% end %>
+      </h1>
+      <h4 class="sub-header-color">Built</h4>
+    </div>
+  </div>
+  <div class="sub-details">
+    <div class="detail">
+      <h2 class="header-color">
+        <%= if @subject["beds"] do %>
+          <%= @subject["beds"] %>
+        <% else %>
+          N/A
+        <% end %>
+      </h2>
+      <h4 class="sub-header-color">Beds</h4>
+    </div>
+    <div class="flex-1"></div>
+    <div class="detail">
+      <h2 class="header-color">
+        <%= if @subject["baths"] do %>
+          <%= @subject["baths"] %>
+        <% else %>
+          N/A
+        <% end %>
+      </h2>
+      <h4 class="sub-header-color">Baths</h4>
+    </div>
+    <div class="flex-1"></div>
+    <div class="detail">
+      <h2 class="header-color">
+        <%= if @subject["stories"] do %>
+          <%= @subject["stories"] %>
+        <% else %>
+          N/A
+        <% end %>
+      </h2>
+      <h4 class="sub-header-color">Stories</h4>
+    </div>
+  </div>
+</div>

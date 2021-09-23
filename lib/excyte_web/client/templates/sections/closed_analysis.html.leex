@@ -1,0 +1,36 @@
+<div class="section closed-analysis" id="closed_analysis" title="Closed Listings Analysis">
+  <h1 class="header-color">Closed Listings Analysis</h1>
+  <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">
+  Overview and comparison of closed properties and their relevant information.</p>
+  <closed-listings-chart class="my-12" data-chart='#{chart_data}'></closed-listings-chart>
+  <div class="sold-table">
+    <table>
+      <tr>
+        <td class="text-left font-bold text-lg">Address</td>
+        <td class="text-center font-bold text-lg">List price</td>
+        <td class="text-center font-bold text-lg">Close price</td>
+        <td class="text-center font-bold text-lg">% of list</td>
+        <td class="text-center font-bold text-lg">DOM</td>
+        <td class="text-center font-bold text-lg">$ per sqft</td>
+      </tr>
+      {% for cl in closed %}
+        <tr>
+          <td>{{ cl['address'] }}</td>
+          <td class="text-center">{{ cl['list'] }}</td>
+          <td class="text-center">{{ cl['close'] }}</td>
+          <td class="text-center">{{ cl['percent'] }}</td>
+          <td class="text-center">{{ cl['dom'] }}</td>
+          <td class="text-center">{{ cl['per_sqft'] }}</td>
+        </tr>
+      {% endfor %}
+      <tr>
+        <td>Averages</td>
+        <td class="text-center">{{ avgs['avg_list'] }}</td>
+        <td class="text-center">{{ avgs['avg_close'] }}</td>
+        <td class="text-center">{{ avgs['avg_percent'] }}</td>
+        <td class="text-center">{{ avgs['avg_dom'] }}</td>
+        <td class="text-center">{{ avgs['avg_sqft'] }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

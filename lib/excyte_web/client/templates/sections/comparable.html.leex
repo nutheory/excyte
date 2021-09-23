@@ -7,7 +7,7 @@
         listing_id: lst["listing_id"],
         id: "media#{lst["listing_id"]}"
       %>
-      <p class="summary pt-4 mb-4 sub-header-color"><%= Utilities.summarize_sale_info(lst) %></p>
+      <p class="summary pt-4 mb-4 sub-header-color"><%= Utilities.client_summarize_sale_info(lst) %></p>
       <div class="main-details">
         <div class="detail">
           <h1 class="header-color">
@@ -188,7 +188,7 @@
                   </td>
                 </tr>
               <% end %>
-              <%= for adj <- lst.adjustments do %>
+              <%= for adj <- lst["adjustments"] do %>
                 <tr>
                   <td class="text-left"><%= adj["name"] %></td>
                   <td class="value">$<%= adj["display_value"] %></td>

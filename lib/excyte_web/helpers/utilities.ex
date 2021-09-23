@@ -364,7 +364,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
-  def summarize_sale_info(listing) do
+  def client_summarize_sale_info(listing) do
+    IO.inspect(listing, label: "BOOOOOO")
     if listing["list_price"] !== nil || listing["close_price"] !== nil do
       if listing["close_price"] !== nil do
         when_text = time_to_text(listing, "close_date")

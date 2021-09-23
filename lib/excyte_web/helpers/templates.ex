@@ -883,7 +883,7 @@ defmodule ExcyteWeb.Helpers.Templates do
                 {% endif %}
               </struct>
             {% endfor %}
-          </stuct>
+          </struct>
         </struct>
         <struct class="mt-12 md:mb-6 md:mt-24 md:mb-10">
           <h3 class="sub-header-color text-center"> Your Suggested price range is </h3>

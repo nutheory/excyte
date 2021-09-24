@@ -65,7 +65,6 @@ defmodule Excyte.MixProject do
       {:timex, "~> 3.7.5"},
       {:cachex, "~> 3.3"},
       {:plug_cowboy, "~> 2.0"},
-      {:phx_gen_auth, "~> 0.5"},
       {:ex_aws, "~> 2.2.4"},
       {:ex_aws_s3, "~> 2.3.0"},
       {:sweet_xml, "~> 0.6"},

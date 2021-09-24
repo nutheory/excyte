@@ -1,0 +1,16 @@
+<div class="gallery" x-data="{}" x-init="lightbox.reload()">
+  <div class="rounded relative overflow-hidden pb-2/3">
+    <%= if @current_item do %>
+      <a href={@current_item.media_url} class="glightbox" data-gallery={@gid}>
+        <img class="absolute h-full w-full object-cover rounded" src={@current_item.media_url}>
+      </a>
+    <% end %>
+  </div>
+  <div class="hidden">
+    <%= if length(@media) > 0 do %>
+      <%= for media <- @media do %>
+        <a href={media.media_url} class="glightbox" data-gallery={@gid}></a>
+      <% end %>
+    <% end %>
+  </div>
+</div>

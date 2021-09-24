@@ -1,0 +1,340 @@
+<div class="h-full flex flex-col">
+  <div class="flex  mb-3 lg:mt-6">
+    <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <div class="flex-1">
+      <div class="flex">
+        <div class="mr-1">
+          <% stat = String.replace(String.downcase(@listing.status), " ", "-") %>
+          <svg class={"w-5 h-5 inline status-text-#{stat}"} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <p class="text-sm flex-1 pt-0.5 text-gray-500">
+          <%= if @listing.distance_from_subject do %>
+            <strong><%= @listing.distance_from_subject %></strong>
+            <span class="text-xs">mi from subject property</span>
+          <% end %>
+        </p>
+        <div class={"inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full status-#{stat}"}>
+          <%= @listing.status %>
+        </div>
+      </div>
+      <h3 class="my-1">
+        <%= @listing.street_number %> <%= @listing.street_name %>
+        <%= if @listing.unit do %>
+          <span class="pt-1 inline-block ml-1 text-gray-400 text-base">
+            <label>Unit</label>
+            <%= @listing.unit %>
+          </span>
+        <% end %>
+      </h3>
+    </div>
+  </div>
+  <div class="pb-8 px-2 flex-1 overflow-y-auto">
+    <div class="flex my-4 -mx-3">
+      <div class="w-2/5 p-3">
+        <%= live_component @socket, Gallery,
+          media: @listing.media,
+          gid: @listing.listing_key <> "_gallery",
+          id: @listing.listing_key <> "_gallery"
+        %>
+      </div>
+      <div class="flex-1 p-3 text-left">
+        <%= if @listing.list_price !== nil || @listing.close_price !== nil do %>
+          <%= if @listing.close_price !== nil do %>
+            <p class="leading-snug">Closed for
+            <h3 class="mb-0">$<%= number_to_delimited(@listing.close_price, precision: 0) %></h3>
+            <%= if Map.has_key?(@listing, :close_date) do %>
+              <p class="leading-snug">after <strong><%= @listing.days_on_market %> days</strong> on the market</p>
+            <% end %>
+            <p class="leading-snug"><%= Utilities.time_to_text(@listing, :close_date) %></p>
+          <% else %>
+            <p class="leading-snug">Listed for</p>
+            <h3 class="mb-0">$<%= number_to_delimited(@listing.list_price, precision: 0) %></h3>
+            <%= if Map.has_key?(@listing, :days_on_market) do %>
+              <p class="leading-snug">with <strong><%= @listing.days_on_market %> days</strong> on the market</p>
+            <% end %>
+            <p class="leading-snug"><%= Utilities.time_to_text(@listing, :on_market_date) %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex text-sm mb-6">
+      <div class="flex-col w-2/5">
+        <%= if @listing.sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sqft</label>
+            <p class="font-bold flex-1"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.lotsize_preference && @listing.lotsize_sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Lot <%= @listing.lotsize_preference %></label>
+            <p class="font-bold flex-1"><%= if @listing.lotsize_preference === "sqft", do: number_to_delimited(@listing.lotsize_sqft, precision: 0), else: Utilities.sqft_to_acres(@listing.lotsize_sqft) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.beds do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Beds</label>
+            <p class="font-bold flex-1"><%= @listing.beds %></p>
+          </div>
+        <% end %>
+        <%= if @listing.baths.total do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Baths</label>
+            <p class="font-bold flex-1"><%= @listing.baths.total %></p>
+          </div>
+        <% end %>
+        <%= if @listing.year_built do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Built</label>
+            <p class="font-bold flex-1"><%= @listing.year_built %></p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
+      </div>
+      <div class="flex-col w-3/5">
+        <%= if @listing.stories do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Stories</label>
+            <p class="font-bold flex-1"><%= @listing.stories %></p>
+          </div>
+        <% end %>
+        <%= if @listing.parking.type && @listing.parking.spaces do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Parking</label>
+            <p class="font-bold flex-1">
+              <%= @listing.parking.type %> <%= if @listing.parking.spaces === "N/A", do: "", else: "(#{@listing.parking.spaces})" %>
+            </p>
+          </div>
+        <% end %>
+        <%= if @listing.property_sub_type do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sub Type</label>
+            <p class="font-bold  flex-1"><%= @listing.property_sub_type %></p>
+          </div>
+        <% end %>
+        <%= if @listing.listing_id do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Listing ID</label>
+            <p class="font-bold  flex-1"><%= @listing.listing_id %></p>
+          </div>
+        <% end %>
+        <%= if @listing.public_remarks do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Remarks</label>
+            <p
+              class="flex-1 my-1 text-sm cursor-pointer text-cyan-700 hover:underline"
+              phx-click="toggle-remarks"
+              phx-target={@myself}
+            >Show remarks</p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
+      </div>
+    </div>
+    <%= if @show_remarks do %>
+      <p class="my-4 text-sm"><%= @listing.public_remarks %></p>
+    <% end %>
+    <div class="bg-white shadow rounded-lg p-4 mb-12">
+      <h4>Adjustment considerations</h4>
+      <%= if Enum.count(@listing.adjustments) > 0 do %>
+        <table class="text-sm w-full mb-6">
+          <thead>
+            <tr class="border-b border-gray-400">
+              <th></th>
+              <th class="font-bold">Listing</th>
+              <th class="font-bold">Subject Diff.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Sqft</td>
+                <td class="text-center p-2"><%= @listing.sqft %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.sqft.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :beds) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Beds</td>
+                <td class="text-center p-2"><%= @listing.beds %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.beds.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :baths) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Baths</td>
+                <td class="text-center p-2"><%= @listing.baths.total %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.baths.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :stories) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Stories</td>
+                <td class="text-center p-2"><%= @listing.stories %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.stories.difference) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :lotsize) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Lot size</td>
+                <td class="text-center p-2"><%= @listing.lotsize_sqft %></td>
+                <td class="text-center p-2"><%= Utilities.adjustment_value(@listing.adjustments.lotsize.to_text) %></td>
+              </tr>
+            <% end %>
+            <%= if Map.has_key?(@listing.adjustments, :year_built) do %>
+              <tr class="border-b border-gray-300 hover:bg-cyan-50">
+                <td class="font-bold p-2">Year built</td>
+                <td class="text-center p-2"><%= @listing.year_built %></td>
+                <td class="text-center p-2 font-bold"><%= @listing.adjustments.year_built.to_text %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      <%#= live_component @socket, AutoAdjustments, id: :auto_adjustments %>
+      <div class="py-2">
+        <h4 class="text-sm border-b border-gray-400 pb-2 mb-0">Custom Adjustments</h4>
+        <ul class="">
+          <%= if length(@custom_adjustments) > 0 do %>
+            <%= for ca <- @custom_adjustments do %>
+              <li class="p-2 border-b border-gray-300 flex w-full text-sm">
+                <div class="flex-1 mr-4 ">
+                  <%= String.capitalize(ca.name) %>
+                </div>
+                <%= if ca.value < 0 do %>
+                  <div class="text-right text-red-700">
+                    $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
+                  </div>
+                <% else %>
+                  <div class="text-right">
+                    $<span class="font-bold pl-1"><%= number_to_delimited(ca.value, precision: 0) %></span>
+                  </div>
+                <% end %>
+                <%= if !@added do %>
+                  <%= if !@show_adjustment_form do %>
+                    <div class="ml-2">
+                      <svg
+                        class="w-5 h-5 text-red-500 cursor-pointer"
+                        phx-target={@myself}
+                        phx-click="remove-adjustment-item"
+                        phx-value-adj-id={ca.id}
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                      </svg>
+                    </div>
+                  <% end %>
+                <% end %>
+              </li>
+            <% end %>
+          <% else %>
+            <%= if @added do %>
+              <li class="p-2 border-b border-gray-300 text-sm">None.</li>
+            <% end %>
+          <% end %>
+          <%= if !@added do %>
+            <%= if @show_adjustment_form do %>
+              <li class="p-2 border-b border-gray-300">
+                <.form let={f} for={:adjustment} phx-change="change-adjustment-item" phx-submit="commit-adjustment-item" phx-target={@myself}>
+                  <div class="flex">
+                    <div class="mr-2 flex items-center">
+                      <svg
+                        class="w-6 h-6 text-red-500 cursor-pointer"
+                        phx-click="cancel-adjustment-item"
+                        phx-target={@myself}
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.871 4A17.926 17.926 0 003 12c0 2.874.673 5.59 1.871 8m14.13 0a17.926 17.926 0 001.87-8c0-2.874-.673-5.59-1.87-8M9 9h1.246a1 1 0 01.961.725l1.586 5.55a1 1 0 00.961.725H15m1-7h-.08a2 2 0 00-1.519.698L9.6 15.302A2 2 0 018.08 16H8" />
+                      </svg>
+                    </div>
+                    <div class="mr-2 flex-1">
+                      <%= text_input f, :adj_name,
+                        class: "text-field",
+                        value: @adj_name,
+                        placeholder: "Name"
+                      %>
+                    </div>
+                    <div class="text-lg flex items-center">$</div>
+                    <div class="ml-1 mr-2 w-24">
+                      <%= text_input f, :adj_value,
+                        class: "text-field",
+                        inputmode: "numeric",
+                        title: "Numbers only.",
+                        pattern: "[0-9]*",
+                        value: @adj_value,
+                        placeholder: "Value"
+                      %>
+                    </div>
+                    <div class="flex blue-radial border border-blue-800 rounded">
+                      <button type="submit" name="add" class="rounded-l px-2 text-white border-r border-blue-800">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                      </button>
+                      <button type="submit" name="subject" class="rounded-r px-2 text-white">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </.form>
+              </li>
+            <% else %>
+              <li class="p-2 border-b border-gray-400" phx-click="add-adjustment-item" phx-target={@myself}>
+                <p class="text-sm cursor-pointer text-cyan-700 hover:underline">Add adjustment</p>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+      <%= if @added do %>
+        <div class="my-4">
+          <h4 class="text-sm">Added to Comparables</h4>
+          <div class="flex">
+            <div class="flex-1">
+              Priced at: <span class="font-bold">$<%= number_to_delimited(@excyte_price, precision: 0) %></span>
+            </div>
+            <div>
+              <span
+                class="text-red-400 hover:text-red-500 text-sm font-bold inline-block pl-6 cursor-pointer"
+                phx-click="remove-comp"
+                phx-value-key={@listing.listing_key}
+              >remove</span>
+            </div>
+          </div>
+        </div>
+      <% else %>
+        <div class="flex mt-4">
+          <div class="text-green-700 text-xl font-bold flex items-center mr-1">$</div>
+          <div class="mr-4 w-24">
+            <.form for={:manual_price} phx-change="manual-adj" phx-target={@myself}>
+              <input
+                type="text"
+                class="text-field"
+                name="adj"
+                inputmode="numeric"
+                pattern="^-?[0-9]*"
+                value={@excyte_price}
+              />
+            </.form>
+          </div>
+          <div class="flex-1">
+            <button
+              class="action-button mx-auto w-full"
+              phx-click="add-comp"
+              phx-target={@myself}
+            >
+              Add to Comps
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

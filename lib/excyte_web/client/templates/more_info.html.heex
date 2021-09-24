@@ -1,0 +1,61 @@
+   <%= show_panel = if @show_panel, do: "right-0", else: "" %>
+  <div
+    id="moreInfoPanel"
+    phx-target={@myself}
+    class="panel-slidein font-sans bg-gray-100 lg:max-w-2xl text-gray-800 #{show_panel}"
+  >
+    <div class="flex flex-col h-full px-4 lg:px-6">
+      <div class="flex py-4">
+        <div
+          class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer"
+          phx-click="toggle-more-info"
+          phx-target={@myself}
+        >
+          <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+        <div class="">
+          <h2 class="mb-0">More Info</h2>
+          <p class="leading-tight text-base">
+            This is information direct from the MLS in real time for agents.</p>
+        </div>
+      </div>
+      <ul class="pb-8 px-2 flex-1 overflow-y-auto">
+        <%= if @listing do %>
+          <%= for {k, v} <- @listing.main do %>
+            <li class="text-gray-600 mt-3">
+              <p><span class="font-extrabold text-gray-800"><%= k %>:</span> <%= v %></p>
+            </li>
+          <% end %>
+          <li class="my-6">
+            <div class="py-4 border-t accent-color">
+              <h4>Search MLS Details</h4>
+              <.form let={f} for={:finder} phx-change="find-key", phx-target={@myself}>
+                <%= text_input f, :term, class: "text-field", placeholder: "Find by term... ie. list or feature", value: @search_term %>
+              </.form>
+            </div>
+          </li>
+          <%= for {k, v} <- @search do %>
+            <li class="text-gray-600 mt-3">
+              <p><span class="font-extrabold text-gray-800"><%= k %>:&nbsp;</span>
+                <%= case Utilities.assign_contact_type(v) do %>
+                  <% "phone" -> %>
+                    <% phone = String.replace(v, "-", "") %>
+                    <a href="tel:#{phone}"><%= v %></a>
+                  <% "email" -> %>
+                    <a href="mailto:#{v}"><%= v %></a>
+                  <% "url" -> %>
+                    <a href={v}><%= v %></a>
+                  <% _ -> %>
+                    <%= v %>
+                <% end %>
+              </p>
+            </li>
+          <% end %>
+        <% else %>
+          <li>Getting more info...</li>
+        <% end %>
+      </ul>
+    </div>
+  </div>

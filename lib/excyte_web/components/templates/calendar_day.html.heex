@@ -1,0 +1,9 @@
+<td
+  id={"td-#{Timex.format!(@day, "%Y%m%d", :strftime)}"}
+  phx-target={"##{@parent_id}"}
+  phx-click="pick-date"
+  phx-value-date={Timex.format!(@day, "%Y-%m-%d", :strftime)}
+  class={@day_class}
+>
+  <%= Timex.format!(@day, "%d", :strftime) %>
+</td>

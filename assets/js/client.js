@@ -3,7 +3,7 @@ import "../css/client.css"
 import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
-import LiveSocket from "phoenix_live_view"
+import {LiveSocket} from "phoenix_live_view"
 import {InitViewer} from "./viewer"
 import {setupSizing} from "./mobile_sizing"
 import {TableOfContents} from "./table_of_contents"

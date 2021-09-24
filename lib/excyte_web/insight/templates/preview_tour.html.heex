@@ -1,0 +1,188 @@
+<div class="h-full flex flex-col">
+  <div class="flex">
+    <div class="pr-2 mr-3 border-r border-gray-400 flex justify-center items-center cursor-pointer" phx-click="remove-preview">
+      <svg class="w-6 h-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </div>
+    <div class="flex-1">
+      <div class="flex">
+        <div class="mr-1">
+          <% stat = String.replace(String.downcase(@listing.status), " ", "-") %>
+          <svg class={"w-5 h-5 inline status-text-#{stat}"} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <p class="text-sm flex-1 pt-0.5 text-gray-500">
+          <%= if @listing.distance_from_subject do %>
+            <strong><%= @listing.distance_from_subject %></strong>
+            <span class="text-xs">mi from starting point</span>
+          <% end %>
+        </p>
+        <div class={"inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none rounded-full status-#{stat}"}>
+          <%= @listing.status %>
+        </div>
+      </div>
+      <h3 class="my-1">
+        <%= @listing.street_number %> <%= @listing.street_name %>
+        <%= if @listing.unit do %>
+          <span class="pt-1 inline-block ml-1 text-gray-400 text-base">
+            <label>Unit</label>
+            <%= @listing.unit %>
+          </span>
+        <% end %>
+      </h3>
+    </div>
+  </div>
+  <div class="pb-8 flex-1 overflow-y-auto">
+    <div class="flex my-4 -mx-3">
+      <div class="w-2/5 p-3">
+        <%= live_component @socket, Gallery,
+          media: @listing.media,
+          gid: @listing.listing_key <> "_gallery",
+          id: @listing.listing_key <> "_gallery"
+        %>
+      </div>
+      <div class="flex-1 p-3 text-left">
+        <%= if @listing.list_price !== nil do %>
+          <p class="leading-snug">Listed for</p>
+          <h3 class="mb-0">$<%= number_to_delimited(@listing.list_price, precision: 0) %></h3>
+          <%= if Map.has_key?(@listing, :days_on_market) do %>
+            <p class="leading-snug">with <strong><%= @listing.days_on_market %> days</strong> on the market</p>
+          <% end %>
+          <p class="leading-snug"><%= Utilities.time_to_text(@listing, :on_market_date) %></p>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex text-sm mb-6">
+      <div class="flex-col w-2/5">
+        <%= if @listing.sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sqft</label>
+            <p class="font-bold flex-1"><%= number_to_delimited(@listing.sqft, precision: 0) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.lotsize_preference && @listing.lotsize_sqft do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Lot <%= @listing.lotsize_preference %></label>
+            <p class="font-bold flex-1"><%= if @listing.lotsize_preference === "sqft", do: number_to_delimited(@listing.lotsize_sqft, precision: 0), else: Utilities.sqft_to_acres(@listing.lotsize_sqft) %></p>
+          </div>
+        <% end %>
+        <%= if @listing.beds do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Beds</label>
+            <p class="font-bold flex-1"><%= @listing.beds %></p>
+          </div>
+        <% end %>
+        <%= if @listing.baths.total do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Baths</label>
+            <p class="font-bold flex-1"><%= @listing.baths.total %></p>
+          </div>
+        <% end %>
+        <%= if @listing.year_built do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Built</label>
+            <p class="font-bold flex-1"><%= @listing.year_built %></p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
+      </div>
+      <div class="flex-col w-3/5">
+        <%= if @listing.stories do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Stories</label>
+            <p class="font-bold flex-1"><%= @listing.stories %></p>
+          </div>
+        <% end %>
+        <%= if @listing.parking.type && @listing.parking.spaces do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end"><%= @listing.parking.type %></label>
+            <p class="font-bold flex-1"><%= @listing.parking.spaces %></p>
+          </div>
+        <% end %>
+        <%= if @listing.property_sub_type do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Sub Type</label>
+            <p class="font-bold  flex-1"><%= @listing.property_sub_type %></p>
+          </div>
+        <% end %>
+        <%= if @listing.public_remarks do %>
+          <div class="flex w-full">
+            <label class="w-20 pr-4 pb-1 flex items-end justify-end">Remarks</label>
+            <p
+              class="flex-1 my-1 text-sm cursor-pointer text-cyan-700 hover:underline"
+              phx-click="toggle-remarks"
+              phx-target={@myself}
+            >Show remarks</p>
+          </div>
+        <% end %>
+        <div class="flex-1"></div>
+      </div>
+    </div>
+    <%= if @show_remarks do %>
+      <p class="my-4 text-sm"><%= @listing.public_remarks %></p>
+    <% end %>
+    <div class="bg-white shadow rounded-lg p-4 form">
+      <%= if @added do %>
+        <%= if @editing_note do %>
+          <form phx-change="add-note" phx-target={@myself}>
+            <div class="flex">
+              <div class="flex-1">
+                <label for="note">Edit note</label>
+              </div>
+              <div
+                class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
+                phx-click="toggle-edit-note"
+                phx-target={@myself}>cancel</div>
+            </div>
+            <textarea class="textarea" name="note" placeholder="Enter note here..."><%= @note %></textarea>
+          </form>
+          <button class="submit mt-4 w-full" phx-click="update-listing" phx-target={@myself}>Save</button>
+        <% else %>
+          <div class="mb-4">
+            <div class="flex">
+              <div class="text-base font-bold flex-1">Note</div>
+              <div
+                class="link-button pt-1 text-sm"
+                phx-click="toggle-edit-note"
+                phx-target={@myself}>edit</div>
+            </div>
+            <p class="text-base"><%= if @note !== "", do: @note, else: "None." %></p>
+          </div>
+          <div class="flex">
+            <div class="flex-1">
+              <h4 class="text-sm">Added to Tour</h4>
+            </div>
+            <div
+              class="text-red-400 hover:text-red-500 text-sm font-normal inline-block pl-6 cursor-pointer"
+              phx-click="remove-tour-stop"
+              phx-value-key={@listing.listing_key}
+            >remove</div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="">
+          <form phx-change="add-note" phx-target={@myself}>
+            <label for="note">Add a <strong>public</strong> note</label>
+            <textarea
+              class="textarea"
+              name="note"
+              placeholder="Enter note here..."
+            ><%= @note %></textarea>
+          </form>
+        </div>
+        <div class="mt-4">
+          <button
+            class="action-button mx-auto w-full"
+            phx-click="add-tour-stop"
+            phx-target={@myself}
+          >
+            Add to Tour
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

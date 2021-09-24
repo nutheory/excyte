@@ -3,8 +3,8 @@ defmodule ExcyteWeb.UserView do
   alias ExcyteWeb.{
     Agent.GettingStarted,
     Agent.MlsAuth,
-    AgentPricing,
-    BrokeragePricing,
+    # AgentPricing,
+    # BrokeragePricing,
     Helpers.Utilities,
     Settings.Dashboard,
     Settings.Account,

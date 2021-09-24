@@ -5,6 +5,7 @@ defmodule ExcyteWeb.Client.TemplateRender do
   def render(assigns), do: ClientView.render("sections/#{assigns.template}.html", assigns)
 
   def update(assigns, socket) do
+    IO.inspect(assigns.section, label: "SECTion")
     {:ok, assign(socket,
       current_user: assigns.current_user,
       template: assigns.section.component_name,

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <%= csrf_meta_tag() %>
+    <%= live_title_tag assigns[:page_title] || "Excyte", suffix: " · CMA" %>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script defer src={"https://maps.googleapis.com/maps/api/js?key=#{Application.get_env(:excyte, :gcp_places)}&libraries=places"}></script>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
+  </head>
+  <body class="antialiased">
+    <%= @inner_content %>
+  </body>
+</html>

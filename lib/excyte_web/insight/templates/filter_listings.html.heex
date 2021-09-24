@@ -1,0 +1,125 @@
+<div class="form">
+  <%= if @listing_count === 0 do %>
+    <p class="text-base text-red-800 mb-4">We could not find any listing results with the current filter settings, please revise to widen your search.</p>
+  <% end %>
+  <div class="flex flex-wrap -mx-2 md:-mx-4">
+    <div class="lg:w-3/5 px-2 md:px-4">
+      <div class="flex -mx-2 md:-mx-4">
+        <div class="lg:w-3/5 px-2 md:px-4">
+            <%= live_component @socket, RangeInputs,
+              prefix: "$",
+              suffix: "K",
+              min: @filters.price.low,
+              max: @filters.price.high,
+              attribute: :price,
+              type: Integer,
+              label: "Close/List Price",
+              callback: :update_filter,
+              id: :price_filter %>
+        </div>
+        <div class="lg:w-2/5 px-2 md:px-4">
+          <%= live_component @socket, RangeInputs,
+            prefix: nil,
+            suffix: nil,
+            min: @filters.beds.low,
+            max: @filters.beds.high,
+            attribute: :beds,
+            type: Float,
+            label: "Beds",
+            callback: :update_filter,
+            id: :beds_filter %>
+        </div>
+      </div>
+      <div class="flex -mx-2 md:-mx-4 mt-4">
+        <div class="lg:w-3/5 px-2 md:px-4">
+          <%= live_component @socket, RangeInputs,
+            prefix: nil,
+            suffix: nil,
+            min: @filters.sqft.low,
+            max: @filters.sqft.high,
+            attribute: :sqft,
+            type: Integer,
+            label: "Sqft",
+            callback: :update_filter,
+            id: :sqft_filter %>
+        </div>
+        <div class="lg:w-2/5 px-2 md:px-4">
+          <%= live_component @socket, RangeInputs,
+            prefix: nil,
+            suffix: nil,
+            min: @filters.baths.low,
+            max: @filters.baths.high,
+            attribute: :baths,
+            type: Float,
+            label: "Baths",
+            callback: :update_filter,
+            id: :baths_filter %>
+        </div>
+      </div>
+      <div class="mt-4">
+        <%= live_component @socket, MultiSelect,
+          options: @status_options,
+          label: "Select statuses",
+          status: true,
+          show_top_label: false,
+          selected: @filters.selected_statuses,
+          callback: :update_filter,
+          key: :selected_statuses,
+          id: :update_statuses %>
+      </div>
+    </div>
+    <div class="lg:w-2/5 px-2 md:px-4">
+      <.form let={f} for={:mf} phx-submit="filter-submit">
+        <div class="w-full flex">
+          <div class="mr-4 w-16">
+            <label>Distance</label>
+            <%= text_input f, :distance,
+              class: "number-field",
+              inputmode: "numeric",
+              pattern: "[0-9]*[.]?[0-9]*",
+              placeholder: "Radius",
+              value: @filters.distance,
+              phx_debounce: "blur" %>
+          </div>
+          <%= if @subject do %>
+            <div class="flex-1">
+              <%= live_component @socket, Dropdown,
+                options: [
+                  %{value: 1, text: "Past month"},
+                  %{value: 2, text: "Past 2 months"},
+                  %{value: 3, text: "Past 3 months"},
+                  %{value: 6, text: "Past 6 months"},
+                  %{value: 9, text: "Past 9 months"},
+                  %{value: 12, text: "Past year"},
+                  %{value: 24, text: "Past 2 years"}
+                ],
+                selected: @filters.status_updated,
+                attr: :status_updated,
+                convert_to_range: false,
+                show_top_label: true,
+                callback: :update_filter,
+                label: "Status updated",
+                id: :status_updated
+              %>
+            </div>
+          <% end %>
+        </div>
+        <div class="mt-3 w-full">
+          <%= live_component @socket, MultiSelect,
+            options: @property_options,
+            selected: @filters.property_types,
+            key: :property_types,
+            status: false,
+            show_top_label: true,
+            callback: :update_filter,
+            label: "Property Type",
+            id: :property_types
+          %>
+        </div>
+        <div class="w-full mt-4">
+          <button type="submit" class="submit w-full h-full" value="Submit">Filter</button>
+        </div>
+      </.form>
+    </div>
+  </div>
+</div>

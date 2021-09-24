@@ -2791,21 +2791,111 @@ div.preview-wrapper .agent .avatar img, div.viewer-wrapper .agent .avatar img {
   display: block;
 }
 
-div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
+div.preview-wrapper .closed-analysis, div.viewer-wrapper .closed-analysis {
   margin-left: auto;
   margin-right: auto;
 }
 
-div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
+div.preview-wrapper .closed-analysis, div.viewer-wrapper .closed-analysis {
   width: 100%;
 }
 
 @media (min-width: 1024px) {
 
-div.preview-wrapper .synopsis, div.viewer-wrapper .synopsis {
+div.preview-wrapper .closed-analysis, div.viewer-wrapper .closed-analysis {
     width: 80%;
   }
 }
+
+div.preview-wrapper .closed-analysis .sold-table, div.viewer-wrapper .closed-analysis .sold-table {
+  margin-top: 3rem;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table, div.viewer-wrapper .closed-analysis .sold-table table {
+  width: 100%;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table td, div.viewer-wrapper .closed-analysis .sold-table table td {
+  padding: 0.5rem;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr, div.viewer-wrapper .closed-analysis .sold-table table tr {
+  border-bottom-width: 1px;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr:first-child p, div.viewer-wrapper .closed-analysis .sold-table table tr:first-child p {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr:first-child p, div.viewer-wrapper .closed-analysis .sold-table table tr:first-child p {
+  font-weight: 700;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr:last-child, div.viewer-wrapper .closed-analysis .sold-table table tr:last-child {
+  border-bottom-width: 0px;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr:last-child p, div.viewer-wrapper .closed-analysis .sold-table table tr:last-child p {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+div.preview-wrapper .closed-analysis .sold-table table tr:last-child p, div.viewer-wrapper .closed-analysis .sold-table table tr:last-child p {
+  font-weight: 700;
+}
+
+div.preview-wrapper .suggested-price, div.viewer-wrapper .suggested-price {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.preview-wrapper .suggested-price, div.viewer-wrapper .suggested-price {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .suggested-price, div.viewer-wrapper .suggested-price {
+    width: 80%;
+  }
+}
+
+div.preview-wrapper .suggested-price h1.price-value, div.viewer-wrapper .suggested-price h1.price-value {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+div.preview-wrapper .suggested-price h1.price-value, div.viewer-wrapper .suggested-price h1.price-value {
+  font-weight: 800;
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .suggested-price h1.price-value, div.viewer-wrapper .suggested-price h1.price-value {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+div.preview-wrapper .suggested-price h1.price-value, div.viewer-wrapper .suggested-price h1.price-value {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+
+div.preview-wrapper .suggested-price h1.price-value, div.viewer-wrapper .suggested-price h1.price-value {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}
+
+div.preview-wrapper .suggested-price .slash p, div.viewer-wrapper .suggested-price .slash p {
+        font-size: 4rem;
+      }
 
 div.preview-wrapper .pricing, div.viewer-wrapper .pricing {
   margin-left: auto;
@@ -5636,10 +5726,6 @@ h4 {
   grid-column-start: 1;
 }
 
-.float-right {
-  float: right;
-}
-
 .m-2 {
   margin: 0.5rem;
 }
@@ -5650,10 +5736,6 @@ h4 {
 
 .m-1 {
   margin: 0.25rem;
-}
-
-.m-6 {
-  margin: 1.5rem;
 }
 
 .mx-auto {
@@ -6032,10 +6114,6 @@ h4 {
   min-height: 100vh;
 }
 
-.min-h-0 {
-  min-height: 0px;
-}
-
 .w-full {
   width: 100%;
 }
@@ -6104,18 +6182,8 @@ h4 {
   width: 6rem;
 }
 
-.w-1\/2 {
-  width: 50%;
-}
-
-.w-min {
-  width: -webkit-min-content;
-  width: -moz-min-content;
-  width: min-content;
-}
-
-.w-48 {
-  width: 12rem;
+.w-2\/5 {
+  width: 40%;
 }
 
 .w-64 {
@@ -6128,10 +6196,6 @@ h4 {
 
 .w-3 {
   width: 0.75rem;
-}
-
-.w-2\/5 {
-  width: 40%;
 }
 
 .w-20 {
@@ -6182,20 +6246,16 @@ h4 {
   max-width: 48rem;
 }
 
-.max-w-screen-lg {
-  max-width: 1024px;
-}
-
-.max-w-screen-md {
-  max-width: 768px;
-}
-
 .max-w-screen-sm {
   max-width: 640px;
 }
 
 .max-w-7xl {
   max-width: 80rem;
+}
+
+.max-w-screen-md {
+  max-width: 768px;
 }
 
 .flex-1 {
@@ -6312,10 +6372,6 @@ h4 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -6374,6 +6430,19 @@ h4 {
 
 .gap-12 {
   gap: 3rem;
+}
+
+.gap-x-6 {
+  -moz-column-gap: 1.5rem;
+       column-gap: 1.5rem;
+}
+
+.gap-y-4 {
+  row-gap: 1rem;
+}
+
+.gap-y-2 {
+  row-gap: 0.5rem;
 }
 
 .overflow-hidden {
@@ -6660,11 +6729,6 @@ h4 {
   background-color: rgba(107, 114, 128, var(--tw-bg-opacity));
 }
 
-.bg-gray-900 {
-  --tw-bg-opacity: 1;
-  background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
-}
-
 .bg-indigo-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(99, 102, 241, var(--tw-bg-opacity));
@@ -6745,6 +6809,11 @@ h4 {
   background-color: rgba(255, 251, 235, var(--tw-bg-opacity));
 }
 
+.bg-gray-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
+}
+
 .bg-opacity-95 {
   --tw-bg-opacity: 0.95;
 }
@@ -6757,16 +6826,16 @@ h4 {
   --tw-bg-opacity: 0.4;
 }
 
-.bg-opacity-50 {
-  --tw-bg-opacity: 0.5;
-}
-
 .bg-opacity-25 {
   --tw-bg-opacity: 0.25;
 }
 
 .bg-opacity-80 {
   --tw-bg-opacity: 0.8;
+}
+
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
 }
 
 .bg-gradient-to-b {
@@ -7560,10 +7629,6 @@ h4 {
     display: flex;
   }
 
-  .sm\:w-1\/4 {
-    width: 25%;
-  }
-
   .sm\:w-72 {
     width: 18rem;
   }
@@ -7619,10 +7684,6 @@ h4 {
     margin-right: -1rem;
   }
 
-  .md\:ml-6 {
-    margin-left: 1.5rem;
-  }
-
   .md\:mt-24 {
     margin-top: 6rem;
   }
@@ -7637,6 +7698,22 @@ h4 {
 
   .md\:mr-6 {
     margin-right: 1.5rem;
+  }
+
+  .md\:ml-6 {
+    margin-left: 1.5rem;
+  }
+
+  .md\:mb-6 {
+    margin-bottom: 1.5rem;
+  }
+
+  .md\:mb-10 {
+    margin-bottom: 2.5rem;
+  }
+
+  .md\:flex {
+    display: flex;
   }
 
   .md\:hidden {
@@ -7699,6 +7776,10 @@ h4 {
     align-items: flex-end;
   }
 
+  .md\:justify-end {
+    justify-content: flex-end;
+  }
+
   .md\:gap-6 {
     gap: 1.5rem;
   }
@@ -7725,24 +7806,19 @@ h4 {
     text-align: left;
   }
 
-  .md\:text-lg {
-    font-size: 1.125rem;
+  .md\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .md\:text-xl {
+    font-size: 1.25rem;
     line-height: 1.75rem;
   }
 
   .md\:text-2xl {
     font-size: 1.5rem;
     line-height: 2rem;
-  }
-
-  .md\:text-3xl {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-
-  .md\:text-base {
-    font-size: 1rem;
-    line-height: 1.5rem;
   }
 }
 
@@ -7803,6 +7879,11 @@ h4 {
   .lg\:my-20 {
     margin-top: 5rem;
     margin-bottom: 5rem;
+  }
+
+  .lg\:my-6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   .lg\:mt-28 {
@@ -7933,16 +8014,16 @@ h4 {
     width: 18rem;
   }
 
-  .lg\:w-4\/5 {
-    width: 80%;
-  }
-
   .lg\:w-60 {
     width: 15rem;
   }
 
   .lg\:w-1\/4 {
     width: 25%;
+  }
+
+  .lg\:w-4\/5 {
+    width: 80%;
   }
 
   .lg\:max-w-2xl {
@@ -7985,12 +8066,12 @@ h4 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .lg\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .lg\:grid-cols-12 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .lg\:gap-8 {
@@ -8070,11 +8151,6 @@ h4 {
     padding-top: 3rem;
   }
 
-  .lg\:text-3xl {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-
   .lg\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
@@ -8099,10 +8175,6 @@ h4 {
 
   .xl\:w-48 {
     width: 12rem;
-  }
-
-  .xl\:w-2\/3 {
-    width: 66.666667%;
   }
 
   .xl\:w-72 {

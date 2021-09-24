@@ -36,19 +36,19 @@ defmodule Excyte.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:bcrypt_elixir, "~> 2.0"},
-      {:phoenix, "~> 1.5.10"},
-      {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
+      {:phoenix, "~> 1.6.0-rc.0", override: true},
+      {:phoenix_ecto, "~> 4.4"},
+      {:ecto_sql, "~> 3.7"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_live_view, "~> 0.15.7", override: true},
+      {:phoenix_live_view, "~> 0.16.4"},
       {:floki, ">= 0.27.0"},
       {:faker, "~> 0.16", only: [:dev, :test]},
       {:ex_machina, "~> 2.4", only: :test},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.3 or ~> 0.2.9"},
-      {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"},
+      {:phoenix_live_dashboard, "~> 0.5"},
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_poller, "~> 0.5"},
       {:gettext, "~> 0.11"},
       {:tesla, "~> 1.4"},
       {:quantum, "~> 3.0"},
@@ -69,7 +69,7 @@ defmodule Excyte.MixProject do
       {:ex_aws, "~> 2.2.4"},
       {:ex_aws_s3, "~> 2.3.0"},
       {:sweet_xml, "~> 0.6"},
-      {:money, "~> 1.8"},
+      {:money, "~> 1.9"},
       {:bamboo, "~> 2.2.0"},
       {:bamboo_phoenix, "~> 1.0.0"},
       {:stripity_stripe, "~> 2.10.0"},
@@ -86,9 +86,10 @@ defmodule Excyte.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup", "cmd npm --prefix assets install"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "assets.deploy": ["cmd npm --prefix assets run deploy", "phx.digest"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end

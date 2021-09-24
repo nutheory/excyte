@@ -1,0 +1,47 @@
+<div class="listing-item mt-3 md:mt-4 cursor-pointer hover:bg-green-50" phx-click="select-subject" phx-target={@myself} phx-value-key={@prop["ListingKey"]}>
+  <div class="flex h-full">
+    <%= if @prop["MainPhotoUrl"] do %>
+      <div 
+        :class="{'rounded-bl-none rounded-br': open}" 
+        class="main-photo" 
+        style={"background-repeat: no-repeat; background-size: cover; background-image: url(#{@prop["MainPhotoUrl"]})"}></div>
+    <% end %>
+    <div class="body flex p-3">
+      <div class="flex-1">
+        <div class="">
+          <%= if @prop["ListPrice"] do %>
+            <div class="inline-block font-bold">
+              $<%= number_to_delimited(@prop["ListPrice"], precision: 0) %>
+            </div>
+          <% end %>
+          <%= if @prop["LivingArea"] do %>
+            <div class="inline-block ml-1 md:ml-3">
+              <label>SqFt</label> <strong><%= number_to_delimited(@prop["LivingArea"], precision: 0) %></strong>
+            </div>
+          <% end %>
+        </div>
+        <div class="text-gray-400 text-xs">
+          <p>
+            <%= @prop["StreetNumber"] %> <%= @prop["StreetName"] %>
+            <%= if @prop["UnitNumber"] do %>
+              <span class="pt-1 inline-block ml-1"><label>Unit</label><%= @prop["UnitNumber"] %></span>
+            <% end %>
+          </p>
+          <p><%= @prop["City"] %>, <%= String.upcase(@prop["StateOrProvince"]) %> <%= @prop["PostalCode"] %></p>
+        </div>
+      </div>
+      <div class="hidden sm:flex text-gray-500">
+        <div class="mx-2 text-center">
+          <span class="material-icons-outlined block">king_bed</span>
+          <label class="block">Beds</label>
+          <h3><%= @prop["BedroomsTotal"] %></h3>
+        </div>
+        <div class="mx-2 text-center">
+          <span class="material-icons-outlined block">bathtub</span>
+          <label class="block">Baths</label>
+          <h3><%= @prop["Bathrooms"]["Total"] %></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

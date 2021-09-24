@@ -1,0 +1,27 @@
+<div>
+  <%= if Map.has_key?(@listing.adjustments, :sqft) do %>
+    <%= if @added do %>
+      <h4 class="text-sm">Auto Adjustments</h4>
+      <p class="text-sm mb-2">
+        <%= if @auto_adjusted , do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
+      </p>
+    <% else %>
+      <div
+        class="flex"
+        phx-click="toggle-auto-adj"
+        phx-target={@myself}
+        phx-value-action={if @auto_adjusted, do: "remove", else: "apply"}
+      >
+        <div class="flex-1">
+          <h4 class="text-sm">Auto Adjustments</h4>
+        </div>
+        <div class="text-sm cursor-pointer text-cyan-700 hover:underline">
+          <%= if @auto_adjusted, do: "Remove adjustment", else: "Apply adjustment" %>
+        </div>
+      </div>
+      <p class="text-sm mb-2">
+        <%= if @auto_adjusted, do: Utilities.summarize_auto_adjust(@listing.adjustments.sqft), else: "None." %>
+      </p>
+    <% end %>
+  <% end %>
+</div>

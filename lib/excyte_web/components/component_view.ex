@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.ComponentView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/components/templates", path: ""]}
-  import Number.{Delimit}
+  import Number.{Delimit, Phone}
   alias ExcyteWeb.Components.{
     Toggle
   }

@@ -11,6 +11,10 @@ defmodule ExcyteWeb.Helpers.Utilities do
     "//excyte.s3.amazonaws.com/#{path}"
   end
 
+  def address_uri(listing) do
+    URI.encode("#{listing["city"]}, #{listing["state"]}, United States")
+  end
+
   def dissect_url(url) do
     full = List.last(String.split(url, "//excyte.s3.amazonaws.com/"))
     parts = String.split(full, "/")
@@ -325,6 +329,54 @@ defmodule ExcyteWeb.Helpers.Utilities do
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
         </svg>
       """
+    end
+  end
+
+    def time_to_text(listing, key) do
+    if Map.has_key?(listing, key) && listing[key] !== nil do
+      months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+      cond do
+        months <= 2 ->
+          t = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+          "#{t.days} #{Inflex.inflect("day", t.days)} ago"
+        months <= 18 ->
+          t = %{months: months}
+          "#{t.months} #{Inflex.inflect("month", t.months)} ago"
+        months > 18 ->
+          t = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+          "over #{t.years} #{Inflex.inflect("year", t.years)} ago"
+      end
+    else
+      ""
+    end
+  end
+
+  def summarize_showcase(listing) do
+    if listing["list_price"] !== nil && listing["listing_id"] !== nil do
+      "Priced at <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["list_price"], precision: 0)}</span>
+      with MLS number <i>#{listing["listing_id"]}</i>"
+    else
+      if listing["list_price"] !== nil do
+        "MLS number <span class=\"header-color font-extrabold\">#{listing["listing_id"]}</span>"
+      else
+        "Priced at <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["list_price"], precision: 0)}</span>"
+      end
+    end
+  end
+
+  def client_summarize_sale_info(listing) do
+    if listing["list_price"] !== nil || listing["close_price"] !== nil do
+      if listing["close_price"] !== nil do
+        when_text = time_to_text(listing, "close_date")
+        close = if Map.has_key?(listing, "close_date"), do: " after <span class=\"header-color\">#{listing["days_on_market"]} days</span> on the market ", else: ""
+        "Closed for <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["close_price"], precision: 0)}</span>#{close}#{when_text}"
+      else
+        when_text = time_to_text(listing, "on_market_date")
+        listed = if Map.has_key?(listing, "close_date"), do: " with <span class=\"header-color\">#{listing["days_on_market"]} days</span> on the market ", else: ""
+        "Listed for <span class=\"header-color font-extrabold\">$#{number_to_delimited(listing["list_price"], precision: 0)}</span>#{listed}#{when_text}"
+      end
+    else
+      ""
     end
   end
 

@@ -1,0 +1,65 @@
+<div>
+  <h4>Subject details</h4>
+  <.form let={f} for={@changeset} phx-change="update-form" phx-submit="save-subject" phx_target={@myself}>
+    <div class="mt-2 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div>
+        <%= label f, :beds %>
+        <%= text_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= error_tag f, :beds %>
+      </div>
+      <div>
+        <%= label f, :baths %>
+        <%= text_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
+        <%= error_tag f, :baths %>
+      </div>
+      <div>
+        <%= label f, :sqft %>
+        <%= text_input f, :sqft, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= error_tag f, :sqft %>
+      </div>
+      <div>
+        <%= label f, :stories %>
+        <%= text_input f, :stories, class: "number-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
+        <%= error_tag f, :stories %>
+      </div>
+      <div>
+        <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit" phx-target={@myself}><%= @lotsize_unit %></span>)</label>
+        <%= text_input f, :lotsize_value, value: @lotsize_value, inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", class: "number-field", phx_debounce: "blur" %>
+        <%= error_tag f, :lotsize_value %>
+      </div>
+      <div>
+        <%= label f, :year_built %>
+        <%= text_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+        <%= error_tag f, :year_built %>
+      </div>
+    </div>
+    <div class="flex py-4">
+      <%= if @subject.main_photo_url do %>
+        <div class="mr-4">
+          <p class="font-bold">Property Photo</p>
+          <p>We found a public photo for this property but feel free to upload your own photo.</p>
+        </div>
+      <% end %>
+      <div class="w-40 h-32 relative mx-auto">
+        <%= live_component @socket, ImageEditor,
+          show_image_panel: false,
+          current_user: @current_user,
+          model: "property",
+          model_id: @current_user.id,
+          name: "main_photo",
+          title: "Property Photo",
+          bucket: "property_photos",
+          image_url: @subject.main_photo_url,
+          aspect_ratio: 16/9,
+          upload_text: "Upload<br />Property Photo",
+          width: 160,
+          height: 120,
+          id: :photo_image_editor
+        %>
+      </div>
+    </div>
+    <div class="mt-2">
+      <button class="submit w-full"><%= @button_label %></button>
+    </div>
+  </.form>
+</div>

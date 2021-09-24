@@ -1,0 +1,64 @@
+<div>
+  <%= if length(@members) < @account.agent_limit do %>
+    <.form let={f} for={@changeset} id="manage_team_form" phx-change="validate" phx-submit="save">
+      <div class="shadow-md bg-white rounded-md p-4">
+        <div class="mt-4">
+          <%= label f, :full_name %>
+          <%= text_input f, :full_name, class: "text-field", phx_debounce: "blur" %>
+          <%= error_tag f, :full_name %>
+        </div>
+        <div class="mt-4">
+          <%= label f, :email %>
+          <%= text_input f, :email, class: "text-field", phx_debounce: "blur" %>
+          <%= error_tag f, :email %>
+        </div>
+        <div class="mt-4">
+          <div class="flex">
+            <div class="flex-1">
+              <%= label f, :invite_message %>
+            </div>
+            <div class="link-button" phx-click="reset-message">
+              Reset message
+            </div>
+          </div>
+          <%= textarea f, :invite_message, class: "textarea", phx_debounce: "blur" %>
+          <%= error_tag f, :invite_message %>
+        </div>
+        <%= submit "Send invite", class: "submit mt-4 w-full", phx_disable_with: "Sending invite..." %>
+      </div>
+    </.form>
+  <% else %>
+    <div>
+      <div class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600">
+        <h3>Agent limit reached</h3>
+        <p class=""></p>
+      </div>
+      <%= link "Update subscription with more agents", to: "/", class: "fancy" %>
+    </div>
+  <% end %>
+  <div class="my-8">
+    <div class="flex">
+      <h3 class="flex-1 flex items-end text-lg leading-none font-extrabold text-gray-900 mb-2">Current Team & Invitations</h3>
+      <div>
+        <h4 class="text-gray-500">
+          <span class="text-2xl text-gray-700">
+            <%= length(@members) %>
+          </span> of <%= @account.agent_limit %>
+        </h4>
+      </div>
+    </div>
+    <ul class="">
+      <%= if length(@members) === 0 do %>
+        <li class="pt-2">No invitations</li>
+      <% else %>
+        <%= for member <- @members do %>
+          <%= live_component TeamMember,
+            member: member,
+            show_actions: (if @current_user.id !== member.id && Utilities.authorized?(@current_user.brokerage_role), do: true, else: false),
+            id: "member_#{member.id}"
+          %>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+</div>

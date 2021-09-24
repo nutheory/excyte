@@ -1,0 +1,86 @@
+<div>
+  <%= if @fetching === true do %>
+    <div class="w-full mt-36 overflow-hidden">
+      <svg class="animate-spin h-12 w-12 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <h2 class="text-center text-gray-500 mt-3 mb-1 text-xl font-semibold">Analyzing Incoming Listings...</h2>
+      <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
+    </div>
+  <% else %>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12" id="preview-gallery" phx-hook="InitGallery">
+      <%= live_component @socket, Listings,
+        subject: @subject,
+        search: @finder_input,
+        selected_listings: @selected_listings,
+        filters: @filters,
+        listings: @listings,
+        show_filters: @show_filters,
+        id: :listings_list %>
+      <%= if Map.has_key?(@client_info, :width) do %>
+        <%= if @client_info.width >= 1024 do %>
+          <div class={"lg:sticky lg:top-0 lg:col-start-8 lg:pt-24 lg:col-span-5 px-4 h-screen #{if @preview, do: 'animate-select'}"}>
+            <%= if @preview do %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, PreviewComp,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_comp
+                %>
+              <% else %>
+                <%= live_component @socket, PreviewTour,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_tour
+                %>
+              <% end %>
+            <% else %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, SelectedComps,
+                  selected: @selected_listings,
+                  id: :selected_comps
+                %>
+              <% else %>
+                <%= live_component @socket, SelectedTour,
+                  selected: @selected_listings,
+                  id: :selected_tour
+                %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <div class={"panel-slidein bg-gray-100 px-2 pt-4 lg:pt-6 lg:max-w-2xl #{if @preview || @show_panel, do: 'right-0', else: ''}"}>
+            <%= if @preview do %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, PreviewComp,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_comp
+                %>
+              <% else %>
+                <%= live_component @socket, PreviewTour,
+                  listing: @preview,
+                  added: Enum.find(@selected_listings, fn sc -> sc.listing_key === @preview.listing_key end) !== nil,
+                  id: :listing_preview_tour
+                %>
+              <% end %>
+            <% else %>
+              <%= if Map.has_key?(@subject, :__struct__) do %>
+                <%= live_component @socket, SelectedComps,
+                  selected: @selected_listings,
+                  id: :selected_comps
+                %>
+              <% else %>
+                <%= live_component @socket, SelectedTour,
+                  selected: @selected_listings,
+                  id: :selected_tour
+                %>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

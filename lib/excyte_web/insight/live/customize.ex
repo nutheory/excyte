@@ -20,7 +20,7 @@ defmodule ExcyteWeb.Insight.Customize do
           assets: videos,
           data: nil,
           name: "",
-          preview_content: "",
+          listings: [],
           uploaded_asset: nil,
           show_video_form: false,
           preview_panel: false,
@@ -35,14 +35,26 @@ defmodule ExcyteWeb.Insight.Customize do
   def handle_info({:get_sections, %{insight: ins}}, %{assigns: a} = socket) do
     case Insights.build_sections(%{usr_id: a.current_user.id, insight_id: ins.id}) do
       {:ok, res} ->
-        sections = with_html_sections(res.sections, res.data)
-        insight = merge_theme(res.data)
-        send self(), {:load_preview, %{sections: sections, theme: insight["document_attributes"] }}
+        sections =
+          res.insight.document_template.section_templates
+          |> Enum.sort(fn a, b -> a.position <= b.position end)
+          |> Enum.with_index(fn st, i ->
+            Map.merge(Map.from_struct(st), %{
+              temp_id: i,
+              content: with_listing_sections(st, res.insight.content.listings)
+            })
+          end)
+        insight = merge_theme(res)
+        # send self(), {:load_preview, %{sections: sections, theme: insight.document_attributes }}
         {:noreply, assign(socket,
           sections: sections,
           insight: insight,
-          data: res.data,
-          name: "#{res.data.subject["street_number"]} #{res.data.subject["street_name"]}",
+          data: %{
+            subject: insight.property,
+            agent_profile: res.agent_profile,
+            brokerage: res.brokerage
+          },
+          name: set_default_name(insight),
           loading: false
         )}
       {:error, err} -> err
@@ -52,14 +64,13 @@ defmodule ExcyteWeb.Insight.Customize do
   def handle_info({Assets, [:asset, _], result}, %{assigns: a} = socket) do
     ua = if result.status === "ready", do: nil, else: result
     assets = if result.status === "ready", do: [result | a.assets], else: a.assets
-
     {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
-  def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
-    doc = stitch_preview(sections)
-    {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
-  end
+  # def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
+  #   doc = stitch_preview(sections)
+  #   {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
+  # end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
     content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight["type"])
@@ -79,9 +90,9 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
     published =
-      case Insights.update_insight(a.insight["uuid"], a.current_user.id, %{
-          content: %{html: stitch_preview(a.sections)},
-          document_attributes: a.insight["document_attributes"],
+      case Insights.update_insight(a.insight.uuid, a.current_user.id, %{
+          content: %{export: export_content(a.sections)},
+          document_attributes: Map.from_struct(a.insight.document_attributes),
           name: name,
           cover_photo_url: needs_cover_photo?(a.insight),
           published: true
@@ -95,13 +106,6 @@ defmodule ExcyteWeb.Insight.Customize do
       |> push_redirect(to: "/agent/dash")}
   end
 
-  def handle_event("new-section", _, %{assigns: a} = socket) do
-    # TODO Create new from template
-    key = "usr-#{a.current_user.id}_#{System.os_time(:second)}"
-    Cachex.put!(:editor_cache, key, %{data: a.data, section: nil})
-    {:noreply, assign(socket, editing_key: "new")}
-  end
-
   def handle_event("delete_video", %{"value" => _v, "video-id" => id}, %{assigns: a} = socket) do
     asset_id = String.to_integer(id)
     assets =
@@ -113,11 +117,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do
-    doc = stitch_preview(a.sections)
-    {:noreply,
-      socket
-      |> push_event("loadPreview", %{content: doc, theme: a.insight["document_attributes"]})
-      |> assign(preview_panel: !a.preview_panel)}
+    {:noreply, assign(socket, preview_panel: !a.preview_panel)}
   end
 
   def handle_event("toggle-video", _, %{assigns: a} = socket) do
@@ -139,24 +139,23 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("sort-listings", %{"listings" => [_|_] = listings}, %{assigns: a} = socket) do
-    section = Enum.find(a.sections, fn %{component_name: cn} -> cn === "comparable" end)
+    section = Enum.find(a.sections, fn %{component_name: cn} ->
+      Enum.member?(["comparable", "tour_stop"], cn)
+    end)
     rearranged =
       Enum.map(listings, fn %{"id" => id, "position" => pos} ->
-        Enum.find(section.html_content, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
+        Enum.find(section.content.listings, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
         |> Map.put(:position, pos)
       end)
     sections = Enum.map(a.sections, fn s ->
-      if s.component_name === "comparable", do: Map.merge(s, %{html_content: rearranged}), else: s
+      if Enum.member?(["comparable", "tour_stop"], s.component_name) do
+        Map.merge(s, %{content: %{listings: rearranged}})
+      else
+        s
+      end
     end)
 
     {:noreply, assign(socket, sections: sections)}
-  end
-
-  def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
-    key = "usr-#{a.current_user.id}_section-#{pos}_#{System.os_time(:second)}"
-    section = Enum.find(a.sections, fn s -> s.position === String.to_integer(pos) end)
-    Cachex.put!(:editor_cache, key, %{section: section})
-    {:noreply, assign(socket, editing_key: key)}
   end
 
   def handle_event("toggle-enabled", %{"id" => id}, %{assigns: a} = socket) do
@@ -168,102 +167,92 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-listing-enabled", %{"id" => id}, %{assigns: a} = socket) do
-    section = Enum.find(a.sections, fn %{component_name: cn} -> cn === "comparable" end)
+    section = Enum.find(a.sections, fn %{component_name: cn} ->
+      Enum.member?(["comparable", "tour_stop"], cn)
+    end)
     updated =
-      Enum.map(section.html_content, fn st ->
+      Enum.map(section.content.listings, fn st ->
         if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
       end)
+
     sections = Enum.map(a.sections, fn s ->
-      if s.component_name === "comparable", do: Map.merge(s, %{html_content: updated}), else: s
+      if Enum.member?(["comparable", "tour_stop"], s.component_name), do: Map.merge(s, %{content: %{listings: updated}}), else: s
     end)
     {:noreply, assign(socket, sections: sections)}
   end
 
-  defp with_html_sections(sections, data) do
-    Enum.map(sections, fn s ->
-      html =
-        if s.html_content === nil do
-          get_template_content(s, data)
-        else
-          s.html_content
-        end
-      Map.merge(s, %{
-        created_by_id: data.agent_profile["id"],
-        insight_id: data.insight["id"],
-        section_template_id: s.id,
-        html_content: html
-      })
-    end)
-  end
-
-  defp get_template_content(%{component_name: component} = section, data) do
-    case component do
-      "comparable" ->
-        Enum.with_index(section.listings, 0)
-        |> Enum.map(fn {listing, i} ->
-          %{
-            position: i,
-            created_by_id: data.agent_profile["id"],
-            section_template_id: section.id,
-            insight_id: data.insight["id"],
-            component_name: "#{component}_item",
-            enabled: true,
-            type: "page",
-            temp_id: i,
-            description: "#{Utilities.humanize_component_name(component)} Listing",
-            name: "#{listing["street_number"]} #{listing["street_name"]}",
-            html_content: Templates.comparable(%{listing: listing}, data.insight["type"])
-          }
-        end)
-      "tour_stop" ->
-        Enum.map(section.listings, fn sl ->
-          %{
-            position: sl["position"],
-            created_by_id: data.agent_profile["id"],
-            section_template_id: section.id,
-            insight_id: data.insight["id"],
-            component_name: "#{component}_item",
-            enabled: true,
-            type: "page",
-            temp_id: sl["position"],
-            description: "#{Utilities.humanize_component_name(component)} Listing",
-            name: "#{sl["street_number"]} #{sl["street_name"]}",
-            html_content: Templates.tour_stop(%{listing: sl}, data.insight["type"])
-          }
-        end)
-      _ -> apply(Templates, String.to_existing_atom(component), [data, data.insight["type"]])
+  defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins}) do
+    if bk !== nil && bk.theme_settings.brokerage_default === true do
+      Map.merge(ins, %{document_attributes: bk.theme_settings})
+    else
+      Map.merge(ins, %{document_attributes: ag.theme_settings})
     end
   end
 
-  defp stitch_preview(sections) do
-    Enum.reduce(sections, "", fn section, acc ->
-      if section.enabled === true && section.html_content !== nil do
-        if is_list(section.html_content) do
-          acc <> stitch_preview(section.html_content)
+  defp with_listing_sections(section, listings) do
+    if Enum.member?(["comparable", "tour_stop", "showcase"], section.component_name) do
+      %{listings: Enum.with_index(listings, 0) |> Enum.map(fn {sl, i} ->
+        %{
+          position: (if sl["position"], do: sl["position"], else: i),
+          component_name: "#{section.component_name}_listing",
+          enabled: true,
+          temp_id: (if sl["position"], do: sl["position"], else: i),
+          description: "#{Utilities.humanize_component_name(section.component_name)} Listing",
+          name: "#{sl["street_number"]} #{sl["street_name"]}",
+          content: sl
+        }
+      end)}
+    else
+      nil
+    end
+  end
+
+  defp export_content(sections) do
+    Enum.reduce(sections, [], fn s, acc ->
+      if s.enabled === true do
+        if Enum.member?(["comparable", "tour_stop", "showcase"], s.component_name) do
+          [Map.merge(s, %{content: %{
+            listings: Enum.filter(s.content.listings, fn l -> l.enabled === true end)
+          }}) | acc]
         else
-          acc <> section.html_content
+          [s | acc]
         end
       else
         acc
       end
     end)
+    |> Enum.map(fn section -> Map.drop(section, [:__meta__, :__struct__, :brokerage, :created_by, :document_template]) end)
   end
 
-  defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins} = inc) do
-    if bk !== nil && bk["theme_settings"][:brokerage_default] === true do
-      Map.merge(ins, %{"document_attributes" => bk["theme_settings"]})
-    else
-      Map.merge(ins, %{"document_attributes" => ag["theme_settings"]})
+  def set_default_name(ins) do
+    case ins.type do
+      "cma" -> "#{ins.property.street_number} #{ins.property.street_name}"
+      "buyer_tour" -> "#{hd(ins.content.listings)["street_number"]} #{hd(ins.content.listings)["street_name"]}"
+      "showcase" -> "#{hd(ins.content.listings)["street_number"]} #{hd(ins.content.listings)["street_name"]}"
     end
   end
 
-
   defp needs_cover_photo?(ins) do
-    if ins["cover_photo_url"] === nil || ins["cover_photo_url"] === "" do
-      first = hd(ins["content"]["listings"])
+    if ins.cover_photo_url === nil || ins.cover_photo_url === "" do
+      first = hd(ins.content.listings)
       first["main_photo_url"]
     else
-      ins["cover_photo_url"]
+      ins.cover_photo_url
     end
   end
 end
+
+
+  # def handle_event("new-section", _, %{assigns: a} = socket) do
+  #   # TODO Create new from template
+  #   key = "usr-#{a.current_user.id}_#{System.os_time(:second)}"
+  #   Cachex.put!(:editor_cache, key, %{data: a.data, section: nil})
+  #   {:noreply, assign(socket, editing_key: "new")}
+  # end
+
+  # def handle_event("edit-section", %{"section-pos" => pos}, %{assigns: a} = socket) do
+  #   key = "usr-#{a.current_user.id}_section-#{pos}_#{System.os_time(:second)}"
+  #   section = Enum.find(a.sections, fn s -> s.position === String.to_integer(pos) end)
+  #   Cachex.put!(:editor_cache, key, %{section: section})
+  #   {:noreply, assign(socket, editing_key: key)}
+  # end

@@ -1,5 +1,4 @@
 import { Node, mergeAttributes } from '@tiptap/core'
-import Glightbox from 'glightbox'
 
 export default Node.create({
 

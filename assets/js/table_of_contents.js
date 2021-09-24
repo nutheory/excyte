@@ -15,10 +15,12 @@ export const TableOfContents = {
       const el = document.querySelector(`#${id}`)
       el.scrollIntoView({behavior: "smooth"})
     })
+    console.log("run", viewer)
 
     setTimeout(() => {
       const els = viewer.querySelectorAll('.section')
 
+      console.log("TO", els)
       const sections = Array.prototype.slice.call(els).map((el) => {
         return {
           id: el.getAttribute("id"),

@@ -2,13 +2,7 @@ const colors = require('tailwindcss/colors')
 
 module.exports = {
   mode: 'jit',
-  purge: [
-    '../lib/excyte_web/**/templates/**/*.html.leex',
-    '../lib/excyte_web/**/templates/**/*.html.eex',
-    '../lib/excyte_web/**/*.html.leex',
-    '../lib/excyte_web/**/*.html.eex',
-    '../assets/js/**/*.js',
-  ],
+  purge: ["./js/**/*.js", "../lib/*_web/**/*.*ex"],
   theme: {
     colors: {
       bgray: colors.blueGray,

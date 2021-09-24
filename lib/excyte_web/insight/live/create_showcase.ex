@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Insight.CreateShowcase do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights, Mls.ResoApi, Properties}
-  alias ExcyteWeb.{InsightView}
+  alias Excyte.{Accounts, Insights, Mls.ResoApi, Mls.ProcessReso}
+  alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   def render(assigns), do: InsightView.render("create_showcase.html", assigns)
 
@@ -21,7 +21,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
   end
 
   def handle_info({:property_search, %{parsed: address}}, %{assigns: a} = socket) do
-    line = String.split(address["addr"], " ", parts: 2)
+    line = String.split(address["addr"], " ")
     case ResoApi.property_by_address(a.mls, %{
       street_number: hd(line),
       safe_street_name: hd(tl(line)),
@@ -46,7 +46,10 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
 
   def handle_event("select-listing", %{"listing-key" => key_id, "list" => list}, %{assigns: a} = socket) do
     key = "shw#{a.current_user.id}#{System.os_time(:second)}"
-    listing = Enum.find(a[String.to_atom("#{list}_results")], fn lst -> key_id === lst["ListingKey"] end)
+    listing =
+      Enum.find(a[String.to_atom("#{list}_results")], fn lst -> key_id === lst["ListingKey"] end)
+      |> process_listing()
+    IO.inspect(listing)
     case Insights.create_insight(insight_data(listing, key, a)) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
       {:error, _method, _changeset, _} ->
@@ -69,15 +72,22 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       uuid: key,
       type: "showcase",
       name: "draft",
-      cover_photo_url: property_attrs["MainPhotoUrl"],
+      cover_photo_url: property_attrs["main_photo_url"],
       created_by_id: a.current_user.id,
       brokerage_id: a.current_user.brokerage_id,
       document_attributes: Map.from_struct(theme_attrs),
       document_template_id: hd(template).id,
       published: false,
       mls: a.mls.dataset_id,
-      selected_listing_ids: [property_attrs["ListingId"]],
+      selected_listing_ids: [property_attrs["listing_id"]],
       content: %{listings: [property_attrs]}
     }
+  end
+
+  defp process_listing(listing) do
+    case ProcessReso.process_init({:ok, %{listings: [listing]}}, nil) do
+      {:ok, res} -> Utilities.format_atom_json(hd(res.listings))
+      {:error, err} -> IO.inspect(err)
+    end
   end
 end

@@ -2,26 +2,26 @@
   <p class="mb-6 text-base">Styled colors to personalize your reports.</p>
   <h4 class="mb-0">Preview</h4>
   <div
-    class="preview rounded-md flex items-center justify-center border border-bgray-400"
-    style="background-color: #{@theme_settings.background};font-family: #{@theme_settings.font};"
+    class={"preview rounded-md flex items-center justify-center border border-bgray-400"}
+    style={"background-color: #{@theme_settings.background};font-family: #{@theme_settings.font};"}
   >
     <div class="w-4/5 flex flex-wrap my-12 lg:my-24">
       <div class="">
-        <div class="border-b-2 pb-4" style="border-color: #{@theme_settings.accent};">
-          <h2 class="mb-0 font-extrabold" style="color: #{@theme_settings.header_text};">
+        <div class="border-b-2 pb-4" style={"border-color: #{@theme_settings.accent};"}>
+          <h2 class="mb-0 font-extrabold" style={"color: #{@theme_settings.header_text};"}>
             Why use an agent?
           </h2>
-          <p style="color: #{@theme_settings.sub_header_text};">
+          <p style={"color: #{@theme_settings.sub_header_text};"}>
             How do you prepare for and lead the largest transaction you'll ever enter?
             You Hire A Realtor, like myself, to be in your corner! Todays market is challenging
             and requires more than negotiation skills.</p>
           <div class="flex pt-3">
             <div class="">
-              <svg class="w-10 h-10" style="stroke: #{@theme_settings.link};" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-10 h-10" style={"stroke: #{@theme_settings.link};"} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
               </svg>
             </div>
-            <div class="ml-4 text-left" style="color: #{@theme_settings.link};">
+            <div class="ml-4 text-left" style={"color: #{@theme_settings.link};"}>
               <label class="text-sm uppercase">Email</label>
               <p class="font-bold leading-none">jsmith@gmail.com</p>
             </div>
@@ -168,8 +168,10 @@
                 aria-checked={@theme_settings.brokerage_default}
                 phx-click="toggle-brokerage-default"
                 class="relative cursor-pointer">
-                <div class={if @theme_settings.brokerage_default, do: "slider-selected ", else: ""}>block bg-gray-400 w-14 h-8 rounded-full"></div>
-                <div class={if @theme_settings.brokerage_default, do: "dot-selected ", else: ""}>absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
+                <% slider = if @theme_settings.brokerage_default, do: "slider-selected ", else: "" %>
+                <% dot = if @theme_settings.brokerage_default, do: "dot-selected ", else: "" %>
+                <div class={"#{slider}block bg-gray-400 w-14 h-8 rounded-full"}></div>
+                <div class={"#{dot}absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"}></div>
               </div>
             </div>
           </div>

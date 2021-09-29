@@ -9,21 +9,26 @@ defmodule ExcyteWeb.Client.Viewer do
   @impl true
   def mount(%{"insight_id" => iid}, t, socket) do
     cu = if is_nil(t["user_token"]), do: nil, else: Accounts.get_user_by_session_token(t["user_token"])
-    r =
-      case Insights.get_published_insight(iid) do
-        {:ok, ins} -> ins
-        nil -> {:ok, push_redirect(socket, to: "/client/not_found")}
-      end
-    brk = if is_nil(r) || is_nil(r.brokerage_id), do: nil, else: Brokerages.get_brokerage_profile(r.brokerage_id)
-    agt = Agents.get_agent_profile!(r.created_by_id)
-    send self(), {:load_view, %{sections: r.content.html}}
-    {:ok, assign(socket,
-      current_user: cu,
-      insight: r,
-      theme: r.document_attributes,
-      agent_profile: agt,
-      brokerage_profile: brk
-    )}
+    case Insights.get_published_insight(iid) do
+      {:ok, res} ->
+        sections = Enum.sort(res.insight.sections, fn a, b -> a.position <= b.position end)
+        insight = merge_theme(res)
+        {:ok, assign(socket,
+          current_user: cu,
+          sections: sections,
+          insight: Map.update!(insight, :content, &Map.delete(&1, :listings)),
+          data: %{
+            agent_profile: res.agent_profile,
+            brokerage: res.brokerage
+          },
+          theme: insight.document_attributes,
+          listings: Enum.sort(insight.content.listings, fn a, b ->
+            a["excyte_data"]["position"] <= b["excyte_data"]["position"]
+          end),
+          loading: false
+        )}
+      {:error, err} -> err
+    end
   end
 
   @impl true
@@ -43,4 +48,11 @@ defmodule ExcyteWeb.Client.Viewer do
     {:reply, %{logged_in: false}, socket}
   end
 
+  defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins}) do
+    if bk !== nil && bk.theme_settings.brokerage_default === true do
+      Map.merge(ins, %{document_attributes: bk.theme_settings})
+    else
+      Map.merge(ins, %{document_attributes: ag.theme_settings})
+    end
+  end
 end

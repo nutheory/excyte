@@ -75,7 +75,9 @@
       transform: translate(calc(50vw - 50%));
 
       & .menu {
-        @apply absolute top-0 left-0 m-2 w-full max-w-xs p-2 z-30 rounded;
+        @apply absolute top-0 left-0 m-2 w-full max-w-xs p-2 h-96 z-30 rounded overflow-y-auto;
+
+        max-height: 94vh;
       }
     }
 
@@ -96,12 +98,14 @@
       transform: translate(calc(50vw - 50%));
 
       & .menu {
-        @apply absolute bottom-0 right-0 m-2 w-full max-w-xs p-2 z-30 rounded;
+        @apply absolute bottom-0 right-0 m-2 w-full max-w-xs p-2 h-96 z-30 rounded overflow-y-auto;
+        
+        max-height: 94vh;
       }
     }
 
     & .ex-shadow {
-      box-shadow: 1px 1px 3px rgba(66, 66, 66, 0.4);
+      box-shadow: 2px 2px 3px rgba(66, 66, 66, 0.6);
     }
 
     & .header-main {
@@ -116,8 +120,8 @@
 }
 
 .scale-out-tl {
-	-webkit-animation: scale-out-tl 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
-	        animation: scale-out-tl 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	-webkit-animation: scale-out-tl 0.3s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: scale-out-tl 0.3s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
 }
 
 .scale-in-br {

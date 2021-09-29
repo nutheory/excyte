@@ -23,7 +23,7 @@ defmodule ExcyteWeb.Insight.Editor do
 
     cu = Accounts.get_user_by_session_token(token)
     send self(), {:load_document, ""}
-    {:ok, assign(socket, current_user: cu, booger: "Hello")}
+    {:ok, assign(socket, current_user: cu)}
   end
 
   def handle_info({:setup_editor, %{section: section}}, socket) do

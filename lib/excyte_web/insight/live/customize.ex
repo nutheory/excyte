@@ -1,6 +1,13 @@
 defmodule ExcyteWeb.Insight.Customize do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Assets, Activities, Insights, Insights.Insight}
+  alias Excyte.{
+    Accounts,
+    Assets,
+    Activities,
+    Insights,
+    Insights.Insight,
+    Properties.PublicDataApi
+  }
   alias ExcyteWeb.{InsightView, Helpers.Templates, Helpers.Utilities}
 
 
@@ -17,10 +24,10 @@ defmodule ExcyteWeb.Insight.Customize do
           current_user: cu,
           insight: ins,
           sections: [],
+          listings: [],
           assets: videos,
           data: nil,
           name: "",
-          listings: [],
           uploaded_asset: nil,
           show_video_form: false,
           preview_panel: false,
@@ -39,22 +46,21 @@ defmodule ExcyteWeb.Insight.Customize do
           res.insight.document_template.section_templates
           |> Enum.sort(fn a, b -> a.position <= b.position end)
           |> Enum.with_index(fn st, i ->
-            Map.merge(Map.from_struct(st), %{
-              temp_id: i,
-              content: with_listing_sections(st, res.insight.content.listings)
-            })
+            Map.merge(Map.from_struct(st), %{ temp_id: i })
           end)
         insight = merge_theme(res)
-        # send self(), {:load_preview, %{sections: sections, theme: insight.document_attributes }}
+        listings =
+          with_listings(insight.content.listings, insight.type)
+          |> with_public_data(insight.type)
         {:noreply, assign(socket,
           sections: sections,
-          insight: insight,
+          insight: Map.update!(insight, :content, &Map.delete(&1, :listings)),
           data: %{
-            subject: insight.property,
             agent_profile: res.agent_profile,
             brokerage: res.brokerage
           },
           name: set_default_name(insight),
+          listings: listings,
           loading: false
         )}
       {:error, err} -> err
@@ -67,10 +73,9 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
-  # def handle_info({:load_preview, %{sections: sections, theme: theme}}, socket) do
-  #   doc = stitch_preview(sections)
-  #   {:noreply, push_event(socket, "loadPreview", %{content: doc, theme: theme})}
-  # end
+  def handle_info({:load_preview, %{ theme: theme }}, socket) do
+    {:noreply, push_event(socket, "loadPreview", %{ theme: theme })}
+  end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
     content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight["type"])
@@ -90,13 +95,15 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def handle_event("publish", %{"publish" => %{"name" => name}}, %{assigns: a} = socket) do
     published =
-      case Insights.update_insight(a.insight.uuid, a.current_user.id, %{
-          content: %{export: export_content(a.sections)},
-          document_attributes: Map.from_struct(a.insight.document_attributes),
+      case Insights.publish_insight(%{
+        insight: %{
+          id: a.insight.id,
+          created_by_id: a.current_user.id,
           name: name,
           cover_photo_url: needs_cover_photo?(a.insight),
+          content: %{ listings: a.listings },
           published: true
-        }) do
+        }, sections: publish_sections(a)}) do
           {:ok, pub} -> pub
           {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
       end
@@ -117,6 +124,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-preview", _, %{assigns: a} = socket) do
+    send self(), {:load_preview, %{ theme: a.insight.document_attributes }}
     {:noreply, assign(socket, preview_panel: !a.preview_panel)}
   end
 
@@ -139,23 +147,21 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("sort-listings", %{"listings" => [_|_] = listings}, %{assigns: a} = socket) do
-    section = Enum.find(a.sections, fn %{component_name: cn} ->
-      Enum.member?(["comparable", "tour_stop"], cn)
-    end)
     rearranged =
       Enum.map(listings, fn %{"id" => id, "position" => pos} ->
-        Enum.find(section.content.listings, fn %{temp_id: tid} -> String.to_integer(id) === tid end)
-        |> Map.put(:position, pos)
+        Enum.find(a.listings, fn %{"excyte_data" => %{"temp_id" => tid}} -> String.to_integer(id) === tid end)
+        |> Map.update!("excyte_data", &Map.merge(&1, %{"position" => pos}))
       end)
-    sections = Enum.map(a.sections, fn s ->
-      if Enum.member?(["comparable", "tour_stop"], s.component_name) do
-        Map.merge(s, %{content: %{listings: rearranged}})
-      else
-        s
-      end
-    end)
+    # IO.inspect(rearranged, label: "REARR")
+    # sections = Enum.map(a.sections, fn s ->
+    #   if Enum.member?(["comparable", "tour_stop"], s.component_name) do
+    #     Map.merge(s, %{content: %{listings: rearranged}})
+    #   else
+    #     s
+    #   end
+    # end)
 
-    {:noreply, assign(socket, sections: sections)}
+    {:noreply, assign(socket, listings: rearranged)}
   end
 
   def handle_event("toggle-enabled", %{"id" => id}, %{assigns: a} = socket) do
@@ -167,18 +173,15 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_event("toggle-listing-enabled", %{"id" => id}, %{assigns: a} = socket) do
-    section = Enum.find(a.sections, fn %{component_name: cn} ->
-      Enum.member?(["comparable", "tour_stop"], cn)
-    end)
     updated =
-      Enum.map(section.content.listings, fn st ->
-        if st.temp_id === String.to_integer(id), do: Map.merge(st, %{enabled: !st.enabled}), else: st
+      Enum.map(a.listings, fn st ->
+        if st["excyte_data"]["temp_id"] === String.to_integer(id) do
+          Map.update!(st, "excyte_data", &Map.merge(&1, %{"enabled" => !st["excyte_data"]["enabled"]}))
+        else
+          st
+        end
       end)
-
-    sections = Enum.map(a.sections, fn s ->
-      if Enum.member?(["comparable", "tour_stop"], s.component_name), do: Map.merge(s, %{content: %{listings: updated}}), else: s
-    end)
-    {:noreply, assign(socket, sections: sections)}
+    {:noreply, assign(socket, listings: updated)}
   end
 
   defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins}) do
@@ -189,42 +192,69 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  defp with_listing_sections(section, listings) do
-    if Enum.member?(["comparable", "tour_stop", "showcase"], section.component_name) do
-      %{listings: Enum.with_index(listings, 0) |> Enum.map(fn {sl, i} ->
-        %{
-          position: (if sl["position"], do: sl["position"], else: i),
-          component_name: "#{section.component_name}_listing",
-          enabled: true,
-          temp_id: (if sl["position"], do: sl["position"], else: i),
-          description: "#{Utilities.humanize_component_name(section.component_name)} Listing",
-          name: "#{sl["street_number"]} #{sl["street_name"]}",
-          content: sl
-        }
-      end)}
+  defp with_listings(listings, type) do
+    if Enum.member?(["cma", "buyer_tour"], type) && listings && length(listings) > 0 do
+      Enum.with_index(listings, 0)
+      |> Enum.map(fn {sl, i} ->
+        Map.merge(sl, %{"excyte_data" =>
+          %{
+            "position" => (if sl["position"], do: sl["position"], else: i),
+            "enabled" => true,
+            "temp_id" => (if sl["position"], do: sl["position"], else: i),
+            "description" => "#{Utilities.humanize_listing_name(type)}",
+            "name" => "#{sl["street_number"]} #{sl["street_name"]}",
+          }
+        })
+      end)
     else
-      nil
+      listings
     end
   end
 
-  defp export_content(sections) do
-    Enum.reduce(sections, [], fn s, acc ->
-      if s.enabled === true do
-        if Enum.member?(["comparable", "tour_stop", "showcase"], s.component_name) do
-          [Map.merge(s, %{content: %{
-            listings: Enum.filter(s.content.listings, fn l -> l.enabled === true end)
-          }}) | acc]
-        else
-          [s | acc]
+  def with_public_data(listings, type) do
+    if Enum.member?(["showcase", "buyer_tour"], type) && listings && length(listings) > 0 do
+      Enum.map(listings, fn lst ->
+        case PublicDataApi.merge_public_data(lst) do
+          {:ok, with_public} -> with_public
+          {:error, err} -> IO.inspect(err, label: "PUBLIC ERR")
         end
-      else
-        acc
-      end
-    end)
-    |> Enum.map(fn section -> Map.drop(section, [:__meta__, :__struct__, :brokerage, :created_by, :document_template]) end)
+      end)
+    end
   end
 
-  def set_default_name(ins) do
+  # defp export_content(sections) do
+  #   Enum.reduce(sections, [], fn s, acc ->
+  #     if s.enabled === true do
+  #       if Enum.member?(["comparable", "tour_stop", "showcase"], s.component_name) do
+  #         [Map.merge(s, %{content: %{
+  #           listings: Enum.filter(s.content.listings, fn l -> l.enabled === true end)
+  #         }}) | acc]
+  #       else
+  #         [s | acc]
+  #       end
+  #     else
+  #       acc
+  #     end
+  #   end)
+  #   |> Enum.map(fn section -> Map.drop(section, [:__meta__, :__struct__, :brokerage, :created_by, :document_template]) end)
+  # end
+
+  defp publish_sections(assigns) do
+    Enum.map(assigns.sections, fn s ->
+      %{
+        created_by_id: assigns.current_user.id,
+        insight_id: assigns.insight.id,
+        position: s.position,
+        description: s.description,
+        enabled: s.enabled,
+        name: s.name,
+        section_template_id: s.id,
+        component_name: s.component_name
+      }
+    end)
+  end
+
+  defp set_default_name(ins) do
     case ins.type do
       "cma" -> "#{ins.property.street_number} #{ins.property.street_name}"
       "buyer_tour" -> "#{hd(ins.content.listings)["street_number"]} #{hd(ins.content.listings)["street_name"]}"

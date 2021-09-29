@@ -49,7 +49,6 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
     listing =
       Enum.find(a[String.to_atom("#{list}_results")], fn lst -> key_id === lst["ListingKey"] end)
       |> process_listing()
-    IO.inspect(listing)
     case Insights.create_insight(insight_data(listing, key, a)) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
       {:error, _method, _changeset, _} ->

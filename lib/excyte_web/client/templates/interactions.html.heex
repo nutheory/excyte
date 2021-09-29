@@ -1,9 +1,18 @@
 <nav class="client-footer">
   <div class="footer-fixed">
+    <% comm = if @show_comm === false, do: "scale-0", else: "scale-in-br" %>
+    <div class={"menu ex-shadow bg-color #{comm}"}>
+    </div>
     <%= if @created_by.photo_url do %>
-      <div class="absolute right-0 bottom-0 m-4 link">
-        <div class="ex-shadow text-lg rounded-lg flex items-center justify-center font-bold link border-2 lg:border-4 uppercase h-14 w-14 lg:w-20 lg:h-20 z-30 cursor-pointer avatar">
-          <div class="rounded w-full h-full bg-cover" style={"background-image: url(#{@created_by.photo_url});"}></div>
+      <div class="absolute right-0 bottom-0 m-4 link z-40 ex-shadow">
+        <div class="ex-shadow text-lg rounded-lg flex items-center justify-center font-bold link border-2 lg:border-2 uppercase h-14 w-14 lg:w-16 lg:h-16 z-30 cursor-pointer avatar">
+          <div 
+            class="rounded w-full h-full bg-cover" 
+            style={"background-image: url(#{@created_by.photo_url});"}
+            phx-click="toggle-comm"
+            phx-target={@myself}
+          >
+          </div>
         </div>
       </div>
     <% end %>

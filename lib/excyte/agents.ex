@@ -7,7 +7,7 @@ defmodule Excyte.Agents do
     Repo.get_by(Profile, %{agent_id: aid})
   end
 
-  def get_agent_profile(_repo, %{get_publishing_info: insight}) do
+  def get_agent_profile(_repo, %{insight: insight}) do
     case Repo.get_by(Profile, %{agent_id: insight.created_by_id}) do
       %Profile{} = profile -> {:ok, profile}
       nil -> {:error, %{message: "Agent profile not found."}}

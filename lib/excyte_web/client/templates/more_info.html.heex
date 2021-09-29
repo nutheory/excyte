@@ -1,4 +1,5 @@
-   <%= show_panel = if @show_panel, do: "right-0", else: "" %>
+<div>
+  <%= show_panel = if @show_panel, do: "right-0", else: "" %>
   <div
     id="moreInfoPanel"
     phx-target={@myself}
@@ -59,3 +60,4 @@
       </ul>
     </div>
   </div>
+</div>

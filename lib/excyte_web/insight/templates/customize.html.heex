@@ -29,16 +29,14 @@
         <p class="text-base">Customize your report by disabling/enabling, sorting, or adding video.</p>
         <ul class="section-nav py-6" phx-hook="InitSectionSortable" id="sections" data-target-id="#sections" data-sections-id="sections">
           <%= for section <- @sections do %>
-            <%= if section.content &&
-              Map.has_key?(section.content, :listings) &&
-              is_list(section.content.listings) &&
-              length(section.content.listings) > 1 do %>
+            <%= if Enum.member?(["comparable", "tour_stop"], section.component_name) &&
+              @listings && length(@listings) > 0 do %>
               <li class="rounded shadow bg-cyan-50 mb-4"  data-sortable-id={section.temp_id} x-data="{ listingsVisible: false }">
                 <div class="">
                   <div class="flex p-4">
                     <h4 class="mb-0 flex-1">
-                      <%= Inflex.inflect(section.name, length(section.content.listings)) %>
-                      (<%= length(section.content.listings) %>)
+                      <%= Inflex.inflect(section.name, length(@listings)) %>
+                      (<%= length(@listings) %>)
                     </h4>
                     <div
                       class="cursor-pointer pt-1"
@@ -61,25 +59,25 @@
                     x-transition:leave-start="opacity-100 transform scale-y-100"
                     x-transition:leave-end="opacity-0 transform scale-y-90"
                   >
-                    <%= for listing <- section.content.listings do %>
-                      <li class="flex" data-listable-id={listing.temp_id}>
+                    <%= for listing <- @listings do %>
+                      <li class="flex" data-listable-id={listing["excyte_data"]["temp_id"]}>
                         <div class="drag-handle grabbable py-2 px-4 flex items-center border-r border-gray-200">
                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
                           </svg>
                         </div>
                         <div class="flex-1 p-2">
-                          <h4><%= listing.name %></h4>
+                          <h4><%= listing["excyte_data"]["name"] %></h4>
                         </div>
                         <div class="toggle p-2">
                           <div
                             role="checkbox"
-                            aria-checked={listing.enabled}
+                            aria-checked={listing["excyte_data"]["enabled"]}
                             phx-click="toggle-listing-enabled"
-                            phx-value-id={listing.temp_id}
+                            phx-value-id={listing["excyte_data"]["temp_id"]}
                             class="relative cursor-pointer">
-                            <% slider = if listing.enabled, do: "slider-selected ", else: "" %>
-                            <% dot = if listing.enabled, do: "dot-selected ", else: "" %>
+                            <% slider = if listing["excyte_data"]["enabled"], do: "slider-selected ", else: "" %>
+                            <% dot = if listing["excyte_data"]["enabled"], do: "dot-selected ", else: "" %>
                             <div class={"#{slider}block bg-gray-400 w-14 h-8 rounded-full"}></div>
                             <div class={"#{dot}absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"}></div>
                           </div>
@@ -175,9 +173,13 @@
       </div>
     <% else %>
       <% panel = if @preview_panel, do: 'right-0', else: '' %>
-      <div class={"preview-wrapper panel-slidein bg-gray-100 #{panel}"} id="previewWrapper" >
+      <div 
+        class={"preview-wrapper panel-slidein bg-gray-100 #{panel}"} 
+        id="previewWrapper" 
+        phx-hook="CustomizePreview"
+      >
         <div
-          class="absolute top-0 left-0 flex cursor-pointer z-40 bg-white text-gray-800 px-4 py-2"
+          class="absolute top-0 left-0 flex cursor-pointer z-50 bg-white rounded-br-md text-gray-800 px-4 py-2"
           phx-click="toggle-preview"
         >
           <div class="mr-3">
@@ -189,33 +191,26 @@
             Close preview
           </div>
         </div>
-        <div class="antialiased h-screen overflow-y-auto" phx-update="ignore">
-          <div class="h-full">
-            <div class="px-4 pt-10 sm:px-6 lg:max-w-5xl lg:pt-16 lg:px-8">
-              <div class="mx-auto">
-                <div x-ref="preview">
-                  <%= for section <- @sections do %>
-                    <%= if section.enabled do %>
-                      <div class="divider">
-                        <div class="mt-3 border-t-2 mx-auto w-2/5 accent-color"></div>
-                      </div>
-                      <%= live_component @socket, TemplateRender,
-                        current_user: @current_user,
-                        type: @insight.type,
-                        brokerage: @data.brokerage,
-                        agent: @data.agent_profile,
-                        section: section,
-                        id: "template_#{section.component_name}"
-                      %>
-                    <% end %>
-                  <% end %>
+        <div class="relative antialiased h-screen overflow-y-auto" phx-update="ignore">
+          <div class="px-4 sm:px-6 lg:max-w-5xl lg:px-8 mx-auto h-full">
+            <%= for section <- @sections do %>
+              <%= if section.enabled do %>
+                <div id={section.component_name}>
+                  <%= live_component @socket, TemplateRender,
+                    current_user: @current_user,
+                    brokerage: @data.brokerage,
+                    agent: @data.agent_profile,
+                    insight: @insight,
+                    section: section,
+                    listings: @listings,
+                    id: "template_#{section.component_name}"
+                  %>
                 </div>
-              </div>
-            </div>
+              <% end %>
+            <% end %>
           </div>
         </div>
       </div>
-      <%#= live_render @socket, Editor, session: %{"content_id" => @editing_key}, id: "editor_view" %>
     <% end %>
   <% end %>
 </div>

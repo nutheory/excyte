@@ -14,6 +14,7 @@ defmodule ExcyteWeb.Components.ColorPicker do
   end
 
   def handle_event("update-color", %{"id" => id, "color" => color}, %{assigns: a} = socket) do
+    IO.inspect(color, label: "COLOR:")
     send self(), {a.callback, %{id: id, color: color}}
     {:noreply, assign(socket, color: color)}
   end

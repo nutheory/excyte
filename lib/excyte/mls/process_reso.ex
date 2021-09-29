@@ -103,6 +103,7 @@ defmodule Excyte.Mls.ProcessReso do
         default_price: process_price(%{list_price: l["ListPrice"], close_price: l["ClosePrice"]}),
         stories: l["Stories"],
         walkscore: l["WalkScore"],
+        style: l["ArchitecturalStyle"],
         listing_key: l["ListingKey"],
         listing_id: l["ListingId"],
         features: process_features(l),

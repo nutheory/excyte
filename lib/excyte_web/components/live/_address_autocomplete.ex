@@ -1,6 +1,5 @@
 defmodule ExcyteWeb.Components.AddressAutocomplete do
   use ExcyteWeb, :live_component
-  # alias Excyte.{Mls.ResoApi}
   alias ExcyteWeb.{ComponentView}
 
   def render(assigns), do: ComponentView.render("address_autocomplete.html", assigns)

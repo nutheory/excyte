@@ -11,19 +11,14 @@ defmodule ExcyteWeb.Client.Header do
       current_user: assigns.current_user,
       created_by: assigns.created_by,
       insight_type: assigns.insight_type,
-      toc_sections: [],
-      show_menu: "init"
+      toc_sections: assigns.sections,
+      toc_listings: assigns.listings,
+      show_menu: false
     )}
   end
 
   def handle_event("toggle-menu", _, %{assigns: a} = socket) do
-    st =
-      case a.show_menu do
-        "init" -> "in"
-        "in" -> "out"
-        "out" -> "in"
-      end
-    {:noreply, assign(socket, show_menu: st)}
+    {:noreply, assign(socket, show_menu: !a.show_menu)}
   end
 
   def handle_event("setup-toc", %{"sections" => sections}, socket) do

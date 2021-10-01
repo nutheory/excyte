@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.UserConfirmationController do
   use ExcyteWeb, :controller
 
-  alias Excyte.{Accounts, Mls}
+  alias Excyte.{Accounts}
   alias ExcyteWeb.UserAuth
 
   plug :put_view, ExcyteWeb.UserView
@@ -10,23 +10,23 @@ defmodule ExcyteWeb.UserConfirmationController do
     render(conn, "resend_confirmation.html")
   end
 
-  def create(conn, %{"user" => %{"email" => email}}) do
-    if user = Accounts.get_user_by_email(email) do
-      Accounts.deliver_user_confirmation_instructions(
-        user,
-        &Routes.user_confirmation_url(conn, :confirm, &1)
-      )
-    end
+  # def create(conn, %{"user" => %{"email" => email}}) do
+  #   # if user = Accounts.get_user_by_email(email) do
+  #   #   Accounts.deliver_user_confirmation_instructions(
+  #   #     user,
+  #   #     &Routes.user_confirmation_url(conn, :confirm, &1)
+  #   #   )
+  #   # end
 
-    # Regardless of the outcome, show an impartial success/error message.
-    conn
-    |> put_flash(
-      :info,
-      "If your email is in our system and it has not been confirmed yet, " <>
-        "you will receive an email with instructions shortly."
-    )
-    |> redirect(to: "/")
-  end
+  #   # Regardless of the outcome, show an impartial success/error message.
+  #   conn
+  #   |> put_flash(
+  #     :info,
+  #     "If your email is in our system and it has not been confirmed yet, " <>
+  #       "you will receive an email with instructions shortly."
+  #   )
+  #   |> redirect(to: "/")
+  # end
 
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
@@ -91,22 +91,22 @@ defmodule ExcyteWeb.UserConfirmationController do
   #   end
   # end
 
-  defp mls_params(agent_id, tokens, claims) do
-    %{
-      agent_id: agent_id,
-      access_token: tokens["access_token"],
-      refresh_token: tokens["refresh_token"],
-      id_token: tokens["id_token"],
-      expires_in: tokens["expires_in"],
-      dataset_id: tokens["dataset_id"],
-      mls_name: tokens["mls_name"],
-      member_key: tokens["member_key"],
-      office_key: tokens["office_key"],
-      mls_id: claims["mls_id"],
-      agent_name: claims["agent_name"],
-      sub: claims["sub"],
-      username: claims["username"],
-      zone_info: claims["zoneinfo"]
-    }
-  end
+  # defp mls_params(agent_id, tokens, claims) do
+  #   %{
+  #     agent_id: agent_id,
+  #     access_token: tokens["access_token"],
+  #     refresh_token: tokens["refresh_token"],
+  #     id_token: tokens["id_token"],
+  #     expires_in: tokens["expires_in"],
+  #     dataset_id: tokens["dataset_id"],
+  #     mls_name: tokens["mls_name"],
+  #     member_key: tokens["member_key"],
+  #     office_key: tokens["office_key"],
+  #     mls_id: claims["mls_id"],
+  #     agent_name: claims["agent_name"],
+  #     sub: claims["sub"],
+  #     username: claims["username"],
+  #     zone_info: claims["zoneinfo"]
+  #   }
+  # end
 end

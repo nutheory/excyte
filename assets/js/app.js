@@ -22,8 +22,10 @@ import {InitSectionSortable, InitListingSortable} from "./sorting"
 import {InitGallery} from "./gallery"
 import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
-import {InitPreview} from "./preview"
-import {InitViewer} from "./viewer"
+import {ClosedListingsChart} from "./closed_listings_chart"
+import {WalkNeighborhood} from "./walk_neighborhood"
+import {CustomizePreview} from "./customize_preview"
+// import {ClientViewer} from "./client_viewer"
 import {ImageEditor} from "./image_editor"
 import {setupSizing} from "./mobile_sizing"
 import {MuxUploader} from "./mux_uploader"
@@ -43,8 +45,10 @@ Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
-Hooks.InitPreview = InitPreview
-Hooks.InitViewer = InitViewer
+Hooks.CustomizePreview = CustomizePreview
+Hooks.ClosedListingsChart = ClosedListingsChart
+Hooks.WalkNeighborhood = WalkNeighborhood
+// Hooks.InitViewer = InitViewer
 Hooks.ImageEditor = ImageEditor
 Hooks.MuxUploader = MuxUploader
 Hooks.GeoLocation = GeoLocation

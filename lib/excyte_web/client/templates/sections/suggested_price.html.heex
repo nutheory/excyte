@@ -1,36 +1,36 @@
-<div class="section suggested-price" id="suggested_price" title="Suggested List Price">
+<div class="suggested-price">
   <h1 class="header-color">Suggested List Price</h1>
   <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">
   Based on all the comparable listings, local data, and the current market. The
   following are great data points to consider when selling your home.</p>
   <div class="my-8 lg:my-20">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-      <%= for avg <- @avgs do %>
+      <%= for avg <- Functions.suggested_price_averages(@listings) do %>
         <div class="border rounded-md px-4 py-2">
-          <h3 class="mb-0"><%= avg["count"] %> <%= avg["status"] %></h3>
+          <h3 class="mb-0"><%= avg.count %> <%= avg.status %></h3>
           <div class="flex">
-            <%= if avg["avg_close"] do %>
+            <%= if avg.avg_close do %>
               <div class="">
                 <p class="font-bold leading-none">Close price</p>
-                <h2 class="header-color mb-0"><%= avg["avg_close"] %></h2>
+                <h2 class="header-color mb-0"><%= avg.avg_close %></h2>
               </div>
               <div class="slash flex items-center">/</div>
               <div class="mt-1 ml-1">
                 <p class="font-bold leading-none">List price</p>
-                <h3 class="header-color mb-0"><%= avg["avg_list"] %></h3>
+                <h3 class="header-color mb-0"><%= avg.avg_list %></h3>
               </div>
             <% else %>
               <div class="">
                 <p class="font-bold leading-none">List price</p>
-                <h2 class="header-color mb-0"><%= avg["avg_list"] %></h2>
+                <h2 class="header-color mb-0"><%= avg.avg_list %></h2>
               </div>
               <div class="flex items-end">
-                <p class="font-bold pl-2 pb-0.5"><span class="header-color"><%= avg["avg_sqft"] %></span> per sqft</p>
+                <p class="font-bold pl-2 pb-0.5"><span class="header-color"><%= avg.avg_sqft %></span> per sqft</p>
               </div>
             <% end %>
           </div>
-          <%= if avg["avg_dom"] do %>
-            <h4 class="mb-0">Average days on market is <span class="header-color"><%= avg["avg_dom"] %></span></h4>
+          <%= if avg.avg_dom do %>
+            <h4 class="mb-0">Average days on market is <span class="header-color"><%= avg.avg_dom %></span></h4>
           <% end %>
         </div>
       <% end %>
@@ -39,8 +39,8 @@
   <div class="mt-12 md:mb-6 md:mt-24 md:mb-10">
     <h3 class="sub-header-color text-center"> Your Suggested price range is </h3>
     <h1 class="header-color text-center price-value">
-      $<%= number_to_delimited(@insight["content"]["suggested_subject_price"]["min"], precision: 0) %> -
-      $<%= number_to_delimited(@insight["content"]["suggested_subject_price"]["max"], precision: 0) %>
+      $<%= number_to_delimited(@suggested_price["min"], precision: 0) %> -
+      $<%= number_to_delimited(@suggested_price["max"], precision: 0) %>
     </h1>
   </div>
 </div>

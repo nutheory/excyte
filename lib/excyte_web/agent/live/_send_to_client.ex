@@ -11,13 +11,13 @@ defmodule ExcyteWeb.Agent.SendToClient do
     last_sent = if length(activities) > 0, do: hd(Enum.filter(activities, fn a -> a.name === "sent" end)), else: nil
     subject_type_text =
       case assigns.insight.type do
-        "cma" -> "has sent you a Comparitive Market Analysis for your home"
+        "cma" -> "has sent you a Comparative Market Analysis for your home"
         "showcase" -> "has sent you a \"Showcase\" of property you might be interested in"
         "buyer_tour" -> "has sent you a Buyer Tour of places to visit"
       end
     message_type_text =
       case assigns.insight.type do
-        "cma" -> "Comparitive Market Analysis for you to browse at your convenience"
+        "cma" -> "Comparative Market Analysis for you to browse at your convenience"
         "showcase" -> "\"Showcase\" of property you might be interested in"
         "buyer_tour" -> "Buyer Tour of places to visit with mobile friendly directions"
       end

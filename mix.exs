@@ -36,7 +36,7 @@ defmodule Excyte.MixProject do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:bcrypt_elixir, "~> 2.0"},
-      {:phoenix, "~> 1.6.0-rc.0", override: true},
+      {:phoenix, "~> 1.6.0"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.7"},
       {:postgrex, ">= 0.0.0"},

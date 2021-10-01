@@ -4,7 +4,8 @@ defmodule Excyte.Insights.Section do
   alias Excyte.{
     Accounts.User,
     Insights.Insight,
-    Insights.SectionTemplate
+    Insights.SectionTemplate,
+    Utils.MapType
   }
 
   @timestamps_opts [type: :utc_datetime]
@@ -12,8 +13,11 @@ defmodule Excyte.Insights.Section do
   schema "sections" do
     field :name, :string, null: false
     field :description, :string, default: ""
+    field :enabled, :boolean, default: true
+    field :component_name, :string
     field :type, :string
     field :html_content, :string
+    field :content, MapType
     field :foreign_id, :string
     field :position, :integer
     belongs_to(:section_template, SectionTemplate)
@@ -28,7 +32,10 @@ defmodule Excyte.Insights.Section do
       :name,
       :description,
       :type,
+      :component_name,
+      :enabled,
       :html_content,
+      :content,
       :position,
       :insight_id,
       :section_template_id,

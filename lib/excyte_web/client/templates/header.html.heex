@@ -1,9 +1,7 @@
 <nav class="client-header">
   <div class="header-fixed">
-    <% IO.inspect(@show_menu, label: "@show_menu") %>
-    <% IO.inspect(@toc_sections, label: "@toc_sections") %>
-    <% menu = if @show_menu === "init", do: "scale-0", else: "scale-#{@show_menu}-tl" %>
-    <div class="menu ex-shadow bg-color #{menu}">
+    <% menu = if @show_menu === false, do: "scale-0", else: "scale-in-tl" %>
+    <div class={"menu ex-shadow bg-color #{menu}"}>
       <div class="pl-20 text-right">
         <h4 class="mb-0"><%= Utilities.insight_type_to_name(@insight_type) %></h4>
         <p class="leading-none"><%= @created_by.name %></p>
@@ -21,12 +19,27 @@
           <h4 class="">Jump to Section...</h4>
           <ul>
             <%= for section <- @toc_sections do %>
-              <li class="my-2 p-2 cursor-pointer" phx-click="jump-to-section" phx-value-id={section["id"]} phx-target={@myself}>
-                <h4 class="mb-0"><%= section["title"] %></h4>
-                <%= if section["subtitle"] do %>
-                  <p class="leading-tight"><%= section["subtitle"] %></p>
+              <%= if Enum.member?(["comparable", "buyer_tour"], section.component_name) do %>
+                <%= for lst <- @toc_listings do %>
+                  <%= if lst.enabled === true do %>
+                    <li class="my-2 p-2 cursor-pointer" phx-click="jump-to-section" phx-value-id={lst.id} phx-target={@myself}>
+                      <h4 class="mb-0"><%= lst.name %></h4>
+                      <%= if lst.description do %>
+                        <p class="leading-tight"><%= lst.description %></p>
+                      <% end %>
+                    </li>
+                  <% end %>
                 <% end %>
-              </li>
+              <% else %>
+                <%= if section.enabled === true do %>
+                  <li class="my-2 p-2 cursor-pointer" phx-click="jump-to-section" phx-value-id={section.component_name} phx-target={@myself}>
+                    <h4 class="mb-0"><%= section.name %></h4>
+                    <%= if section.description do %>
+                      <p class="leading-tight"><%= section.description %></p>
+                    <% end %>
+                  </li>
+                <% end %>
+              <% end %>
             <% end %>
           </ul>
         <% end %>

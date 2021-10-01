@@ -8,6 +8,11 @@ svg.remix {
   top: 4.5rem;
 }
 
+.svg-shadow {
+  -webkit-filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
+  filter: drop-shadow( 1px 1px 1px rgba(0, 0, 0, .7));
+}
+
 .blur {
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
@@ -362,6 +367,25 @@ button.jumbo {
     bottom: 8px;
     right: 8px;
     z-index: 150;
+  }
+}
+
+/* override color picker */
+.pcr-app {
+  & .pcr-interaction {
+
+    & .pcr-type.active {
+        background: #2DD4BF !important;
+    }
+
+    & .pcr-result {
+      flex: 1 1 12em !important;
+    }
+
+    & .pcr-save {
+      @apply flex-1;
+      background: #4F46E5 !important;
+    }
   }
 }
 

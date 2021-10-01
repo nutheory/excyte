@@ -1,8 +1,9 @@
-   <%= show_panel = if @show_panel, do: "right-0", else: "" %>
+<div>
+  <%= show_panel = if @show_panel, do: "right-0", else: "" %>
   <div
     id="moreInfoPanel"
     phx-target={@myself}
-    class="panel-slidein font-sans bg-gray-100 lg:max-w-2xl text-gray-800 #{show_panel}"
+    class={"panel-slidein font-sans bg-gray-100 lg:max-w-2xl text-gray-800 #{show_panel}"}
   >
     <div class="flex flex-col h-full px-4 lg:px-6">
       <div class="flex py-4">
@@ -42,9 +43,9 @@
                 <%= case Utilities.assign_contact_type(v) do %>
                   <% "phone" -> %>
                     <% phone = String.replace(v, "-", "") %>
-                    <a href="tel:#{phone}"><%= v %></a>
+                    <a href={"tel:#{phone}"}><%= v %></a>
                   <% "email" -> %>
-                    <a href="mailto:#{v}"><%= v %></a>
+                    <a href={"mailto:#{v}"}><%= v %></a>
                   <% "url" -> %>
                     <a href={v}><%= v %></a>
                   <% _ -> %>
@@ -59,3 +60,4 @@
       </ul>
     </div>
   </div>
+</div>

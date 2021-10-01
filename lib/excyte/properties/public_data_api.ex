@@ -40,39 +40,103 @@ defmodule Excyte.Properties.PublicDataApi do
     end
   end
 
-  defp process_subject({:ok, %Tesla.Env{:body => %{"properties" => properties}} = _response}) do
-      prop = hd(properties)
-      street = String.split(prop["address"]["line"], " ", parts: 2)
-      property = %{
-        internal_type: "subject",
-        street_number: List.first(street),
-        street_name: List.last(street),
-        city: prop["address"]["city"],
-        zip: prop["address"]["postal_code"],
-        state: prop["address"]["state_code"],
-        unit: prop["address"]["unit_value"],
-        county: prop["address"]["county"],
-        coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
-        foreign_id: prop["property_id"],
-        main_photo_url: hd(prop["photos"])["href"],
-        est_price: prop["price"],
-        beds: prop["beds"],
-        baths: prop["baths"],
-        overview: prop["description"],
-        property_type: prop["prop_type"],
-        status: prop["prop_status"],
-        features: process_features(hd(prop["public_records"])),
-        lotsize_sqft: process_lotsize(prop["lot_size"]),
-        lotsize_preference: "sqft",
-        sqft: prop["building_size"]["size"],
-        history: %{overview: "", timeline_items: prop["property_history"]},
-        year_built: process_year_built(hd(prop["public_records"])),
-        stories: hd(prop["public_records"])["stories"],
-        public_records: hd(prop["public_records"]),
-        foreign_url: prop["rdc_web_url"]
-      }
+  def merge_public_data(lst) do
+    addr = "#{lst["street_number"]} #{lst["street_name"]} #{lst["city"]} #{lst["state"]} #{lst["zip"]}"
+    url = "https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=#{URI.encode(addr)}"
+    with {:ok, %{body: body}} <- HTTPoison.get(url),
+         {:ok, public_lst} <- fetch_public_listing(hd(Jason.decode!(body)["autocomplete"])),
+         {:ok, merged_lst} <- merge_resolve(lst, public_lst) do
+      {:ok, merged_lst}
+    else
+      _ -> {:ok, lst}
+    end
+  end
 
-      {:ok, property}
+  defp fetch_public_listing(lst) do
+    case get("/properties/v2/detail", query: [property_id: lst["mpr_id"]]) do
+      {:ok, %Tesla.Env{:body => %{"properties" => properties}}} -> {:ok, hd(properties)}
+      {:error, err} ->
+        # IO.inspect(err, label: "ERR")
+        {:error, err}
+      res ->
+        # IO.inspect(res, label: "RES")
+        {:error, res}
+    end
+  end
+
+  defp merge_resolve(lst, public) do
+    # IO.inspect(public, label: "PUBS")
+    {:ok, Map.merge(lst, %{
+      "foreign_id" => public["property_id"],
+      "beds" => resolve_public(lst, public, "beds"),
+      "baths" => %{
+        "total" => resolve_baths(lst, public)
+      },
+      "style" => resolve_public(lst, public, "style"),
+      "year_built" => resolve_public(lst, public, "year_built"),
+      "stories" => resolve_public(lst, public, "stories"),
+      "public_data" => %{
+        "overview" => public["description"],
+        "est_price" => public["price"],
+        "schools" => public["schools"],
+        "property_history" => public["property_history"],
+        "sold_history" => public["sold_history"],
+        "tax_history" => public["tax_history"]
+      }
+    })}
+  end
+
+  def resolve_public(lst, public, attr) do
+    cond do
+      lst[attr] -> lst[attr]
+      public[attr] -> public[attr]
+      hd(public["public_records"])[attr] -> hd(public["public_records"])[attr]
+      true -> "N/A"
+    end
+  end
+
+  def resolve_baths(lst, public) do
+    cond do
+      lst["baths"]["total"] -> lst["baths"]["total"]
+      public["baths"] -> public["baths"]
+      hd(public["public_records"])["baths"] -> hd(public["public_records"])["baths"]
+      true -> "N/A"
+    end
+  end
+
+  defp process_subject({:ok, %Tesla.Env{:body => %{"properties" => properties}} = _response}) do
+    prop = hd(properties)
+    street = String.split(prop["address"]["line"], " ", parts: 2)
+    property = %{
+      internal_type: "subject",
+      street_number: List.first(street),
+      street_name: List.last(street),
+      city: prop["address"]["city"],
+      zip: prop["address"]["postal_code"],
+      state: prop["address"]["state_code"],
+      unit: prop["address"]["unit_value"],
+      county: prop["address"]["county"],
+      coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
+      foreign_id: prop["property_id"],
+      main_photo_url: hd(prop["photos"])["href"],
+      est_price: prop["price"],
+      beds: prop["beds"],
+      baths: prop["baths"],
+      overview: prop["description"],
+      property_type: prop["prop_type"],
+      status: prop["prop_status"],
+      features: process_features(hd(prop["public_records"])),
+      lotsize_sqft: process_lotsize(prop["lot_size"]),
+      lotsize_preference: "sqft",
+      sqft: prop["building_size"]["size"],
+      history: %{overview: "", timeline_items: prop["property_history"]},
+      year_built: process_year_built(hd(prop["public_records"])),
+      stories: hd(prop["public_records"])["stories"],
+      public_records: hd(prop["public_records"]),
+      foreign_url: prop["rdc_web_url"]
+    }
+
+    {:ok, property}
   end
 
   defp process_subject({:ok, %Tesla.Env{:body => err} = _response}) do

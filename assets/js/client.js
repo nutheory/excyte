@@ -4,16 +4,18 @@ import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import {InitViewer} from "./viewer"
+import {ClientViewer} from "./client_viewer"
 import {setupSizing} from "./mobile_sizing"
+import {ClosedListingsChart} from "./closed_listings_chart"
 import {TableOfContents} from "./table_of_contents"
 
 import topbar from "topbar"
 
 let Hooks = {}
 
-Hooks.InitViewer = InitViewer
+Hooks.ClientViewer = ClientViewer
 Hooks.TableOfContents = TableOfContents
+Hooks.ClosedListingsChart = ClosedListingsChart
 
 setupSizing()
 

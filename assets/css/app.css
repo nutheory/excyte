@@ -1,7 +1,7 @@
 @import "./main.css";
 @import "./forms.css";
 @import "./lists.css";
-@import "./editor.css";
+@import "./preview.css";
 @import "./email.css";
 @import "../node_modules/glightbox/dist/css/glightbox.min.css";
 @import '@simonwep/pickr/dist/themes/nano.min.css';

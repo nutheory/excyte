@@ -17,23 +17,23 @@ export const TableOfContents = {
     })
     console.log("run", viewer)
 
-    setTimeout(() => {
-      const els = viewer.querySelectorAll('.section')
+    // setTimeout(() => {
+    //   const els = viewer.querySelectorAll('.section')
 
-      console.log("TO", els)
-      const sections = Array.prototype.slice.call(els).map((el) => {
-        return {
-          id: el.getAttribute("id"),
-          title: el.dataset.sectionTitle,
-          subtitle: el.dataset.sectionSubtitle
-        }
-      })
+    //   console.log("TO", els)
+    //   const sections = Array.prototype.slice.call(els).map((el) => {
+    //     return {
+    //       id: el.getAttribute("id"),
+    //       title: el.dataset.sectionTitle,
+    //       subtitle: el.dataset.sectionSubtitle
+    //     }
+    //   })
 
-      this.pushEventTo(this.el, 'setup-toc', { sections }, () => {
-        els.forEach(section => {
-          observer.observe(section)
-        })
-      })
-    }, 500)
+    //   this.pushEventTo(this.el, 'setup-toc', { sections }, () => {
+    //     els.forEach(section => {
+    //       observer.observe(section)
+    //     })
+    //   })
+    // }, 500)
   }
 }

@@ -10,9 +10,11 @@ export const InitColorPicker = {
       theme: 'nano',
       default: currentColor,
       swatches: [
-        'rgba(243, 244, 246, 1)', 'rgba(14, 116, 144, 1)', 'rgba(4, 41, 58, 1)',
-        'rgba(254, 240, 138, 1)', 'rgba(71, 85, 105, 1)', 'rgba(233, 30, 99, 1)',
-        'rgba(137, 254, 159, 1)'
+        'rgba(0, 0, 0, 1)', 'rgba(68, 68, 68, 1)', 'rgba(138, 138, 138, 1)', 
+        'rgba(200, 200, 200, 1)', 'rgba(240, 240, 240, 1)', 'rgba(255, 255, 255, 1)',   
+        'rgba(252, 211, 99, 1)', 'rgba(245, 158, 11, 1)', 'rgba(220, 38, 38, 1)', 
+        'rgba(153, 27, 27, 1)', 'rgba(13, 148, 136, 1)', 'rgba(8, 145, 178, 1)',
+        'rgba(56, 189, 248, 1)', 'rgba(3, 105, 161, 1)'
       ],
       components: {
         preview: true,
@@ -21,10 +23,10 @@ export const InitColorPicker = {
         interaction: {
           hex: true,
           rgba: true,
-          hsla: true,
+          hsla: false,
           cmyk: true,
           input: true,
-          clear: true,
+          clear: false,
           save: true
         }
       }

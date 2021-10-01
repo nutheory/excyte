@@ -3,6 +3,7 @@ defmodule ExcyteWeb.InsightView do
   import Number.{Delimit}
   alias ExcyteWeb.{
     Helpers.Utilities,
+    Helpers.ClientFunctions,
     Client.TemplateRender
   }
   alias ExcyteWeb.Insight.{

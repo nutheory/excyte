@@ -7,9 +7,6 @@ defmodule ExcyteWeb.Components.ShowcaseGallery do
   def update(assigns, socket) do
     media = Enum.filter(assigns.media, fn m -> m["Disabled"] !== true end)
     groups = Enum.split(media, 4)
-    IO.inspect(groups, label: "GRPS")
-    IO.inspect(hd(elem(groups, 0)), label: "MAIN")
-    IO.inspect(tl(elem(groups, 0)), label: "PRVW")
     {:ok, assign(socket,
       main: hd(elem(groups, 0)),
       previews: tl(elem(groups, 0)),

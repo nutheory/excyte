@@ -2,7 +2,7 @@ defmodule ExcyteWeb.Components.Calendar do
   use ExcyteWeb, :live_component
   use Timex
 
-  alias ExcyteWeb.Components.CalendarDayLive
+  alias ExcyteWeb.Components.CalendarDay
   alias ExcyteWeb.ComponentView
 
   @week_start_at :mon

@@ -1,126 +1,115 @@
-/* editor styles */
-
-ul.section-nav {
-  @apply mt-4;
-
-  & li.section {
-    @apply mb-2;
-
-    & .title {
-      @apply text-bgray-600 mb-0 text-base font-extrabold;
-    }
-
-    & .sub-title {
-      @apply text-bgray-400 text-base leading-4;
-    }
-
-    & .action {
-      @apply text-sm;
-
-      color: #0e7490 !important;
-      text-decoration: none;
-      font-weight: 500;
-      box-shadow: inset 0 -0.125em 0 0 rgb(231, 230, 230), inset 0 -0.375em 0 0 rgba(165, 243, 252, 0.4);
-    }
-  }
-}
-
-body {
-  @apply focus:outline-none p-0 m-0;
-}
-
-blockquote {
-  font-style: italic;
-  font-family: 'Sanchez', serif;
-  line-height: 1.4 !important;
-  position: relative;
-  text-shadow: 0 1px white;
-}
-
-blockquote p {
-  @apply text-lg md:text-2xl;
-}
-
-a.fancy {
-  color: #0e7490 !important;
-  text-decoration: none;
-  font-weight: 500;
-  box-shadow: inset 0 -0.125em 0 0 #fff, inset 0 -0.375em 0 0 rgba(165, 243, 252, 0.4);
-}
-
-.curve {
-  shape-outside: circle();
-}
-
-mark {
-  @apply bg-yellow-200 px-1;
-}
-
-.resize-cursor {
-  cursor: ew-resize;
-  cursor: col-resize;
-}
-
-.command-button {
-  @apply text-white fill-current cursor-pointer p-2 rounded h-full w-full flex items-center justify-center;
-}
-
-div.editor-wrapper {
-  & .section {
-    @apply w-full flex items-center justify-center;
-
-    & .body {
-      @apply flex flex-wrap w-full md:mx-8 xl:w-4/5 my-32;
-    }
-
-    & .data-grid {
-      @apply flex flex-wrap;
-    }
-
-    & .fifty {
-      @apply w-full md:w-1/2 h-full mb-6 md:mb-0;
-    }
-
-    & .minor {
-      @apply mx-4 h-full w-1/3;
-    }
-
-    & .major {
-      @apply flex-1 mx-4 h-full;
-    }
-  }
-}
-
 div.preview-wrapper {
   @apply w-full xl:w-4/5 max-w-screen-lg mb-8 lg:rounded-md;
-}
 
-p {
-  @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6 mb-0;
-}
+  /* & p {
+    @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6;
+  }
 
-h1 {
-  @apply md:mb-2 text-2xl md:text-3xl lg:text-4xl font-extrabold;
-}
+  & h1 {
+    @apply md:mb-2 text-2xl md:text-3xl lg:text-4xl font-extrabold;
+  }
 
-h2 {
-  @apply md:mb-2 text-xl md:text-2xl lg:text-3xl font-extrabold;
-}
+  & h2 {
+    @apply md:mb-2 text-xl md:text-2xl lg:text-3xl font-extrabold;
+  }
 
-h3 {
-  @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
-}
+  & h3 {
+    @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
+  }
 
-h4 {
-  @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
-}
+  & h4 {
+    @apply md:mb-2 text-base md:text-lg lg:text-xl font-extrabold;
+  } */
 
-div.preview-wrapper,
-div.viewer-wrapper {
+  & .large-text-shadow {
+    text-shadow: 3px 3px 4px #000;
+  }
 
-  & .admin-box {
-    & button {
-      @apply text-cyan-700;
+  & .large-box-shadow {
+    box-shadow: 1px 1px 3px #666;
+  }
+
+  & .showcase-gallery {
+    @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
+
+    & .main-photo {
+      @apply relative col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 w-full pt-2/3 rounded-lg bg-cover bg-center;
+
+      & .title {
+        @apply w-4/5 text-left absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-30;
+
+        & h3 {
+          @apply px-2 mb-0 leading-none py-1 inline-block;
+        }
+
+        & h1 {
+          @apply px-2 mb-0 clear-left inline-block;
+        }
+
+        & h2 {
+          @apply px-2 pb-0.5 mb-0 leading-none inline-block;
+        }
+      }
+    }
+
+    & .main-photo::before {
+      @apply rounded-lg;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.25)
+    }
+
+    & .main-photo:hover::before {
+      @apply rounded-lg;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    & a.preview {
+      @apply block h-28 relative rounded-lg bg-cover bg-center lg:w-full lg:h-full;
+
+      & .icon {
+        @apply bg-bgray-800 bg-opacity-70 rounded-bl-md rounded-tr-lg absolute top-0 right-0 p-1.5;
+      }
+    }
+
+    & a.preview::before {
+      @apply rounded-lg;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.25)
+    }
+
+    & a.preview:hover::before {
+      @apply rounded-lg;
+
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    & img {
+      @apply my-0;
     }
   }
 
@@ -128,54 +117,86 @@ div.viewer-wrapper {
     display: none;
   }
 
-  /* Position child elements relative to this element */
-  & .aspect-ratio-box {
-    position: relative;
+  & .cover-showcase {
+    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center lg:bg-fixed;
+
+    & a:link {
+      color: #FFF !important;
+    }
   }
 
-  /* Create a pseudo element that uses padding-bottom to take up space */
-  & .aspect-ratio-box::after {
-    display: block;
+  & .cover-showcase::before {
+    /* @apply backdrop-filter backdrop-blur-sm; */
+
     content: "";
-
-    /* 16:9 aspect ratio */
-    padding-bottom: 70%;
-  }
-
-  /* Image is positioned absolutely relative to the parent element */
-  & .aspect-ratio-box img {
-    /* Image should match parent box size */
     position: absolute;
-    left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5)
   }
 
-  & .cover-wrapper {
-    @apply w-full relative;
 
-    & .title {
-      @apply text-left absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-30;
+  & .showcase {
+    & .main-details {
+      @apply w-full grid sm:w-4/5 grid-cols-3 gap-4 md:gap-6 lg:w-3/5 mx-auto;
 
-      & h1 {
-        @apply px-3 pt-1 pb-1 mb-0 font-extrabold;
+      & .detail {
+        @apply px-4 py-2 rounded-md text-right;
+
+        & h1, & h2 {
+          @apply mb-0;
+        }
+        
+        & h4 {
+          @apply leading-none mb-0;
+        }
+      }
+    }
+ 
+    & .property-details, & .association {
+      @apply w-full mb-6 text-base;
+
+      & p {
+        @apply my-0;
       }
 
-      & h3 {
-        @apply px-3 pb-2 leading-none p-2 float-left;
+      & table {
+        @apply w-full;
+
+        & th {
+          @apply font-bold p-2 border-b text-left;
+        }
+
+        & tr {
+          @apply border-b;
+        }
+
+        & td {
+          @apply px-2 py-1 mr-2;
+        }
       }
     }
 
-    & .subtitle {
-      @apply absolute text-right bottom-3 right-3 md:bottom-4 md:right-4 lg:bottom-5 lg:right-5 z-30;
+    & .walk-wrapper {
+      @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
+      z-index: 100; 
+    }
 
-      & h1 {
-        @apply px-3 pt-1 mb-0 font-extrabold;
-      }
+    & .walk-viewer {
+      @apply w-full h-full max-w-screen-lg;
+      max-height: 30rem;
+      z-index: 200;
+    }
 
-      & h3 {
-        @apply px-3 pb-2 leading-none p-2 float-right;
+    & .leave-neighborhood {
+      @apply absolute top-0 left-1/2 -ml-12 bg-red-800 rounded-b-md shadow px-2 py-1 flex items-center justify-center text-base;
+      z-index: 300;
+      color: #FFF !important;
+
+      & button {
+        color: #FFF !important;
       }
     }
   }
@@ -378,7 +399,6 @@ div.viewer-wrapper {
     @apply w-full lg:w-4/5 mx-auto;
   }
 
-  & .showcase, 
   & .tour {
     & .summary {
       @apply font-bold mx-auto my-6 lg:my-8 text-center w-4/5 md:w-3/4  text-xl md:text-2xl lg:text-3xl;
@@ -481,7 +501,7 @@ div.viewer-wrapper {
     }
   }
 
-  & video {
+    & video {
     @apply my-0;
   }
 
@@ -604,90 +624,6 @@ div.viewer-wrapper {
       }
     }
 
-    & .showcase-gallery {
-      @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
-
-      & .main-photo {
-        @apply relative col-span-3 row-span-2 lg:col-span-2 lg:row-span-3 w-full pt-2/3 rounded-lg bg-cover bg-center;
-
-        & .title {
-          @apply w-4/5 text-left absolute top-3 left-3 md:top-4 md:left-4 lg:top-5 lg:left-5 z-30;
-
-          & h3 {
-            @apply px-2 mb-0 leading-none py-1 inline-block;
-          }
-
-          & h1 {
-            @apply px-2 mb-0 clear-left inline-block;
-          }
-
-          & h2 {
-            @apply px-2 pb-0.5 mb-0 leading-none inline-block;
-          }
-        }
-      }
-
-      & .main-photo::before {
-        @apply rounded-lg;
-
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0.25)
-      }
-
-      & .main-photo:hover::before {
-        @apply rounded-lg;
-
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      & a.preview {
-        @apply block h-28 relative rounded-lg bg-cover bg-center lg:w-full lg:h-full;
-
-        & .icon {
-          @apply bg-bgray-800 bg-opacity-70 rounded-bl-md rounded-tr-lg absolute top-0 right-0 p-1.5;
-        }
-      }
-
-      & a.preview::before {
-        @apply rounded-lg;
-
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0.25)
-      }
-
-      & a.preview:hover::before {
-        @apply rounded-lg;
-
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      & img {
-        @apply my-0;
-      }
-    }
-
     & .subject-table {
       & table {
         @apply w-full;
@@ -714,51 +650,4 @@ div.viewer-wrapper {
       }
     }
   }
-}
-
-[contenteditable="false"]:focus {
-  outline: none;
-}
-
-[contenteditable="true"]:focus {
-  outline: none;
-}
-
-.panel-slidein {
-  @apply h-screen;
-
-  width: 95%;
-  position: fixed;
-  z-index: 2000;
-  top: 0;
-  right: -100%;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-  transition: all 0.5s ease-in-out;
-}
-
-#moreInfoPanel {
-  & a[href^="tel:"] {
-    color: tomato;
-  }
-
-  & a[href^="tel:"]:before {
-    content: "\260e";
-    margin-right: 0.5em;
-    color: tomato;
-  }
-
-  & a[href^="mailto:"]:before {
-    @apply text-cyan-600;
-    content: "\2709";
-    margin-right: 0.5em;
-  }
-}
-
-
-input.text-field {
-  @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
-}
-
-input.text-field:focus {
-  @apply outline-none focus:ring-1 focus:ring-offset-2;
 }

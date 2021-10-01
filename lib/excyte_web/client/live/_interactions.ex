@@ -10,8 +10,11 @@ defmodule ExcyteWeb.Client.Interactions do
       current_user: assigns.current_user,
       created_by: assigns.created_by,
       insight: assigns.insight,
-      show_comm: "init"
+      show_comm: false
     )}
+  end
+  def handle_event("toggle-comm", _, %{assigns: a} = socket) do
+    {:noreply, assign(socket, show_comm: !a.show_comm)}
   end
 
 end

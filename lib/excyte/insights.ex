@@ -10,6 +10,7 @@ defmodule Excyte.Insights do
   }
   alias Excyte.Insights.{
     Insight,
+    Section,
     DocumentTemplate,
     SectionTemplate
   }
@@ -47,6 +48,16 @@ defmodule Excyte.Insights do
     end
   end
 
+  def update_insight(_repo, _, %{created_by_id: uid, id: id} = attrs) do
+    ins = Repo.get_by(Insight, %{created_by_id: uid, id: id})
+    if ins do
+      Insight.changeset(ins, attrs)
+      |> Repo.update()
+    else
+      {:error, %{message: "Insight could not be found."}}
+    end
+  end
+
   def update_insight(uuid, uid, attrs) do
     ins = Repo.get_by(Insight, %{created_by_id: uid, uuid: uuid})
     if ins do
@@ -57,25 +68,24 @@ defmodule Excyte.Insights do
     end
   end
 
-  def create_document_template(attrs) do
-    %DocumentTemplate{}
-    |> DocumentTemplate.changeset(attrs)
-    |> Repo.insert()
+  def publish_insight(%{insight: ins, sections: secs}) do
+    Multi.new()
+    |> Multi.run(:insight, __MODULE__, :update_insight, [ins])
+    |> Multi.run(:create_sections, __MODULE__, :create_sections, [secs])
+    |> Repo.transaction()
   end
 
-  def create_section_template(attrs) do
-    %SectionTemplate{}
-    |> SectionTemplate.changeset(attrs)
-    |> Repo.insert()
-  end
+  def create_sections(_repo, %{insight: ins}, section_attrs) do
+    Enum.with_index(section_attrs)
+    |> Enum.reduce(Multi.new(), fn {attrs, idx}, multi ->
+      section_changeset =
+        %Section{}
+        |> Section.changeset(Map.merge(attrs, %{insight_id: ins.id}))
 
-  # def create_sections(_repo, %{update_insight: %{created_by_id: uid}}, sections_arr) do
-  #   sects=
-  #     Enum.map(sections_arr, fn s ->
-  #       create_section(Map.merge(s, %{created_by_id: uid}))
-  #     end)
-  #   {:ok, sects}
-  # end
+      Multi.insert(multi, {:section, idx}, section_changeset)
+    end)
+    |> Repo.transaction()
+  end
 
   # def create_section(attrs) do
   #   %Section{}
@@ -102,6 +112,18 @@ defmodule Excyte.Insights do
     profile.theme_settings
   end
 
+  def create_document_template(attrs) do
+    %DocumentTemplate{}
+    |> DocumentTemplate.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_section_template(attrs) do
+    %SectionTemplate{}
+    |> SectionTemplate.changeset(attrs)
+    |> Repo.insert()
+  end
+
   def get_document_templates(usr, type) do
     DocumentTemplate
     |> DocumentTemplate.by_type(type)
@@ -120,9 +142,17 @@ defmodule Excyte.Insights do
   end
 
   def get_published_insight(uuid) do
-    ins = Repo.get_by(Insight, %{uuid: uuid, published: true})
-          |> Repo.preload([:created_by])
-    {:ok, ins}
+    Multi.new()
+    |> Multi.run(:insight, fn _repo, _changes ->
+      case Repo.get_by(Insight, %{uuid: uuid, published: true})
+      |> Repo.preload([:property, :sections]) do
+        %Insight{} = ins -> {:ok, ins}
+        nil -> {:error, %{message: "No report found."}}
+      end
+    end)
+    |> Multi.run(:agent_profile, Agents, :get_agent_profile, [])
+    |> Multi.run(:brokerage, Brokerages, :get_brokerage_profile, [])
+    |> Repo.transaction()
   end
 
   def get_published_agent_insights(uid, type) do
@@ -131,12 +161,12 @@ defmodule Excyte.Insights do
 
   def get_full_insight(%{usr_id: uid, insight_id: insid}) do
     Multi.new()
-    |> Multi.run(:get_publishing_info, __MODULE__, :get_publish_insight, [%{usr_id: uid, insight_id: insid}])
+    |> Multi.run(:insight, __MODULE__, :get_initial_insight, [%{usr_id: uid, insight_id: insid}])
     |> Multi.run(:get_agent_info, Agents, :get_agent_profile, [])
     |> Multi.run(:setup_possible_brokerage, __MODULE__, :maybe_brokerage, [])
     |> Repo.transaction()
     |> case do
-      {:ok, %{get_publishing_info: gpi, get_agent_info: gai, setup_possible_brokerage: spb}} ->
+      {:ok, %{insight: gpi, get_agent_info: gai, setup_possible_brokerage: spb}} ->
         {:ok, %{insight: gpi, agent_profile: gai, brokerage: spb.brokerage, sections: spb.sections}}
       {:error, err} -> Activities.handle_errors(err, "Insights.get_full_insight")
     end
@@ -150,37 +180,19 @@ defmodule Excyte.Insights do
           agent_profile: ap,
           brokerage: bp
         }}
-        # pages = Enum.map(sections, fn st ->
-        #     section = Map.from_struct(st)
-        #     if section.component_name === "comparable" || section.component_name === "tour_stop" do
-        #       Map.merge(section, %{listings: ins.content.listings})
-        #     else
-        #       section
-        #     end
-        #   end)
-        #   |> Enum.sort(fn a, b -> a.position <= b.position end)
-        #   |> Enum.with_index()
-        #   |> Enum.map(fn {st, i} -> Map.merge(st, %{temp_id: i, enabled: true}) end)
-        # {:ok, %{
-        #   sections: pages,
-        #   data: %{
-        #     insight: Map.delete(ins, :saved_search),
-        #     agent_profile: ap,
-        #     brokerage: bp,
-        #     subject: ins.property
-        #   }
-        # }}
       {:error, err} -> {:error, %{error: err, message: "Oops something went wrong in the build."}}
     end
   end
 
-  def get_publish_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do
+  def get_initial_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do
     case Repo.get_by(Insight, %{created_by_id: uid, id: insid})
     |> Repo.preload([:property, document_template: :section_templates]) do
       %Insight{} = ins -> {:ok, ins}
       nil -> {:error, %{message: "Insight could not be found."}}
     end
   end
+
+
 
   def delete_insight(query_params) do
     ins = Repo.get_by(Insight, query_params)
@@ -189,7 +201,7 @@ defmodule Excyte.Insights do
     end
   end
 
-  def maybe_brokerage(_repo, %{get_publishing_info: insight}) do
+  def maybe_brokerage(_repo, %{insight: insight}) do
     if insight.brokerage_id do
       {:ok, %{
         brokerage: Brokerages.get_brokerage_profile(insight.brokerage_id),
@@ -203,16 +215,4 @@ defmodule Excyte.Insights do
     end
   end
 
-  defp sanitize_data(struct) do
-    if is_struct(struct) do
-      Enum.reduce(Map.from_struct(struct), %{}, fn
-        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
-        ({:__meta__, _}, acc) -> acc
-        ({k, v}, acc) -> Map.put(acc, k, v)
-      end)
-      |> Excyte.Utils.Methods.stringify_keys()
-    else
-      struct
-    end
-  end
 end

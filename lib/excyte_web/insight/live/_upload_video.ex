@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Insight.UploadVideo do
   use ExcyteWeb, :live_component
-  alias Excyte.{Assets}
+  alias Excyte.{Activities, Assets}
   alias ExcyteWeb.InsightView
 
   def render(assigns), do: InsightView.render("upload_video.html", assigns)

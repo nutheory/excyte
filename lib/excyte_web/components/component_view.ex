@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.ComponentView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/components/templates", path: ""]}
-  import Number.{Delimit, Phone}
+  import Number.{Delimit}
   alias ExcyteWeb.Components.{
-    Toggle
+    CalendarDay
   }
 end

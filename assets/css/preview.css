@@ -25,6 +25,10 @@ div.preview-wrapper {
     text-shadow: 3px 3px 4px #000;
   }
 
+  & .large-box-shadow {
+    box-shadow: 1px 1px 3px #666;
+  }
+
   & .showcase-gallery {
     @apply w-full grid lg:grid-flow-row lg:grid-cols-3 lg:grid-rows-3 gap-4;
 
@@ -114,7 +118,7 @@ div.preview-wrapper {
   }
 
   & .cover-showcase {
-    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center bg-fixed;
+    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center lg:bg-fixed;
 
     & a:link {
       color: #FFF !important;
@@ -136,12 +140,12 @@ div.preview-wrapper {
 
   & .showcase {
     & .main-details {
-      @apply w-full grid w-4/5 grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 lg:w-3/5 mx-auto;
+      @apply w-full grid sm:w-4/5 grid-cols-3 gap-4 md:gap-6 lg:w-3/5 mx-auto;
 
       & .detail {
         @apply px-4 py-2 rounded-md text-right;
 
-        & h1 {
+        & h1, & h2 {
           @apply mb-0;
         }
         
@@ -150,68 +154,49 @@ div.preview-wrapper {
         }
       }
     }
+ 
+    & .property-details, & .association {
+      @apply w-full mb-6 text-base;
 
-    & .info {
-      @apply flex flex-wrap mt-12 mx-auto;
-
-      & .extra-details {
-        @apply mx-auto flex w-full sm:flex-1 px-4 pt-2 mb-6;
-
-        & .extra-info {
-          @apply flex-1 grid grid-cols-2 px-2 gap-x-4 gap-y-1 h-0;
-
-          & p {
-            @apply my-0;
-          }
-
-          & .val p{
-            @apply font-extrabold text-lg md:text-xl lg:text-2xl text-right;
-          }
-
-          & .label p{
-            @apply text-base md:text-lg lg:pt-1;
-          }
-        }
-
-        & .extra-options {
-          @apply text-center w-36 flex items-center justify-center pl-6 pr-12;
-
-          & a {
-            @apply block text-center mx-auto;
-          }
-
-          & img {
-            @apply block w-16 mx-auto;
-          }
-        }
+      & p {
+        @apply my-0;
       }
 
-      & .association{
-        @apply  w-full sm:w-2/5 mb-6;
+      & table {
+        @apply w-full;
 
-        & p {
-          @apply my-0;
+        & th {
+          @apply font-bold p-2 border-b text-left;
         }
 
-        & table {
-          @apply w-full border-t;
+        & tr {
+          @apply border-b;
+        }
 
-          & th {
-            @apply font-bold p-2 border-b text-left;
-          }
+        & td {
+          @apply px-2 py-1 mr-2;
+        }
+      }
+    }
 
-          & tr {
-            @apply border-b;
-          }
+    & .walk-wrapper {
+      @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
+      z-index: 100; 
+    }
 
-          & td:nth-child(odd) {
-            @apply px-2 py-1 mr-2 text-base;
-          }
+    & .walk-viewer {
+      @apply w-full h-full max-w-screen-lg;
+      max-height: 30rem;
+      z-index: 200;
+    }
 
-          & td:nth-child(even) {
-            @apply px-2 py-1 ml-2 font-bold text-right;
-          }
-        }  
+    & .leave-neighborhood {
+      @apply absolute top-0 left-1/2 -ml-12 bg-red-800 rounded-b-md shadow px-2 py-1 flex items-center justify-center text-base;
+      z-index: 300;
+      color: #FFF !important;
+
+      & button {
+        color: #FFF !important;
       }
     }
   }

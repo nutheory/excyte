@@ -46,7 +46,6 @@ defmodule Excyte.Properties.PublicDataApi do
     with {:ok, %{body: body}} <- HTTPoison.get(url),
          {:ok, public_lst} <- fetch_public_listing(hd(Jason.decode!(body)["autocomplete"])),
          {:ok, merged_lst} <- merge_resolve(lst, public_lst) do
-      IO.inspect(merged_lst, label: "RES")
       {:ok, merged_lst}
     else
       _ -> {:ok, lst}
@@ -57,15 +56,16 @@ defmodule Excyte.Properties.PublicDataApi do
     case get("/properties/v2/detail", query: [property_id: lst["mpr_id"]]) do
       {:ok, %Tesla.Env{:body => %{"properties" => properties}}} -> {:ok, hd(properties)}
       {:error, err} ->
-        IO.inspect(err, label: "ERR")
+        # IO.inspect(err, label: "ERR")
         {:error, err}
       res ->
-        IO.inspect(res, label: "RES")
+        # IO.inspect(res, label: "RES")
         {:error, res}
     end
   end
 
   defp merge_resolve(lst, public) do
+    # IO.inspect(public, label: "PUBS")
     {:ok, Map.merge(lst, %{
       "foreign_id" => public["property_id"],
       "beds" => resolve_public(lst, public, "beds"),

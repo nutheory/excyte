@@ -52,6 +52,7 @@ defmodule ExcyteWeb.Insight.Customize do
         listings =
           with_listings(insight.content.listings, insight.type)
           |> with_public_data(insight.type)
+        # IO.inspect(listings, label: "BOOM4")
         {:noreply, assign(socket,
           sections: sections,
           insight: Map.update!(insight, :content, &Map.delete(&1, :listings)),
@@ -100,13 +101,14 @@ defmodule ExcyteWeb.Insight.Customize do
           id: a.insight.id,
           created_by_id: a.current_user.id,
           name: name,
-          cover_photo_url: needs_cover_photo?(a.insight),
+          cover_photo_url: needs_cover_photo?(a.insight.cover_photo_url, a.listings, a.insight.type),
           content: %{ listings: a.listings },
           published: true
         }, sections: publish_sections(a)}) do
           {:ok, pub} -> pub
           {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
       end
+    IO.inspect(published, label: "PUBBED")
     {:noreply,
       socket
       |> put_flash(:info, "#{Utilities.insight_type_to_name(published.type)} was created and published successfully.")
@@ -262,12 +264,25 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  defp needs_cover_photo?(ins) do
-    if ins.cover_photo_url === nil || ins.cover_photo_url === "" do
-      first = hd(ins.content.listings)
-      first["main_photo_url"]
+  defp needs_cover_photo?(cover_photo, listings, type) do
+    if type === "buyer_tour" do
+      key = Application.get_env(:excyte, :gcp_places)
+      init = "key=#{key}&size=640x640&scale=2&markers=color:red"
+      q = Enum.reduce(listings, init, fn lst, acc ->
+          acc <> "|#{hd(tl(lst["coords"]))}, #{hd(lst["coords"])}"
+        end)
+        |> URI.encode()
+      HTTPoison.get!("http://maps.googleapis.com/maps/api/staticmap?#{q}")
+      |> case do
+        {:ok, %HTTPoison.Response{body: body}} -> IO.inspect(body, label: "LABS")
+      end
     else
-      ins.cover_photo_url
+      if cover_photo === nil || cover_photo === "" do
+        first = hd(listings)
+        first["main_photo_url"]
+      else
+        cover_photo
+      end
     end
   end
 end

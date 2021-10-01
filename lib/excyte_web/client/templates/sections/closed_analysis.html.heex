@@ -2,7 +2,7 @@
   <h1 class="header-color">Closed Listings Analysis</h1>
   <p class="sub-header-color text-lg md:text-xl lg:text-2xl font-semibold mb-4">
   Overview and comparison of closed properties and their relevant information.</p>
-  <% closed = ClientFunctions.closed_analysis(@listings) %>
+  <% closed = Functions.closed_analysis(@listings) %>
   <canvas
     id="closed_listings_chart" 
     phx-hook="ClosedListingsChart" 

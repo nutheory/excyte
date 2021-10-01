@@ -23,6 +23,7 @@ import {InitGallery} from "./gallery"
 import {InitColorPicker} from "./theme"
 import {InitEditor} from "./editor"
 import {ClosedListingsChart} from "./closed_listings_chart"
+import {WalkNeighborhood} from "./walk_neighborhood"
 import {CustomizePreview} from "./customize_preview"
 // import {ClientViewer} from "./client_viewer"
 import {ImageEditor} from "./image_editor"
@@ -46,6 +47,7 @@ Hooks.ViewportResize = ViewportResize
 Hooks.InitEditor = InitEditor
 Hooks.CustomizePreview = CustomizePreview
 Hooks.ClosedListingsChart = ClosedListingsChart
+Hooks.WalkNeighborhood = WalkNeighborhood
 // Hooks.InitViewer = InitViewer
 Hooks.ImageEditor = ImageEditor
 Hooks.MuxUploader = MuxUploader

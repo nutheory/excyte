@@ -15,8 +15,12 @@ defmodule ExcyteWeb.Client.Components do
   def property_details(details, id) do
     assigns = %{details: details, id: id}
     ~H"""
-      <li class="">
-        <%= live_component Collapsable, id: "ld_#{@id}", class: "mb-6 w-full lg:w-4/5 mx-auto", title: "Property Details" do %>
+      <li class="border-b accent-color">
+        <%= live_component Collapsable,
+          id: "ld_#{@id}",
+          class: "mb-6 w-full lg:w-4/5 mx-auto",
+          title: "Property Details",
+          default_open: true do %>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sub-header-color">
             <%= for ld <- @details do %>
               <div class="">
@@ -44,13 +48,17 @@ defmodule ExcyteWeb.Client.Components do
   def property_features(features, id) do
     assigns = %{features: features, id: id}
     ~H"""
-      <li class="">
-        <%= live_component Collapsable, id: "feat_#{@id}", class: "mb-6 w-full lg:w-4/5 mx-auto", title: "Property Features" do %>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sub-header-color">
+      <li class="border-b accent-color">
+        <%= live_component Collapsable,
+          id: "feat_#{@id}",
+          class: "mb-6 w-full lg:w-4/5 mx-auto",
+          title: "Property Features",
+          default_open: true do %>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sub-header-color">
             <%= for feat <- @features do %>
-              <div class="block">
-                <h4 class="header-color mb-0"><%= feat["name"] %></h4>
-                <p class="text-lg md:text-xl font-semibold mb-4"><%= feat["human"] %></p>
+              <div class="block mb-2">
+                <p class="header-color text-base md:text-lg font-semibold"><%= feat["name"] %></p>
+                <p class="text-base md:text-lg"><%= feat["human"] %></p>
               </div>
             <% end %>
           </div>
@@ -59,15 +67,130 @@ defmodule ExcyteWeb.Client.Components do
     """
   end
 
-  def property_history() do
-
+  def property_price_history(price, id) do
+    assigns = %{price_history: price, id: id}
+    ~H"""
+      <li class="border-b accent-color">
+        <%= live_component Collapsable,
+          id: "ph_#{@id}",
+          class: "mb-6 w-full lg:w-4/5 mx-auto",
+          title: "Property History",
+          default_open: false do %>
+          <div class="overflow-x-scroll">
+            <table class="min-w-max w-full table-auto text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Date</th>
+                <th class="py-3 px-6 text-left">Event</th>
+                <th class="py-3 px-6 text-center">Price</th>
+                <th class="py-3 px-6 text-center">Price/Sq Ft</th>
+                <th class="py-3 px-6 text-left">Source</th>
+              </tr>
+              <%= for ph <- @price_history do %>
+                <% {:ok, dt} = NaiveDateTime.from_iso8601(ph["date"]) %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-6 text-left"><%= Calendar.strftime(dt, "%m/%d/%Y") %></td>
+                  <td class="py-3 px-6 text-left"><%= ph["event_name"] %></td>
+                  <td class="py-3 px-6 text-center"><%= if ph["price"], do: "$#{number_to_delimited(ph["price"], precision: 0)}", else: "-" %></td>
+                  <td class="py-3 px-6 text-center"><%= if ph["price"] && ph["sqft"], do: "$#{number_to_delimited(round(ph["price"]/ph["sqft"]), precision: 0)}", else: "-"  %></td>
+                  <td class="py-3 px-6 text-left"><%= ph["datasource_name"] %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </li>
+    """
   end
 
-  def schools() do
-
+  def property_tax_history(tax, id) do
+    assigns = %{tax_history: tax, id: id}
+    ~H"""
+      <li class="border-b accent-color">
+        <%= live_component Collapsable,
+          id: "th_#{@id}",
+          class: "mb-6 w-full lg:w-4/5 mx-auto",
+          title: "Tax History",
+          default_open: false do %>
+          <div class="overflow-y-scroll">
+            <table class="min-w-max w-full table-auto  text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Year</th>
+                <th class="py-3 px-6 text-center">Taxes</th>
+                <th class="py-3 px-6 text-center">Land</th>
+                <th class="py-3 px-6 text-center"></th>
+                <th class="py-3 px-6 text-center">Additions</th>
+                <th class="py-3 px-6 text-center"></th>
+                <th class="py-3 px-6 text-center">Total assessments</th>
+              </tr>
+              <%= for th <- @tax_history do %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-6 text-left"><%= if th["year"], do: th["year"], else: "N/A" %></td>
+                  <td class="py-3 px-6 text-center"><%= if th["tax"], do: "$#{number_to_delimited(th["tax"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["land"], do: "$#{number_to_delimited(th["assessment"]["land"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-6 text-center">+</td>
+                  <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["building"], do: "$#{number_to_delimited(th["assessment"]["building"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-6 text-center">=</td>
+                  <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["total"], do: "$#{number_to_delimited(th["assessment"]["total"], precision: 0)}", else: "N/A" %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </li>
+    """
   end
 
-
+  def schools(schools, id) do
+    assigns = %{schools: schools, id: id}
+    ~H"""
+      <li class="border-b accent-color">
+        <%= live_component Collapsable,
+          id: "sh_#{@id}",
+          class: "mb-6 w-full lg:w-4/5 mx-auto",
+          title: "Schools",
+          default_open: false do %>
+          <div class="overflow-y-scroll">
+            <table class="min-w-max w-full table-auto text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Rating</th>
+                <th class="py-3 px-6 text-left">School Name</th>
+                <th class="py-3 px-6 text-left">Grades</th>
+                <th class="py-3 px-6 text-left">Type</th>
+                <th class="py-3 px-6 text-left">Students</th>
+                <th>Reviews</th>
+                <th>Distance</th>
+              </tr>
+              <%= for sh <- @schools do %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-6 text-left"><%= if sh["ratings"]["great_schools_rating"], do: Phoenix.HTML.raw("<strong>#{sh["ratings"]["great_schools_rating"]}</strong>/10"), else: "N/A" %></td>
+                  <td class="py-3 px-6 text-left"><%= if sh["name"], do: sh["name"], else: "N/A" %></td>
+                  <% low = if sh["grades"] && sh["grades"]["range"] && sh["grades"]["range"]["low"], do: sh["grades"]["range"]["low"], else: "N/A" %>
+                  <% high = if sh["grades"] && sh["grades"]["range"] && sh["grades"]["range"]["high"], do: sh["grades"]["range"]["high"], else: "N/A" %>
+                  <td class="py-3 px-6 text-left"><%= low %> - <%= high %></td>
+                  <td class="py-3 px-6 text-left"><%= if sh["funding_type"], do: sh["funding_type"], else: "N/A" %></td>
+                  <td class="py-3 px-6 text-left"><%= if sh["student_count"], do: sh["student_count"], else: "N/A" %></td>
+                  <% stars = Enum.reduce(1..5, "", fn c, acc ->
+                    color = if c <= sh["ratings"]["parent_rating"], do: "#FCD34D", else: "#E5E5E5"
+                    acc =
+                      acc <> "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 block\" fill=\"#{color}\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">
+                          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z\" />
+                        </svg>"
+                    acc
+                  end) %>
+                  <td class="py-3 px-6 text-left">
+                    <div class="flex">
+                      <%= Phoenix.HTML.raw(stars) %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-6 text-left"><%= if sh["distance_in_miles"], do: "#{sh["distance_in_miles"]} mi", else: "N/A" %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
+      </li>
+    """
+  end
 
   def directions(lst) do
     assigns = %{loc: URI.encode("#{lst["street_number"]} #{lst["street_name"]}, #{lst["city"]}, #{lst["state"]}")}

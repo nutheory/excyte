@@ -20,7 +20,7 @@ export const CustomizePreview = {
 
 const buildTheme = (theme) => {
   const bgLight = setRGBAlpha(theme.background, 0.1)
-  let rule = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font}}`
+  let rule = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font}; border-color: ${theme.accent}}`
     rule += `div.preview-wrapper .bg-color {background-color: ${theme.background};}`
     rule += `div.preview-wrapper .bg-ex-gradient {background: linear-gradient(${setRGBAlpha(theme.background, 0)}, ${theme.background});}`
     rule += `div.preview-wrapper .header-color {color: ${theme.header_text};}`

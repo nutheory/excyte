@@ -23,7 +23,7 @@
         <%= for section <- @sections do %>
           <%= if section.enabled do %>
             <div class="section" id={section.component_name}>
-            <%= ClientFunctions.divider() %>
+            <%= Components.divider() %>
               <%= live_component @socket, TemplateRender,
                 current_user: @current_user,
                 brokerage: @data.brokerage,

@@ -16,6 +16,10 @@ defmodule ExcyteWeb.Client.TemplateRender do
     )}
   end
 
+  def handle_event("walk_nbrhd", %{"lat" => lat, "lng" => lng, "id" => id}, socket) do
+    {:noreply, push_event(socket, "load_neighborhood", %{coords: %{lat: lat, lng: lng}, id: id})}
+  end
+
   # defp sanitize_data(struct) do
   #   if is_struct(struct) do
   #     Enum.reduce(Map.from_struct(struct), %{}, fn

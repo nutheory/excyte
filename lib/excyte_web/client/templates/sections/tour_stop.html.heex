@@ -1,7 +1,7 @@
 <div>
   <%= for lst <- @listings do %>
     <%= if lst["excyte_data"]["enabled"] === true do %>
-      <%= ClientFunctions.divider() %>
+      <%= Components.divider() %>
       <div class="section tour" id={"tour_stop_#{lst["listing_id"]}"}>
         <%= if @current_user do %>
           <div class="adminBox">
@@ -20,7 +20,7 @@
           listing_id: lst["listing_id"],
           id: "media#{lst["listing_id"]}"
         %>
-        <p class="summary pt-4 sub-header-color mb-4"><%= ClientFunctions.summarize_showcase(lst) %></p>
+        <p class="summary pt-4 sub-header-color mb-4"><%= Components.summarize_showcase(lst) %></p>
         <%= if lst["public_remarks"] do %>
           <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4"><%= lst["public_remarks"] %></p>
         <% end %>
@@ -126,9 +126,9 @@
             </div>
             <div class="extra-options">
               <div>
-                <%= ClientFunctions.directions(lst) %>
-                <%= ClientFunctions.map_view(lst) %>
-                <%= ClientFunctions.explore_community(lst) %>
+                <%= Components.directions(lst) %>
+                <%= Components.map_view(lst) %>
+                <%= Components.explore_community(lst) %>
               </div>
             </div>
           </div>

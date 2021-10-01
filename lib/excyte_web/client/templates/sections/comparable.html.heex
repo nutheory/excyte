@@ -1,7 +1,7 @@
 <div>
   <%= for lst <- @listings do %>
     <%= if lst["excyte_data"]["enabled"] === true do %>
-      <%= ClientFunctions.divider() %>
+      <%= Components.divider() %>
       <div class="section comparable" id={"comparable_#{lst["listing_id"]}"}>
         <%= live_component @socket, ShowcaseGallery,
           media: lst["media"],
@@ -9,7 +9,7 @@
           id: "media#{lst["listing_id"]}"
         %>
         <p class="summary pt-4 mb-4 sub-header-color">
-          <%= ClientFunctions.summarize_sale_info(lst) %>
+          <%= Components.summarize_sale_info(lst) %>
         </p>
         <div class="main-details">
           <div class="detail">
@@ -91,7 +91,7 @@
             </div>
             <div class="extra-options">
               <div>
-                <%= ClientFunctions.map_view(lst) %>
+                <%= Components.map_view(lst) %>
               </div>
             </div>
           </div>

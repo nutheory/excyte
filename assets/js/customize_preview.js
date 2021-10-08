@@ -4,6 +4,11 @@ export const CustomizePreview = {
   mounted() {
     this.handleEvent("loadPreview", ({ content, theme }) => {
       setTimeout(() => {
+        const cover = this.el.querySelector("[data-index='0']")
+        const firstDivider = cover.querySelector(".divider")
+        if (firstDivider !== null){
+          firstDivider.remove()
+        }
         const styles = buildTheme(theme)
         addCss(styles)
         let lightbox = Glightbox({
@@ -12,7 +17,12 @@ export const CustomizePreview = {
           autoplayVideos: true,
           selector: ".glightbox"
         })
-      }, 500)
+      }, 0)
+    })
+
+    this.handleEvent("openAccordian", ({ button_id }) => {
+      const el = document.getElementById(`${button_id}`)
+      el.click()
     })
   },
   destroyed() {},
@@ -20,7 +30,7 @@ export const CustomizePreview = {
 
 const buildTheme = (theme) => {
   const bgLight = setRGBAlpha(theme.background, 0.1)
-  let rule = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font}; border-color: ${theme.accent}}`
+  let rule = `div.preview-wrapper {background-color: ${theme.background}; color: ${theme.sub_header_text}; font-family: ${theme.font};}`
     rule += `div.preview-wrapper .bg-color {background-color: ${theme.background};}`
     rule += `div.preview-wrapper .bg-ex-gradient {background: linear-gradient(${setRGBAlpha(theme.background, 0)}, ${theme.background});}`
     rule += `div.preview-wrapper .header-color {color: ${theme.header_text};}`

@@ -21,7 +21,7 @@ import {ViewportResize} from "./viewport_resize"
 import {InitSectionSortable, InitListingSortable} from "./sorting"
 import {InitGallery} from "./gallery"
 import {InitColorPicker} from "./theme"
-import {InitEditor} from "./editor"
+// import {InitEditor} from "./editor"
 import {ClosedListingsChart} from "./closed_listings_chart"
 import {WalkNeighborhood} from "./walk_neighborhood"
 import {CustomizePreview} from "./customize_preview"
@@ -44,7 +44,7 @@ Hooks.InitGallery = InitGallery
 Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
-Hooks.InitEditor = InitEditor
+// Hooks.InitEditor = InitEditor
 Hooks.CustomizePreview = CustomizePreview
 Hooks.ClosedListingsChart = ClosedListingsChart
 Hooks.WalkNeighborhood = WalkNeighborhood

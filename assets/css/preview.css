@@ -1,25 +1,13 @@
 div.preview-wrapper {
-  @apply w-full xl:w-4/5 max-w-screen-lg mb-8 lg:rounded-md;
+  @apply w-full xl:w-4/5 max-w-screen-lg mb-8;
 
-  /* & p {
-    @apply text-sm md:text-base lg:text-lg sm:leading-5 md:leading-6;
+  & .squeeze {
+    @apply mx-auto px-6 lg:px-8 max-w-3xl lg:max-w-4xl xl:max-w-5xl;
   }
 
-  & h1 {
-    @apply md:mb-2 text-2xl md:text-3xl lg:text-4xl font-extrabold;
+  & .bg-fade-to-black {
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
   }
-
-  & h2 {
-    @apply md:mb-2 text-xl md:text-2xl lg:text-3xl font-extrabold;
-  }
-
-  & h3 {
-    @apply md:mb-2 text-lg md:text-xl lg:text-2xl font-extrabold;
-  }
-
-  & h4 {
-    @apply md:mb-2 text-base md:text-lg lg:text-xl font-extrabold;
-  } */
 
   & .large-text-shadow {
     text-shadow: 3px 3px 4px #000;
@@ -27,6 +15,28 @@ div.preview-wrapper {
 
   & .large-box-shadow {
     box-shadow: 1px 1px 3px #666;
+  }
+
+  & .walk-wrapper {
+    @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
+    z-index: 100; 
+  
+    & .walk-viewer {
+      @apply w-full h-full max-w-screen-lg;
+      max-height: 30rem;
+      z-index: 200;
+    }
+
+    & .leave-neighborhood {
+      @apply absolute top-0 left-1/2 -ml-12 bg-red-800 rounded-b-md shadow px-2 py-1 flex items-center justify-center text-base;
+      z-index: 300;
+      color: #FFF !important;
+
+      & button {
+        color: #FFF !important;
+      }
+    }
+  
   }
 
   & .showcase-gallery {
@@ -113,19 +123,20 @@ div.preview-wrapper {
     }
   }
 
-  & .divider:first-child {
-    display: none;
-  }
+  & .cover {
+    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center;
 
-  & .cover-showcase {
-    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center lg:bg-fixed;
-
-    & a:link {
+    & a:link,
+    & button {
       color: #FFF !important;
+
+      & p {
+        color: #FFF !important;
+      }
     }
   }
 
-  & .cover-showcase::before {
+  & .cover::before {
     /* @apply backdrop-filter backdrop-blur-sm; */
 
     content: "";
@@ -137,10 +148,32 @@ div.preview-wrapper {
     background-color: rgba(0, 0, 0, 0.5)
   }
 
+  & .cover-buyer-tour {
+    @apply absolute top-0 left-0 right-0 h-screen w-full bg-cover bg-center;
 
-  & .showcase {
+    & a:link,
+    & button,
+    & button p {
+      color: #FFF !important;
+    }
+  }
+
+  & .cover-buyer-tour::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6)
+  }
+
+  & .showcase,
+  & .tour,
+  & .subject,
+  & .comparable {
     & .main-details {
-      @apply w-full grid sm:w-4/5 grid-cols-3 gap-4 md:gap-6 lg:w-3/5 mx-auto;
+      @apply grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 mx-auto;
 
       & .detail {
         @apply px-4 py-2 rounded-md text-right;
@@ -155,7 +188,8 @@ div.preview-wrapper {
       }
     }
  
-    & .property-details, & .association {
+    & .property-details, 
+    & .association {
       @apply w-full mb-6 text-base;
 
       & p {
@@ -178,154 +212,27 @@ div.preview-wrapper {
         }
       }
     }
-
-    & .walk-wrapper {
-      @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
-      z-index: 100; 
-    }
-
-    & .walk-viewer {
-      @apply w-full h-full max-w-screen-lg;
-      max-height: 30rem;
-      z-index: 200;
-    }
-
-    & .leave-neighborhood {
-      @apply absolute top-0 left-1/2 -ml-12 bg-red-800 rounded-b-md shadow px-2 py-1 flex items-center justify-center text-base;
-      z-index: 300;
-      color: #FFF !important;
-
-      & button {
-        color: #FFF !important;
-      }
-    }
-  }
-
-  & .whats-cma {
-    @apply w-full lg:w-4/5 mx-auto;
   }
 
   & .comparable {
-    & .summary {
-      @apply font-bold mx-auto my-6 lg:my-8 text-center w-4/5 md:w-3/4 lg:w-2/3 text-xl md:text-2xl lg:text-3xl;
-    }
+    & .adjustments {
+      & table {
+        @apply w-full border-t;
 
-    & .main-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h1 {
-          @apply mb-0;
-        }
-        
-        & h4 {
-          @apply leading-none;
-        }
-      }
-    }
-
-    & .info-adjustments {
-      @apply flex flex-wrap mt-12 mx-auto lg:w-4/5;
-
-      & .extra-details {
-        @apply mx-auto flex w-full sm:flex-1 px-4 pt-2 mb-6;
-
-        & .extra-info {
-          @apply grid grid-cols-2 px-2 gap-x-4 gap-y-1;
-
-          & p {
-            @apply my-0;
-          }
-
-          & .val p{
-            @apply font-extrabold text-lg md:text-xl lg:text-2xl text-right;
-          }
-
-          & .label p{
-            @apply text-base md:text-lg lg:pt-1;
-          }
+        & th {
+          @apply font-bold p-2 border-b text-left;
         }
 
-        & .extra-options {
-          @apply text-center flex-1 flex items-center justify-center px-6;
-
-          & a {
-            @apply block text-center mx-auto;
-          }
-
-          & img {
-            @apply block w-16 mx-auto;
-          }
-        }
-      }
-
-      & .adjustments {
-        @apply w-full sm:w-2/5 mb-6;
-
-        & p {
-          @apply my-0;
+        & tr {
+          @apply border-b;
         }
 
-        & table {
-          @apply w-full border-t;
-
-          & th {
-            @apply font-bold p-2 border-b text-left;
-          }
-
-          & tr {
-            @apply border-b;
-          }
-
-          & td:nth-child(odd) {
-            @apply px-2 py-1 mr-2 text-base;
-          }
-
-          & td:nth-child(even) {
-            @apply px-2 py-1 ml-2 font-bold text-right;
-          }
+        & td:nth-child(odd) {
+          @apply px-2 py-1 mr-2 text-base;
         }
-      }
 
-      & .footer {
-        @apply w-full text-right;
-      }
-    }
-  }
-
-  & .subject {
-    @apply w-full lg:w-4/5 mx-auto;
-
-    & .main-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h1 {
-          @apply mb-0;
-        }
-        
-        & h4 {
-          @apply leading-none;
-        }
-      }
-    }
-
-    & .sub-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h2 {
-          @apply mb-0;
-        }
-        
-        & h4 {
-          @apply leading-none;
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold text-right;
         }
       }
     }
@@ -381,9 +288,6 @@ div.preview-wrapper {
   }
 
   & .suggested-price {
-    @apply w-full lg:w-4/5 mx-auto;
-
-
     & h1.price-value {
       @apply md:mb-2 text-3xl md:text-4xl lg:text-5xl font-extrabold;
     }
@@ -395,113 +299,7 @@ div.preview-wrapper {
     }
   }
 
-  & .pricing {
-    @apply w-full lg:w-4/5 mx-auto;
-  }
-
-  & .tour {
-    & .summary {
-      @apply font-bold mx-auto my-6 lg:my-8 text-center w-4/5 md:w-3/4  text-xl md:text-2xl lg:text-3xl;
-    }
-
-    & .main-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h1 {
-          @apply mb-0;
-        }
-        
-        & h4 {
-          @apply leading-none;
-        }
-      }
-    }
-
-    & .sub-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h2 {
-          @apply mb-0 text-center;
-        }
-        
-        & h4 {
-          @apply leading-none;
-        }
-      }
-    }
-
-    & .info {
-      @apply flex flex-wrap mt-12 mx-auto;
-
-      & .extra-details {
-        @apply mx-auto flex w-full sm:flex-1 px-4 pt-2 mb-6;
-
-        & .extra-info {
-          @apply flex-1 grid grid-cols-2 px-2 gap-x-4 gap-y-1 h-0;
-
-          & p {
-            @apply my-0;
-          }
-
-          & .val p{
-            @apply font-extrabold text-lg md:text-xl lg:text-2xl text-right;
-          }
-
-          & .label p{
-            @apply text-base md:text-lg lg:pt-1;
-          }
-        }
-
-        & .extra-options {
-          @apply text-center w-36 flex items-center justify-center pl-6 pr-12;
-
-          & a {
-            @apply block text-center mx-auto;
-          }
-
-          & img {
-            @apply block w-16 mx-auto;
-          }
-        }
-      }
-
-      & .association{
-        @apply  w-full sm:w-2/5 mb-6;
-
-        & p {
-            @apply my-0;
-          }
-
-        & table {
-          @apply w-full border-t;
-
-          & th {
-            @apply font-bold p-2 border-b text-left;
-          }
-
-          & tr {
-            @apply border-b;
-          }
-
-          & td:nth-child(odd) {
-            @apply px-2 py-1 mr-2 text-base;
-          }
-
-          & td:nth-child(even) {
-            @apply px-2 py-1 ml-2 font-bold text-right;
-          }
-        }  
-      }
-    }
-  }
-
-    & video {
+  & video {
     @apply my-0;
   }
 
@@ -514,7 +312,6 @@ div.preview-wrapper {
   }
 
   & .section {
-    @apply py-16 lg:py-24;
 
     & .data-grid {
       @apply grid grid-cols-1 lg:grid-cols-3 gap-6;

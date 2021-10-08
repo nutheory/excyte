@@ -21,8 +21,13 @@ module.exports = {
       white: "#FFFFFF",
     },
     extend: {
+      blur: {
+        xs: '2px',
+      },
       height: {
         '18': '4.5rem',
+        'scr-1/2': '50vh',
+        'scr-3/4': '75vh',
       },
       fontSize: {
         'tiny': '.65rem',

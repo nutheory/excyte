@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Components.ShowcaseGallery do
   def render(assigns), do: ComponentView.render("showcase_gallery.html", assigns)
 
   def update(assigns, socket) do
-    media = Enum.filter(assigns.media, fn m -> m["Disabled"] !== true end)
+    media = assigns.media
     groups = Enum.split(media, 4)
     {:ok, assign(socket,
       main: hd(elem(groups, 0)),

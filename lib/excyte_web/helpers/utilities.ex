@@ -309,7 +309,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def sqft_to_acres(sqft) do
-    Float.round(sqft/43560, 2)
+    if sqft, do: Float.round(sqft/43560, 2), else: ""
   end
 
   def format_str_json(body) do

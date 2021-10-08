@@ -1,25 +1,45 @@
-<div class="cover-wrapper">
+<div class="relative" data-display-type="full_width">
   <% subject = @insight.property %>
-  <div class="title">
-    <h1 class="bg-color sub-header-color bg-opacity-50">Comparative</h1>
-    <h3 class="bg-color header-color">Market Analysis</h3>
+  <div 
+    class="cover z-0 lg:bg-fixed"
+    style={"background-image: url(#{@insight.cover_photo_url})"}
+  >
+    <div class="bg-fade-to-black absolute bottom-0 left-0 right-0 h-56 z-20"></div>
   </div>
-  <div class="subtitle header-color">
-    <h1 class="bg-color bg-opacity-50">
-      <%= if subject.street_number do %>
-        <%= subject.street_number %>
-      <% end %>
-      <%= if subject.street_name do %>
-        <%= subject.street_name %>
-      <% end %>
-    </h1>
-    <h3 class="bg-color sub-header-color">prepared by <%= @agent.name %></h3>
-  </div>
-  <%= if subject.main_photo_url do %>
-    <div
-      class="rounded-md pb-2/3 mx-auto bg-cover bg-center"
-      style={"background-image: url(#{subject.main_photo_url});"}>
+  <div class="flex items-center h-screen relative z-30 text-white w-4/5 md:w-3/5 max-w-6xl mx-auto large-text-shadow">
+    <div class="w-full -mt-12 mx-6">
+      <div class="flex">
+        <div class="">
+          <p class="text-xl italic font-black">Comparative Market Analysis for...</p> 
+          <h1 class="text-4xl md:text-5xl mb-0">
+            <%= subject.street_number %> <%= subject.street_name %>
+            <%= if subject.unit, do: ", unit ##{subject.unit}", else: "" %>
+          </h1>
+          <h3 class="text-right"><%= subject.city %>, <%= subject.state %></h3>
+        </div>
+      </div>
+      <div class="flex">
+        <div class="flex-1"></div>
+        <div class="flex mt-6">
+          <div class="mr-4 flex mt-2 items-center text-right">
+            <div>
+              <p class="">Created by</p>
+              <h3 class="mt-0">Derek Rush</h3>
+            </div>
+          </div>
+          <div class="">
+            <%= if @agent.photo_url do %>
+              <div class="ex-shadow text-lg rounded-lg flex items-center justify-center font-bold border-4 uppercase w-16 h-16 avatar">
+                <div 
+                  class="rounded w-full h-full bg-cover" 
+                  style={"background-image: url(#{@agent.photo_url});"}
+                >
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
-  <% end %>
-  <div class="absolute rounded-md top-0 left-0 right-0 bottom-0 h-full bg-gray-900 bg-opacity-40"></div>
+  </div>
 </div>

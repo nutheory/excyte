@@ -1,6 +1,10 @@
 defmodule ExcyteWeb.Client.Viewer do
   use ExcyteWeb, :live_client_view
-  alias Excyte.{Insights, Accounts, Agents, Brokerages}
+  alias Excyte.{
+    Insights,
+    Accounts,
+    Properties.PublicDataApi
+  }
   alias ExcyteWeb.{ ClientView}
 
   @impl true
@@ -13,6 +17,7 @@ defmodule ExcyteWeb.Client.Viewer do
       {:ok, res} ->
         sections = Enum.sort(res.insight.sections, fn a, b -> a.position <= b.position end)
         insight = merge_theme(res)
+        send self(), {:load_view, %{}}
         {:ok, assign(socket,
           current_user: cu,
           sections: sections,
@@ -32,15 +37,32 @@ defmodule ExcyteWeb.Client.Viewer do
   end
 
   @impl true
-  def handle_info({:load_view, %{sections: sections}}, %{assigns: a} = socket) do
+  def handle_info({:load_view, %{}}, %{assigns: a} = socket) do
     IO.inspect(label: "run after waking up")
     {:noreply, push_event(socket, "loadViewer", %{
-      content: sections,
+      # content: a.sections,
       theme: a.theme,
       authorized_agent: (if a.current_user, do: true, else: false),
-      agent: a.agent_profile,
-      brokerage: a.brokerage_profile
+      agent: a.data.agent_profile,
+      brokerage: a.data.brokerage
     })}
+  end
+
+  def handle_info({:public_listing_info, %{lst_id: lst_id, c_id: c_id}}, %{assigns: a} = socket) do
+    listings =
+      Enum.map(a.listings, fn lst ->
+        if lst["listing_id"] === lst_id do
+          case PublicDataApi.merge_public_data(lst) do
+            {:ok, with_public} ->
+              with_public
+            err -> IO.inspect(err, label: "PUBLIC ERR")
+          end
+        else
+          lst
+        end
+      end)
+    {:noreply, push_event(socket, "openAccordian", %{button_id: "btn_#{c_id}"})
+               |> assign(listings: listings)}
   end
 
   @impl true

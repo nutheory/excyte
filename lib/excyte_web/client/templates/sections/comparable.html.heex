@@ -1,201 +1,281 @@
 <div>
   <%= for lst <- @listings do %>
     <%= if lst["excyte_data"]["enabled"] === true do %>
-      <%= Components.divider() %>
-      <div class="section comparable" id={"comparable_#{lst["listing_id"]}"}>
-        <%= live_component @socket, ShowcaseGallery,
-          media: lst["media"],
-          listing_id: lst["listing_id"],
-          id: "media#{lst["listing_id"]}"
-        %>
-        <p class="summary pt-4 mb-4 sub-header-color">
-          <%= Components.summarize_sale_info(lst) %>
-        </p>
-        <div class="main-details">
-          <div class="detail">
-            <h1 class="header-color">
-              <%= if lst["sqft"] do %>
-                <%= number_to_delimited(lst["sqft"], precision: 0) %>
-              <% else %>
-                N/A
-              <% end %>
-            </h1>
-            <h4 class="sub-header-color">Sqft</h4>
-          </div>
-          <div class="flex-1"></div>
-          <div class="detail">
-            <h1 class="header-color">
-              <%= if lst["lotsize_preference"] == "sqft" do %>
-                <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
-              <% else %>
-                <%= Utilities.sqft_to_acres(lst["lotsize_sqft"]) %>
-              <% end %>
-            </h1>
-            <h4 class="sub-header-color">Lot <%= String.capitalize(lst["lotsize_preference"]) %></h4>
-          </div>
-          <div class="flex-1"></div>
-          <div class="detail">
-            <h1 class="header-color">
-              <%= if lst["year_built"] do %>
-                <%= lst["year_built"] %>
-              <% else %>
-                N/A
-              <% end %>
-            </h1>
-            <h4 class="sub-header-color">Built</h4>
+      <div 
+        class="comparable relative px-4 sm:px-6 lg:px-8 pb-16 lg:pb-20" 
+        id={"comparable_#{lst["listing_id"]}"} 
+        data-display-type="mixed"
+      >
+        <div 
+          class="cover z-0 lg:bg-fixed"
+          style={"background-image: url(#{lst["main_photo_url"]})"}>
+          <div class="bg-ex-gradient absolute bottom-0 left-0 right-0 h-56 z-20"></div>
+        </div>
+        <div class="flex items-center h-screen relative z-30 text-white md:w-4/5 md:w-3/5 max-w-6xl mx-auto large-text-shadow">
+          <div class="relative w-full -mt-8 mx-6">
+            <div class="flex">
+              <div class="">
+                <p class="text-xl italic font-black">Comparable Listing...<span></span></p> 
+                <h1 class="text-4xl md:text-5xl mb-0">
+                  <%= lst["street_number"] %> 
+                  <%= lst["street_name"] %> 
+                  <%= if lst["unit"], do: ", unit ##{lst["unit"]}", else: "" %>
+                </h1>
+                <h3 class="text-right"><%= lst["city"] %>, <%= lst["state"] %></h3>
+              </div>
+              <div class="flex-1"></div>
+            </div>
+            <div class="flex flex-wrap mt-8">
+              <div class="flex-1 mr-8">
+                <%= Components.summarize_sale_info(lst) %>
+              </div>
+                <%= Components.map_view(lst) %>
+            </div>
           </div>
         </div>
-        <div class="info-adjustments">
-          <div class="extra-details">
-            <div class="extra-info">
-              <div class="val header-color">
-                <%= if lst["beds"] do %>
-                  <%= lst["beds"] %>
-                <% else %>
-                  N/A
-                <% end %>
+        <div class="squeeze">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            <div class="md:col-span-2 px-4 my-4">
+              <div class="main-details">
+                <div class="detail large-box-shadow">
+                  <h1 class="header-color">
+                    <%= if lst["sqft"] do %>
+                      <%= number_to_delimited(lst["sqft"], precision: 0) %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Sqft</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h1 class="header-color">
+                    <%= if lst["lotsize_preference"] == "sqft" do %>
+                      <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
+                    <% else %>
+                      <%= if lst["lotsize_sqft"], do: Utilities.sqft_to_acres(lst["lotsize_sqft"]), else: "" %>
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Lot <%= String.capitalize("sqft") %></h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h1 class="header-color">
+                    <%= if lst["year_built"] do %>
+                      <%= lst["year_built"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Built</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["beds"] do %>
+                      <%= lst["beds"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Beds</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["baths"] && lst["baths"]["total"] do %>
+                      <%= lst["baths"]["total"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Baths</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["stories"] do %>
+                      <%= lst["stories"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Stories</h4>
+                </div>
               </div>
-              <div class="label sub-header-color">Beds</div>
-              <div class="val header-color">
-                <%= if lst["baths"] && lst["baths"]["total"] do %>
-                  <%= lst["baths"]["total"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </div>
-              <div class="label sub-header-color">Baths</div>
-              <div class="val header-color">
-                <%= if lst["stories"] do %>
-                  <%= lst["stories"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </div>
-              <div class="label sub-header-color">Stories</div>
-              <div class="val header-color">
-                <%= lst["parking"]["type"] %>
-                <%= if lst["parking"]["spaces"] == "N/A" do %>
-                <% else %>
-                  (<%= lst["parking"]["spaces"] %>)
-                <% end %>
-              </div>
-              <div class="label sub-header-color">Parking</div>
-              <div class="val header-color">
-                <%= if lst["property_sub_type"] do %>
-                  <%= lst["property_sub_type"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </div>
-              <div class="label sub-header-color">Sub-Type</div>
             </div>
-            <div class="extra-options">
-              <div>
-                <%= Components.map_view(lst) %>
+            <div class="px-4">
+              <div class="property-details my-4">
+                <div class="flex">
+                  <h4 class="mb-0 px-2 flex items-end">Details</h4>
+                  <div class="flex-1 text-right pb-1 ml-4">
+                    <p class="px-2 text-sm leading-tight"><%= lst["street_number"] %> <%= lst["street_name"] %> <%= if lst["unit"], do: ", unit ##{lst["unit"]}", else: "" %></p>
+                    <p class="px-2 text-sm leading-tight"><%= lst["city"] %> <%= lst["state"] %> <%= lst["zip"] %></p>
+                  </div>
+                </div>
+                <table class="border-t accent-color">
+                  <tbody>
+                    <tr class="accent-color">
+                      <td>Parking</td>
+                      <td class="text-right">
+                        <%= lst["parking"]["type"] %>
+                        <%= if lst["parking"]["spaces"] == "N/A" do %>
+                        <% else %>
+                          (<%= lst["parking"]["spaces"] %>)
+                        <% end %>
+                      </td>
+                    </tr>
+                    <tr class="accent-color">
+                      <td>Sub-Type</td>
+                      <td class="text-right">
+                        <%= if lst["property_sub_type"] do %>
+                          <%= lst["property_sub_type"] %>
+                        <% else %>
+                          N/A
+                        <% end %>
+                      </td>
+                    </tr>
+                    <%= if lst["list_price"] && lst["sqft"] do %>
+                      <tr class="accent-color">
+                        <td>Price Per Sqft</td>
+                        <td class="text-right">$<%= number_to_delimited(round(lst["list_price"]/lst["sqft"]), precision: 0) %></td>
+                      </tr>
+                    <% end %>
+                    <%= if lst["days_on_market"] do %>
+                      <tr class="accent-color">
+                        <td>Days on Market</td>
+                        <td class="text-right"><%= lst["days_on_market"] %></td>
+                      </tr>
+                    <% end %>
+                    <%= if lst["county"] do %>
+                      <tr class="accent-color">
+                        <td>County</td>
+                        <td class="text-right"><%= lst["county"] %></td>
+                      </tr>
+                    <% end %>
+                    <%= if lst["walkscore"] do %>
+                      <tr class="accent-color">
+                        <td>Walkscore</td>
+                        <td class="text-right"><%= lst["walkscore"] %></td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div class="adjustments sub-header-color">
-            <h4 class="mb-0">Adjustment considerations</h4>
-            <p class="mb-4">Summary of differentiating attributes</p>
-            <table>
-              <tbody>
-                <%= if lst["close_price"] do %>
-                  <tr>
-                    <td>Closed</td>
-                    <td><strong>$<%= number_to_delimited(lst["close_price"], precision: 0) %></strong></td>
-                  </tr>
-                <% else %>
-                  <%= if lst["list_price"] do %>
-                    <tr>
-                      <td>Listed</td>
-                      <td><strong>$<%= number_to_delimited(lst["list_price"], precision: 0) %></strong></td>
+          <%= live_component @socket, ShowcaseGallery,
+            media: lst["media"],
+            listing_id: lst["listing_id"],
+            id: "media#{lst["listing_id"]}"
+          %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:w-4/5 my-8 mx-auto">
+            <div class="adjustments">
+              <h4 class="mb-0">Adjustment considerations</h4>
+              <p class="mb-4">Summary of differentiating attributes</p>
+              <table class="accent-color">
+                <tbody>
+                  <%= if lst["close_price"] do %>
+                    <tr class="accent-color">
+                      <td>Closed</td>
+                      <td><strong>$<%= number_to_delimited(lst["close_price"], precision: 0) %></strong></td>
+                    </tr>
+                  <% else %>
+                    <%= if lst["list_price"] do %>
+                      <tr class="accent-color">
+                        <td>Listed</td>
+                        <td><strong>$<%= number_to_delimited(lst["list_price"], precision: 0) %></strong></td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                  <%= if lst["adjustments"]["sqft"] do %>
+                    <tr class="accent-color">
+                      <td>Sqft</td>
+                      <td>
+                        <%= if lst["adjustments"]["sqft"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["sqft"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["sqft"]["difference"] %>
+                        <% end %>
+                      </td>
                     </tr>
                   <% end %>
-                <% end %>
-                <%= if lst["adjustments"]["sqft"] do %>
-                  <tr>
-                    <td>Sqft</td>
-                    <td>
-                      <%= if lst["adjustments"]["sqft"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["sqft"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["sqft"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["adjustments"]["lotsize"] do %>
-                  <tr>
-                    <td>Lotsize</td>
-                    <td>
-                      <%= if lst["adjustments"]["lotsize"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["lotsize"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["lotsize"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["adjustments"]["beds"] do %>
-                  <tr>
-                    <td>Beds</td>
-                    <td>
-                      <%= if lst["adjustments"]["beds"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["beds"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["beds"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["adjustments"]["baths"] do %>
-                  <tr>
-                    <td>Baths</td>
-                    <td>
-                      <%= if lst["adjustments"]["baths"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["baths"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["baths"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["adjustments"]["stories"] do %>
-                  <tr>
-                    <td>Stories</td>
-                    <td>
-                      <%= if lst["adjustments"]["stories"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["stories"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["stories"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["adjustments"]["year_built"] do %>
-                  <tr>
-                    <td>Year built</td>
-                    <td>
-                      <%= if lst["adjustments"]["year_built"]["difference"] < 0 do %>
-                        + <%= lst["adjustments"]["year_built"]["difference"] * -1 %>
-                      <% else %>
-                        - <%= lst["adjustments"]["year_built"]["difference"] %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= for adj <- lst["custom_adjustments"] do %>
-                  <tr>
-                    <td class="text-left"><%= adj["name"] %></td>
-                    <td class="value">$<%= adj["display_value"] %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-          <div class="footer sub-header-color">
-            <h1>Adjusted value <span class="header-color">$<%= number_to_delimited(lst["excyte_price"], precision: 0) %></span></h1>
+                  <%= if lst["adjustments"]["lotsize"] do %>
+                    <tr class="accent-color">
+                      <td>Lotsize</td>
+                      <td>
+                        <%= if lst["adjustments"]["lotsize"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["lotsize"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["lotsize"]["difference"] %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["adjustments"]["beds"] do %>
+                    <tr class="accent-color">
+                      <td>Beds</td>
+                      <td>
+                        <%= if lst["adjustments"]["beds"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["beds"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["beds"]["difference"] %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["adjustments"]["baths"] do %>
+                    <tr class="accent-color">
+                      <td>Baths</td>
+                      <td>
+                        <%= if lst["adjustments"]["baths"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["baths"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["baths"]["difference"] %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["adjustments"]["stories"] do %>
+                    <tr class="accent-color">
+                      <td>Stories</td>
+                      <td>
+                        <%= if lst["adjustments"]["stories"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["stories"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["stories"]["difference"] %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["adjustments"]["year_built"] do %>
+                    <tr class="accent-color">
+                      <td>Year built</td>
+                      <td>
+                        <%= if lst["adjustments"]["year_built"]["difference"] < 0 do %>
+                          + <%= lst["adjustments"]["year_built"]["difference"] * -1 %>
+                        <% else %>
+                          - <%= lst["adjustments"]["year_built"]["difference"] %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <% IO.inspect(lst["custom_adjustments"], label: "gdfcfdhfdh") %>
+                  <%= for adj <- lst["custom_adjustments"] do %>
+                    <tr class="accent-color">
+                      <td class="text-left"><%= adj["name"] %></td>
+                      <td class="value">$<%= adj["value"] %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <div class="flex items-end">
+              <div class="">
+                <div class="border-b accent-color pb-2 mb-2">
+                  <h2 class="header-color mb-0">Adjusted value</h2>
+                  <p class="text-lg md:text-xl font-semibold">
+                    This value reflects the not only the considerations listed, but also 
+                    current market trends and inventory.</p>
+                </div>
+                <h1 class="header-color text-right mb-0">$<%= number_to_delimited(lst["excyte_price"], precision: 0) %></h1>
+              </div>
+            </div>
           </div>
         </div>
       </div>

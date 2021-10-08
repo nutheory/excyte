@@ -43,29 +43,46 @@ defmodule Excyte.Properties.PublicDataApi do
   def merge_public_data(lst) do
     addr = "#{lst["street_number"]} #{lst["street_name"]} #{lst["city"]} #{lst["state"]} #{lst["zip"]}"
     url = "https://parser-external.geo.moveaws.com/suggest?client_id=rdc-x&input=#{URI.encode(addr)}"
-    with {:ok, %{body: body}} <- HTTPoison.get(url),
-         {:ok, public_lst} <- fetch_public_listing(hd(Jason.decode!(body)["autocomplete"])),
+    with {:ok, %{body: response_body}} <- HTTPoison.get(url),
+         {:ok, fvr} <- first_valid_response(response_body),
+         {:ok, public_lst} <- fetch_public_listing(fvr),
          {:ok, merged_lst} <- merge_resolve(lst, public_lst) do
       {:ok, merged_lst}
     else
-      _ -> {:ok, lst}
+      _ -> {:ok, {:ok, Map.merge(lst, %{
+          "public_data" => %{
+            "schools" => "Could not find any information.",
+            "property_history" => "Could not find any information.",
+            "sold_history" => "Could not find any information.",
+            "tax_history" => "Could not find any information."
+            }}
+         )}}
     end
   end
 
-  defp fetch_public_listing(lst) do
-    case get("/properties/v2/detail", query: [property_id: lst["mpr_id"]]) do
+  def first_valid_response(response_body) do
+    results_arr = Jason.decode!(response_body)["autocomplete"]
+    Enum.find(results_arr, nil, fn res -> Map.has_key?(res, "mpr_id") end)
+    |> case do
+      %{} = best_result -> {:ok, best_result["mpr_id"]}
+      nil -> nil
+    end
+    |> IO.inspect(label: "FVR")
+  end
+
+  defp fetch_public_listing(valid_id) do
+    case get("/properties/v2/detail", query: [property_id: valid_id]) do
       {:ok, %Tesla.Env{:body => %{"properties" => properties}}} -> {:ok, hd(properties)}
       {:error, err} ->
-        # IO.inspect(err, label: "ERR")
+        IO.inspect(err, label: "ERR")
         {:error, err}
       res ->
-        # IO.inspect(res, label: "RES")
+        IO.inspect(res, label: "RES")
         {:error, res}
     end
   end
 
   defp merge_resolve(lst, public) do
-    # IO.inspect(public, label: "PUBS")
     {:ok, Map.merge(lst, %{
       "foreign_id" => public["property_id"],
       "beds" => resolve_public(lst, public, "beds"),
@@ -90,7 +107,7 @@ defmodule Excyte.Properties.PublicDataApi do
     cond do
       lst[attr] -> lst[attr]
       public[attr] -> public[attr]
-      hd(public["public_records"])[attr] -> hd(public["public_records"])[attr]
+      is_list(public["public_records"]) && hd(public["public_records"])[attr] -> hd(public["public_records"])[attr]
       true -> "N/A"
     end
   end
@@ -99,7 +116,7 @@ defmodule Excyte.Properties.PublicDataApi do
     cond do
       lst["baths"]["total"] -> lst["baths"]["total"]
       public["baths"] -> public["baths"]
-      hd(public["public_records"])["baths"] -> hd(public["public_records"])["baths"]
+      is_list(public["public_records"]) && hd(public["public_records"])["baths"] -> hd(public["public_records"])["baths"]
       true -> "N/A"
     end
   end
@@ -177,3 +194,33 @@ defmodule Excyte.Properties.PublicDataApi do
     round(acres * 43560)
   end
 end
+
+
+# RES: {:ok,
+#  %Tesla.Env{
+#    __client__: %Tesla.Client{adapter: nil, fun: nil, post: [], pre: []},
+#    __module__: Excyte.Properties.PublicDataApi,
+#    body: "400 - Bad Request",
+#    headers: [
+#      {"access-control-allow-credentials", "true"},
+#      {"access-control-allow-headers", "ver"},
+#      {"access-control-allow-methods", "GET, POST"},
+#      {"access-control-allow-origin", "*"},
+#      {"cache-control", "must-revalidate,no-cache,no-store"},
+#      {"content-type", "text/html; charset=ISO-8859-1"},
+#      {"date", "Thu, 07 Oct 2021 16:38:24 GMT"},
+#      {"server", "RapidAPI-1.2.8"},
+#      {"x-rapidapi-region", "AWS - us-west-2"},
+#      {"x-rapidapi-version", "1.2.8"},
+#      {"x-ratelimit-requests-limit", "10000"},
+#      {"x-ratelimit-requests-remaining", "9700"},
+#      {"x-ratelimit-requests-reset", "2467586"},
+#      {"content-length", "17"},
+#      {"connection", "keep-alive"}
+#    ],
+#    method: :get,
+#    opts: [],
+#    query: [property_id: nil],
+#    status: 400,
+#    url: "https://realty-in-us.p.rapidapi.com/properties/v2/detail"
+#  }}

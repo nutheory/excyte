@@ -32,16 +32,11 @@ export const ClientViewer = {
 
 const killDivs = (els) => {
   const divs = Array.from(els)
-  console.log("KILL", divs)
   divs.forEach(el => {
     const parent = el.closest('.section')
     const prev = parent.previousElementSibling.children[0]
-    console.log("PREV", prev.dataset.displayType)
     if (prev.dataset.displayType === "full_width") {
-      console.log("DIVVY", el)
-      if (el) {
-        el.remove()
-      }
+      el.remove()
     }
   })
 }

@@ -38,7 +38,7 @@ defmodule Excyte.Insights.Insight do
     embeds_one(:document_attributes, Theme, on_replace: :delete)
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
     has_one(:property, Property, foreign_key: :insight_id)
-    has_many(:sections, Section)
+    has_many(:sections, Section, on_delete: :delete_all)
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)

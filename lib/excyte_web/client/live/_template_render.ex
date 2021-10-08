@@ -12,6 +12,8 @@ defmodule ExcyteWeb.Client.TemplateRender do
       brokerage: assigns.brokerage,
       agent: assigns.agent,
       insight: assigns.insight,
+      index: assigns.index,
+      is_live: assigns.is_live || false,
       listings: assigns.listings
     )}
   end
@@ -20,16 +22,4 @@ defmodule ExcyteWeb.Client.TemplateRender do
     {:noreply, push_event(socket, "load_neighborhood", %{coords: %{lat: lat, lng: lng}, id: id})}
   end
 
-  # defp sanitize_data(struct) do
-  #   if is_struct(struct) do
-  #     Enum.reduce(Map.from_struct(struct), %{}, fn
-  #       ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
-  #       ({:__meta__, _}, acc) -> acc
-  #       ({k, v}, acc) -> Map.put(acc, k, v)
-  #     end)
-  #     |> Excyte.Utils.Methods.stringify_keys()
-  #   else
-  #     struct
-  #   end
-  # end
 end

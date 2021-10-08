@@ -180,96 +180,32 @@ div.viewer-wrapper {
     }
   }
 
-  & .whats-cma {
-    @apply w-full lg:w-4/5 mx-auto;
-  }
-
   & .comparable {
-    & .summary {
-      @apply font-bold mx-auto my-6 lg:my-8 text-center w-4/5 md:w-3/4 lg:w-2/3 text-xl md:text-2xl lg:text-3xl;
-    }
+    & .adjustments {
+      @apply w-full sm:w-2/5 mb-6;
 
-    & .main-details {
-      @apply flex mx-auto text-right md:w-4/5;
-
-      & .detail {
-        @apply p-4;
-
-        & h1 {
-          @apply mb-0;
-        }
-        
-        & h4 {
-          @apply leading-none;
-        }
-      }
-    }
-
-    & .info-adjustments {
-      @apply flex flex-wrap mt-12 mx-auto lg:w-4/5;
-
-      & .extra-details {
-        @apply mx-auto flex w-full sm:flex-1 px-4 pt-2 mb-6;
-
-        & .extra-info {
-          @apply grid grid-cols-2 px-2 gap-x-4 gap-y-1;
-
-          & p {
-            @apply my-0;
-          }
-
-          & .val p{
-            @apply font-extrabold text-lg md:text-xl lg:text-2xl text-right;
-          }
-
-          & .label p{
-            @apply text-base md:text-lg lg:pt-1;
-          }
-        }
-
-        & .extra-options {
-          @apply text-center flex-1 flex items-center justify-center px-6;
-
-          & a {
-            @apply block text-center mx-auto;
-          }
-
-          & img {
-            @apply block w-16 mx-auto;
-          }
-        }
+      & p {
+        @apply my-0;
       }
 
-      & .adjustments {
-        @apply w-full sm:w-2/5 mb-6;
+      & table {
+        @apply w-full border-t;
 
-        & p {
-          @apply my-0;
+        & th {
+          @apply font-bold p-2 border-b text-left;
         }
 
-        & table {
-          @apply w-full border-t;
-
-          & th {
-            @apply font-bold p-2 border-b text-left;
-          }
-
-          & tr {
-            @apply border-b;
-          }
-
-          & td:nth-child(odd) {
-            @apply px-2 py-1 mr-2 text-base;
-          }
-
-          & td:nth-child(even) {
-            @apply px-2 py-1 ml-2 font-bold text-right;
-          }
+        & tr {
+          @apply border-b;
         }
-      }
 
-      & .footer {
-        @apply w-full text-right;
+        & td:nth-child(odd) {
+          @apply px-2 py-1 mr-2 text-base;
+        }
+
+        & td:nth-child(even) {
+          @apply px-2 py-1 ml-2 font-bold text-right;
+        }
       }
     }
   }
@@ -360,9 +296,6 @@ div.viewer-wrapper {
   }
 
   & .suggested-price {
-    @apply w-full lg:w-4/5 mx-auto;
-
-
     & h1.price-value {
       @apply md:mb-2 text-3xl md:text-4xl lg:text-5xl font-extrabold;
     }

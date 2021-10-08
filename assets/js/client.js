@@ -7,7 +7,9 @@ import {LiveSocket} from "phoenix_live_view"
 import {ClientViewer} from "./client_viewer"
 import {setupSizing} from "./mobile_sizing"
 import {ClosedListingsChart} from "./closed_listings_chart"
+import {WalkNeighborhood} from "./walk_neighborhood"
 import {TableOfContents} from "./table_of_contents"
+
 
 import topbar from "topbar"
 
@@ -16,6 +18,7 @@ let Hooks = {}
 Hooks.ClientViewer = ClientViewer
 Hooks.TableOfContents = TableOfContents
 Hooks.ClosedListingsChart = ClosedListingsChart
+Hooks.WalkNeighborhood = WalkNeighborhood
 
 setupSizing()
 

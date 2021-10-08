@@ -192,18 +192,25 @@
           </div>
         </div>
         <div class="relative antialiased h-screen overflow-y-auto" phx-update="ignore">
-          <div class="px-4 sm:px-6 lg:max-w-5xl lg:px-8 mx-auto h-full">
-            <%= for section <- @sections do %>
+          <div class="lg:max-w-5xl mx-auto h-full">
+            <%= for {section, idx} <- Enum.with_index(@sections) do %>
               <%= if section.enabled do %>
-                <div id={section.component_name}>
+                <div 
+                  id={"#{section.component_name}_#{idx}"} 
+                  class="section" 
+                  data-index={idx}
+                  data-component={section.component_name}
+                >
                   <%= live_component @socket, TemplateRender,
                     current_user: @current_user,
                     brokerage: @data.brokerage,
                     agent: @data.agent_profile,
                     insight: @insight,
+                    index: idx,
                     section: section,
                     listings: @listings,
-                    id: "template_#{section.component_name}"
+                    is_live: false,
+                    id: "template_#{section.component_name}_#{idx}"
                   %>
                 </div>
               <% end %>

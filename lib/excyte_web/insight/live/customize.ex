@@ -48,11 +48,8 @@ defmodule ExcyteWeb.Insight.Customize do
           |> Enum.with_index(fn st, i ->
             Map.merge(Map.from_struct(st), %{ temp_id: i })
           end)
-        insight = merge_theme(res)
-        listings =
-          with_listings(insight.content.listings, insight.type)
-          |> with_public_data(insight.type)
-        # IO.inspect(listings, label: "BOOM4")
+        listings = with_listings(res.insight.content.listings, res.insight.type)
+        insight = merge_theme(res) |> needs_cover_photo?(listings)
         {:noreply, assign(socket,
           sections: sections,
           insight: Map.update!(insight, :content, &Map.delete(&1, :listings)),
@@ -68,13 +65,30 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
+  def handle_info({:public_listing_info, %{lst_id: lst_id, c_id: c_id}}, %{assigns: a} = socket) do
+    listings =
+      Enum.map(a.listings, fn lst ->
+        if lst["listing_id"] === lst_id do
+          case PublicDataApi.merge_public_data(lst) do
+            {:ok, with_public} ->
+              with_public
+            err -> IO.inspect(err, label: "PUBLIC ERR")
+          end
+        else
+          lst
+        end
+      end)
+    {:noreply, push_event(socket, "openAccordian", %{button_id: "btn_#{c_id}"})
+               |> assign(listings: listings)}
+  end
+
   def handle_info({Assets, [:asset, _], result}, %{assigns: a} = socket) do
     ua = if result.status === "ready", do: nil, else: result
     assets = if result.status === "ready", do: [result | a.assets], else: a.assets
     {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
-  def handle_info({:load_preview, %{ theme: theme }}, socket) do
+  def handle_info({:load_preview, %{ theme: theme }}, %{assigns: a} = socket) do
     {:noreply, push_event(socket, "loadPreview", %{ theme: theme })}
   end
 
@@ -101,8 +115,8 @@ defmodule ExcyteWeb.Insight.Customize do
           id: a.insight.id,
           created_by_id: a.current_user.id,
           name: name,
-          cover_photo_url: needs_cover_photo?(a.insight.cover_photo_url, a.listings, a.insight.type),
-          content: %{ listings: a.listings },
+          cover_photo_url: a.insight.cover_photo_url,
+          content: Map.merge(a.insight.content, %{"listings" => a.listings }),
           published: true
         }, sections: publish_sections(a)}) do
           {:ok, pub} -> pub
@@ -111,7 +125,7 @@ defmodule ExcyteWeb.Insight.Customize do
     IO.inspect(published, label: "PUBBED")
     {:noreply,
       socket
-      |> put_flash(:info, "#{Utilities.insight_type_to_name(published.type)} was created and published successfully.")
+      |> put_flash(:info, "#{Utilities.insight_type_to_name(published.insight.type)} was created and published successfully.")
       |> push_redirect(to: "/agent/dash")}
   end
 
@@ -213,17 +227,6 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  def with_public_data(listings, type) do
-    if Enum.member?(["showcase", "buyer_tour"], type) && listings && length(listings) > 0 do
-      Enum.map(listings, fn lst ->
-        case PublicDataApi.merge_public_data(lst) do
-          {:ok, with_public} -> with_public
-          {:error, err} -> IO.inspect(err, label: "PUBLIC ERR")
-        end
-      end)
-    end
-  end
-
   # defp export_content(sections) do
   #   Enum.reduce(sections, [], fn s, acc ->
   #     if s.enabled === true do
@@ -264,25 +267,35 @@ defmodule ExcyteWeb.Insight.Customize do
     end
   end
 
-  defp needs_cover_photo?(cover_photo, listings, type) do
-    if type === "buyer_tour" do
-      key = Application.get_env(:excyte, :gcp_places)
-      init = "key=#{key}&size=640x640&scale=2&markers=color:red"
-      q = Enum.reduce(listings, init, fn lst, acc ->
-          acc <> "|#{hd(tl(lst["coords"]))}, #{hd(lst["coords"])}"
-        end)
-        |> URI.encode()
-      HTTPoison.get!("http://maps.googleapis.com/maps/api/staticmap?#{q}")
-      |> case do
-        {:ok, %HTTPoison.Response{body: body}} -> IO.inspect(body, label: "LABS")
-      end
+  defp needs_cover_photo?(insight, listings) do
+    cover_photo = insight.cover_photo_url
+    type = insight.type
+    if cover_photo === nil || cover_photo === "" do
+      url =
+        case type do
+          "buyer_tour" ->
+            key = Application.get_env(:excyte, :gcp_places)
+            init = "key=#{key}&size=640x640&scale=2&markers=color:red"
+            q = Enum.reduce(listings, init, fn lst, acc ->
+                acc <> "|#{hd(tl(lst["coords"]))}, #{hd(lst["coords"])}"
+              end)
+              |> URI.encode()
+            with {:ok, %{body: image}} <- HTTPoison.get("http://maps.googleapis.com/maps/api/staticmap?#{q}"),
+                _ <- ExAws.request!(ExAws.S3.put_object("excyte", "insights/buyer_tour_covers/#{insight.id}/cover.png", image, acl: :public_read, content_type: "image/png")) do
+              "//excyte.s3.amazonaws.com/insights/buyer_tour_covers/#{insight.id}/cover.png"
+            else
+              {:error, err} -> IO.inspect(err, label: "ERR")
+              err -> IO.inspect(err, label: "ERR")
+            end
+          "showcase" ->
+            first = hd(listings)
+            first["main_photo_url"]
+          "cma" ->
+            # insight property photo
+        end
+      Map.put(insight, :cover_photo_url, url)
     else
-      if cover_photo === nil || cover_photo === "" do
-        first = hd(listings)
-        first["main_photo_url"]
-      else
-        cover_photo
-      end
+      insight
     end
   end
 end

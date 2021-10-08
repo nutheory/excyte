@@ -6,7 +6,6 @@ defmodule ExcyteWeb.Client.Header do
   def render(assigns), do: ClientView.render("header.html", assigns)
 
   def update(assigns, socket) do
-    IO.inspect(label: "header after waking up")
     {:ok, assign(socket,
       current_user: assigns.current_user,
       created_by: assigns.created_by,
@@ -26,6 +25,7 @@ defmodule ExcyteWeb.Client.Header do
   end
 
   def handle_event("jump-to-section", %{"id" => id}, socket) do
+    IO.inspect(id, label: "ID")
     {:noreply, push_event(socket, "jumpTo", %{id: id})}
   end
 end

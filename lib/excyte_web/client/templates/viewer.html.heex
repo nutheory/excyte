@@ -14,37 +14,31 @@
     insight_type: @insight.type,
     id: :report_header
   %>
-  <div
-    phx-update="ignore"
-    class=""
-  >
-    <div class="px-4 py-6 max-w-3xl mx-auto sm:px-6 sm:py-6 lg:max-w-4xl lg:py-10 lg:px-8 xl:max-w-5xl">
-      <div x-ref="viewer" class="viewer">
-        <%= for section <- @sections do %>
-          <%= if section.enabled do %>
-            <div class="section" id={section.component_name}>
-            <%= Components.divider() %>
-              <%= live_component @socket, TemplateRender,
-                current_user: @current_user,
-                brokerage: @data.brokerage,
-                agent: @data.agent_profile,
-                insight: @insight,
-                section: section,
-                listings: @listings,
-                id: "template_#{section.component_name}"
-              %>
-            </div>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
+  <div class="viewer" phx-hook="TableOfContents" id="toc_wrapper">
+    <%= for {section, idx} <- Enum.with_index(@sections) do %>
+      <%= if section.enabled do %>
+        <div 
+          id={"#{section.component_name}"} 
+          class="section" 
+          data-index={idx}
+          data-component={section.component_name}
+        >
+          <%= live_component TemplateRender,
+            current_user: @current_user,
+            brokerage: @data.brokerage,
+            agent: @data.agent_profile,
+            insight: @insight,
+            index: idx,
+            section: section,
+            listings: @listings,
+            is_live: true,
+            id: "template_#{section.component_name}_#{idx}"
+          %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
-  <div class="hidden rounded-lg"></div>
-  <%= live_component @socket, MoreInfo,
-    current_user: @current_user,
-    id: :more_info_panel
-  %>
-  <%= live_component @socket, Interactions,
+  <%#= live_component @socket, Interactions,
     current_user: @current_user,
     created_by: @data.agent_profile,
     insight: @insight,

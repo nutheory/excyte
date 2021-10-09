@@ -2,7 +2,7 @@
   <%= for lst <- @listings do %>
     <div class="relative px-4 sm:px-6 lg:px-8">
       <div 
-        class="cover z-0"
+        class="cover z-0 lg:bg-fixed"
         style={"background-image: url(#{lst["main_photo_url"]})"}>
         <div class="bg-ex-gradient absolute bottom-0 left-0 right-0 h-56 z-20"></div>
       </div>
@@ -42,11 +42,11 @@
           </div>
         </div>
       </div>
-      <div class="my-8 px-4 sm:px-6 lg:px-8">
+      <div class="squeeze mt-12">
         <%= if lst["public_remarks"] do %>
-          <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4"><%= lst["public_remarks"] %></p>
+          <p class="text-lg md:text-xl font-semibold w-full md:w-4/5 mx-auto mb-4"><%= lst["public_remarks"] %></p>
         <% end %>
-        <div class="main-details w-full grid sm:w-4/5 grid-cols-3 gap-4 md:gap-6 lg:w-3/5 mx-auto my-12">
+        <div class="main-details w-full md:w-3/5 mx-auto my-12">
           <div class="detail large-box-shadow ">
             <h1 class="header-color">
               <%= if lst["sqft"] do %>
@@ -108,278 +108,278 @@
             <h4 class="sub-header-color">Stories</h4>
           </div>
         </div>
-      </div>
-      <%= live_component @socket, ShowcaseGallery,
-        media: lst["media"],
-        listing_id: lst["listing_id"],
-        id: "showcase_media"
-      %>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 w-full md:w-4/5 mx-auto">
-        <div class="property-details my-4" x-data="{showAllOpen: false}">
-          <div class="flex">
-            <h4 class="mb-0 px-2 flex items-end">Details</h4>
-            <div class="flex-1 text-right pb-1 ml-4">
-              <p class="px-2 text-sm leading-tight"><%= lst["street_number"] %> <%= lst["street_name"] %> <%= if lst["unit"], do: ", unit ##{lst["unit"]}", else: "" %></p>
-              <p class="px-2 text-sm leading-tight"><%= lst["city"] %> <%= lst["state"] %> <%= lst["zip"] %></p>
+        <%= live_component @socket, ShowcaseGallery,
+          media: lst["media"],
+          listing_id: lst["listing_id"],
+          id: "showcase_media"
+        %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 w-full md:w-4/5 mx-auto">
+          <div class="property-details my-4" x-data="{showAllOpen: false}">
+            <div class="flex">
+              <h4 class="mb-0 px-2 flex items-end">Details</h4>
+              <div class="flex-1 text-right pb-1 ml-4">
+                <p class="px-2 text-sm leading-tight"><%= lst["street_number"] %> <%= lst["street_name"] %> <%= if lst["unit"], do: ", unit ##{lst["unit"]}", else: "" %></p>
+                <p class="px-2 text-sm leading-tight"><%= lst["city"] %> <%= lst["state"] %> <%= lst["zip"] %></p>
+              </div>
             </div>
-          </div>
-          <table class="border-t accent-color">
-            <tbody>
-              <tr class="accent-color">
-                <td>Parking</td>
-                <td class="text-right">
-                  <%= lst["parking"]["type"] %>
-                  <%= if lst["parking"]["spaces"] == "N/A" do %>
-                  <% else %>
-                    (<%= lst["parking"]["spaces"] %>)
-                  <% end %>
-                </td>
-              </tr>
-              <tr class="accent-color">
-                <td>Sub-Type</td>
-                <td class="text-right">
-                  <%= if lst["property_sub_type"] do %>
-                    <%= lst["property_sub_type"] %>
-                  <% else %>
-                    N/A
-                  <% end %>
-                </td>
-              </tr>
-              <%= if lst["list_price"] && lst["sqft"] do %>
-                <tr class="accent-color">
-                  <td>Price Per Sqft</td>
-                  <td class="text-right">$<%= number_to_delimited(round(lst["list_price"]/lst["sqft"]), precision: 0) %></td>
-                </tr>
-              <% end %>
-              <%= if lst["days_on_market"] do %>
-                <tr class="accent-color">
-                  <td>Days on Market</td>
-                  <td class="text-right"><%= lst["days_on_market"] %></td>
-                </tr>
-              <% end %>
-              <%= if lst["county"] do %>
-                <tr class="accent-color">
-                  <td>County</td>
-                  <td class="text-right"><%= lst["county"] %></td>
-                </tr>
-              <% end %>
-              <%= if lst["walkscore"] do %>
-                <tr class="accent-color">
-                  <td>Walkscore</td>
-                  <td class="text-right"><%= lst["walkscore"] %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-          <div 
-            class="relative overflow-hidden transition-all max-h-0 duration-700" 
-            style="" 
-            x-ref="detailsContainer" 
-            x-bind:style="showAllOpen == true ? 'max-height: ' + $refs.detailsContainer.scrollHeight + 'px' : ''"
-          >
-            <table>
-              <tbody>
-                <%= if lst["list_price"] do %>
-                  <tr class="accent-color">
-                    <td>List Price</td>
-                    <td class="text-right">$<%= number_to_delimited(lst["list_price"], precision: 0) %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["sqft"] do %>
-                  <tr class="accent-color">
-                    <td>Sqft</td>
-                    <td class="text-right"><%= lst["sqft"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["lotsize_sqft"] do %>
-                  <tr class="accent-color">
-                    <td>Lot <%= String.capitalize(lst["lotsize_preference"]) %></td>
-                    <td class="text-right">
-                      <%= if lst["lotsize_preference"] == "sqft" do %>
-                        <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
-                      <% else %>
-                        <%= Utilities.sqft_to_acres(lst["lotsize_sqft"]) %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-                <%= if lst["listing_id"] do %>
-                  <tr class="accent-color">
-                    <td>MLS Listing ID</td>
-                    <td class="text-right"><%= lst["listing_id"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["year_built"] do %>
-                  <tr class="accent-color">
-                    <td>Year Built</td>
-                    <td class="text-right"><%= lst["year_built"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["beds"] do %>
-                  <tr class="accent-color">
-                    <td>Beds</td>
-                    <td class="text-right"><%= lst["beds"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["baths"] && lst["baths"]["total"] do %>
-                  <tr class="accent-color">
-                    <td>Baths</td>
-                    <td class="text-right"><%= lst["baths"]["total"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["stories"] do %>
-                  <tr class="accent-color">
-                    <td>Stories</td>
-                    <td class="text-right"><%= lst["stories"] %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-          <button type="button" class="w-full p-2 text-left" @click="showAllOpen = !showAllOpen">Show All Details</button>
-        </div>
-        <div class="association sub-header-color my-4">
-          <%= if lst["association"] && length(lst["association"]) > 0 do %>
-            <h4 class="mb-0 px-2">Association (HOA)</h4>
             <table class="border-t accent-color">
               <tbody>
-                <%= for assoc <- lst["association"] do %>
-                  <tr class="accent-color">
-                    <%= if is_binary(assoc["human"]) && String.length(assoc["human"]) > 18 do %>
-                      <td colspan="2">
-                        <p class="font-bold"><%= assoc["name"] %></p>
-                        <p><%= assoc["human"] %></p>
-                      </td>
+                <tr class="accent-color">
+                  <td>Parking</td>
+                  <td class="text-right">
+                    <%= lst["parking"]["type"] %>
+                    <%= if lst["parking"]["spaces"] == "N/A" do %>
                     <% else %>
-                      <td class="font-bold text-left"><%= assoc["name"] %></td>
-                      <td class="text-right"><%= assoc["human"] %></td>
+                      (<%= lst["parking"]["spaces"] %>)
                     <% end %>
+                  </td>
+                </tr>
+                <tr class="accent-color">
+                  <td>Sub-Type</td>
+                  <td class="text-right">
+                    <%= if lst["property_sub_type"] do %>
+                      <%= lst["property_sub_type"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </td>
+                </tr>
+                <%= if lst["list_price"] && lst["sqft"] do %>
+                  <tr class="accent-color">
+                    <td>Price Per Sqft</td>
+                    <td class="text-right">$<%= number_to_delimited(round(lst["list_price"]/lst["sqft"]), precision: 0) %></td>
+                  </tr>
+                <% end %>
+                <%= if lst["days_on_market"] do %>
+                  <tr class="accent-color">
+                    <td>Days on Market</td>
+                    <td class="text-right"><%= lst["days_on_market"] %></td>
+                  </tr>
+                <% end %>
+                <%= if lst["county"] do %>
+                  <tr class="accent-color">
+                    <td>County</td>
+                    <td class="text-right"><%= lst["county"] %></td>
+                  </tr>
+                <% end %>
+                <%= if lst["walkscore"] do %>
+                  <tr class="accent-color">
+                    <td>Walkscore</td>
+                    <td class="text-right"><%= lst["walkscore"] %></td>
                   </tr>
                 <% end %>
               </tbody>
             </table>
-          <% end %>
-          <%= if lst["tax_year"] || lst["tax_assessed_value"] || lst["tax_annual_amount"] || lst["tax_exemptions"] do %>
-            <h4 class="sub-header-color mt-8">Tax Info
-              <%= if lst["tax_year"] do %>
-                (<%= lst["tax_year"] %>)
-              <% end %>
-            </h4>
-            <table>
-              <tbody>
-                <%= if lst["tax_annual_amount"] do %>
-                  <tr class="accent-color">
-                    <td>Annual amount</td>
-                    <td><%= lst["tax_annual_amount"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["tax_assessed_value"] do %>
-                  <tr class="accent-color">
-                    <td>Assessed Value</td>
-                    <td><%= lst["tax_assessed_value"] %></td>
-                  </tr>
-                <% end %>
-                <%= if lst["tax_exemptions"] do %>
-                  <tr class="accent-color">
-                    <td>Exemptions</td>
-                    <td><%= lst["tax_exemptions"] %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          <% end %>
-        </div>
-      </div>
-      <ul class="border-t accent-color">
-        <%= if lst["layout_details"] && length(lst["layout_details"]) > 0 do %>
-          <li class="border-b accent-color">
-            <%= live_component Collapsable,
-              id: "ld_#{lst["listing_id"]}",
-              listing_id: lst["listing_id"],
-              public_data: lst["public_data"],
-              title: "Property Details",
-              name: "layout_details",
-              default_open: true do %>
-              <%= Components.property_details(lst["layout_details"], lst["listing_id"]) %>
-            <% end %>
-          </li>
-        <% end %>
-        <%= if lst["features"] && length(lst["features"]) > 0 do %>
-          <li class="border-b accent-color">
-            <%= live_component Collapsable,
-              id: "pf_#{lst["listing_id"]}",
-              listing_id: lst["listing_id"],
-              public_data: lst["public_data"],
-              title: "Property Features",
-              name: "features",
-              default_open: true do %>
-              <%= Components.property_features(lst["features"], lst["listing_id"]) %>
-            <% end %>
-          </li>
-        <% end %>
-        <li class="border-b accent-color">
-          <%= live_component Collapsable,
-            id: "ph_#{lst["listing_id"]}",
-            listing_id: lst["listing_id"],
-            public_data: lst["public_data"],
-            title: "Property History",
-            name: "property_history",
-            default_open: false do %>
-            <%= if lst["public_data"] && is_list(lst["public_data"]["property_history"]) && length(lst["public_data"]["property_history"]) > 0 do %>
-              <%= Components.property_price_history(lst["public_data"]["property_history"], lst["listing_id"]) %>
-            <% end %>
-          <% end %>
-        </li>
-        <li class="border-b accent-color">
-          <%= live_component Collapsable,
-            id: "th_#{lst["listing_id"]}",
-            listing_id: lst["listing_id"],
-            public_data: lst["public_data"],
-            title: "Tax History",
-            name: "tax_history",
-            default_open: false do %>
-            <%= if lst["public_data"] && is_list(lst["public_data"]["tax_history"]) && length(lst["public_data"]["tax_history"]) > 0 do %>
-              <%= Components.property_tax_history(lst["public_data"]["tax_history"], lst["listing_id"]) %>
-            <% end %>
-          <% end %>
-        </li>
-        <%= if lst["coords"] do %>
-          <li class="border-b accent-color" id={"#walk_listing_#{lst["listing_id"]}"} phx-hook="WalkNeighborhood">
-            <button 
-              type="button" 
-              class="w-full p-4 text-left"
-              phx-click="walk_nbrhd"
-              phx-value-lat={hd(tl(lst["coords"]))}
-              phx-value-lng={hd(lst["coords"])}
-              phx-value-id={lst["listing_id"]}
-              phx-target={@myself}
+            <div 
+              class="relative overflow-hidden transition-all max-h-0 duration-700" 
+              style="" 
+              x-ref="detailsContainer" 
+              x-bind:style="showAllOpen == true ? 'max-height: ' + $refs.detailsContainer.scrollHeight + 'px' : ''"
             >
-              <div class="flex items-center justify-between">
-                <h4 class="flex-1 mb-0">Walk the Neighborhood</h4>
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" :class="{'transform rotate-45': open}" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                </div>
-              </div>
-            </button>
-          </li>
-        <% end %>
-        <li class="border-b accent-color">
-          <%= live_component Collapsable,
-            id: "sch_#{lst["listing_id"]}",
-            listing_id: lst["listing_id"],
-            public_data: lst["public_data"],
-            title: "Schools",
-            name: "schools",
-            default_open: false do %>
-            <%= if lst["public_data"] && is_list(lst["public_data"]["schools"]) && length(lst["public_data"]["schools"]) > 0 do %>
-              <%= Components.schools(lst["public_data"]["schools"], lst["listing_id"]) %>
-            <% else %>
+              <table>
+                <tbody>
+                  <%= if lst["list_price"] do %>
+                    <tr class="accent-color">
+                      <td>List Price</td>
+                      <td class="text-right">$<%= number_to_delimited(lst["list_price"], precision: 0) %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["sqft"] do %>
+                    <tr class="accent-color">
+                      <td>Sqft</td>
+                      <td class="text-right"><%= lst["sqft"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["lotsize_sqft"] do %>
+                    <tr class="accent-color">
+                      <td>Lot <%= String.capitalize(lst["lotsize_preference"]) %></td>
+                      <td class="text-right">
+                        <%= if lst["lotsize_preference"] == "sqft" do %>
+                          <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
+                        <% else %>
+                          <%= Utilities.sqft_to_acres(lst["lotsize_sqft"]) %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["listing_id"] do %>
+                    <tr class="accent-color">
+                      <td>MLS Listing ID</td>
+                      <td class="text-right"><%= lst["listing_id"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["year_built"] do %>
+                    <tr class="accent-color">
+                      <td>Year Built</td>
+                      <td class="text-right"><%= lst["year_built"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["beds"] do %>
+                    <tr class="accent-color">
+                      <td>Beds</td>
+                      <td class="text-right"><%= lst["beds"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["baths"] && lst["baths"]["total"] do %>
+                    <tr class="accent-color">
+                      <td>Baths</td>
+                      <td class="text-right"><%= lst["baths"]["total"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["stories"] do %>
+                    <tr class="accent-color">
+                      <td>Stories</td>
+                      <td class="text-right"><%= lst["stories"] %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+            <button type="button" class="w-full p-2 text-left" @click="showAllOpen = !showAllOpen">Show All Details</button>
+          </div>
+          <div class="association sub-header-color my-4">
+            <%= if lst["association"] && length(lst["association"]) > 0 do %>
+              <h4 class="mb-0 px-2">Association (HOA)</h4>
+              <table class="border-t accent-color">
+                <tbody>
+                  <%= for assoc <- lst["association"] do %>
+                    <tr class="accent-color">
+                      <%= if is_binary(assoc["human"]) && String.length(assoc["human"]) > 18 do %>
+                        <td colspan="2">
+                          <p class="font-bold"><%= assoc["name"] %></p>
+                          <p><%= assoc["human"] %></p>
+                        </td>
+                      <% else %>
+                        <td class="font-bold text-left"><%= assoc["name"] %></td>
+                        <td class="text-right"><%= assoc["human"] %></td>
+                      <% end %>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
             <% end %>
+            <%= if lst["tax_year"] || lst["tax_assessed_value"] || lst["tax_annual_amount"] || lst["tax_exemptions"] do %>
+              <h4 class="sub-header-color mt-8">Tax Info
+                <%= if lst["tax_year"] do %>
+                  (<%= lst["tax_year"] %>)
+                <% end %>
+              </h4>
+              <table>
+                <tbody>
+                  <%= if lst["tax_annual_amount"] do %>
+                    <tr class="accent-color">
+                      <td>Annual amount</td>
+                      <td><%= lst["tax_annual_amount"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["tax_assessed_value"] do %>
+                    <tr class="accent-color">
+                      <td>Assessed Value</td>
+                      <td><%= lst["tax_assessed_value"] %></td>
+                    </tr>
+                  <% end %>
+                  <%= if lst["tax_exemptions"] do %>
+                    <tr class="accent-color">
+                      <td>Exemptions</td>
+                      <td><%= lst["tax_exemptions"] %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </div>
+        <ul class="border-t accent-color">
+          <%= if lst["layout_details"] && length(lst["layout_details"]) > 0 do %>
+            <li class="border-b accent-color">
+              <%= live_component Collapsable,
+                id: "ld_#{lst["listing_id"]}",
+                listing_id: lst["listing_id"],
+                public_data: lst["public_data"],
+                title: "Property Details",
+                name: "layout_details",
+                default_open: true do %>
+                <%= Components.property_details(lst["layout_details"], lst["listing_id"]) %>
+              <% end %>
+            </li>
           <% end %>
-        </li>
-      </ul>
+          <%= if lst["features"] && length(lst["features"]) > 0 do %>
+            <li class="border-b accent-color">
+              <%= live_component Collapsable,
+                id: "pf_#{lst["listing_id"]}",
+                listing_id: lst["listing_id"],
+                public_data: lst["public_data"],
+                title: "Property Features",
+                name: "features",
+                default_open: true do %>
+                <%= Components.property_features(lst["features"], lst["listing_id"]) %>
+              <% end %>
+            </li>
+          <% end %>
+          <li class="border-b accent-color">
+            <%= live_component Collapsable,
+              id: "ph_#{lst["listing_id"]}",
+              listing_id: lst["listing_id"],
+              public_data: lst["public_data"],
+              title: "Property History",
+              name: "property_history",
+              default_open: false do %>
+              <%= if lst["public_data"] && is_list(lst["public_data"]["property_history"]) && length(lst["public_data"]["property_history"]) > 0 do %>
+                <%= Components.property_price_history(lst["public_data"]["property_history"], lst["listing_id"]) %>
+              <% end %>
+            <% end %>
+          </li>
+          <li class="border-b accent-color">
+            <%= live_component Collapsable,
+              id: "th_#{lst["listing_id"]}",
+              listing_id: lst["listing_id"],
+              public_data: lst["public_data"],
+              title: "Tax History",
+              name: "tax_history",
+              default_open: false do %>
+              <%= if lst["public_data"] && is_list(lst["public_data"]["tax_history"]) && length(lst["public_data"]["tax_history"]) > 0 do %>
+                <%= Components.property_tax_history(lst["public_data"]["tax_history"], lst["listing_id"]) %>
+              <% end %>
+            <% end %>
+          </li>
+          <%= if lst["coords"] do %>
+            <li class="border-b accent-color" id={"#walk_listing_#{lst["listing_id"]}"} phx-hook="WalkNeighborhood">
+              <button 
+                type="button" 
+                class="w-full p-4 text-left"
+                phx-click="walk_nbrhd"
+                phx-value-lat={hd(tl(lst["coords"]))}
+                phx-value-lng={hd(lst["coords"])}
+                phx-value-id={lst["listing_id"]}
+                phx-target={@myself}
+              >
+                <div class="flex items-center justify-between">
+                  <h4 class="flex-1 mb-0">Walk the Neighborhood</h4>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" :class="{'transform rotate-45': open}" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+            </li>
+          <% end %>
+          <li class="border-b accent-color">
+            <%= live_component Collapsable,
+              id: "sch_#{lst["listing_id"]}",
+              listing_id: lst["listing_id"],
+              public_data: lst["public_data"],
+              title: "Schools",
+              name: "schools",
+              default_open: false do %>
+              <%= if lst["public_data"] && is_list(lst["public_data"]["schools"]) && length(lst["public_data"]["schools"]) > 0 do %>
+                <%= Components.schools(lst["public_data"]["schools"], lst["listing_id"]) %>
+              <% else %>
+              <% end %>
+            <% end %>
+          </li>
+        </ul>
+      </div>
     </div>
   <% end %>
 </div>

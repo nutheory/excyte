@@ -63,81 +63,91 @@
             </div>
           </div>
         </div>
-        <div class="my-8 squeeze">
+        <div class="squeeze mt-12">
           <%= if lst["public_remarks"] do %>
-            <p class="text-xl md:text-2xl font-semibold sub-header-color w-full lg:w-4/5 mx-auto mb-4"><%= lst["public_remarks"] %></p>
+            <p class="text-lg md:text-xl font-semibold w-full mx-auto mb-4"><%= lst["public_remarks"] %></p>
           <% end %>
-          <div class="main-details md:w-4/5 lg:w-3/5 my-12">
-            <div class="detail large-box-shadow ">
-              <h1 class="header-color">
-                <%= if lst["sqft"] do %>
-                  <%= number_to_delimited(lst["sqft"], precision: 0) %>
-                <% else %>
-                  N/A
-                <% end %>
-              </h1>
-              <h4 class="sub-header-color">Sqft</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            <div class="md:col-span-2 px-2 my-4">
+              <div class="main-details">
+                <div class="detail large-box-shadow">
+                  <h1 class="header-color">
+                    <%= if lst["sqft"] do %>
+                      <%= number_to_delimited(lst["sqft"], precision: 0) %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Sqft</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h1 class="header-color">
+                    <%= if lst["lotsize_preference"] == "sqft" do %>
+                      <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
+                    <% else %>
+                      <%= if lst["lotsize_sqft"], do: Utilities.sqft_to_acres(lst["lotsize_sqft"]), else: "" %>
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Lot <%= String.capitalize("sqft") %></h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h1 class="header-color">
+                    <%= if lst["year_built"] do %>
+                      <%= lst["year_built"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h1>
+                  <h4 class="sub-header-color">Built</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["beds"] do %>
+                      <%= lst["beds"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Beds</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["baths"] && lst["baths"]["total"] do %>
+                      <%= lst["baths"]["total"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Baths</h4>
+                </div>
+                <div class="detail large-box-shadow ">
+                  <h2 class="header-color">
+                    <%= if lst["stories"] do %>
+                      <%= lst["stories"] %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </h2>
+                  <h4 class="sub-header-color">Stories</h4>
+                </div>
+              </div>
             </div>
-            <div class="detail large-box-shadow ">
-              <h1 class="header-color">
-                <%= if lst["lotsize_preference"] == "sqft" do %>
-                  <%= number_to_delimited(lst["lotsize_sqft"], precision: 0) %>
-                <% else %>
-                  <%= if lst["lotsize_sqft"], do: Utilities.sqft_to_acres(lst["lotsize_sqft"]), else: "" %>
-                <% end %>
-              </h1>
-              <h4 class="sub-header-color">Lot <%= String.capitalize("sqft") %></h4>
+            <div class="px-2 my-4">
+              <h4 class="header-color mb-0">Property Notes:</h4>
+              <%= if lst["excyte_note"] do %>
+                <p class=""><%= lst["excyte_note"] %></p>
+              <% else %>
+                <p class=""><%= lst["excyte_note"] %></p>
+              <% end %>
             </div>
-            <div class="detail large-box-shadow ">
-              <h1 class="header-color">
-                <%= if lst["year_built"] do %>
-                  <%= lst["year_built"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </h1>
-              <h4 class="sub-header-color">Built</h4>
-            </div>
-            <div class="detail large-box-shadow ">
-              <h2 class="header-color">
-                <%= if lst["beds"] do %>
-                  <%= lst["beds"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </h2>
-              <h4 class="sub-header-color">Beds</h4>
-            </div>
-            <div class="detail large-box-shadow ">
-              <h2 class="header-color">
-                <%= if lst["baths"] && lst["baths"]["total"] do %>
-                  <%= lst["baths"]["total"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </h2>
-              <h4 class="sub-header-color">Baths</h4>
-            </div>
-            <div class="detail large-box-shadow ">
-              <h2 class="header-color">
-                <%= if lst["stories"] do %>
-                  <%= lst["stories"] %>
-                <% else %>
-                  N/A
-                <% end %>
-              </h2>
-              <h4 class="sub-header-color">Stories</h4>
-            </div>
+          </div> 
+          <div class="my-8">
+            <%= live_component @socket, ShowcaseGallery,
+              media: lst["media"],
+              listing_id: lst["listing_id"],
+              id: "media#{lst["listing_id"]}"
+            %>
           </div>
-        </div>
-        <div class="my-8 squeeze">
-          <%= live_component @socket, ShowcaseGallery,
-            media: lst["media"],
-            listing_id: lst["listing_id"],
-            id: "media#{lst["listing_id"]}"
-          %>
-        </div>
-        <div class="squeeze">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 w-full md:w-4/5 mx-auto">
             <div class="property-details my-4" x-data="{showAllOpen: false}">
               <div class="flex">

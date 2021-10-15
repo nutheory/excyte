@@ -145,8 +145,12 @@ defmodule Excyte.Accounts do
   end
 
   def staging_whitelist_check(_repo, _changes, attrs \\ %{}) do
-    wl = Application.get_env(:excyte, :whitelist)
-    if Enum.member?(wl, attrs.email), do: {:ok, %{}}, else: {:error, %{message: "Not whitelisted"}}
+    if Application.get_env(:excyte, :env) === :staging do
+      wl = Application.get_env(:excyte, :whitelist)
+      if Enum.member?(wl, attrs.email), do: {:ok, %{}}, else: {:error, %{message: "Not whitelisted"}}
+    else
+      {:ok, %{}}
+    end
   end
 
   def create_brokerage(_repo, %{account: acc}, attrs) do

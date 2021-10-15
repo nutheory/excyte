@@ -20,6 +20,8 @@ defmodule Excyte.Release do
   end
 
   def rollback(version) do
+    ensure_started()
+
     repo = hd(repos())
     {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
   end

@@ -6,39 +6,43 @@ defmodule ExcyteWeb.Client.Functions do
 
   def closed_analysis(listings) do
     closed = Enum.filter(listings, fn lst -> lst["status"] === "Closed" end)
-    closed_averages = format_averages(calculated_averages(closed))
+    if length(closed) > 0 do
+      closed_averages = format_averages(calculated_averages(closed))
 
-    closed_listings =
-      Enum.map(closed, fn lst ->
-        %{
-          address: "#{lst["street_number"]} #{lst["street_name"]}",
-          percent: (if lst["close_price"], do: Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1), else: nil),
-          list: "$#{number_to_delimited(lst["list_price"], precision: 0)}",
-          dom: lst["days_on_market"],
-          close: (if lst["close_price"], do: "$#{number_to_delimited(lst["close_price"], precision: 0)}", else: 0),
-          per_sqft: "$#{number_to_delimited(lst["adjustments"]["sqft"]["price_per_sqft"], precision: 0)}"
-        }
-      end)
-      |> Enum.sort_by(&(&1["dom"]))
-
-    data_points =
-      Enum.map(closed, fn lst ->
-        %{
-            list: lst["list_price"],
-            close: (if lst["close_price"], do: lst["close_price"], else: 0),
+      closed_listings =
+        Enum.map(closed, fn lst ->
+          %{
+            address: "#{lst["street_number"]} #{lst["street_name"]}",
+            percent: (if lst["close_price"], do: Float.round(((lst["close_price"] / lst["list_price"]) * 100), 1), else: nil),
+            list: "$#{number_to_delimited(lst["list_price"], precision: 0)}",
             dom: lst["days_on_market"],
-            label: "#{lst["days_on_market"]} DoM"
+            close: (if lst["close_price"], do: "$#{number_to_delimited(lst["close_price"], precision: 0)}", else: 0),
+            per_sqft: "$#{number_to_delimited(lst["adjustments"]["sqft"]["price_per_sqft"], precision: 0)}"
           }
-      end)
-      |> Enum.sort_by(&(&1.dom))
+        end)
+        |> Enum.sort_by(&(&1["dom"]))
 
-    chart_data = Jason.encode!(%{
-      min: round(closed_averages.min * 0.85),
-      max: round(closed_averages.max * 1.15),
-      listings: data_points
-    })
+      data_points =
+        Enum.map(closed, fn lst ->
+          %{
+              list: lst["list_price"],
+              close: (if lst["close_price"], do: lst["close_price"], else: 0),
+              dom: lst["days_on_market"],
+              label: "#{lst["days_on_market"]} DoM"
+            }
+        end)
+        |> Enum.sort_by(&(&1.dom))
 
-    %{chart: chart_data, listings: closed_listings, averages: closed_averages}
+      chart_data = Jason.encode!(%{
+        min: round(closed_averages.min * 0.85),
+        max: round(closed_averages.max * 1.15),
+        listings: data_points
+      })
+
+      %{chart: chart_data, listings: closed_listings, averages: closed_averages}
+    else
+      nil
+    end
   end
 
   def suggested_price_averages(listings) do

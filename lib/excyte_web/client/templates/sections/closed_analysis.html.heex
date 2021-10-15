@@ -1,49 +1,51 @@
 <div class="closed-analysis squeeze" data-display-type="mixed">
-  <%= Components.divider() %>
-  <div class="py-12 lg:py-20 mx-auto">
-    <h2 class="header-color mb-0">Closed Listings Analysis</h2>
-    <p class="text-lg md:text-xl font-semibold mb-6">
-    Overview and comparison of closed properties and their relevant information.</p>
-    <% closed = Functions.closed_analysis(@listings) %>
-    <canvas
-      id="closed_listings_chart" 
-      phx-hook="ClosedListingsChart" 
-      class="my-12 w-full h-48"
-      data-chart={closed.chart}
-      data-theme={Jason.encode!(%{
-        text: @theme.header_text,
-        list: @theme.link,
-        close: @theme.accent,
-      })}></canvas>
-    <div class="sold-table">
-      <table>
-        <tr>
-          <td class="text-left font-bold text-lg">Address</td>
-          <td class="text-center font-bold text-lg">List price</td>
-          <td class="text-center font-bold text-lg">Close price</td>
-          <td class="text-center font-bold text-lg">% of list</td>
-          <td class="text-center font-bold text-lg">DOM</td>
-          <td class="text-center font-bold text-lg">$ per sqft</td>
-        </tr>
-        <%= for cl <- closed.listings do %>
+  <% closed = Functions.closed_analysis(@listings) %>
+  <%= if closed !== nil do %>
+    <%= Components.divider() %>
+    <div class="py-12 lg:py-20 mx-auto">
+      <h2 class="header-color mb-0">Closed Listings Analysis</h2>
+      <p class="text-lg md:text-xl font-semibold mb-6">
+      Overview and comparison of closed properties and their relevant information.</p>
+      <canvas
+        id="closed_listings_chart" 
+        phx-hook="ClosedListingsChart" 
+        class="my-12 w-full h-48"
+        data-chart={closed.chart}
+        data-theme={Jason.encode!(%{
+          text: @theme.header_text,
+          list: @theme.link,
+          close: @theme.accent,
+        })}></canvas>
+      <div class="sold-table">
+        <table>
           <tr>
-            <td><%= cl.address %></td>
-            <td class="text-center"><%= cl.list %></td>
-            <td class="text-center"><%= cl.close %></td>
-            <td class="text-center"><%= cl.percent %></td>
-            <td class="text-center"><%= cl.dom %></td>
-            <td class="text-center"><%= cl.per_sqft %></td>
+            <td class="text-left font-bold text-lg">Address</td>
+            <td class="text-center font-bold text-lg">List price</td>
+            <td class="text-center font-bold text-lg">Close price</td>
+            <td class="text-center font-bold text-lg">% of list</td>
+            <td class="text-center font-bold text-lg">DOM</td>
+            <td class="text-center font-bold text-lg">$ per sqft</td>
           </tr>
-        <% end %>
-        <tr>
-          <td>Averages</td>
-          <td class="text-center"><%= closed.averages.avg_list %></td>
-          <td class="text-center"><%= closed.averages.avg_close %></td>
-          <td class="text-center"><%= closed.averages.avg_percent %></td>
-          <td class="text-center"><%= closed.averages.avg_dom %></td>
-          <td class="text-center"><%= closed.averages.avg_sqft %></td>
-        </tr>
-      </table>
+          <%= for cl <- closed.listings do %>
+            <tr>
+              <td><%= cl.address %></td>
+              <td class="text-center"><%= cl.list %></td>
+              <td class="text-center"><%= cl.close %></td>
+              <td class="text-center"><%= cl.percent %></td>
+              <td class="text-center"><%= cl.dom %></td>
+              <td class="text-center"><%= cl.per_sqft %></td>
+            </tr>
+          <% end %>
+          <tr>
+            <td>Averages</td>
+            <td class="text-center"><%= closed.averages.avg_list %></td>
+            <td class="text-center"><%= closed.averages.avg_close %></td>
+            <td class="text-center"><%= closed.averages.avg_percent %></td>
+            <td class="text-center"><%= closed.averages.avg_dom %></td>
+            <td class="text-center"><%= closed.averages.avg_sqft %></td>
+          </tr>
+        </table>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

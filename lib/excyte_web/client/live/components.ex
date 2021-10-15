@@ -54,26 +54,32 @@ defmodule ExcyteWeb.Client.Components do
   def property_price_history(price, id) do
     assigns = %{price_history: price, id: id}
     ~H"""
-      <div class="overflow-x-scroll ">
-        <table class="min-w-max w-full table-auto text-base">
-          <tr class="uppercase text-sm leading-normal">
-            <th class="py-3 px-6 text-left">Date</th>
-            <th class="py-3 px-6 text-left">Event</th>
-            <th class="py-3 px-6 text-center">Price</th>
-            <th class="py-3 px-6 text-center">Price/Sq Ft</th>
-            <th class="py-3 px-6 text-left">Source</th>
-          </tr>
-          <%= for ph <- @price_history do %>
-            <% {:ok, dt} = NaiveDateTime.from_iso8601(ph["date"]) %>
-            <tr class="border-t accent-color">
-              <td class="py-3 px-6 text-left"><%= Calendar.strftime(dt, "%m/%d/%Y") %></td>
-              <td class="py-3 px-6 text-left"><%= ph["event_name"] %></td>
-              <td class="py-3 px-6 text-center"><%= if ph["price"], do: "$#{number_to_delimited(ph["price"], precision: 0)}", else: "-" %></td>
-              <td class="py-3 px-6 text-center"><%= if ph["price"] && ph["sqft"] && ph["sqft"] > 0, do: "$#{number_to_delimited(round(ph["price"]/ph["sqft"]), precision: 0)}", else: "-"  %></td>
-              <td class="py-3 px-6 text-left"><%= ph["datasource_name"] %></td>
-            </tr>
-          <% end %>
-        </table>
+      <div>
+        <%= if is_list(@price_history) && length(@price_history) > 0 do %>
+          <div class="overflow-x-scroll ">
+            <table class="min-w-max w-full table-auto text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-4 text-left">Date</th>
+                <th class="py-3 px-4 text-left">Event</th>
+                <th class="py-3 px-4 text-center">Price</th>
+                <th class="py-3 px-4 text-center">Price/Sq Ft</th>
+                <th class="py-3 px-4 text-left">Source</th>
+              </tr>
+              <%= for ph <- @price_history do %>
+                <% {:ok, dt} = NaiveDateTime.from_iso8601(ph["date"]) %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-4 text-left"><%= Calendar.strftime(dt, "%m/%d/%Y") %></td>
+                  <td class="py-3 px-4 text-left"><%= ph["event_name"] %></td>
+                  <td class="py-3 px-4 text-center"><%= if ph["price"], do: "$#{number_to_delimited(ph["price"], precision: 0)}", else: "-" %></td>
+                  <td class="py-3 px-4 text-center"><%= if ph["price"] && ph["sqft"] && ph["sqft"] > 0, do: "$#{number_to_delimited(round(ph["price"]/ph["sqft"]), precision: 0)}", else: "-"  %></td>
+                  <td class="py-3 px-4 text-left"><%= ph["datasource_name"] %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% else %>
+          <p>Sorry, we couldn't find any history.</p>
+        <% end %>
       </div>
     """
   end
@@ -81,29 +87,35 @@ defmodule ExcyteWeb.Client.Components do
   def property_tax_history(tax, id) do
     assigns = %{tax_history: tax, id: id}
     ~H"""
-      <div class="overflow-y-scroll">
-        <table class="min-w-max w-full table-auto text-base">
-          <tr class="uppercase text-sm leading-normal">
-            <th class="py-3 px-6 text-left">Year</th>
-            <th class="py-3 px-6 text-center">Taxes</th>
-            <th class="py-3 px-6 text-center">Land</th>
-            <th class="py-3 px-6 text-center"></th>
-            <th class="py-3 px-6 text-center">Additions</th>
-            <th class="py-3 px-6 text-center"></th>
-            <th class="py-3 px-6 text-center">Total assessments</th>
-          </tr>
-          <%= for th <- @tax_history do %>
-            <tr class="border-t accent-color">
-              <td class="py-3 px-6 text-left"><%= if th["year"], do: th["year"], else: "N/A" %></td>
-              <td class="py-3 px-6 text-center"><%= if th["tax"], do: "$#{number_to_delimited(th["tax"], precision: 0)}", else: "N/A" %></td>
-              <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["land"], do: "$#{number_to_delimited(th["assessment"]["land"], precision: 0)}", else: "N/A" %></td>
-              <td class="py-3 px-6 text-center">+</td>
-              <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["building"], do: "$#{number_to_delimited(th["assessment"]["building"], precision: 0)}", else: "N/A" %></td>
-              <td class="py-3 px-6 text-center">=</td>
-              <td class="py-3 px-6 text-center"><%= if th["assessment"] && th["assessment"]["total"], do: "$#{number_to_delimited(th["assessment"]["total"], precision: 0)}", else: "N/A" %></td>
-            </tr>
-          <% end %>
-        </table>
+      <div>
+        <%= if is_list(@tax_history) && length(@tax_history) > 0 do %>
+          <div class="overflow-y-scroll">
+            <table class="min-w-max w-full table-auto text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-4 text-left">Year</th>
+                <th class="py-3 px-4 text-center">Taxes</th>
+                <th class="py-3 px-4 text-center">Land</th>
+                <th class="py-3 px-4 text-center"></th>
+                <th class="py-3 px-4 text-center">Additions</th>
+                <th class="py-3 px-4 text-center"></th>
+                <th class="py-3 px-4 text-center">Total assessments</th>
+              </tr>
+              <%= for th <- @tax_history do %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-4 text-left"><%= if th["year"], do: th["year"], else: "N/A" %></td>
+                  <td class="py-3 px-4 text-center"><%= if th["tax"], do: "$#{number_to_delimited(th["tax"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-4 text-center"><%= if th["assessment"] && th["assessment"]["land"], do: "$#{number_to_delimited(th["assessment"]["land"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-4 text-center">+</td>
+                  <td class="py-3 px-4 text-center"><%= if th["assessment"] && th["assessment"]["building"], do: "$#{number_to_delimited(th["assessment"]["building"], precision: 0)}", else: "N/A" %></td>
+                  <td class="py-3 px-4 text-center">=</td>
+                  <td class="py-3 px-4 text-center"><%= if th["assessment"] && th["assessment"]["total"], do: "$#{number_to_delimited(th["assessment"]["total"], precision: 0)}", else: "N/A" %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% else %>
+          <p>Sorry, we couldn't find any history.</p>
+        <% end %>
       </div>
     """
   end
@@ -111,43 +123,49 @@ defmodule ExcyteWeb.Client.Components do
   def schools(schools, id) do
     assigns = %{schools: schools, id: id}
     ~H"""
-      <div class="overflow-y-scroll">
-        <table class="min-w-max w-full table-auto text-base">
-          <tr class="uppercase text-sm leading-normal">
-            <th class="py-3 px-6 text-left">Rating</th>
-            <th class="py-3 px-6 text-left">School Name</th>
-            <th class="py-3 px-6 text-left">Grades</th>
-            <th class="py-3 px-6 text-left">Type</th>
-            <th class="py-3 px-6 text-left">Students</th>
-            <th>Reviews</th>
-            <th>Distance</th>
-          </tr>
-          <%= for sch <- @schools do %>
-            <tr class="border-t accent-color">
-              <td class="py-3 px-6 text-left"><%= if sch["ratings"]["great_schools_rating"], do: Phoenix.HTML.raw("<strong>#{sch["ratings"]["great_schools_rating"]}</strong>/10"), else: "N/A" %></td>
-              <td class="py-3 px-6 text-left"><%= if sch["name"], do: sch["name"], else: "N/A" %></td>
-              <% low = if sch["grades"] && sch["grades"]["range"] && sch["grades"]["range"]["low"], do: sch["grades"]["range"]["low"], else: "N/A" %>
-              <% high = if sch["grades"] && sch["grades"]["range"] && sch["grades"]["range"]["high"], do: sch["grades"]["range"]["high"], else: "N/A" %>
-              <td class="py-3 px-6 text-left"><%= low %> - <%= high %></td>
-              <td class="py-3 px-6 text-left"><%= if sch["funding_type"], do: sch["funding_type"], else: "N/A" %></td>
-              <td class="py-3 px-6 text-left"><%= if sch["student_count"], do: sch["student_count"], else: "N/A" %></td>
-              <% stars = Enum.reduce(1..5, "", fn c, acc ->
-                color = if c <= sch["ratings"]["parent_rating"], do: "#FCD34D", else: "#E5E5E5"
-                acc =
-                  acc <> "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 block\" fill=\"#{color}\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">
-                      <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z\" />
-                    </svg>"
-                acc
-              end) %>
-              <td class="py-3 px-6 text-left">
-                <div class="flex">
-                  <%= Phoenix.HTML.raw(stars) %>
-                </div>
-              </td>
-              <td class="py-3 px-6 text-left"><%= if sch["distance_in_miles"], do: "#{sch["distance_in_miles"]} mi", else: "N/A" %></td>
-            </tr>
-          <% end %>
-        </table>
+      <div>
+        <%= if is_list(@schools) && length(@schools) > 0 do %>
+          <div class="overflow-y-scroll">
+            <table class="min-w-max w-full table-auto text-base">
+              <tr class="uppercase text-sm leading-normal">
+                <th class="py-3 px-2 text-left">Rating</th>
+                <th class="py-3 px-4 text-left">School Name</th>
+                <th class="py-3 px-4 text-left">Grades</th>
+                <th class="py-3 px-4 text-left">Type</th>
+                <th class="py-3 px-4 text-left">Students</th>
+                <th class="py-3 px-2 text-left">Reviews</th>
+                <th class="py-3 px-2 text-left">Dist.</th>
+              </tr>
+              <%= for sch <- @schools do %>
+                <tr class="border-t accent-color">
+                  <td class="py-3 px-2 text-left"><%= if sch["ratings"]["great_schools_rating"], do: Phoenix.HTML.raw("<strong>#{sch["ratings"]["great_schools_rating"]}</strong>/10"), else: "N/A" %></td>
+                  <td class="py-3 px-4 text-left"><%= if sch["name"], do: sch["name"], else: "N/A" %></td>
+                  <% low = if sch["grades"] && sch["grades"]["range"] && sch["grades"]["range"]["low"], do: sch["grades"]["range"]["low"], else: "N/A" %>
+                  <% high = if sch["grades"] && sch["grades"]["range"] && sch["grades"]["range"]["high"], do: sch["grades"]["range"]["high"], else: "N/A" %>
+                  <td class="py-3 px-4 text-left"><%= low %> - <%= high %></td>
+                  <td class="py-3 px-4 text-left"><%= if sch["funding_type"], do: sch["funding_type"], else: "N/A" %></td>
+                  <td class="py-3 px-4 text-left"><%= if sch["student_count"], do: sch["student_count"], else: "N/A" %></td>
+                  <% stars = Enum.reduce(1..5, "", fn c, acc ->
+                    color = if c <= sch["ratings"]["parent_rating"], do: "#FCD34D", else: "#E5E5E5"
+                    acc =
+                      acc <> "<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6 block\" fill=\"#{color}\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">
+                          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z\" />
+                        </svg>"
+                    acc
+                  end) %>
+                  <td class="py-3 px-4 text-left">
+                    <div class="flex">
+                      <%= Phoenix.HTML.raw(stars) %>
+                    </div>
+                  </td>
+                  <td class="py-3 px-4 text-left"><%= if sch["distance_in_miles"], do: "#{sch["distance_in_miles"]} mi", else: "N/A" %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% else %>
+          <p>Sorry, we couldn't find any school information.</p>
+        <% end %>
       </div>
     """
   end

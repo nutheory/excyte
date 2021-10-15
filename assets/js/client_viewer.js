@@ -15,7 +15,7 @@ export const ClientViewer = {
         killDivs(allDividers)
         const styles = buildTheme(theme)
         addCss(styles)
-        console.log("viewer called")
+
         let lightbox = Glightbox({
           touchNavigation: true,
           loop: true,
@@ -27,10 +27,6 @@ export const ClientViewer = {
 
     this.handleEvent("openAccordian", ({ button_id }) => {
       const el = document.getElementById(button_id)
-      // const open = document.getElementById(`${button_id}_open`)
-      console.log("accordian called", el)
-      // el.setAttribute('x-data', '{ expanded: true }')
-      // open.style['height'] = 'auto'
       el.click()
     })
   },

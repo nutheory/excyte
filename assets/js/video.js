@@ -6,7 +6,6 @@ export const VideoInitialize = {
     const streamId = this.el.dataset.streamId
     const videoPlayerId = this.el.dataset.playerId
     const video = this.el.querySelector(`#${videoPlayerId}`)
-    console.log("streamId", streamId)
 
     const player = videojs(video, {
       "timelineHoverPreviews": true,

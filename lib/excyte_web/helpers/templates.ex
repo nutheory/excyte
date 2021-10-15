@@ -1141,11 +1141,10 @@ defmodule ExcyteWeb.Helpers.Templates do
       thumb_url: a.thumb_url,
       stream_id: a.stream_id,
       description: a.description,
-      video_url: a.video_url})
+      video_url: a.video_url}) |> String.replace("'", "")
     """
-      <divider type="#{type}"></divider>
       <struct class="section" id="video_{{ asset.stream_id }}" title="Video" subtitle="{{asset.title}}">
-        <div data-type='simpleVideo' contenteditable="false" data-video-json='#{asset}'></div>
+        <struct data-type="simpleVideo" contenteditable="false" data-video-json="#{asset}"></struct>
       </struct>
     """
     |> Solid.parse()

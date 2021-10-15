@@ -7,18 +7,18 @@ import {LiveSocket} from "phoenix_live_view"
 import {ClientViewer} from "./client_viewer"
 import {setupSizing} from "./mobile_sizing"
 import {ClosedListingsChart} from "./closed_listings_chart"
+import {VideoInitialize} from "./video"
 import {WalkNeighborhood} from "./walk_neighborhood"
 import {TableOfContents} from "./table_of_contents"
 
-
 import topbar from "topbar"
-
 let Hooks = {}
 
-Hooks.ClientViewer = ClientViewer
 Hooks.TableOfContents = TableOfContents
 Hooks.ClosedListingsChart = ClosedListingsChart
+Hooks.VideoInitialize = VideoInitialize
 Hooks.WalkNeighborhood = WalkNeighborhood
+Hooks.ClientViewer = ClientViewer
 
 setupSizing()
 
@@ -47,7 +47,7 @@ window.addEventListener("phx:page-loading-stop", () => { clearTimeout(progressTi
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
-
+Alpine.start()
 // expose liveSocket on window for web console debug logs and latency simulation:
 // >> liveSocket.enableDebug()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session

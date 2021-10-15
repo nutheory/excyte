@@ -17,17 +17,17 @@ div.preview-wrapper {
     box-shadow: 1px 1px 3px #666;
   }
 
-  & .walk-wrapper {
+  & .mapping-wrapper {
     @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
     z-index: 100; 
   
-    & .walk-viewer {
+    & .mapping-viewer {
       @apply w-full h-full max-w-screen-lg;
       max-height: 30rem;
       z-index: 200;
     }
 
-    & .leave-neighborhood {
+    & .leave-mapping {
       @apply absolute top-0 left-1/2 -ml-12 bg-red-800 rounded-b-md shadow px-2 py-1 flex items-center justify-center text-base;
       z-index: 300;
       color: #FFF !important;

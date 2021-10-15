@@ -67,7 +67,6 @@ defmodule Excyte.Properties.PublicDataApi do
       %{} = best_result -> {:ok, best_result["mpr_id"]}
       nil -> nil
     end
-    |> IO.inspect(label: "FVR")
   end
 
   defp fetch_public_listing(valid_id) do

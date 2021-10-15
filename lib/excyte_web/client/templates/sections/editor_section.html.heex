@@ -1,0 +1,8 @@
+<%# <div 
+  phx-update="ignore"
+  x-data={"currentViewer('')"}
+  x-init={"() => init($refs.#{section.component_name}_#{idx})"}
+  x-on:click.away="inFocus = false"
+>
+  <div x-ref={"#{section.component_name}_#{idx}"}></div>
+</div>  %>

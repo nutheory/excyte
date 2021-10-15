@@ -13,9 +13,13 @@ defmodule Excyte.Brokerages do
   end
 
   def get_brokerage_profile(_repo, %{insight: insight}) do
-    case Repo.get_by(Profile, %{brokerage_id: insight.brokerage_id}) do
-      %Profile{} = profile -> {:ok, profile}
-      nil -> {:ok, nil}
+    if is_nil(insight.brokerage_id) do
+      {:ok, nil}
+    else
+      case Repo.get_by(Profile, %{brokerage_id: insight.brokerage_id}) do
+        %Profile{} = profile -> {:ok, profile}
+        nil -> {:ok, nil}
+      end
     end
   end
 

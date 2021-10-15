@@ -1,0 +1,25 @@
+<div class="subject squeeze" data-display-type="mixed">
+  <%= if @content && @content.title && @content.stream_id do %>
+    <%= Components.divider() %>
+    <div 
+      id={"video_section_#{@index}"}
+      phx-update="ignore"
+      phx-hook="VideoInitialize"
+      data-stream-id={@content.stream_id}
+      data-player-id={"video_player_#{@index}"}
+      class="py-12 lg:py-20 mx-auto"
+    >
+      <h2 class="header-color"><%= @content.title %></h2>
+      <%= if @content.description do %>
+        <p class="mb-4"><%= @content.description %></p>
+      <% end %>
+      <video 
+        id={"video_player_#{@index}"}
+        class={"video-js vjs-16-9 mt-0 mb-0"}
+        controls="controls"
+        preload="auto"
+        width="100%">
+      </video>
+    </div>
+  <% end %>
+</div>

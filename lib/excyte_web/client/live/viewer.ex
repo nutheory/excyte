@@ -27,11 +27,15 @@ defmodule ExcyteWeb.Client.Viewer do
             brokerage: res.brokerage
           },
           theme: insight.document_attributes,
-          listings: Enum.sort(insight.content.listings, fn a, b ->
+          listings: Enum.map(insight.content.listings, fn lst ->
+            Map.put(lst, "collapse", ["features", "layout_details"])
+          end)
+          |> Enum.sort(fn a, b ->
             a["excyte_data"]["position"] <= b["excyte_data"]["position"]
           end),
           loading: false
         )}
+      {:error, :insight, %{message: "No report found."}, %{}} -> {:ok, assign(socket, errors: [%{message: "Could not find published report."}])}
       {:error, err} -> err
     end
   end
@@ -48,26 +52,26 @@ defmodule ExcyteWeb.Client.Viewer do
     })}
   end
 
-  def handle_info({:public_listing_info, %{lst_id: lst_id, c_id: c_id}}, %{assigns: a} = socket) do
+  def handle_info({:public_listing_info, %{lst_id: lst_id, name: name}}, %{assigns: a} = socket) do
     listings =
       Enum.map(a.listings, fn lst ->
         if lst["listing_id"] === lst_id do
-          case PublicDataApi.merge_public_data(lst) do
-            {:ok, with_public} ->
-              with_public
-            err -> IO.inspect(err, label: "PUBLIC ERR")
-          end
+          open =
+            if Map.has_key?(lst, "public_data") === true do
+              lst
+            else
+              case PublicDataApi.merge_public_data(lst) do
+                {:ok, with_public} ->
+                  with_public
+                err -> IO.inspect(err, label: "PUBLIC ERR")
+              end
+            end
+          add_remove_collapse(name, open)
         else
           lst
         end
       end)
-    {:noreply, push_event(socket, "openAccordian", %{button_id: "btn_#{c_id}"})
-               |> assign(listings: listings)}
-  end
-
-  @impl true
-  def handle_event("check-security", _payload, %{assigns: _a} = socket) do
-    {:reply, %{logged_in: false}, socket}
+    {:noreply, assign(socket, listings: listings)}
   end
 
   defp merge_theme(%{brokerage: bk, agent_profile: ag, insight: ins}) do
@@ -75,6 +79,14 @@ defmodule ExcyteWeb.Client.Viewer do
       Map.merge(ins, %{document_attributes: bk.theme_settings})
     else
       Map.merge(ins, %{document_attributes: ag.theme_settings})
+    end
+  end
+
+  defp add_remove_collapse(name, open) do
+    if Enum.member?(open["collapse"], name) do
+      Map.update!(open, "collapse", &(List.delete(&1, name)))
+    else
+      Map.update!(open, "collapse", &([name | &1]))
     end
   end
 end

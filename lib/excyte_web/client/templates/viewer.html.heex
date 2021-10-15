@@ -14,7 +14,11 @@
     insight_type: @insight.type,
     id: :report_header
   %>
-  <div class="viewer" phx-hook="TableOfContents" id="toc_wrapper">
+  <div 
+    class="viewer" 
+    phx-hook="TableOfContents" 
+    id="toc_wrapper"
+  >
     <%= for {section, idx} <- Enum.with_index(@sections) do %>
       <%= if section.enabled do %>
         <div 
@@ -28,6 +32,7 @@
             brokerage: @data.brokerage,
             agent: @data.agent_profile,
             insight: @insight,
+            content: section.content,
             index: idx,
             section: section,
             listings: @listings,

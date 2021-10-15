@@ -46,7 +46,7 @@
     "@tiptap/extension-text-style": "*",
     "@tiptap/extension-underline": "*",
     "@tiptap/suggestion": "*",
-    "alpinejs": "^2.7.3",
+    "alpinejs": "^2.8.2",
     "axios": "^0.21.1",
     "chart.js": "^3.5.1",
     "cropperjs": "^1.5.12",

@@ -6,9 +6,11 @@ export const CustomizePreview = {
       setTimeout(() => {
         const cover = this.el.querySelector("[data-index='0']")
         const firstDivider = cover.querySelector(".divider")
+        const allDividers = this.el.querySelectorAll(".divider")
         if (firstDivider !== null){
           firstDivider.remove()
         }
+        killDivs(allDividers)
         const styles = buildTheme(theme)
         addCss(styles)
         let lightbox = Glightbox({
@@ -21,11 +23,23 @@ export const CustomizePreview = {
     })
 
     this.handleEvent("openAccordian", ({ button_id }) => {
+      console.log("accordian called", button_id)
       const el = document.getElementById(`${button_id}`)
       el.click()
     })
   },
   destroyed() {},
+}
+
+const killDivs = (els) => {
+  const divs = Array.from(els)
+  divs.forEach(el => {
+    const parent = el.closest('.section')
+    const prev = parent.previousElementSibling.children[0]
+    if (prev.dataset.displayType === "full_width") {
+      el.remove()
+    }
+  })
 }
 
 const buildTheme = (theme) => {

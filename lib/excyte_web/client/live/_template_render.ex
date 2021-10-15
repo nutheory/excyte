@@ -10,6 +10,7 @@ defmodule ExcyteWeb.Client.TemplateRender do
       template: assigns.section.component_name,
       theme: assigns.insight.document_attributes,
       brokerage: assigns.brokerage,
+      content: assigns.content,
       agent: assigns.agent,
       insight: assigns.insight,
       index: assigns.index,
@@ -22,4 +23,20 @@ defmodule ExcyteWeb.Client.TemplateRender do
     {:noreply, push_event(socket, "load_neighborhood", %{coords: %{lat: lat, lng: lng}, id: id})}
   end
 
+  def handle_event("map_all_properties", _, %{assigns: a} = socket) do
+    sub = a.insight.property
+    subject = %{
+      address: "#{sub.street_number} #{sub.street_name}, #{sub.city}",
+      coords: sub.coords,
+      main_photo_url: sub.main_photo_url
+    }
+    listings = Enum.map(a.listings, fn lst ->
+      %{
+        address: "#{lst["street_number"]} #{lst["street_name"]}, #{lst["city"]}",
+        coords: %{lat: hd(tl(lst["coords"])), lng: hd(lst["coords"])},
+        main_photo_url: lst["main_photo_url"]
+      }
+    end)
+    {:noreply, push_event(socket, "create_map_and_markers", %{subject: subject, listings: listings})}
+  end
 end

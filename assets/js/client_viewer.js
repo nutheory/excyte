@@ -1,7 +1,9 @@
+import { optionsForElement } from 'dropzone'
 import Glightbox from 'glightbox'
 
 export const ClientViewer = {
   mounted() {
+    // window.viewerHook.base = this
     this.handleEvent("loadViewer", ({ content, theme, brokerage, agent, authorized_agent }) => {
       setTimeout(() => {
         const cover = this.el.querySelector("[data-index='0']")
@@ -13,17 +15,22 @@ export const ClientViewer = {
         killDivs(allDividers)
         const styles = buildTheme(theme)
         addCss(styles)
+        console.log("viewer called")
         let lightbox = Glightbox({
           touchNavigation: true,
           loop: true,
           autoplayVideos: true,
           selector: ".glightbox"
         })
-      }, 200)
+      }, 0)
     })
 
     this.handleEvent("openAccordian", ({ button_id }) => {
-      const el = document.getElementById(`${button_id}`)
+      const el = document.getElementById(button_id)
+      // const open = document.getElementById(`${button_id}_open`)
+      console.log("accordian called", el)
+      // el.setAttribute('x-data', '{ expanded: true }')
+      // open.style['height'] = 'auto'
       el.click()
     })
   },

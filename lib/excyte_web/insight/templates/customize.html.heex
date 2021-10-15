@@ -88,7 +88,9 @@
                 </div>
               </li>
             <% else %>
-              <%= live_component @socket, SectionCard, section: section %>
+              <%= if section.component_name !== "brokerage_profile" || @data.brokerage !== nil do %>
+                <%= live_component @socket, SectionCard, section: section %>
+              <% end %>
             <% end %>
           <% end %>
         </ul>
@@ -100,7 +102,7 @@
                 <div class="link-button text-base m-1" phx-click="toggle-video">Cancel</div>
               </div>
               <%= live_component @socket, UploadVideo,
-                uuid: "#{@current_user.id}_#{@insight["uuid"]}",
+                uuid: "#{@current_user.id}_#{@insight.uuid}",
                 current_user: @current_user,
                 id: :video_uploader
               %>
@@ -206,6 +208,7 @@
                     brokerage: @data.brokerage,
                     agent: @data.agent_profile,
                     insight: @insight,
+                    content: section.content, 
                     index: idx,
                     section: section,
                     listings: @listings,

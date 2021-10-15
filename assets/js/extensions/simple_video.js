@@ -32,7 +32,7 @@ export default Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(HTMLAttributes, {'data-type': 'simpleVideo'}), 0]
+    return ['div', mergeAttributes(HTMLAttributes, {"data-type": "simpleVideo"}), 0]
   },
 
   addNodeView() {

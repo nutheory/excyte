@@ -1,11 +1,11 @@
-<div x-data={"{open: #{@open}}"} id={@id}>
+<div id={@id}>
   <button 
     type="button" 
     id={"btn_#{@id}"}
     class="w-full p-4 text-left" 
     phx-click="fetch-public-data"
     phx-value-name={@name}
-    phx-value-id={@id} 
+    phx-value-id={"btn_#{@id}"} 
     phx-target={@myself}
   >
     <div class="flex items-center justify-between">
@@ -22,17 +22,15 @@
         <% end %>
       </div>
       <div>
-        <svg xmlns="http://www.w3.org/2000/svg" :class="{'transform rotate-45': open}" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class={"h-5 w-5 #{if @open, do: "transform rotate-45", else: ""}"} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
       </div>
     </div>
   </button>
   <div 
-    class="relative overflow-hidden transition-all max-h-0 duration-700" 
-    style="" 
-    x-ref="container" 
-    x-bind:style={"open == true ? 'max-height: ' + $refs.container.scrollHeight + 'px' : ''"}
+    class={"relative transition-all duration-700"}
+    style={"#{if @open, do: "height: auto; overflow: auto;", else: "overflow: hidden; height: 0;"}"}
   >
     <div class="pb-6 px-4">
       <%= render_block(@inner_block, []) %>

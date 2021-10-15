@@ -4,9 +4,9 @@ export const WalkNeighborhood = {
     const wrapper = document.createElement('div')
     const viewer = document.createElement('div')
     const closer = document.createElement('button')
-    wrapper.classList.add('walk-wrapper')
-    viewer.classList.add('walk-viewer')
-    closer.classList.add('leave-neighborhood')
+    wrapper.classList.add('mapping-wrapper')
+    viewer.classList.add('mapping-viewer')
+    closer.classList.add('leave-mapping')
     closer.innerHTML = `
       <div class="flex">
         <div>

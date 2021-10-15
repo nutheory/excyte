@@ -58,28 +58,34 @@ defmodule ExcyteWeb.Insight.Customize do
             brokerage: res.brokerage
           },
           name: set_default_name(insight),
-          listings: listings,
+          listings: Enum.map(listings, fn lst ->
+            Map.put(lst, "collapse", ["features", "layout_details"])
+          end),
           loading: false
         )}
       {:error, err} -> err
     end
   end
 
-  def handle_info({:public_listing_info, %{lst_id: lst_id, c_id: c_id}}, %{assigns: a} = socket) do
+  def handle_info({:public_listing_info, %{lst_id: lst_id, name: name}}, %{assigns: a} = socket) do
     listings =
       Enum.map(a.listings, fn lst ->
         if lst["listing_id"] === lst_id do
-          case PublicDataApi.merge_public_data(lst) do
-            {:ok, with_public} ->
-              with_public
-            err -> IO.inspect(err, label: "PUBLIC ERR")
-          end
+          open =
+            if Map.has_key?(lst, "public_data") === true do
+              lst
+            else
+              case PublicDataApi.merge_public_data(lst) do
+                {:ok, with_public} -> with_public
+                err -> IO.inspect(err, label: "PUBLIC ERR")
+              end
+            end
+          add_remove_collapse(name, open)
         else
           lst
         end
       end)
-    {:noreply, push_event(socket, "openAccordian", %{button_id: "btn_#{c_id}"})
-               |> assign(listings: listings)}
+    {:noreply, assign(socket, listings: listings)}
   end
 
   def handle_info({Assets, [:asset, _], result}, %{assigns: a} = socket) do
@@ -93,7 +99,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
-    content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight["type"])
+    # content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight.type)
     section = [%{
         position: (length(a.sections) + 1),
         created_by_id: a.current_user.id,
@@ -103,7 +109,7 @@ defmodule ExcyteWeb.Insight.Customize do
         temp_id: String.to_integer(List.last(String.split(asset.uuid, "_"))),
         description: asset.description,
         name: asset.title,
-        html_content: content
+        content: Map.from_struct(asset)
       }]
     {:noreply, assign(socket, show_video_form: false, sections: a.sections ++ section)}
   end
@@ -253,7 +259,9 @@ defmodule ExcyteWeb.Insight.Customize do
         description: s.description,
         enabled: s.enabled,
         name: s.name,
-        section_template_id: s.id,
+        content: (if Map.has_key?(s, :content), do: Map.drop(s.content, [:__meta__, :__struct__, :brokerage, :uploaded_by]), else: nil),
+        html_content: (if Map.has_key?(s, :html_content), do: s.html_content, else: nil),
+        section_template_id: (if Map.has_key?(s, :id), do: s.id, else: nil),
         component_name: s.component_name
       }
     end)
@@ -296,6 +304,14 @@ defmodule ExcyteWeb.Insight.Customize do
       Map.put(insight, :cover_photo_url, url)
     else
       insight
+    end
+  end
+
+  defp add_remove_collapse(name, open) do
+    if Enum.member?(open["collapse"], name) do
+      Map.update!(open, "collapse", &(List.delete(&1, name)))
+    else
+      Map.update!(open, "collapse", &([name | &1]))
     end
   end
 end

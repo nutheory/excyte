@@ -37,20 +37,24 @@ defmodule ExcyteWeb.Insight.PreviewComp do
   end
 
   def handle_event("commit-adjustment-item", btn, %{assigns: a} = socket) do
-    value = if Map.has_key?(btn, "add"), do: a.adj_value, else: a.adj_value * -1
-    adj = a.custom_adjustments ++ [%{
-      id: Ecto.UUID.generate,
-      name: a.adj_name,
-      value: value
-    }]
+    if a.adj_value !== "" && a.adj_name !== "" do
+      value = if Map.has_key?(btn, "add"), do: a.adj_value, else: a.adj_value * -1
+      adj = a.custom_adjustments ++ [%{
+        id: Ecto.UUID.generate,
+        name: a.adj_name,
+        value: value
+      }]
 
-    {:noreply, assign(socket,
-      adj_name: "",
-      adj_value: "",
-      custom_adjustments: adj,
-      show_adjustment_form: false,
-      excyte_price: a.excyte_price + value
-    )}
+      {:noreply, assign(socket,
+        adj_name: "",
+        adj_value: "",
+        custom_adjustments: adj,
+        show_adjustment_form: false,
+        excyte_price: a.excyte_price + value
+      )}
+    else
+      {:noreply, assign(socket, error: %{message: "invalid adjustment"})}
+    end
   end
 
   def handle_event("remove-adjustment-item", %{"adj-id" => id}, %{assigns: a} = socket) do

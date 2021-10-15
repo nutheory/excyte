@@ -24,6 +24,8 @@ _build/staging/rel/excyte/bin/excyte stop
 
 Migrate cmd $ _build/staging/rel/excyte/bin/excyte eval "Excyte.Release.migrate"
 
+Rollback cmd $ _build/staging/rel/excyte/bin/excyte eval "Excyte.Release.rollback(Excyte.Repo, 20210815024725)"
+
 To start your Phoenix server:
 
 * Install dependencies with `mix deps.get`

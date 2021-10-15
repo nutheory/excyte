@@ -9,7 +9,6 @@ export const GeoLocation = {
     }
 
     const setPosition = (pos) => {
-      console.log("POS", pos)
       if (pos.coords.latitude && pos.coords.longitude){
         this.pushEvent('current_location_coords', { lat: pos.coords.latitude, lng: pos.coords.longitude, autodetected: true})
       }

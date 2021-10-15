@@ -60,7 +60,7 @@
             Optionally, you may enter a exact price instead
           </p>
         <% end %>
-        <.form let={f} for={:suggested_price} phx-change="range-update" phx-submit="save-cma" phx-target={@myself}>
+        <.form let={f} for={:suggested_price} phx-change="suggested-update" phx-submit="save-cma" phx-target={@myself}>
           <div class="flex my-6">
             <div class="mr-1 pt-1 text-lg">$</div>
             <%= if @range do %>

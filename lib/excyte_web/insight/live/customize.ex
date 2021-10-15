@@ -99,9 +99,8 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   def handle_info({:create_video_section, asset}, %{assigns: a} = socket) do
-    # content = Templates.video_section(%{asset: Map.from_struct(asset)}, a.insight.type)
     section = [%{
-        position: (length(a.sections) + 1),
+        position: 100,
         created_by_id: a.current_user.id,
         component_name: "video_section",
         enabled: true,

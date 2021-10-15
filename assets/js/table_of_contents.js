@@ -12,9 +12,7 @@ export const TableOfContents = {
     }, { threshold: [0], rootMargin: `-50% 0px` })
 
     this.handleEvent('jumpTo', ({ id }) => {
-      console.log("ID", id)
       const el = this.el.querySelector(`#${id}`)
-      console.log("el", el)
       el.scrollIntoView({behavior: "smooth"})
     })
   }

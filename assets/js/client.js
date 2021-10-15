@@ -9,6 +9,7 @@ import {setupSizing} from "./mobile_sizing"
 import {ClosedListingsChart} from "./closed_listings_chart"
 import {VideoInitialize} from "./video"
 import {WalkNeighborhood} from "./walk_neighborhood"
+import {Mapping} from "./mapping"
 import {TableOfContents} from "./table_of_contents"
 
 import topbar from "topbar"
@@ -18,6 +19,7 @@ Hooks.TableOfContents = TableOfContents
 Hooks.ClosedListingsChart = ClosedListingsChart
 Hooks.VideoInitialize = VideoInitialize
 Hooks.WalkNeighborhood = WalkNeighborhood
+Hooks.Mapping = Mapping
 Hooks.ClientViewer = ClientViewer
 
 setupSizing()

@@ -42,9 +42,7 @@ defmodule ExcyteWeb.Client.Viewer do
 
   @impl true
   def handle_info({:load_view, %{}}, %{assigns: a} = socket) do
-    IO.inspect(label: "run after waking up")
     {:noreply, push_event(socket, "loadViewer", %{
-      # content: a.sections,
       theme: a.theme,
       authorized_agent: (if a.current_user, do: true, else: false),
       agent: a.data.agent_profile,
@@ -61,8 +59,7 @@ defmodule ExcyteWeb.Client.Viewer do
               lst
             else
               case PublicDataApi.merge_public_data(lst) do
-                {:ok, with_public} ->
-                  with_public
+                {:ok, with_public} -> with_public
                 err -> IO.inspect(err, label: "PUBLIC ERR")
               end
             end

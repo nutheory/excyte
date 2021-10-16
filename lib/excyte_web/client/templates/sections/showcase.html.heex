@@ -21,12 +21,12 @@
             <div class="flex-1"></div>
           </div>
           <div class="flex flex-wrap">
-            <div class="w-full sm:flex-1 text-center sm:text-left">
-              <div class="my-6">
+            <div class="w-full sm:flex-1 sm:flex sm:flex-wrap lg:mt-12 text-center sm:text-left">
+              <div class="my-4 md:my-6 mr-8 lg:mr-20">
                 <h4 class="mb-0">Listed at</h4>
                 <h1 class=" mb-0">$<%= number_to_delimited(lst["list_price"], precision: 0) %></h1>
               </div>
-              <div class="my-6">
+              <div class="my-4 md:my-6 mr-8 lg:mr-20">
                 <h4 class="mb-0">MLS #</h4>
                 <h1 class="mb-0"><%= lst["listing_id"] %></h1>
               </div>

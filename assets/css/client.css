@@ -71,21 +71,27 @@
   }
 
   .client-header {
-    @apply relative;
+    @apply relative font-sans;
 
     & .header-fixed {
-      @apply fixed w-full top-0 left-0 max-w-screen-xl z-50 mx-auto;
+      @apply bg-gray-100 fixed w-full top-0 left-0 max-w-screen-xl z-50 mx-auto;
       transform: translate(calc(50vw - 50%));
 
       & .menu {
-        @apply absolute top-0 left-0 m-2 w-full max-w-xs p-4 h-96 z-30 rounded overflow-y-auto;
+        @apply flex flex-col absolute top-0 left-0 bg-gray-100 m-2 w-full max-w-xs p-2 h-96 z-30 rounded ;
 
         max-height: 94vh;
       }
     }
 
+    & .link {
+      /* @apply text-cyan-600; */
+
+      color: #0891B2 !important;
+    }
+
     & .ex-shadow {
-      box-shadow: 1px 1px 3px rgba(66, 66, 66, 0.4);
+      box-shadow: 1px 1px 3px rgba(33, 33, 33, 0.8);
     }
 
     & .header-main {
@@ -142,10 +148,6 @@ div.viewer-wrapper {
 
   & .squeeze {
     @apply mx-auto px-6 lg:px-8 max-w-3xl lg:max-w-4xl xl:max-w-5xl;
-  }
-
-  & .bg-fade-to-black {
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1));
   }
 
   & .large-text-shadow {

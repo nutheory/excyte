@@ -1,8 +1,8 @@
 <nav class="client-header">
-  <div class="header-fixed">
+  <div class="header-fixed text-cyan-700">
     <% menu = if @show_menu === false, do: "scale-0", else: "scale-in-tl" %>
-    <div class={"menu ex-shadow bg-color #{menu}"}>
-      <div class="pl-20 text-right">
+    <div class={"menu ex-shadow #{menu}"}>
+      <div class="pl-20 pr-2 text-right">
         <h4 class="mb-0"><%= Utilities.insight_type_to_name(@insight_type) %></h4>
         <p class="leading-none"><%= @created_by.name %></p>
       </div>
@@ -14,50 +14,52 @@
         <title>Facebook</title>
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
       </svg> %>
-      <div class="mt-6">
+      <p class="pl-2 mt-4">Jump to Section...</p>
+      <div class="overflow-auto">
         <%= if length(@toc_sections) > 0 do %>
-          <h4 class="">Jump to Section...</h4>
-          <ul>
-            <%= for section <- @toc_sections do %>
-              <%= if Enum.member?(["comparable", "tour_stop"], section.component_name) do %>
-                <ul>
-                  <%= for lst <- @toc_listings do %>
-                    <%= if lst.enabled === true do %>
-                      <li class="my-2 p-2 cursor-pointer" phx-click="jump-to-section" phx-value-id={lst.id} phx-target={@myself}>
-                        <h4 class="mb-0"><%= lst.name %></h4>
-                        <%= if lst.description do %>
-                          <p class="leading-tight"><%= lst.description %></p>
-                        <% end %>
-                      </li>
+          <div class="rounded">
+            <ul class="">
+              <%= for section <- @toc_sections do %>
+                <%= if Enum.member?(["comparable", "tour_stop"], section.component_name) do %>
+                  <ul>
+                    <%= for lst <- @toc_listings do %>
+                      <%= if lst.enabled === true do %>
+                        <li class="my-1 p-2 cursor-pointer hover:text-white hover:bg-cyan-600 rounded" phx-click="jump-to-section" phx-value-id={lst.id} phx-target={@myself}>
+                          <p class="mb-0 font-extrabold"><%= lst.name %></p>
+                          <%= if lst.description do %>
+                            <p class="leading-tight text-sm"><%= lst.description %></p>
+                          <% end %>
+                        </li>
+                      <% end %>
                     <% end %>
+                  </ul>
+                <% else %>
+                  <%= if section.enabled === true do %>
+                    <li class="my-1 p-2 cursor-pointer hover:text-white hover:bg-cyan-600 rounded" phx-click="jump-to-section" phx-value-id={section.component_name} phx-target={@myself}>
+                      <p class="mb-0 font-extrabold"><%= section.name %></p>
+                      <%= if section.description do %>
+                        <p class="leading-tight text-sm"><%= section.description %></p>
+                      <% end %>
+                    </li>
                   <% end %>
-                </ul>
-              <% else %>
-                <%= if section.enabled === true do %>
-                  <li class="my-2 p-2 cursor-pointer" phx-click="jump-to-section" phx-value-id={section.component_name} phx-target={@myself}>
-                    <h4 class="mb-0"><%= section.name %></h4>
-                    <%= if section.description do %>
-                      <p class="leading-tight"><%= section.description %></p>
-                    <% end %>
-                  </li>
                 <% end %>
               <% end %>
-            <% end %>
-          </ul>
+            </ul>
+          </div>
         <% end %>
       </div>
     </div>
-    <div class="absolute top-4 left-4 bg-color z-40 rounded ex-shadow flex px-1">
+    <div class="absolute top-4 left-4 bg-gray-100 border border-gray-400 z-40 rounded ex-shadow flex px-1">
       <%= if @current_user do %>
         <div class="p-1">
           <%= link to: "/agent/dash" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto link -mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
-            <p class="text-xs">Dash</p>
+            <p class="text-xs link font-sans">Dash</p>
           <% end %>
         </div>
-        <div class="flex items-center mx-2 border-r"></div>
+        <div class="flex items-center ml-2 mr-1 border-r border-gray-400 my-1"></div>
       <% end %>
       <div class="p-1 flex items-center" phx-click="toggle-menu" phx-target={@myself}>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto link" fill="none" viewBox="0 0 24 24" stroke="currentColor">

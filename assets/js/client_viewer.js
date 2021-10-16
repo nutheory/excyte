@@ -1,4 +1,3 @@
-import { optionsForElement } from 'dropzone'
 import Glightbox from 'glightbox'
 
 export const ClientViewer = {

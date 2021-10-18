@@ -36,9 +36,11 @@ const killDivs = (els) => {
   const divs = Array.from(els)
   divs.forEach(el => {
     const parent = el.closest('.section')
-    const prev = parent.previousElementSibling.children[0]
-    if (prev.dataset.displayType === "full_width") {
-      el.remove()
+    if (parent !== null) {
+      const prev = parent.previousElementSibling.children[0]
+      if (prev.dataset.displayType === "full_width") {
+        el.remove()
+      }
     }
   })
 }

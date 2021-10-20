@@ -2,50 +2,77 @@
   <h2 class="text-center mb-6">What would you like to do today?</h2>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full md:w-4/5 lg:w-3/4 mx-auto">
     <div>
-      <%= live_component @socket, JumboButton, action: CreateCma, title: "CMA", text: "Create a Comparative Market Analysis report", color: "blue" %>
+      <.live_component 
+        module={JumboButton}
+        action={CreateCma} 
+        title={"CMA"}
+        text={"Create a Comparative Market Analysis report"} 
+        color={"blue"}
+        id={:big_cma_button}
+      />
     </div>
     <div>
-      <%= live_component @socket, JumboButton, action: CreateShowcase, title: "Showcase", text: "Create a sharable, detailed, listing report", color: "green" %>
+      <.live_component 
+        module={JumboButton}
+        action={CreateShowcase}
+        title={"Showcase"}
+        text={"Create a sharable, detailed, listing report"}
+        color={"green"}
+        id={:big_showcase_button}
+      />
     </div>
     <div>
-      <%= live_component @socket, JumboButton, action: CreateBuyerTour, title: "Buyer Tour", text: "Create a mapped route of lisings on the market", color: "orange" %>
+      <.live_component 
+        module={JumboButton}
+        action={CreateBuyerTour} 
+        title={"Buyer Tour"}
+        text={"Create a mapped route of lisings on the market"}
+        color={"orange"}
+        id={:big_tour_button}
+      />
     </div>
   </div>
   <div class="mt-16">
     <div class="flex">
       <h2 class="flex-1">Recent Activity</h2>
       <div class="w-36">
-        <%= live_component @socket, Dropdown,
-          options: [
+        <.live_component 
+          module={Dropdown}
+          options={[
             %{value: "all", text: "View All"},
             %{value: "cma", text: "CMA"},
             %{value: "showcase", text: "Showcase"},
             %{value: "buyer_tour", text: "Buyer Tour"}
-          ],
-          selected: @current_view,
-          attr: :insight_type,
-          convert_to_range: false,
-          show_top_label: false,
-          callback: :query_type,
-          label: "Showing",
-          id: :current_dash_view
-        %>
+          ]}
+          selected={@current_view}
+          attr={:insight_type}
+          convert_to_range={false}
+          show_top_label={false}
+          callback={:query_type}
+          label={"Showing"}
+          id={:current_dash_view}
+        />
       </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 mb-12">
       <%= for insight <- @insights do %>
-        <%= live_component @socket, InsightCard, insight: insight, id: "insight_id_#{insight.id}" %>
+        <.live_component 
+          module={InsightCard} 
+          insight={insight}
+          id={"insight_id_#{insight.id}"}
+        />
       <% end %>
     </div>
   </div>
   <% panel = if @show_send_panel, do: 'right-0', else: '' %>
   <div class={"panel-slidein bg-gray-100 px-2 pt-6 lg:max-w-2xl #{panel}"}>
     <%= if @insight_to_send do %>
-      <%= live_component @socket, SendToClient,
-        insight: @insight_to_send,
-        current_user: @current_user,
-        id: :send_insight
-      %>
+      <.live_component 
+        module={SendToClient}
+        insight={@insight_to_send}
+        current_user={@current_user}
+        id={:send_insight}
+      />
     <% end %>
   </div>
 </div>

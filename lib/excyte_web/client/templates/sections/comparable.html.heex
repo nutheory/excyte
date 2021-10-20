@@ -159,11 +159,12 @@
               </div>
             </div>
           </div>
-          <%= live_component @socket, ShowcaseGallery,
-            media: lst["media"],
-            listing_id: lst["listing_id"],
-            id: "media#{lst["listing_id"]}"
-          %>
+          <.live_component 
+            module={ShowcaseGallery}
+            media={lst["media"]}
+            listing_id={lst["listing_id"]}
+            id={"media#{lst["listing_id"]}"}
+          />
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:w-4/5 my-8 mx-auto">
             <div class="adjustments">
               <h4 class="mb-0">Adjustment considerations</h4>

@@ -89,7 +89,7 @@
               </li>
             <% else %>
               <%= if section.component_name !== "brokerage_profile" || @data.brokerage !== nil do %>
-                <%= live_component @socket, SectionCard, section: section %>
+                <.live_component module={SectionCard} section={section} />
               <% end %>
             <% end %>
           <% end %>
@@ -101,11 +101,12 @@
                 <h4 class="mb-0 flex-1">Upload or select a video</h4>
                 <div class="link-button text-base m-1" phx-click="toggle-video">Cancel</div>
               </div>
-              <%= live_component @socket, UploadVideo,
-                uuid: "#{@current_user.id}_#{@insight.uuid}",
-                current_user: @current_user,
-                id: :video_uploader
-              %>
+              <.live_component
+                module={UploadVideo}
+                uuid={"#{@current_user.id}_#{@insight.uuid}"}
+                current_user={@current_user}
+                id={:video_uploader}
+              />
               <ul class="mt-8">
                 <li id="adding-file" class="hidden">
                   <div phx-update="ignore">
@@ -203,18 +204,19 @@
                   data-index={idx}
                   data-component={section.component_name}
                 >
-                  <%= live_component @socket, TemplateRender,
-                    current_user: @current_user,
-                    brokerage: @data.brokerage,
-                    agent: @data.agent_profile,
-                    insight: @insight,
-                    content: section.content, 
-                    index: idx,
-                    section: section,
-                    listings: @listings,
-                    is_live: false,
-                    id: "template_#{section.component_name}_#{idx}"
-                  %>
+                  <.live_component 
+                    module={TemplateRender}
+                    current_user={@current_user}
+                    brokerage={@data.brokerage}
+                    agent={@data.agent_profile}
+                    insight={@insight}
+                    content={section.content}
+                    index={idx}
+                    section={section}
+                    listings={@listings}
+                    is_live={false}
+                    id={"template_#{section.component_name}_#{idx}"}
+                  />
                 </div>
               <% end %>
             <% end %>

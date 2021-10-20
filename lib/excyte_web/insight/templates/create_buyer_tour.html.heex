@@ -9,11 +9,12 @@
           <p class="px-2 text-base">Using current location as starting point. <a href="#" phx-click="change_starting" class="fancy">Change starting point</a></p>
         <% else %>
           <div class="w-full lg:flex-1 lg:px-2 mt-4">
-            <%= live_component @socket, AddressAutocomplete,
-              callback: :starting_point,
-              label: "Enter a starting point",
-              id: :starting_location
-            %>
+            <.live_component 
+              module={AddressAutocomplete}
+              callback={:starting_point}
+              label={"Enter a starting point"}
+              id={:starting_location}
+            />
           </div>
         <% end %>
         <button class="hidden" @click="setGeoLocation">click</button>
@@ -21,82 +22,87 @@
       <div class="flex flex-wrap lg:-mx-2">
         <div class="w-full lg:w-1/2 lg:px-2 mt-4">
           <div class="form">
-            <%= live_component @socket, MultiSelect,
-              options: @property_options,
-              selected: @filters.property_types,
-              key: :property_types,
-              status: false,
-              show_top_label: true,
-              callback: :update_filter,
-              label: "Property Type",
-              id: :property_types
-            %>
+            <.live_component
+              module={MultiSelect}
+              options={@property_options}
+              selected={@filters.property_types}
+              key={:property_types}
+              status={false}
+              show_top_label={true}
+              callback={:update_filter}
+              label={"Property Type"}
+              id={:property_types}
+            />
           </div>
         </div>
         <div class="w-full lg:w-1/2 lg:px-2 mt-4">
           <div class="form">
-            <%= live_component @socket, MultiSelect,
-              options: @feature_options,
-              selected: @filters.features,
-              key: :features,
-              status: false,
-              show_top_label: true,
-              callback: :update_filter,
-              label: "Feaures",
-              id: :feature_list
-            %>
+            <.live_component
+              module={MultiSelect}
+              options={@feature_options}
+              selected={@filters.features}
+              key={:features}
+              status={false}
+              show_top_label={true}
+              callback={:update_filter}
+              label={"Feaures"}
+              id={:feature_list}
+            />
           </div>
         </div>
       </div>
       <div class="flex flex-wrap lg:-mx-2 mt-4">
         <div class="w-full lg:w-2/5 lg:px-2 mt-4">
           <div class="">
-            <%= live_component @socket, RangeInputs,
-              prefix: "$",
-              suffix: "K",
-              min: @filters.price.low,
-              max: @filters.price.high,
-              attribute: :price,
-              type: Integer,
-              step: 3000,
-              label: "List Price (1 = 1,000)",
-              callback: :update_filter,
-              id: :price_filter
-            %>
+            <.live_component
+              module={RangeInputs}
+              prefix={"$"}
+              suffix={"K"}
+              min={@filters.price.low}
+              max={@filters.price.high}
+              attribute={:price}
+              type={Integer}
+              step={3000}
+              label={"List Price (1 = 1,000)"}
+              callback={:update_filter}
+              id={:price_filter}
+            />
           </div>
         </div>
         <div class="w-full lg:w-3/5 lg:px-2">
           <div class="flex -mx-2">
             <div class="w-full lg:w-1/2 px-2 mt-4">
               <div class="">
-                <%= live_component @socket, RangeInputs,
-                  prefix: nil,
-                  suffix: nil,
-                  min: @filters.beds.low,
-                  max: @filters.beds.high,
-                  attribute: :beds,
-                  type: Float,
-                  step: "0.5",
-                  label: "Beds",
-                  callback: :update_filter,
-                  id: :beds_filter
-                %>
+                <.live_component 
+                  module={RangeInputs}
+                  prefix={nil}
+                  suffix={nil}
+                  min={@filters.beds.low}
+                  max={@filters.beds.high}
+                  attribute={:beds}
+                  type={Float}
+                  step={"0.5"}
+                  label={"Beds"}
+                  callback={:update_filter}
+                  id={:beds_filter}
+                />
               </div>
             </div>
             <div class="w-full lg:w-1/2 px-2 mt-4">
               <div class="">
-                <%= live_component @socket, RangeInputs,
-                  prefix: nil,
-                  suffix: nil,
-                  min: @filters.baths.low,
-                  max: @filters.baths.high,
-                  attribute: :baths,
-                  type: Float,
-                  step: "0.25",
-                  label: "Baths",
-                  callback: :update_filter,
-                  id: :baths_filter
-                %>
+                <.live_component 
+                  module={RangeInputs}
+                  prefix={nil}
+                  suffix={nil}
+                  min={@filters.baths.low}
+                  max={@filters.baths.high}
+                  attribute={:baths}
+                  type={Float}
+                  step={"0.25"}
+                  label={"Baths"}
+                  callback={:update_filter}
+                  id={:baths_filter}
+                />
               </div>
             </div>
           </div>
@@ -105,74 +111,78 @@
       <div class="flex flex-wrap lg:-mx-2 mb-2 mt-4">
         <div class="w-full lg:w-1/3 lg:px-2 mt-4">
           <div class="">
-            <%= live_component @socket, RangeInputs,
-              prefix: nil,
-              suffix: nil,
-              min: @filters.sqft.low,
-              max: @filters.sqft.high,
-              attribute: :sqft,
-              type: Integer,
-              step: "1",
-              label: "Sqft",
-              callback: :update_filter,
-              id: :sqft_filter
-            %>
+            <.live_component 
+              module={RangeInputs}
+              prefix={nil}
+              suffix={nil}
+              min={@filters.sqft.low}
+              max={@filters.sqft.high}
+              attribute={:sqft}
+              type={Integer}
+              step={"1"}
+              label={"Sqft"}
+              callback={:update_filter}
+              id={:sqft_filter}
+            />
           </div>
         </div>
         <div class="w-full lg:w-1/3 lg:px-2 mt-4">
           <div class="">
-            <%= live_component @socket, RangeInputs,
-              prefix: nil,
-              suffix: nil,
-              min: @filters.lot_size.low,
-              max: @filters.lot_size.high,
-              attribute: :lot_size,
-              type: Integer,
-              step: "1",
-              label: "Lot (sqft)",
-              callback: :update_filter,
-              id: :lot_size_filter
-            %>
+            <.live_component 
+              module={RangeInputs}
+              prefix={nil}
+              suffix={nil}
+              min={@filters.lot_size.low}
+              max={@filters.lot_size.high}
+              attribute={:lot_size}
+              type={Integer}
+              step="1"
+              label="Lot (sqft)"
+              callback={:update_filter}
+              id={:lot_size_filter}
+            />
           </div>
         </div>
         <div class="w-full lg:w-1/3 lg:px-2">
           <div class="flex -mx-2">
             <div class="w-full lg:w-1/2 px-2 mt-4">
               <div class="">
-                <%= live_component @socket, Dropdown,
-                  options: [
+                <.live_component 
+                  module={Dropdown}
+                  options={[
                     %{value: "any", text: "Any"},
                     %{value: "1", text: "1"},
                     %{value: "2", text: "2"},
                     %{value: "2+", text: "2+"}
-                  ],
-                  selected: %{value: "any", text: "Any"},
-                  attr: :stories,
-                  convert_to_range: true,
-                  show_top_label: true,
-                  callback: :update_filter,
-                  label: "Stories",
-                  id: :stories
-                %>
+                  ]}
+                  selected={%{value: "any", text: "Any"}}
+                  attr={:stories}
+                  convert_to_range={true}
+                  show_top_label={true}
+                  callback={:update_filter}
+                  label={"Stories"}
+                  id={:stories}
+                />
               </div>
             </div>
             <div class="w-full lg:w-1/2 px-2 mt-4">
               <div class="">
-                <%= live_component @socket, Dropdown,
-                  options: [
+                <.live_component 
+                  module={Dropdown}
+                  options={[
                     %{value: "any", text: "Any"},
                     %{value: "1", text: "1"},
                     %{value: "2", text: "2"},
                     %{value: "2+", text: "2+"}
-                  ],
-                  selected: %{value: "any", text: "Any"},
-                  attr: :garage,
-                  convert_to_range: true,
-                  show_top_label: true,
-                  callback: :update_filter,
-                  label: "Garage",
-                  id: :garage
-                %>
+                  ]}
+                  selected={%{value: "any", text: "Any"}}
+                  attr={:garage}
+                  convert_to_range={true}
+                  show_top_label={true}
+                  callback={:update_filter}
+                  label={"Garage"}
+                  id={:garage}
+                />
               </div>
             </div>
           </div>

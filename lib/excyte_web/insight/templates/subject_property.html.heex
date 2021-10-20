@@ -16,12 +16,13 @@
           </div>
         <% end %>
       <div class="px-6 py-4">
-        <%= live_component @socket, SubjectForm,
-          button_label: "Continue to Select Comparables",
-          current_user: @current_user,
-          subject: @subject,
-          id: :manual_subject_create
-        %>
+        <.live_component 
+          module={SubjectForm}
+          button_label={"Continue to Select Comparables"}
+          current_user={@current_user}
+          subject={@subject}
+          id={:manual_subject_create}
+        />
       </div>
     </div>
   <% end %>

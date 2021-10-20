@@ -92,12 +92,22 @@
       <p>Thank you, payment method saved.</p>
     <% else %>
       <div class="mt-12">
-        <%= live_component @socket, Payment, current_user: @current_user, account: @account, id: :payment %>
+        <.live_component
+          module={Payment} 
+          current_user={@current_user}
+          account={@account}
+          id={:payment}
+        />
       </div>
     <% end %>
     <%= if Utilities.subscribed?(@account.status) do %>
       <div class="mt-12">
-        <%= live_component @socket, CancelAccount, current_user: @current_user, account: @account, id: :cancel_subscription %>
+        <.live_component
+          module={CancelAccount}
+          current_user={@current_user}
+          account={@account}
+          id={:cancel_subscription} 
+        />
       </div>
     <% end %>
   </div>

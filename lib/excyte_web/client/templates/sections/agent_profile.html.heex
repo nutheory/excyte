@@ -31,13 +31,14 @@
       <%= if length(@agent.contacts) > 0 do %>
         <div class="mt-6">
           <%= for cnt <- @agent.contacts do %>
-            <%= live_component @socket, ContactView,
-              type: cnt.type,
-              content: cnt.content,
-              title: cnt.name,
-              default: nil,
-              id: cnt.id
-            %>
+            <.live_component
+              module={ContactView}
+              type={cnt.type}
+              content={cnt.content}
+              title={cnt.name}
+              default={nil}
+              id={cnt.id}
+            />
           <% end %>
         </div>
       <% end %>

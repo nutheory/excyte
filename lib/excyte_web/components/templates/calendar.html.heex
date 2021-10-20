@@ -23,7 +23,14 @@
       <%= for week <- @week_rows do %>
         <tr>
           <%= for day <- week do %>
-            <%= live_component @socket, CalendarDay, id: day, parent_id: @id, day: day, current_month: @current_month, current_date: @current_date %>
+            <.live_component
+              module={CalendarDay}
+              id={day}
+              parent_id={@id}
+              day={day}
+              current_month={@current_month}
+              current_date={@current_date}
+            />
           <% end %>
         </tr>
       <% end %>

@@ -21,12 +21,12 @@
         </div>
         <div class="relative">
           <div id="bubbleMenu">
-            <%= live_component @socket, EditorMenuBubble, id: :editor_menu_bubble %>
+            <.live_component module={EditorMenuBubble} id={:editor_menu_bubble} />
           </div>
         </div>
         <div class="absolute -left-96">
           <div id="commandsMenu">
-            <%= live_component @socket, EditorMenuCommands, id: :editor_menu_commands %>
+            <.live_component module={EditorMenuCommands} id={:editor_menu_commands} />
           </div>
         </div>
         <div x-ref="editor" class="w-full p-4 lg:p-6 xl:p-10 h-full bg-white shadow rounded-md"></div>

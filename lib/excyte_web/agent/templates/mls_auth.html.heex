@@ -6,16 +6,17 @@
         <p class="border rounded border-yellow-600 p-3 text-sm bg-yellow-50 text-yellow-600">If you dont see your MLS we may not fully support your region yet. Feel free to call us to inquire... (949) 207-8769</p>
         <div class="mt-2">
           <form phx-submit="authorize">
-            <%= live_component @socket, Dropdown,
-              options: @mls_opts,
-              selected: @mls,
-              attr: :mls,
-              convert_to_range: false,
-              show_top_label: false,
-              callback: :set_mls,
-              label: "Select your MLS",
-              id: :set_mls_dropdown
-            %>
+            <.live_component
+              module={Dropdown}
+              options={@mls_opts}
+              selected={@mls}
+              attr={:mls}
+              convert_to_range={false}
+              show_top_label={false}
+              callback={:set_mls}
+              label={"Select your MLS"}
+              id={:set_mls_dropdown}
+            />
             <%= if @agents && length(@agents) > 0 do %>
               <div class="my-4">
                 <p class="font-bold text-base">Do you see your name?</p>

@@ -38,11 +38,12 @@
   <div class="pb-8 flex-1 overflow-y-auto">
     <div class="flex my-4 -mx-3">
       <div class="w-2/5 p-3">
-        <%= live_component @socket, Gallery,
-          media: @listing.media,
-          gid: @listing.listing_key <> "_gallery",
-          id: @listing.listing_key <> "_gallery"
-        %>
+        <.live_component
+          module={Gallery}
+          media={@listing.media}
+          gid={@listing.listing_key <> "_gallery"}
+          id={@listing.listing_key <> "_gallery"}
+        />
       </div>
       <div class="flex-1 p-3 text-left">
         <%= if @listing.list_price !== nil do %>

@@ -1,11 +1,12 @@
 <div class="cma mt-16 mx-auto px-4 w-full md:max-w-md">
   <div class="mt-32">
     <h2 class="text-center pb-2 mt-32">Create a Showcase</h2>
-    <%= live_component @socket, AddressAutocomplete,
-      callback: :property_search,
-      label: "Enter a location",
-      id: :property_location
-    %>
+    <.live_component
+      module={AddressAutocomplete}
+      callback={:property_search}
+      label={"Enter a location"}
+      id={:property_location}
+    />
     <%= if @addr_results !== nil do %>
       <%= if length(@addr_results) > 0 do %>
         <ul class="mt-4">
@@ -16,10 +17,11 @@
               phx-value-list="addr"
               phx-value-listing-key={addr_listing["ListingKey"]}
             >
-              <%= live_component @socket, SimpleCard,
-                listing: addr_listing,
-                id: "addr_#{addr_listing["ListingKey"]}"
-              %>
+              <.live_component
+                module={SimpleCard}
+                listing={addr_listing}
+                id={"addr_#{addr_listing["ListingKey"]}"}
+              />
             </li>
           <% end %>
         </ul>
@@ -49,10 +51,11 @@
               phx-value-list="id"
               phx-value-listing-key={id_listing["ListingKey"]}
             >
-              <%= live_component @socket, SimpleCard,
-                listing: id_listing,
-                id: "id_#{id_listing["ListingKey"]}"
-              %>
+              <.live_component 
+                module={SimpleCard}
+                listing={id_listing}
+                id: {"id_#{id_listing["ListingKey"]}"}
+              />
             </li>
           <% end %>
         </ul>
@@ -71,10 +74,11 @@
               phx-value-list="recent"
               phx-value-listing-key={recent_listing["ListingKey"]}
             >
-              <%= live_component @socket, SimpleCard,
-                listing: recent_listing,
-                id: "recent_#{recent_listing["ListingKey"]}"
-              %>
+              <.live_component 
+                module={SimpleCard}
+                listing={recent_listing}
+                id={"recent_#{recent_listing["ListingKey"]}"}
+              />
             </li>
           <% end %>
         </ul>

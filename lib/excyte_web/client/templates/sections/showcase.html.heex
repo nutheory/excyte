@@ -146,11 +146,12 @@
             <h4 class="sub-header-color">Stories</h4>
           </div>
         </div>
-        <%= live_component @socket, ShowcaseGallery,
-          media: lst["media"],
-          listing_id: lst["listing_id"],
-          id: "showcase_media"
-        %>
+        <.live_component
+          module={ShowcaseGallery}
+          media={lst["media"]}
+          listing_id={lst["listing_id"]}
+          id={"showcase_media"}
+        />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 w-full md:w-4/5 mx-auto">
           <div class="property-details my-4" x-data="{showAllOpen: false}">
             <div class="flex">

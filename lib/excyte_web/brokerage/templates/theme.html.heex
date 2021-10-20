@@ -82,12 +82,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <div class="flex">
           <div class="mr-3">
-          <%= live_component @socket, ColorPicker,
-            callback: :update_theme,
-            instance_id: :background,
-            color: @theme_settings.background,
-            id: :background_picker
-          %>
+          <.live_component
+            module={ColorPicker}
+            callback={:update_theme}
+            instance_id={:background}
+            color={@theme_settings.background}
+            id={:background_picker}
+          />
           </div>
           <div class="flex-1">
             <h4 class="mb-0">Background</h4>
@@ -96,12 +97,13 @@
         </div>
         <div class="flex">
           <div class="mr-3">
-          <%= live_component @socket, ColorPicker,
-            callback: :update_theme,
-            instance_id: :accent,
-            color: @theme_settings.accent,
-            id: :accent_picker
-          %>
+          <.live_component
+            module={ColorPicker}
+            callback={:update_theme}
+            instance_id={:accent}
+            color={@theme_settings.accent}
+            id={:accent_picker}
+          />
           </div>
           <div class="flex-1">
             <h4 class="mb-0">Accents</h4>
@@ -110,12 +112,13 @@
         </div>
         <div class="flex">
           <div class="mr-3">
-          <%= live_component @socket, ColorPicker,
-            callback: :update_theme,
-            instance_id: :header_text,
-            color: @theme_settings.header_text,
-            id: :header_text_picker
-          %>
+          <.live_component 
+            module={ColorPicker}
+            callback={:update_theme}
+            instance_id={:header_text}
+            color={@theme_settings.header_text}
+            id={:header_text_picker}
+          />
           </div>
           <div class="flex-1">
             <h4 class="mb-0">Header Text</h4>
@@ -124,12 +127,13 @@
         </div>
         <div class="flex">
           <div class="mr-3">
-          <%= live_component @socket, ColorPicker,
-            callback: :update_theme,
-            instance_id: :sub_header_text,
-            color: @theme_settings.sub_header_text,
-            id: :sub_header_text_picker
-          %>
+          <.live_component 
+            module={ColorPicker}
+            callback={:update_theme}
+            instance_id={:sub_header_text}
+            color={@theme_settings.sub_header_text}
+            id={:sub_header_text_picker}
+          />
           </div>
           <div class="flex-1">
             <h4 class="mb-0"> Regular Text</h4>
@@ -138,12 +142,13 @@
         </div>
         <div class="flex">
           <div class="mr-3">
-          <%= live_component @socket, ColorPicker,
-            callback: :update_theme,
-            instance_id: :link,
-            color: @theme_settings.link,
-            id: :link_picker
-          %>
+          <.live_component 
+            module={ColorPicker}
+            callback={:update_theme}
+            instance_id={:link}
+            color={@theme_settings.link}
+            id={:link_picker}
+          />
           </div>
           <div class="flex-1">
             <h4 class="mb-0">Links</h4>

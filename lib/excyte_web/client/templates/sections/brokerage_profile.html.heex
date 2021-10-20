@@ -17,13 +17,14 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
         <%= if length(@brokerage.contacts) > 0 do %>
           <%= for cnt <- @brokerage.contacts do %>
-            <%= live_component @socket, ContactView,
-              type: cnt.type,
-              content: cnt.content,
-              title: cnt.name,
-              default: nil,
-              id: cnt.id
-            %>
+            <.live_component
+              module={ContactView}
+              type={cnt.type}
+              content={cnt.content}
+              title={cnt.name}
+              default={nil}
+              id={cnt.id}
+            />
           <% end %>
         <% end %>
       </div>

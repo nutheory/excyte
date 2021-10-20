@@ -14,19 +14,21 @@
       <%= if @prop_id === nil do %>
         <h3 class="text-center text-bgray-400 my-4">Search for the subject property</h3>
         <div class="lg:w-2/5 md:w-2/3 mx-auto">
-          <%= live_component @socket, AddressAutocomplete,
-            callback: :init_subject,
-            label: "Enter a location",
-            id: :subject_location
-          %>
+          <.live_component
+            module={AddressAutocomplete}
+            callback={:init_subject}
+            label={"Enter a location"}
+            id={:subject_location}
+          />
         </div>
       <% else %>
-          <%= live_component @socket, SubjectProperty,
-            current_user: @current_user,
-            subject: @subject,
-            errors: @errors,
-            id: :subject_property
-          %>
+          <.live_component
+            module={SubjectProperty}
+            current_user={@current_user}
+            subject={@subject}
+            errors={@errors}
+            id={:subject_property}
+          />
       <% end %>
     </div>
   <% end %>

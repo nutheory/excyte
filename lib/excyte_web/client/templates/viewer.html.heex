@@ -1,19 +1,20 @@
 <div class="antialiased viewer-wrapper" id="viewerWrapper" phx-hook="ClientViewer">
-  <%= live_component @socket, Header,
-    current_user: @current_user,
-    sections: @sections,
-    listings: Enum.map(@listings, fn lst -> 
+  <.live_component
+    module={Header}
+    current_user={@current_user}
+    sections={@sections}
+    listings={Enum.map(@listings, fn lst -> 
       %{
         id: "#{Utilities.insight_type_to_component_name(@insight.type)}_#{lst["listing_id"]}",
         name: lst["excyte_data"]["name"],
         description: lst["excyte_data"]["description"],
         enabled: lst["excyte_data"]["enabled"]
       }
-    end),
-    created_by: @data.agent_profile,
-    insight_type: @insight.type,
-    id: :report_header
-  %>
+    end)}
+    created_by={@data.agent_profile}
+    insight_type={@insight.type}
+    id={:report_header}
+  />
   <div 
     class="viewer" 
     phx-hook="TableOfContents" 
@@ -27,26 +28,28 @@
           data-index={idx}
           data-component={section.component_name}
         >
-          <%= live_component TemplateRender,
-            current_user: @current_user,
-            brokerage: @data.brokerage,
-            agent: @data.agent_profile,
-            insight: @insight,
-            content: section.content,
-            index: idx,
-            section: section,
-            listings: @listings,
-            is_live: true,
-            id: "template_#{section.component_name}_#{idx}"
-          %>
+          <.live_component 
+            module={TemplateRender}
+            current_user={@current_user}
+            brokerage={@data.brokerage}
+            agent={@data.agent_profile}
+            insight={@insight}
+            content={section.content}
+            index={idx}
+            section={section}
+            listings={@listings}
+            is_live={true}
+            id={"template_#{section.component_name}_#{idx}"}
+          />
         </div>
       <% end %>
     <% end %>
   </div>
-  <%#= live_component @socket, Interactions,
-    current_user: @current_user,
-    created_by: @data.agent_profile,
-    insight: @insight,
-    id: :viewer_interactions
-  %>
+  <.live_component
+    module={Interactions}
+    current_user={@current_user}
+    created_by={@data.agent_profile}
+    insight={@insight}
+    id={:viewer_interactions}
+  />
 </div>

@@ -67,12 +67,13 @@
       </div>
       <div class={if !@show_filters, do: "hidden"}>
         <div class="rounded mt-1 px-4 lg:px-6 py-4 border border-cyan-700 text-cyan-700 bg-cyan-50 hover:border-cyan-600 hover:text-cyan-600">
-          <%= live_component @socket, FilterListings,
-            subject: (if Map.has_key?(@subject, :__struct__), do: @subject, else: nil),
-            filters: @filters,
-            listing_count: length(@listings),
-            id: :filter_listings
-          %>
+          <.live_component 
+            module={FilterListings}
+            subject={if Map.has_key?(@subject, :__struct__), do: @subject, else: nil}
+            filters={@filters}
+            listing_count={length(@listings)}
+            id={:filter_listings}
+          />
         </div>
       </div>
       <div class="hidden lg:block h-2 blur pointer-events-none absolute b-0 inset-x-0 z-10 bg-gradient-to-b from-gray-100"></div>
@@ -114,11 +115,12 @@
     <ul class=" mt-4 pb-6">
       <%= for {listing, idx} <- Enum.with_index(@listings) do %>
         <li class="w-full py-1">
-          <%= live_component @socket, ListingCard,
-            listing: listing,
-            added: Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil,
-            id: "#{listing.listing_key}_#{idx}"
-          %>
+          <.live_component
+            module={ListingCard}
+            listing={listing}
+            added={Enum.find(@selected_listings, fn sc -> sc.listing_key === listing.listing_key end) !== nil}
+            id={"#{listing.listing_key}_#{idx}"}
+          />
         </li>
       <% end %>
     </ul>

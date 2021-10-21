@@ -114,16 +114,18 @@ defmodule Excyte.Mls.ResoApi do
   def listing_properties(mls, _subject, opts) do
     query = get_expanded(mls)
     get_by_opts = if query.coords, do: %{coords: opts.coords, distance: opts.distance}, else: %{zip: opts.zip}
+    types = if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
+    features = if Map.has_key?(opts, :features) && length(opts.features) > 0, do: "(#{get_by_features(opts.features)})%20and%20", else: ""
     query_str = query.select_str
       <> "$filter="
       <> "(#{status(opts.selected_statuses)})%20and%20"
-      <> if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
-      <> if Map.has_key?(opts, :features) && length(opts.property_types) > 0, do: "(#{get_by_features(opts.features)})%20and%20", else: ""
+      <> "#{types}"
+      <> "#{features}"
       <> "#{get_by_price(mls, opts)}"
       <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "LotSizeSquareFeet", low: opts.lot_size.low, high: opts.lot_size.high})}"
-      <> "#{get_attr_by_range(mls, %{attr: "GarageSpaces", low: opts.garage.low, high: opts.garage.high})}"
-      <> "#{get_attr_by_range(mls, %{attr: "Stories", low: opts.stories.low, high: opts.stories.high})}"
+      <> "#{get_attr_by_exact(mls, %{attr: "GarageSpaces", value: opts.garage.value})}"
+      <> "#{get_attr_by_exact(mls, %{attr: "Stories", value: opts.stories.value})}"
       <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
       <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
       <> "#{get_by_distance(get_by_opts)}"
@@ -148,6 +150,18 @@ defmodule Excyte.Mls.ResoApi do
 
   def get_by_distance(_, _) do
     ""
+  end
+
+  defp get_attr_by_exact(mls, %{attr: attr, value: v}) do
+    meta = get_metadata(mls)
+    entity = Enum.find(meta.entities, fn m -> m.entity_name === "Property" end)
+    if Enum.member?(entity.attributes, attr) do
+      cond do
+        String.contains?(v, "+") -> "#{attr}%20ge%20#{hd(String.split(v, "+"))}%20and%20"
+        String.length(v) > 0 -> "#{attr}%20eq%20#{v}%20and%20"
+        true -> ""
+      end
+    end
   end
 
   defp get_by_price(mls, %{price: price}) do

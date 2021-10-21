@@ -29,16 +29,41 @@ export const WalkNeighborhood = {
         viewer.setAttribute("id", viewerId)
         wrapper.append(closer, viewer)
         root.append(wrapper)
-        initialize(coords, viewer)
+        initialize(coords, viewer, wrapper)
       }
     })
   }
 }
 
-function initialize(coords, el) {
+function initialize(coords, el, wrapper) {
   const loc = { lat: parseFloat(coords.lat), lng: parseFloat(coords.lng) }
-  const panorama = new google.maps.StreetViewPanorama(el, {
-    position: loc,
-    pov: { heading: 34, pitch: 10 },
-  })
+
+  var svService = new google.maps.StreetViewService()
+  var panoRequest = {
+      location: loc,
+      preference: google.maps.StreetViewPreference.NEAREST,
+      radius: 50,
+      source: google.maps.StreetViewSource.OUTDOOR
+  }
+
+  var findPanorama = function(radius) {
+    panoRequest.radius = radius
+    svService.getPanorama(panoRequest, function(panoData, status){
+      if (status === google.maps.StreetViewStatus.OK) {
+        var panorama = new google.maps.StreetViewPanorama(el, {
+          pano: panoData.location.pano,
+          pov: { heading: 45, pitch: 0 },
+        })
+      } else {
+        if (radius > 110) {
+          wrapper.remove()
+          alert("Street View is not available") 
+        } else {
+          findPanorama(radius + 20)
+        }
+      }
+    })     
+  }
+
+  findPanorama(50)
 }

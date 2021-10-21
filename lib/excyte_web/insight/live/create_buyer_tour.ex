@@ -9,8 +9,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     baths: %{low: nil, high: nil},
     sqft: %{low: nil, high: nil},
     lot_size: %{low: nil, high: nil},
-    garage: %{low: nil, high: nil},
-    stories: %{low: nil, high: nil},
+    garage: %{text: "", value: ""},
+    stories: %{text: "", value: ""},
     property_types: [],
     features: [],
     selected_statuses: [%{value: "active", name: "Active"}]
@@ -52,7 +52,6 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   end
 
   def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = res, socket) do
-    IO.inspect(res, label: "RESSSSS")
     {:noreply, assign(socket, coords: %{lat: lat, lng: lng}, autodetected: auto)}
   end
 

@@ -29,7 +29,7 @@ export const WalkNeighborhood = {
         viewer.setAttribute("id", viewerId)
         wrapper.append(closer, viewer)
         root.append(wrapper)
-        initialize(coords, viewer, wrapper)
+        initialize(coords, viewer)
       }
     })
   }

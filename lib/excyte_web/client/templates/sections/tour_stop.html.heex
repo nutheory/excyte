@@ -49,7 +49,7 @@
                 <div class="">
                   <%= Components.directions(lst) %>
                 </div>
-                <%= if lst["coords"] do %>
+                <%= if lst["coords"] && hd(tl(lst["coords"]) do %>
                   <div class="" id={"#walk_listing_#{lst["listing_id"]}"} phx-hook="WalkNeighborhood">
                     <button 
                       type="button" 

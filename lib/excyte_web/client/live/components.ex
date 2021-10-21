@@ -375,7 +375,7 @@ defmodule ExcyteWeb.Client.Components do
   def explore_community(lst) do
     assigns = %{address_uri: URI.encode("#{lst["city"]}, #{lst["state"]}, United States")}
     ~H"""
-      <a href={"https://foursquare.com/explore?mode=url&near=#{@address_uri}"}>
+      <a href={"https://foursquare.com/explore?mode=url&near=#{@address_uri}"} rel="noopener noreferrer" target="_blank">
         <svg version="1.1" class="svg-shadow w-12 md:w-20 mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
           viewBox="0 0 340 340" style="enable-background:new 0 0 340 340;" xml:space="preserve">
           <g id="XMLID_1117_">

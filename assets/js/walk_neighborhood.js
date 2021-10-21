@@ -24,10 +24,13 @@ export const WalkNeighborhood = {
 
     this.handleEvent("load_neighborhood", ({coords, id}) => {
       const viewerId = `walk_pano_${id}`
-      viewer.setAttribute("id", viewerId)
-      wrapper.append(closer, viewer)
-      root.append(wrapper)
-      initialize(coords, viewer)
+      const exists = document.querySelector(`#${viewerId}`)
+      if (exists === null) {
+        viewer.setAttribute("id", viewerId)
+        wrapper.append(closer, viewer)
+        root.append(wrapper)
+        initialize(coords, viewer)
+      }
     })
   }
 }

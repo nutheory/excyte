@@ -43,6 +43,7 @@ npm-debug.log
 /config/env.local.exs
 /config/prod.secret.exs
 /config/excyte-87593aecb2fe.json
+/config/gcp.json
 /config/bootstrap-388f5f136187.json
 /config/twilio_numbers.json
 /notes.txt

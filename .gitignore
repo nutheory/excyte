@@ -42,6 +42,7 @@ npm-debug.log
 # Environment Variables
 /config/env.local.exs
 /config/prod.secret.exs
+/config/gcp.json
 /config/excyte-87593aecb2fe.json
 /config/gcp.json
 /config/bootstrap-388f5f136187.json

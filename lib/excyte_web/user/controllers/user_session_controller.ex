@@ -3,6 +3,7 @@ defmodule ExcyteWeb.UserSessionController do
 
   alias Excyte.Accounts
   alias ExcyteWeb.UserAuth
+  alias ExcyteWeb.Router.Helpers, as: Routes
 
   plug :put_view, ExcyteWeb.UserView
 

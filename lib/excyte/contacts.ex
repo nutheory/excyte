@@ -1,26 +1,54 @@
 
-defmodule Excyte.Clients do
+defmodule Excyte.Contacts do
   import Ecto.Query, warn: false
   alias Ecto.Multi
 
   # alias ExTwilio.JWT.AccessToken
-  alias Excyte.{Repo, Activities, Clients.Conversation, Clients.Client, Clients.ClientNotifier, Insights}
+  alias Excyte.{Repo, Activities, Contacts.Conversation, Contacts.Contact, Contacts.ContactNotifier, Insights}
 
   @proxies []
+
+  def get_contacts(%{agent_id: agent_id, brokerage_id: brk_id}, filter, list_opts) do
+    opts = list_opts(list_opts)
+
+    query =
+      Contact
+      |> Contact.get_by_agent(agent_id)
+      |> Contact.get_by_brokerage(brk_id)
+      |> Contact.apply_fuzzy_search(filter)
+      |> Contact.apply_list_options(opts)
+
+    Repo.all(query)
+  end
+
+  def new_changeset(attrs) do
+    %Contact{}
+    |> Contact.changeset(attrs)
+  end
+
+  def import_google_contacts() do
+    # {:ok, token} = Goth.fetch(Excyte.Goth)
+    {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/contacts")
+    # ret = Goth.Token.for_scope("https://www.googleapis.com/auth/contacts.readonly")
+    # IO.inspect(ret, label: "CONT")
+    conn = GoogleApi.People.V1.Connection.new(token.token)
+    {:ok, contacts} = GoogleApi.People.V1.Api.People.people_people_connections_list(conn, "me", personFields: "names")
+    IO.inspect(contacts, label: "CONT")
+  end
 
   def create_client(%{client: client, insight: insight, email: email} = all) do
     Multi.new()
     |> Multi.run(:new_client, __MODULE__, :create_client, [%{client: client, agent_id: email.profile.agent_id}])
     |> Multi.run(:update_insight, Insights, :update_insight, [insight])
-    |> Multi.run(:send_email, ClientNotifier, :deliver_report, [all])
+    |> Multi.run(:send_email, ContactNotifier, :deliver_report, [all])
     |> Multi.run(:new_activity, Activities, :create_activity, [])
     |> Repo.transaction()
   end
 
   def create_client(_repo, _changes, %{client: cl, agent_id: aid}) do
-    case Repo.get_by(Client, %{email: cl.email, created_by_id: aid}) do
-      %Client{} = client -> {:ok, client}
-      nil -> Repo.insert(Client.changeset(%Client{}, cl))
+    case Repo.get_by(Contact, %{email: cl.email, created_by_id: aid}) do
+      %Contact{} = client -> {:ok, client}
+      nil -> Repo.insert(Contact.changeset(%Contact{}, cl))
     end
   end
 
@@ -37,7 +65,7 @@ defmodule Excyte.Clients do
   def create_conversation(_repo, _changes, name) do
     case ExTwilio.Conversations.create(%{friendly_name: name}) do
       {:ok, created} -> {:ok, created}
-      err -> Activities.handle_errors(err, "Excyte.Clients.create_conversation")
+      err -> Activities.handle_errors(err, "Excyte.Contacts.create_conversation")
     end
   end
 
@@ -61,7 +89,7 @@ defmodule Excyte.Clients do
         create_participant(nil, convo, %{agent: ag, proxies: tl(p)})
 
       err ->
-        Activities.handle_errors(err, "Excyte.Clients.create_conversation_participant")
+        Activities.handle_errors(err, "Excyte.Contacts.create_conversation_participant")
     end
   end
 
@@ -104,8 +132,8 @@ defmodule Excyte.Clients do
       #      {:ok, token} <- create_twilio_token("#{ag.email}", c.chat_service_sid) do
       #   {:ok, %{token: token, details: c}}
       # else
-      #   {:error, err, _status} -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
-      #   err -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
+      #   {:error, err, _status} -> Activities.handle_errors(err, "Excyte.Contacts.get_conversation_for_lead")
+      #   err -> Activities.handle_errors(err, "Excyte.Contacts.get_conversation_for_lead")
       # end
     # else
     #   with ins <- Repo.get!(Insight, iid),
@@ -121,8 +149,8 @@ defmodule Excyte.Clients do
     #          create_twilio_token("#{usr.email}", convo.chat_service_sid) do
     #     {:ok, %{token: token, details: convo}}
     #   else
-    #     {:error, err} -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
-    #     err -> Activities.handle_errors(err, "Excyte.Clients.get_conversation_for_lead")
+    #     {:error, err} -> Activities.handle_errors(err, "Excyte.Contacts.get_conversation_for_lead")
+    #     err -> Activities.handle_errors(err, "Excyte.Contacts.get_conversation_for_lead")
     #   end
     end
   end
@@ -183,4 +211,18 @@ defmodule Excyte.Clients do
 
   #   {:ok, AccessToken.to_jwt!(token)}
   # end
+
+  defp list_opts(opts) do
+    if opts === nil or opts === %{} do
+      %{
+        sort_key: "name",
+        sort_value: "desc",
+        page_size_limit: 60,
+        offset: 0
+      }
+    else
+      opts
+    end
+  end
+
 end

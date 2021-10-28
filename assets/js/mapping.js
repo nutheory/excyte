@@ -6,7 +6,7 @@ const labelOriginFilled = new google.maps.Point(12, 9);
 
 export const Mapping = {
   mounted() {
-    const root = this.el
+    const root = document.querySelector("#mapping-container")
     const wrapper = document.createElement('div')
     const viewer = document.createElement('div')
     const closer = document.createElement('button')

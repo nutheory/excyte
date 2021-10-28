@@ -5,8 +5,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
 
   def render(assigns), do: AgentView.render("getting_started.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     profile = Agents.get_agent_profile!(cu.id)

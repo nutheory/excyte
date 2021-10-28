@@ -10,8 +10,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
 
   def render(assigns), do: InsightView.render("create_cma.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
 
     {:ok, assign(socket,
       current_user: cu,
@@ -42,7 +41,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   def handle_info({:create_subject, attrs}, %{assigns: a} = socket) do
     key = "cma#{a.current_user.id}#{System.os_time(:second)}"
     case Insights.create_insight(insight_data(attrs, key, a)) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/listings")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
       {:error, method, changeset, _} ->
           Activities.handle_errors(changeset, method)
           {:noreply, put_flash(socket, :error, "Something went wrong.")}

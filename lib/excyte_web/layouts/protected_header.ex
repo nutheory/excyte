@@ -2,11 +2,11 @@ defmodule ExcyteWeb.ProtectedHeader do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Mls}
   alias ExcyteWeb.LayoutView
+  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: LayoutView.render("protected_header.html", assigns)
 
-  def mount(params, %{"user_token" => token} = session, %{assigns: assigns} = socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     if connected?(socket), do: Accounts.subscribe(cu.id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     if cu.current_mls === nil || Enum.empty?(cu.current_mls) do

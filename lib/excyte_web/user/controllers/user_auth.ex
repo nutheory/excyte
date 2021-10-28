@@ -145,5 +145,5 @@ defmodule ExcyteWeb.UserAuth do
   end
 
   defp maybe_store_return_to(conn), do: conn
-  defp signed_in_path(conn), do: "/agent/dash"
+  defp signed_in_path(conn), do: "/auth/dash"
 end

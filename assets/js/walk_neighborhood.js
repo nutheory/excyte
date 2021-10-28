@@ -1,6 +1,6 @@
 export const WalkNeighborhood = {
   mounted() {
-    const root = this.el
+    const root = document.querySelector("#mapping-container")
     const wrapper = document.createElement('div')
     const viewer = document.createElement('div')
     const closer = document.createElement('button')

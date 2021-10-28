@@ -47,6 +47,16 @@ config :mux,
   access_token_secret: System.get_env("MUX_SECRET_KEY"),
   signing_secret: System.get_env("MUX_SIGNING_SECRET")
 
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile plus.me"]}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: System.get_env("GOOGLE_CLIENT_ID"),
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
+
+# config :excyte, :gcp_creds, System.get_env("GCP_CREDENTIALS") |> File.read!()
 
 config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")

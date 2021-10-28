@@ -28,7 +28,7 @@ defmodule Excyte.Activities.Activity do
     belongs_to(:agent, User)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:insight, Insight)
-    belongs_to(:client, Client)
+    belongs_to(:contact, Contact)
 
     timestamps()
   end
@@ -45,7 +45,7 @@ defmodule Excyte.Activities.Activity do
       :insight_id,
       :brokerage_id,
       :agent_id,
-      :client_id
+      :contact_id
     ])
   end
 

@@ -77,37 +77,64 @@ defmodule ExcyteWeb.Router do
 
   ## Authentication routes
 
-  scope "/settings", ExcyteWeb.Settings do
-    pipe_through [:app_browser, :require_authenticated_user]
-    live "/", Dashboard
-    # put "/settings/update_password", UserSettingsController, :update_password
-    # put "/settings/update_email", UserSettingsController, :update_email
-    get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
+    scope "/auth", ExcyteWeb do
+      pipe_through [:app_browser, :require_authenticated_user]
+      get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
+      delete "/log_out", UserSessionController, :delete
+
+      live "/agent/getting-started", Agent.GettingStarted
+      live "/brokerage/getting-started", Brokerage.GettingStarted
+
+      get "/uploader/presigned", UploadController, :aws_signed_url
+      get "/uploader/auth", UploadController, :aws_auth
+      live "/dash", Agent.Dashboard
+      live "/dashboard", Agent.Dashboard
+
+      scope "/settings", Settings do
+        live "/", Dashboard
+        get "/confirm_email/:token", UserSettingsController, :confirm_email
+      end
+
+      scope "/insights", Insight do
+        live "/cma/create", CreateCma
+        live "/buyertour/create", CreateBuyerTour
+        live "/showcase/create", CreateShowcase
+        live "/:insight_id/listings", ListingSelector
+        live "/:insight_id/customize", Customize
+        live "/editor", Editor
+      end
+
+      scope "/contacts", Contact do
+        live "/overview", Overview
+        # live "/create", Create
+      end
+    end
   end
 
-  scope "/insights", ExcyteWeb.Insight do
-    pipe_through [:app_browser, :require_authenticated_user]
-    live "/cma/create", CreateCma
-    live "/buyertour/create", CreateBuyerTour
-    live "/showcase/create", CreateShowcase
-    live "/:insight_id/listings", ListingSelector
-    live "/:insight_id/customize", Customize
-    live "/editor", Editor
-  end
+  # scope "/insights", ExcyteWeb.Insight do
+  #   pipe_through [:app_browser, :require_authenticated_user]
+  #   live "/cma/create", CreateCma
+  #   live "/buyertour/create", CreateBuyerTour
+  #   live "/showcase/create", CreateShowcase
+  #   live "/:insight_id/listings", ListingSelector
+  #   live "/:insight_id/customize", Customize
+  #   live "/editor", Editor
+  # end
 
-  scope "/agent", ExcyteWeb.Agent do
-    pipe_through [:app_browser, :require_authenticated_user]
-    live "/dash", Dashboard
-    live "/dashboard", Dashboard
-    live "/getting-started", GettingStarted
-  end
+  # scope "/agent", ExcyteWeb.Agent do
+  #   pipe_through [:app_browser, :require_authenticated_user]
+  #   live "/dash", Dashboard
+  #   live "/dashboard", Dashboard
+  #   live "/getting-started", GettingStarted
+  # end
 
-  scope "/brokerage", ExcyteWeb.Brokerage do
-    pipe_through [:app_browser, :require_authenticated_user]
-    live "/dash", Dashboard
-    live "/dashboard", Dashboard
-    live "/getting-started", GettingStarted
-  end
+  # scope "/brokerage", ExcyteWeb.Brokerage do
+  #   pipe_through [:app_browser, :require_authenticated_user]
+  #   live "/dash", Dashboard
+  #   live "/dashboard", Dashboard
+  #   live "/getting-started", GettingStarted
+  # end
 
   scope "/mux", ExcyteWeb do
     pipe_through [:app_browser, :require_authenticated_user]
@@ -126,13 +153,20 @@ defmodule ExcyteWeb.Router do
     post "/cancel", WebhookController, :checkout_cancel
   end
 
-  scope "/", ExcyteWeb do
-    pipe_through [:app_browser, :require_authenticated_user]
-    get "/uploader/presigned", UploadController, :aws_signed_url
-    get "/uploader/auth", UploadController, :aws_auth
-    get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
-    delete "/log_out", UserSessionController, :delete
+  scope "/oauth", ExcyteWeb do
+    pipe_through [:app_browser]
+    get "/:provider", UserOauth, :request
+    get "/:provider/callback", UserOauth, :callback
+    post "/:provider/callback", UserOauth, :callback
   end
+
+  # scope "/", ExcyteWeb do
+  #   pipe_through [:app_browser, :require_authenticated_user]
+  #   get "/uploader/presigned", UploadController, :aws_signed_url
+  #   get "/uploader/auth", UploadController, :aws_auth
+  #   get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
+  #   delete "/log_out", UserSessionController, :delete
+  # end
 
   ## Public routes
 

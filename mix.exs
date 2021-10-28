@@ -20,7 +20,7 @@ defmodule Excyte.MixProject do
   def application do
     [
       mod: {Excyte.Application, [env: Mix.env()]},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :oauth2]
     ]
   end
 
@@ -59,6 +59,11 @@ defmodule Excyte.MixProject do
       {:inflex, "~> 2.0.0"},
       {:number, "~> 1.0.1"},
       {:mux, "~> 2.0.0"},
+      {:oauth2, "~> 2.0"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_google, "~> 0.10"},
+      {:google_api_people, "~> 0.40"},
+      {:goth, "~> 1.2.0"},
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},
       {:geocalc, "~> 0.5"},

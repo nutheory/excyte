@@ -5,10 +5,9 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
 
   def render(assigns), do: BrokerageView.render("getting_started.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     if !cu.brokerage_id do
-      {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
+      {:ok, push_redirect(socket, to: "/auth/getting-started")}
     else
       account = Accounts.get_account!(cu.account_id)
       mls_list = Mls.get_credentials(%{agent_id: cu.id})
@@ -42,7 +41,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
           {:noreply,
             socket
             |> put_flash(:info, "Profile created successfully")
-            |> push_redirect(to: "/agent/dash")}
+            |> push_redirect(to: "/auth/dash")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
       end
     else

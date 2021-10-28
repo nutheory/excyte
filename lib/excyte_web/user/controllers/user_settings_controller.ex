@@ -2,19 +2,19 @@ defmodule ExcyteWeb.Settings.UserSettingsController do
   use ExcyteWeb, :controller
 
   alias Excyte.Accounts
-  alias ExcyteWeb.UserAuth
+  # alias ExcyteWeb.UserAuth
 
   def confirm_email(conn, %{"token" => token}) do
     case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
         conn
         |> put_flash(:info, "Email changed successfully.")
-        |> redirect(to: "/settings")
+        |> redirect(to: "auth/settings")
 
       :error ->
         conn
         |> put_flash(:error, "Email change link is invalid or it has expired.")
-        |> redirect(to: "/settings")
+        |> redirect(to: "auth/settings")
     end
   end
 end

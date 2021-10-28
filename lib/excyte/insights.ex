@@ -38,10 +38,10 @@ defmodule Excyte.Insights do
     Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
   end
 
-  def update_insight(_repo, %{new_client: client}, %{id: id}) do
+  def update_insight(_repo, %{new_contact: contact}, %{id: id}) do
     ins = Repo.get!(Insight, id)
     if ins do
-      Insight.changeset(ins, %{client_id: client.id})
+      Insight.changeset(ins, %{contact_id: contact.id})
       |> Repo.update()
     else
       {:error, %{message: "Insight could not be found."}}

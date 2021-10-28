@@ -5,8 +5,9 @@ defmodule Excyte.Insights.Insight do
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
-    Clients.Client,
+    Contacts.Contact,
     Insights.DocumentTemplate,
+    Insights.Insight,
     Insights.SavedSearch,
     Insights.Section,
     Properties.Property,
@@ -39,10 +40,10 @@ defmodule Excyte.Insights.Insight do
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
     has_one(:property, Property, foreign_key: :insight_id)
     has_many(:sections, Section, on_delete: :delete_all)
+    many_to_many(:contacts, Contact, join_through: "contact_insight", on_replace: :delete)
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
-    belongs_to(:client, Client)
     timestamps()
   end
 
@@ -58,12 +59,18 @@ defmodule Excyte.Insights.Insight do
       :content,
       :published,
       :document_template_id,
-      :client_id,
       :brokerage_id,
       :created_by_id
     ])
     |> cast_embed(:document_attributes)
     |> cast_embed(:saved_search)
+  end
+
+  def changeset_update_contacts(%Insight{} = insight, contacts) do
+    insight
+    |> cast(%{}, @required_fields)
+    # associate contacts to the user
+    |> put_assoc(:contacts, contacts)
   end
 
   def minimal_insight(uuid, uid) do
@@ -77,12 +84,12 @@ defmodule Excyte.Insights.Insight do
       from ins in __MODULE__,
       where: ins.created_by_id == ^uid and ins.published == true,
       order_by: [desc: ins.updated_at],
-      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type, :client_id])
+      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
     else
       from ins in __MODULE__,
       where: ins.created_by_id == ^uid and ins.type == ^type and ins.published == true,
       order_by: [desc: ins.updated_at],
-      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type, :client_id])
+      select: struct(ins, [:id, :published, :uuid, :name, :cover_photo_url, :updated_at, :type])
     end
   end
 

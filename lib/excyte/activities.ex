@@ -12,7 +12,7 @@ defmodule Excyte.Activities do
       name: "sent",
       description: "Sent report to #{nc.name} at #{nc.email}",
       agent_id: ui.created_by_id,
-      client_id: nc.id,
+      contact_id: nc.id,
       insight_id: ui.id
     })
     |> Repo.insert()

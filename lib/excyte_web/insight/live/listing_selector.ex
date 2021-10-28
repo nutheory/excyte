@@ -12,8 +12,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
 
   def render(assigns), do: InsightView.render("listing_selector.html", assigns)
 
-  def mount(params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     {:ok, prev_state} = Cachex.get(:insights_cache, params["insight_id"])
     if prev_state do
       send self(), {:query_mls, %{
@@ -127,7 +126,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       }
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "auth/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end
@@ -139,7 +138,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       content: %{listings: a.selected_listings}
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{a.key}/customize")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "auth/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

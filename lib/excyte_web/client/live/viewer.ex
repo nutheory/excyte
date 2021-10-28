@@ -5,7 +5,7 @@ defmodule ExcyteWeb.Client.Viewer do
     Accounts,
     Properties.PublicDataApi
   }
-  alias ExcyteWeb.{ ClientView}
+  alias ExcyteWeb.{ClientView}
 
   @impl true
   def render(assigns), do: ClientView.render("viewer.html", assigns)

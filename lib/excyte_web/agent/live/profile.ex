@@ -2,14 +2,15 @@ defmodule ExcyteWeb.Agent.Profile do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Utils.Contact, Agents.Profile, Mls.ResoMemberApi}
   alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, AgentView}
+  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
-  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+
+  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
     profile = Agents.get_agent_profile!(cu.id)
     if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
-      {:ok, push_redirect(socket, to: "/agent/getting-started", current_user: cu)}
+      {:ok, push_redirect(socket, to: "/auth/agent/getting-started")}
     else
       cs = maybe_attempt_prefill?(profile, cu.current_mls)
       {:ok, assign(socket,

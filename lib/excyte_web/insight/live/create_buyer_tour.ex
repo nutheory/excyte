@@ -18,8 +18,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
 
   def render(assigns), do: InsightView.render("create_buyer_tour.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
     {:ok, assign(socket,
       current_user: cu,
       coords: %{},
@@ -71,7 +70,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     if Map.has_key?(a.coords, :lat) || a.zip_code !== "" do
       key = "tour#{a.current_user.id}#{System.os_time(:second)}"
       case Insights.create_insight(insight_data(a.filters, key, a)) do
-        {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/listings")}
+        {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
         {:error, _method, _changeset, _} ->
             {:noreply, put_flash(socket, :error, "Something went wrong.")}
       end

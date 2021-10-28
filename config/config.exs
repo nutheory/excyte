@@ -18,6 +18,9 @@ config :excyte, Excyte.Mailer,
 
 config :excyte, :gcp_places, System.get_env("GCP_EXCYTE_PLACES")
 
+config :ueberauth, Ueberauth,
+  base_path: "/oauth" # default is "/auth"
+
 # config :ex_twilio,
 #   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
 #   auth_token: System.get_env("TWILIO_AUTH_TOKEN")

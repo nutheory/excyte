@@ -2,11 +2,11 @@ defmodule ExcyteWeb.Brokerage.Profile do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Brokerages, Utils.Contact, Brokerages.Profile, Mls.ResoOfficeApi}
   alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, BrokerageView}
+  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("profile.html", assigns)
 
-  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
     brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = maybe_attempt_prefill?(brokerage_profile, cu.current_mls)
     {:ok,

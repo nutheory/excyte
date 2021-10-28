@@ -5,23 +5,18 @@ defmodule ExcyteWeb.Insight.Editor do
   alias ExcyteWeb.{InsightView}
 
   def render(assigns), do: InsightView.render("editor.html", assigns)
-
-  def mount(_params, %{"content_id" => cid, "user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, %{"content_id" => cid}, %{assigns: %{current_user: cu}} = socket) do
     case Cachex.get(:editor_cache, cid) do
       {:ok, content} -> send self(), {:setup_editor, content}
       {:error, err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
     end
     {:ok, assign(socket,
       current_user: cu,
-      search_term: nil,
-
+      search_term: nil
     )}
   end
 
-  def mount(_, %{"user_token" => token} = sesh, socket) do
-
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     send self(), {:load_document, ""}
     {:ok, assign(socket, current_user: cu)}
   end

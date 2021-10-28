@@ -10,7 +10,6 @@ defmodule ExcyteWeb.Components.Dropdown do
       options: assigns.options,
       attr: assigns.attr,
       label: assigns.label,
-      convert_to_range: assigns.convert_to_range,
       show_top_label: assigns.show_top_label,
       selected: assigns.selected,
       callback: assigns.callback

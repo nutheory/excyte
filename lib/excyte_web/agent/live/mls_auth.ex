@@ -2,13 +2,13 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Mls, Mls.ResoMemberApi}
   alias ExcyteWeb.{AgentView, UserConfirmationController}
+  on_mount ExcyteWeb.UserLiveAuth
 
   @token Application.get_env(:excyte, :bridge_server_key)
 
   def render(assigns), do: AgentView.render("mls_auth.html", assigns)
 
-  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     mls_opts = Application.get_env(:excyte, :mls_auth_options)
 

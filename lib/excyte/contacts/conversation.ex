@@ -1,13 +1,13 @@
-defmodule Excyte.Clients.Conversation do
+defmodule Excyte.Contacts.Conversation do
   @moduledoc """
-   Client conversation DB schema
+   Contact conversation DB schema
   """
   use Ecto.Schema
   import Ecto.Changeset
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
-    Clients.Client,
+    Contacts.Contact,
     Insights.Insight
   }
 
@@ -19,7 +19,7 @@ defmodule Excyte.Clients.Conversation do
     field(:sms_participant_sid, :string)
     field(:chat_service_sid, :string)
     belongs_to(:insight, Insight)
-    belongs_to(:client, Client)
+    belongs_to(:contact, Contact)
     belongs_to(:agent, User)
     belongs_to(:brokerage, Brokerage)
     timestamps()
@@ -28,7 +28,7 @@ defmodule Excyte.Clients.Conversation do
   def changeset(convo, attrs) do
     convo
     |> cast(attrs, [
-      :client_id,
+      :contact_id,
       :friendly_name,
       :agent_id,
       :conversation_sid,
@@ -39,7 +39,7 @@ defmodule Excyte.Clients.Conversation do
     ])
     |> validate_required([
       :insight_id,
-      :client_id,
+      :contact_id,
       :chat_service_sid,
       :sms_participant_sid,
       :conversation_sid

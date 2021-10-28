@@ -2,6 +2,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Activities, Agents, Brokerages}
   alias ExcyteWeb.{Helpers.Utilities, BrokerageView}
+  on_mount ExcyteWeb.UserLiveAuth
 
   @fonts [
     %{name: "Arial, Helvetica Neue, Helvetica, sans-serif", family: "Arial, Helvetica Neue, Helvetica, sans-serif"},
@@ -18,8 +19,7 @@ defmodule ExcyteWeb.Brokerage.Theme do
 
   def render(assigns), do: BrokerageView.render("theme.html", assigns)
 
-  def mount(_params, %{"user_token" => token, "return_to" => rt}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
     agent = Agents.get_agent_profile!(cu.id)
     brokerage = if cu.brokerage_id, do: Brokerages.get_brokerage_profile(cu.brokerage_id), else: nil
     theme =

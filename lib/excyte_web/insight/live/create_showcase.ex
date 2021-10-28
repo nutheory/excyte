@@ -5,8 +5,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
 
   def render(assigns), do: InsightView.render("create_showcase.html", assigns)
 
-  def mount(_params, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     mls = cu.current_mls
     {:ok, agent_listings} = ResoApi.get_listings_by_agent(mls, %{list_agent_key: mls.member_key})
     {:ok, assign(socket,
@@ -50,7 +49,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
       Enum.find(a[String.to_atom("#{list}_results")], fn lst -> key_id === lst["ListingKey"] end)
       |> process_listing()
     case Insights.create_insight(insight_data(listing, key, a)) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "/insights/#{key}/customize")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/customize")}
       {:error, _method, _changeset, _} ->
         {:noreply, put_flash(socket, :error, "Something went wrong.")}
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}

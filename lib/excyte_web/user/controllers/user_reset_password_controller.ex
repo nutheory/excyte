@@ -24,7 +24,7 @@ defmodule ExcyteWeb.UserResetPasswordController do
       :info,
       "If your email is in our system, you will receive instructions to reset your password shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: "/auth")
   end
 
   def edit(conn, _params) do

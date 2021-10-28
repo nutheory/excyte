@@ -13,8 +13,7 @@ defmodule ExcyteWeb.Insight.Customize do
 
   def render(assigns), do: InsightView.render("customize.html", assigns)
 
-  def mount(%{"insight_id" => id}, %{"user_token" => token}, socket) do
-    cu = Accounts.get_user_by_session_token(token)
+  def mount(%{"insight_id" => id}, _sesh, %{assigns: %{current_user: cu}} = socket) do
     videos = Assets.get_agent_videos(%{agent_id: cu.id, brokerage_id: cu.brokerage_id})
     # {:ok, current_state} = Cachex.get(customize_cache, id)
     case Insights.get_minimal_insight(id, cu.id) do
@@ -35,7 +34,7 @@ defmodule ExcyteWeb.Insight.Customize do
         )}
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
       err -> Activities.handle_errors(err, "ExcyteWeb.Insight.CustomizeCma")
-        {:ok, push_redirect(socket, to: "/insights/cma/create")}
+        {:ok, push_redirect(socket, to: "/auth/insights/cma/create")}
     end
   end
 
@@ -131,7 +130,7 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply,
       socket
       |> put_flash(:info, "#{Utilities.insight_type_to_name(published.insight.type)} was created and published successfully.")
-      |> push_redirect(to: "/agent/dash")}
+      |> push_redirect(to: "/auth/dash")}
   end
 
   def handle_event("delete_video", %{"value" => _v, "video-id" => id}, %{assigns: a} = socket) do

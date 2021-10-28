@@ -15,7 +15,7 @@ div.preview-wrapper {
 
   & .mapping-wrapper {
     @apply p-6 fixed w-screen h-screen flex items-center justify-center top-0 left-0 right-0 bottom-0 bg-bgray-800 bg-opacity-90;
-    z-index: 100; 
+    z-index: 100 !important; 
   
     & .mapping-viewer {
       @apply w-full h-full max-w-screen-lg;

@@ -89,7 +89,7 @@
               </li>
             <% else %>
               <%= if section.component_name !== "brokerage_profile" || @data.brokerage !== nil do %>
-                <.live_component module={SectionCard} section={section} />
+                <.live_component module={SectionCard} section={section} id={"#{section.component_name}_card"} />
               <% end %>
             <% end %>
           <% end %>
@@ -181,6 +181,7 @@
         id="previewWrapper" 
         phx-hook="CustomizePreview"
       >
+        <div id="mapping-container"></div>
         <div
           class="absolute top-0 left-0 flex cursor-pointer z-50 bg-white rounded-br-md text-gray-800 px-4 py-2"
           phx-click="toggle-preview"

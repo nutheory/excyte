@@ -415,6 +415,7 @@ defmodule Excyte.Accounts do
     Repo.one(query)
   end
 
+
   # def get_full_user(token) do
   #   {:ok, query} = UserToken.verify_session_token_query(token)
   #   Repo.one(query) |> Repo.preload([:account, :profiles])

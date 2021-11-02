@@ -1,14 +1,14 @@
 defmodule ExcyteWeb.Insight.Editor do
   use ExcyteWeb, :live_view
 
-  alias Excyte.{Accounts, Insights, ApiServeces}
+  # alias Excyte.{Accounts, Insights, ApiServices}
   alias ExcyteWeb.{InsightView}
 
   def render(assigns), do: InsightView.render("editor.html", assigns)
   def mount(_params, %{"content_id" => cid}, %{assigns: %{current_user: cu}} = socket) do
     case Cachex.get(:editor_cache, cid) do
       {:ok, content} -> send self(), {:setup_editor, content}
-      {:error, err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
+      {:error, _err} -> {:ok, assign(socket, current_user: cu, error: "replace with notice and redirect or notice and new doc" )}
     end
     {:ok, assign(socket,
       current_user: cu,
@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Insight.Editor do
     {:noreply, push_event(socket, "loadContent", %{content: section.html_content})}
   end
 
-  def handle_event("section_save", %{html: html}, %{assigns: a} = socket) do
+  def handle_event("section_save", %{html: html}, socket) do
     IO.inspect(html, label: "html")
     # case Insights. do
     #   {:ok, section} ->
@@ -35,12 +35,12 @@ defmodule ExcyteWeb.Insight.Editor do
     {:noreply, socket}
   end
 
-  def handle_event("search-pexel-images", %{"term" => term}, %{assigns: a} = socket) do
+  def handle_event("search-pexel-images", %{"term" => term}, socket) do
     ApiServices.pexel_image_search(term, 20, 0)
     {:noreply, socket}
   end
 
-  def fetch_pexel_images("load-pexel-images", %{"page-url" => url}, %{assigns: a} = socket) do
+  def fetch_pexel_images("load-pexel-images", %{"page-url" => url}, socket) do
     ApiServices.pexel_image_next(url)
     {:noreply, socket}
   end

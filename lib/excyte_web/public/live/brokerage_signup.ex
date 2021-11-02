@@ -1,6 +1,6 @@
-defmodule ExcyteWeb.BrokerageSignup do
+defmodule ExcyteWeb.Public.BrokerageSignup do
   use ExcyteWeb, :live_public_view
-  alias Excyte.{Accounts, Accounts.User, Agents.Agent, EmailNotifiers}
+  alias Excyte.{Accounts, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}
 
   def render(assigns), do: PublicView.render("brokerage_signup.html", assigns)
@@ -37,7 +37,7 @@ defmodule ExcyteWeb.BrokerageSignup do
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
-    with {:ok, %{agent: owner, account: acc}} <- Accounts.register_brokerage(Utilities.key_to_atom(attrs)),
+    with {:ok, %{agent: owner, account: _acc}} <- Accounts.register_brokerage(Utilities.key_to_atom(attrs)),
          {:ok, token} <- Accounts.generate_login_token(owner) do
       {:noreply,
         socket

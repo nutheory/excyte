@@ -36,7 +36,7 @@ defmodule ExcyteWeb.UserAuth do
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"} = params) do
+  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"} = _params) do
     put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
   end
 
@@ -145,5 +145,5 @@ defmodule ExcyteWeb.UserAuth do
   end
 
   defp maybe_store_return_to(conn), do: conn
-  defp signed_in_path(conn), do: "/auth/dash"
+  defp signed_in_path(_conn), do: "/auth/dash"
 end

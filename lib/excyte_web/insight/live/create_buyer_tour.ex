@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateBuyerTour do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Insights}
+  alias Excyte.{Insights}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
   @filters %{
@@ -18,7 +18,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
 
   def render(assigns), do: InsightView.render("create_buyer_tour.html", assigns)
 
-  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"return_to" => _rt}, %{assigns: %{current_user: cu}} = socket) do
     {:ok, assign(socket,
       current_user: cu,
       coords: %{},
@@ -50,11 +50,11 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     {:noreply, assign(socket, filters: filters)}
   end
 
-  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = res, socket) do
+  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = _res, socket) do
     {:noreply, assign(socket, coords: %{lat: lat, lng: lng}, autodetected: auto)}
   end
 
-  def handle_event("current_location_coords", %{"message" => msg, "autodetected" => auto}, socket) do
+  def handle_event("current_location_coords", %{"message" => _msg, "autodetected" => auto}, socket) do
     {:noreply, assign(socket, autodetected: auto)}
   end
 

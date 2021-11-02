@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.AgentSignup do
+defmodule ExcyteWeb.Public.AgentSignup do
   use ExcyteWeb, :live_public_view
   alias Excyte.{Accounts, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}

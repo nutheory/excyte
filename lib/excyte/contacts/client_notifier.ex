@@ -4,11 +4,11 @@ defmodule Excyte.Clients.ClientNotifier do
 
   @base_url Application.get_env(:excyte, :base_url)
   @from_address "no-reply@excyte.io"
-  @html_signature """
-    Excyte.io<br/>
-    <a href="//excyte.io/">https://excyte.io/</a><br/>
-    contact@excyte.io<br/>
-  """
+  # @html_signature """
+  #   Excyte.io<br/>
+  #   <a href="//excyte.io/">https://excyte.io/</a><br/>
+  #   contact@excyte.io<br/>
+  # """
 
   defp deliver(to, subject, text_body, html_body) do
     email =

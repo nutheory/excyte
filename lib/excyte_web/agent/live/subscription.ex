@@ -6,7 +6,7 @@ defmodule ExcyteWeb.Agent.Subscription do
 
   def render(assigns), do: AgentView.render("subscription.html", assigns)
 
-  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"return_to" => _rt}, %{assigns: %{current_user: cu}} = socket) do
     account = Accounts.get_account!(cu.account_id)
     plans = Application.get_env(:excyte, :agent_plans) |> Billing.get_plans(true)
     default_plan = Enum.find(plans, fn pl -> pl.default === true end)

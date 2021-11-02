@@ -28,12 +28,12 @@ defmodule Excyte.Contacts do
 
   def import_google_contacts() do
     # {:ok, token} = Goth.fetch(Excyte.Goth)
-    {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/contacts")
+    # {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/contacts")
     # ret = Goth.Token.for_scope("https://www.googleapis.com/auth/contacts.readonly")
     # IO.inspect(ret, label: "CONT")
-    conn = GoogleApi.People.V1.Connection.new(token.token)
-    {:ok, contacts} = GoogleApi.People.V1.Api.People.people_people_connections_list(conn, "me", personFields: "names")
-    IO.inspect(contacts, label: "CONT")
+    # conn = GoogleApi.People.V1.Connection.new(token.token)
+    # {:ok, contacts} = GoogleApi.People.V1.Api.People.people_people_connections_list(conn, "me", personFields: "names")
+    # IO.inspect(contacts, label: "CONT")
   end
 
   def create_client(%{client: client, insight: insight, email: email} = all) do

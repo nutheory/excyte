@@ -1,14 +1,13 @@
 defmodule ExcyteWeb.Insight.Customize do
   use ExcyteWeb, :live_view
   alias Excyte.{
-    Accounts,
     Assets,
     Activities,
     Insights,
     Insights.Insight,
     Properties.PublicDataApi
   }
-  alias ExcyteWeb.{InsightView, Helpers.Templates, Helpers.Utilities}
+  alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
 
   def render(assigns), do: InsightView.render("customize.html", assigns)
@@ -93,7 +92,7 @@ defmodule ExcyteWeb.Insight.Customize do
     {:noreply, assign(socket, uploaded_asset: ua, assets: assets)}
   end
 
-  def handle_info({:load_preview, %{ theme: theme }}, %{assigns: a} = socket) do
+  def handle_info({:load_preview, %{ theme: theme }}, %{assigns: _a} = socket) do
     {:noreply, push_event(socket, "loadPreview", %{ theme: theme })}
   end
 
@@ -296,7 +295,7 @@ defmodule ExcyteWeb.Insight.Customize do
           "showcase" ->
             first = hd(listings)
             first["main_photo_url"]
-          "cma" ->
+          "cma" -> nil
             # insight property photo
         end
       Map.put(insight, :cover_photo_url, url)

@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Privacy do
+defmodule ExcyteWeb.Public.Privacy do
   use ExcyteWeb, :live_public_view
   alias ExcyteWeb.{PublicView}
 

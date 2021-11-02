@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Agent.Dashboard do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Clients, Insights}
+  alias Excyte.{Clients, Insights}
   alias ExcyteWeb.{AgentView, Helpers.Utilities}
 
   def render(assigns), do: AgentView.render("dashboard.html", assigns)
@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Agent.Dashboard do
       {:ok, %{new_client: client}} ->
         {:noreply, put_flash(socket, :info, "#{Utilities.insight_type_to_name(a.insight_to_send.type)} sent to #{client.email}")
                                   |> assign(show_send_panel: false, insight_to_send: nil)}
-      {:error, err} ->
+      {:error, _err} ->
         {:noreply, socket}
     end
   end

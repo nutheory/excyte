@@ -314,6 +314,25 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
+  # def time_to_text(listing, key) do
+  #   if Map.has_key?(listing, key) && listing[key] !== nil do
+  #     months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+  #     cond do
+  #       months <= 2 ->
+  #         t = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+  #         "#{t.days} #{Inflex.inflect("day", t.days)} ago"
+  #       months <= 18 ->
+  #         t = %{months: months}
+  #         "#{t.months} #{Inflex.inflect("month", t.months)} ago"
+  #       months > 18 ->
+  #         t = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+  #         "over #{t.years} #{Inflex.inflect("year", t.years)} ago"
+  #     end
+  #   else
+  #     ""
+  #   end
+  # end
+
   def calculate_distance(subject_coords, listing_coords) do
     m = Geocalc.distance_between(subject_coords, listing_coords)
     Float.round(m * 0.000621371192, 2)
@@ -402,45 +421,6 @@ defmodule ExcyteWeb.Helpers.Utilities do
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
           </svg>
         """
-    end
-  end
-
-  def time_to_text(listing, key) do
-    if Map.has_key?(listing, key) && listing[key] !== nil do
-      months =
-        Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
-
-      cond do
-        months <= 2 ->
-          t = %{
-            days:
-              Timex.diff(
-                DateTime.utc_now(),
-                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
-                :days
-              )
-          }
-
-          "#{t.days} #{Inflex.inflect("day", t.days)} ago"
-
-        months <= 18 ->
-          t = %{months: months}
-          "#{t.months} #{Inflex.inflect("month", t.months)} ago"
-
-        months > 18 ->
-          t = %{
-            years:
-              Timex.diff(
-                DateTime.utc_now(),
-                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
-                :years
-              )
-          }
-
-          "over #{t.years} #{Inflex.inflect("year", t.years)} ago"
-      end
-    else
-      ""
     end
   end
 

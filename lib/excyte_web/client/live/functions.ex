@@ -2,7 +2,7 @@ defmodule ExcyteWeb.Client.Functions do
   use Timex
   use Phoenix.Component
   import Number.{Delimit}
-  alias ExcyteWeb.{Helpers.Utilities}
+  # alias ExcyteWeb.{Helpers.Utilities}
 
   def closed_analysis(listings) do
     closed = Enum.filter(listings, fn lst -> lst["status"] === "Closed" end)

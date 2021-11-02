@@ -3,7 +3,7 @@ defmodule Excyte.EmailNotifiers do
   import Bamboo.Email
   alias Excyte.Mailer
 
-  @base_url Application.get_env(:excyte, :base_url)
+  # @base_url Application.get_env(:excyte, :base_url)
 
   def deliver_welcome_email(user, acc) do
     base_email()
@@ -23,13 +23,13 @@ defmodule Excyte.EmailNotifiers do
     |> Mailer.deliver_later()
   end
 
-  def deliver_reset_password_instructions(user, url) do
+  # def deliver_reset_password_instructions(user, url) do
 
-  end
+  # end
 
-  def deliver_update_email_instructions(user, url) do
+  # def deliver_update_email_instructions(user, url) do
 
-  end
+  # end
 
 
   # def deliver_invitation_instructions(user, url) do

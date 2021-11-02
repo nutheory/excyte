@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.Home do
+defmodule ExcyteWeb.Public.Home do
   use ExcyteWeb, :live_public_view
   alias ExcyteWeb.{PublicView}
 

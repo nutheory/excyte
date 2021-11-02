@@ -1,6 +1,6 @@
 defmodule ExcyteWeb.Brokerage.Theme do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Activities, Agents, Brokerages}
+  alias Excyte.{Activities, Agents, Brokerages}
   alias ExcyteWeb.{Helpers.Utilities, BrokerageView}
   on_mount ExcyteWeb.UserLiveAuth
 

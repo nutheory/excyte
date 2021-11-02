@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Agent.Profile do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Agents, Utils.Contact, Agents.Profile, Mls.ResoMemberApi}
-  alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, AgentView}
+  alias Excyte.{Accounts, Agents, Utils.Contact, Mls.ResoMemberApi}
+  alias ExcyteWeb.{Helpers.Utilities, AgentView}
   on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: AgentView.render("profile.html", assigns)

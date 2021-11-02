@@ -14,7 +14,7 @@ defmodule Excyte.Properties.Property do
   defimpl Jason.Encoder, for: [Excyte.Properties.Property] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
-        ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
         ({:__meta__, _}, acc) -> acc
         ({k, v}, acc) -> Map.put(acc, k, v)
       end)

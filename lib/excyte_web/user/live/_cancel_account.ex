@@ -26,14 +26,14 @@ defmodule ExcyteWeb.Settings.CancelAccount do
     end
   end
 
-  defp cancel_agent(%{account: acc, current_user: cu}, %{assigns: a} = socket) do
+  defp cancel_agent(%{account: _acc, current_user: _cu}, %{assigns: a} = socket) do
     case Billing.cancel_subscription(%{account: a.account}) do
-      {:ok, res} -> {:noreply, assign(socket, cancelled: true)}
+      {:ok, _res} -> {:noreply, assign(socket, cancelled: true)}
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
   end
 
-  defp cancel_brokerage(%{account: acc, current_user: cu}, %{assigns: a} = socket) do
+  defp cancel_brokerage(%{account: _acc, current_user: cu}, %{assigns: a} = socket) do
     if cu.brokerage_role === "owner" do
       case Billing.cancel_subscription(%{account: a.account}) do
         {:ok, _} -> {:noreply, assign(socket, cancelled: true)}

@@ -56,7 +56,8 @@ config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
 
-# config :excyte, :gcp_creds, System.get_env("GCP_CREDENTIALS") |> File.read!()
+config :goth,
+  json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!()
 
 config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")

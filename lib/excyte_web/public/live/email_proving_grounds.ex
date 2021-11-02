@@ -1,4 +1,4 @@
-defmodule ExcyteWeb.EmailProvingGrounds do
+defmodule ExcyteWeb.Public.EmailProvingGrounds do
   use ExcyteWeb, :live_public_view
   alias ExcyteWeb.{PublicView}
 

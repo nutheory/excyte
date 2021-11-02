@@ -77,7 +77,7 @@ defmodule ExcyteWeb.Router do
 
   ## Authentication routes
 
-  live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
+  # live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
     scope "/auth", ExcyteWeb do
       pipe_through [:app_browser, :require_authenticated_user]
       get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
@@ -110,7 +110,7 @@ defmodule ExcyteWeb.Router do
         # live "/create", Create
       end
     end
-  end
+  # end
 
   # scope "/insights", ExcyteWeb.Insight do
   #   pipe_through [:app_browser, :require_authenticated_user]
@@ -196,9 +196,9 @@ defmodule ExcyteWeb.Router do
 
   scope "/", ExcyteWeb do
     pipe_through [:public]
-    live "/", Home
-    live "/privacy", Privacy
-    live "/terms", Terms
-    live "/email-proving-grounds!", EmailProvingGrounds
+    live "/", Public.Home
+    live "/privacy", Public.Privacy
+    live "/terms", Public.Terms
+    live "/email-proving-grounds!", Public.EmailProvingGrounds
   end
 end

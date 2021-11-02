@@ -6,6 +6,7 @@ defmodule ExcyteWeb.ProtectedHeader do
 
   def render(assigns), do: LayoutView.render("protected_header.html", assigns)
 
+  @impl true
   def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     if connected?(socket), do: Accounts.subscribe(cu.id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})

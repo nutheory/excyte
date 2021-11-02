@@ -1,7 +1,7 @@
 defmodule ExcyteWeb.Brokerage.Profile do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Brokerages, Utils.Contact, Brokerages.Profile, Mls.ResoOfficeApi}
-  alias ExcyteWeb.{Helpers.SimpleS3Upload, Helpers.Utilities, BrokerageView}
+  alias Excyte.{Brokerages, Utils.Contact, Mls.ResoOfficeApi}
+  alias ExcyteWeb.{Helpers.Utilities, BrokerageView}
   on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("profile.html", assigns)

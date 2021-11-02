@@ -1,7 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateCma do
   use ExcyteWeb, :live_view
   alias Excyte.{
-    Accounts,
     Activities,
     Insights,
     Properties
@@ -48,11 +47,11 @@ defmodule ExcyteWeb.Insight.CreateCma do
     end
   end
 
-  def handle_info({:receive_uploads, %{upload_url: url, name: name}}, %{assigns: a} = socket) do
+  def handle_info({:receive_uploads, %{upload_url: url, name: _name}}, socket) do
     {:noreply, assign(socket, photo: url)}
   end
 
-  def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
+  def handle_info({:destroy_uploads, %{name: _name}}, socket) do
     {:noreply, assign(socket, photo: "")}
   end
 

@@ -207,7 +207,7 @@ defmodule Excyte.Accounts do
       agent_id: agent.id,
       name: attrs.full_name,
       theme_settings: @default_theme,
-      contacts: [%{content: attrs.email, name: "Email", type: "email"}]
+      contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
     }))
     |> Repo.insert()
   end
@@ -218,7 +218,7 @@ defmodule Excyte.Accounts do
       brokerage_id: bk.id,
       company_name: attrs.brokerage_name,
       theme_settings: @default_theme,
-      contacts: [%{content: attrs.email, name: "Email", type: "email"}]
+      contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
     }))
     |> Repo.insert()
   end
@@ -431,18 +431,18 @@ defmodule Excyte.Accounts do
 
   ## Confirmation
 
-  @doc """
-  Delivers the confirmation email instructions to the given user.
+  # @doc """
+  # Delivers the confirmation email instructions to the given user.
 
-  ## Examples
+  # ## Examples
 
-      iex> deliver_user_confirmation_instructions(user, &Routes.user_confirmation_url(conn, :confirm, &1))
-      {:ok, %{to: ..., body: ...}}
+  #     iex> deliver_user_confirmation_instructions(user, &Routes.user_confirmation_url(conn, :confirm, &1))
+  #     {:ok, %{to: ..., body: ...}}
 
-      iex> deliver_user_confirmation_instructions(confirmed_user, &Routes.user_confirmation_url(conn, :confirm, &1))
-      {:error, :already_confirmed}
+  #     iex> deliver_user_confirmation_instructions(confirmed_user, &Routes.user_confirmation_url(conn, :confirm, &1))
+  #     {:error, :already_confirmed}
 
-  """
+  # """
   # def deliver_user_confirmation_instructions(%User{} = user, confirmation_url_fun)
   #     when is_function(confirmation_url_fun, 1) do
   #   if user.confirmed_at do
@@ -586,7 +586,7 @@ defmodule Excyte.Accounts do
       {:ok, agent}
     else
       {:error, %Ecto.Changeset{} = ch} -> {:error, ch}
-      err -> :error
+      _err -> :error
     end
   end
 
@@ -611,7 +611,7 @@ defmodule Excyte.Accounts do
     |> Agents.Profile.registration_changeset(%{
       agent_id: agent.id,
       name: agent.full_name,
-      contacts: [%{content: agent.email, name: "Email", type: "email"}]
+      contact_items: [%{content: agent.email, name: "Email", type: "email"}]
     })
   end
 
@@ -627,7 +627,7 @@ defmodule Excyte.Accounts do
   #   |> Repo.transaction()
   # end
 
-  def soft_delete_account(%{account_id: acc_id, subscription_id: sub_id}) do
+  def soft_delete_account(%{account_id: acc_id, subscription_id: _sub_id}) do
     acc = Repo.get_by(Account, %{id: acc_id})
 
     if acc do

@@ -3,6 +3,13 @@ defmodule ExcyteWeb.Agent.Dashboard do
   alias Excyte.{Clients, Insights}
   alias ExcyteWeb.{AgentView, Helpers.Utilities}
 
+  @insight_types [
+                  %{value: "all", text: "View All"},
+                  %{value: "cma", text: "CMA"},
+                  %{value: "showcase", text: "Showcase"},
+                  %{value: "buyer_tour", text: "Buyer Tour"}
+                ]
+
   def render(assigns), do: AgentView.render("dashboard.html", assigns)
 
   def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
@@ -10,15 +17,11 @@ defmodule ExcyteWeb.Agent.Dashboard do
     {:ok, assign(socket,
       current_user: cu,
       insights: agent_insights,
+      insight_types: @insight_types,
       show_send_panel: false,
       insight_to_send: nil,
-      current_view: %{value: "all", text: "View All"}
+      current_view: hd(@insight_types)
     )}
-  end
-
-  def handle_info({:query_type, %{insight_type: type}}, %{assigns: a} = socket) do
-    agent_insights = Insights.get_published_agent_insights(a.current_user.id, type.value)
-    {:noreply, assign(socket, insights: agent_insights, current_view: type)}
   end
 
   def handle_info({:save_client, attrs}, %{assigns: a} = socket) do
@@ -29,6 +32,12 @@ defmodule ExcyteWeb.Agent.Dashboard do
       {:error, _err} ->
         {:noreply, socket}
     end
+  end
+
+  def handle_event("query_type", %{"option" => type, "attr" => attr }, %{assigns: a} = socket) do
+    view = Enum.find(a.insight_types, fn types -> types.value === type end)
+    agent_insights = Insights.get_published_agent_insights(a.current_user.id, type)
+    {:noreply, assign(socket, insights: agent_insights, current_view: view)}
   end
 
   def handle_event("delete-insight", %{"ins-id" => iid}, %{assigns: a} = socket) do

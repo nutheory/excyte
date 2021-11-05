@@ -10,10 +10,10 @@ defmodule Excyte.Activities.Activity do
   alias Excyte.{
     Accounts.Account,
     Accounts.User,
-    Agents.Profile,
     Brokerages.Brokerage,
-    Utils.MapType,
-    Repo
+    Contacts.Contact,
+    Insights.Insight,
+    Utils.MapType
   }
 
 

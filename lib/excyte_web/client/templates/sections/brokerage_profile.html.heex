@@ -15,8 +15,8 @@
         <p class="sub-header-color mb-4 font-semibold text-lg md:text-xl"><%= @brokerage.description %></p>
       <% end %>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-6">
-        <%= if length(@brokerage.contacts) > 0 do %>
-          <%= for cnt <- @brokerage.contacts do %>
+        <%= if length(@brokerage.contact_items) > 0 do %>
+          <%= for cnt <- @brokerage.contact_items do %>
             <.live_component
               module={ContactView}
               type={cnt.type}

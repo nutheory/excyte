@@ -1,2 +1,57 @@
-<div>
+<div class="flex my-4">
+  <div class="flex-1">
+    <div class="max-w-sm">
+      <.form let={f} for={:search_filter} phx-change={"search_change"}>
+        <%= text_input f, :term,
+          placeholder: "Filter by Name/Email",
+          class: "text-field shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-2 py-1 bg-white" %>
+      </.form> 
+    </div>
+  </div>
+  <div class="flex pt-1">
+    <div class="ml-2">
+      <UI.dropdown
+        options={@scope_options}
+        selected={@scope}
+        attr={"scope"}
+        origin={"right"}
+        show_top_label={false}
+        callback={"select_filter_change"}
+        label={"My Contacts"}
+        id={"contact_scope"}
+      />
+    </div>
+    <div class="ml-2">
+      <UI.dropdown
+        options={@sort_options}
+        selected={@sort}
+        attr={"sort"}
+        origin={"right"}
+        show_top_label={false}
+        callback={"select_filter_change"}
+        label={"Sort by"}
+        id={"sort_contacts"}
+      >
+        <:left_icon>
+          <div class="mr-2 pt-0.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90 fill-current text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+          </div>
+        </:left_icon>
+      </UI.dropdown>
+    </div>
+    <div class="ml-2">
+      <UI.dropdown
+        options={@type_options}
+        selected={@type}
+        attr={"type"}
+        origin={"right"}
+        show_top_label={false}
+        callback={"select_filter_change"}
+        label={"Type"}
+        id={"contact_type"}
+      />
+    </div>
+  </div>
 </div>

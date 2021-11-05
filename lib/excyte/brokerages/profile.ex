@@ -4,9 +4,8 @@ defmodule Excyte.Brokerages.Profile do
 
   alias Excyte.{
     Brokerages.Brokerage,
-    Utils.Address,
-    Utils.Contact,
-    Utils.MapType,
+    Utils.AddressItem,
+    Utils.ContactItem,
     Utils.Theme
   }
 
@@ -32,8 +31,8 @@ defmodule Excyte.Brokerages.Profile do
     field :intro_video_url, :string
     field :updated_by_user, :boolean
     embeds_one(:theme_settings, Theme, on_replace: :update)
-    embeds_many(:addresses, Address)
-    embeds_many(:contacts, Contact, on_replace: :delete)
+    embeds_many(:address_items, AddressItem)
+    embeds_many(:contact_items, ContactItem, on_replace: :delete)
     belongs_to(:brokerage, Brokerage)
     timestamps()
   end
@@ -51,14 +50,14 @@ defmodule Excyte.Brokerages.Profile do
       :updated_by_user,
     ])
     |> cast_embed(:theme_settings)
-    |> cast_embed(:addresses)
-    |> cast_embed(:contacts)
+    |> cast_embed(:address_items)
+    |> cast_embed(:contact_items)
   end
 
   def registration_changeset(profile, attrs) do
     profile
     |> cast(attrs, [:company_name, :brokerage_id])
-    |> cast_embed(:contacts)
+    |> cast_embed(:contact_items)
     |> cast_embed(:theme_settings)
     |> validate_required([:company_name, :brokerage_id])
   end

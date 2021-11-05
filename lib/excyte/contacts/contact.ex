@@ -25,11 +25,16 @@ defmodule Excyte.Contacts.Contact do
     field :position, MapType
     field :needs_attention, :boolean
     field :description, :string
-    field :name, :string
+    field :first_name, :string
+    field :last_name, :string
+    field :priority, :string
+    field :phone_number, :string
+    field :title, :string
+    field :suffix, :string
     field :email, :string
     field :state, :string
     field :zip_code, :string
-    embeds_many(:address_items, AddressItems)
+    embeds_many(:address_items, AddressItem)
     embeds_many(:contact_items, ContactItem, on_replace: :delete)
     many_to_many(:insights, Insight, join_through: "contact_insight", on_replace: :delete)
     belongs_to(:created_by, User)
@@ -47,7 +52,12 @@ defmodule Excyte.Contacts.Contact do
       :type,
       :needs_attention,
       :description,
-      :name,
+      :first_name,
+      :last_name,
+      :phone_number,
+      :title,
+      :suffix,
+      :priority,
       :email,
       :state,
       :zip_code,
@@ -64,7 +74,7 @@ defmodule Excyte.Contacts.Contact do
 
   def changeset_update_insights(%Contact{} = contact, insights) do
     contact
-    |> cast(%{}, @required_fields)
+    # |> cast(%{}, @required_fields)
     # associate insights to the user
     |> put_assoc(:insights, insights)
   end
@@ -92,9 +102,9 @@ defmodule Excyte.Contacts.Contact do
     start_character = String.slice(filter, 0..1)
 
     from c in query,
-    where: ilike(c.name, ^"#{start_character}%") or ilike(c.email, ^"#{start_character}%"),
-    where: fragment("SIMILARITY(?, ?) > 0", c.name, ^filter) or fragment("SIMILARITY(?, ?) > 0",  c.email, ^filter),
-    order_by: fragment("LEVENSHTEIN(?, ?)", c.name, ^filter)
+    where: ilike(c.last_name, ^"#{start_character}%") or ilike(c.email, ^"#{start_character}%"),
+    where: fragment("SIMILARITY(?, ?) > 0", c.last_name, ^filter) or fragment("SIMILARITY(?, ?) > 0",  c.email, ^filter),
+    order_by: fragment("LEVENSHTEIN(?, ?)", c.last_name, ^filter)
   end
 
   def apply_list_options(query, opts) do

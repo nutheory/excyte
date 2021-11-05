@@ -4,8 +4,8 @@ defmodule Excyte.Agents.Profile do
 
   alias Excyte.{
     Accounts.User,
-    Utils.Address,
-    Utils.Contact,
+    Utils.AddressItem,
+    Utils.ContactItem,
     Utils.Theme
   }
 
@@ -14,7 +14,7 @@ defmodule Excyte.Agents.Profile do
   defimpl Jason.Encoder, for: [Excyte.Agents.Profile] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
-        ({k, %Ecto.Association.NotLoaded{}}, acc) -> acc
+        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
         ({:__meta__, _}, acc) -> acc
         ({k, v}, acc) -> Map.put(acc, k, v)
       end)
@@ -34,8 +34,8 @@ defmodule Excyte.Agents.Profile do
     field :intro_video_url, :string
     field :updated_by_user, :boolean
     embeds_one :theme_settings, Theme, on_replace: :update
-    embeds_many(:addresses, Address)
-    embeds_many(:contacts, Contact, on_replace: :delete)
+    embeds_many(:address_items, AddressItem)
+    embeds_many(:contact_items, ContactItem, on_replace: :delete)
     belongs_to(:agent, User)
     timestamps()
   end
@@ -55,14 +55,14 @@ defmodule Excyte.Agents.Profile do
       :updated_by_user
     ])
     |> cast_embed(:theme_settings)
-    |> cast_embed(:addresses)
-    |> cast_embed(:contacts)
+    |> cast_embed(:address_items)
+    |> cast_embed(:contact_items)
   end
 
   def registration_changeset(profile, attrs) do
     profile
     |> cast(attrs, [:name, :agent_id])
-    |> cast_embed(:contacts)
+    |> cast_embed(:contact_items)
     |> cast_embed(:theme_settings)
     |> validate_required([:name, :agent_id])
   end

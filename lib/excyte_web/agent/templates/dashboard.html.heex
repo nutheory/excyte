@@ -36,18 +36,13 @@
     <div class="flex">
       <h2 class="flex-1">Recent Activity</h2>
       <div class="w-36">
-        <.live_component 
-          module={Dropdown}
-          options={[
-            %{value: "all", text: "View All"},
-            %{value: "cma", text: "CMA"},
-            %{value: "showcase", text: "Showcase"},
-            %{value: "buyer_tour", text: "Buyer Tour"}
-          ]}
+        <UI.dropdown 
+          options={@insight_types}
           selected={@current_view}
-          attr={:insight_type}
+          attr={"insight_type"}
           show_top_label={false}
-          callback={:query_type}
+          origin={"right"}
+          callback={"query_type"}
           label={"Showing"}
           id={:current_dash_view}
         />

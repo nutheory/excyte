@@ -11,10 +11,15 @@ defmodule Excyte.Repo.Migrations.ContactsFix do
       add :is_shared, :boolean, default: false
       add :is_archived, :boolean, default: false
       add :type, :string, default: "lead"
+      add :priority, :string, default: "Medium"
       add :status, :string, default: "new"
       add :needs_attention, :boolean, default: false
       add :description, :text
-      add :name, :string
+      add :first_name, :string
+      add :phone_number, :string
+      add :last_name, :string
+      add :title, :string
+      add :suffix, :string
       add :email, :string
       add :state, :string
       add :zip_code, :string
@@ -51,6 +56,9 @@ defmodule Excyte.Repo.Migrations.ContactsFix do
     end
 
     drop table("clients")
+
+    rename table(:profiles), :contacts, to: :contact_items
+    rename table(:profiles), :addresses, to: :address_items
 
     create index(:activities, [:contact_id])
     create index(:conversations, [:contact_id])

@@ -1,11 +1,11 @@
 <div>
   <%= if @form do %>
     <div class="mt-2 -mx-1">
-      <%= for fc <- inputs_for(@form, :contacts) do %>
+      <%= for fc <- inputs_for(@form, :contact_items) do %>
         <%= if fc.data.id do %>
           <%= hidden_input fc, :id, value: fc.data.id %>
         <% end %>
-        <div class="border-t border-cyan-200 py-4 relative">
+        <div class="py-2 relative">
           <%= if Map.has_key?(fc.params, "delete") && fc.params["delete"] == "true" do %>
             <div class="text-xs bg-red-700 text-white absolute top-1 right-0 px-1">marked for delete</div>
           <% end %>
@@ -48,7 +48,7 @@
           <% end %>
         </div>
       <% end %>
-      <div class="pt-3 border-t border-cyan-200">
+      <div class="pt-3">
         <a href="#" class="pl-1 link-button" phx-click="add-contact">Add a Contact</a>
       </div>
     </div>

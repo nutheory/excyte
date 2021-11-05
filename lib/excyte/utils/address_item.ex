@@ -1,4 +1,4 @@
-defmodule Excyte.Utils.Address do
+defmodule Excyte.Utils.AddressItem do
   use Ecto.Schema
   import Ecto.Changeset
 

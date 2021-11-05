@@ -8,20 +8,20 @@ defmodule Excyte.Contacts do
 
   @proxies []
 
-  def get_contacts(%{agent_id: agent_id, brokerage_id: brk_id}, filter, list_opts) do
+  def get_contacts(%{scope: %{agent_id: agent_id, brokerage_id: brk_id}} = list_opts) do
     opts = list_opts(list_opts)
 
     query =
       Contact
       |> Contact.get_by_agent(agent_id)
       |> Contact.get_by_brokerage(brk_id)
-      |> Contact.apply_fuzzy_search(filter)
+      |> Contact.apply_fuzzy_search(list_opts.filter)
       |> Contact.apply_list_options(opts)
 
     Repo.all(query)
   end
 
-  def new_changeset(attrs) do
+  def new_changeset(attrs \\ %{}) do
     %Contact{}
     |> Contact.changeset(attrs)
   end
@@ -218,7 +218,9 @@ defmodule Excyte.Contacts do
         sort_key: "name",
         sort_value: "desc",
         page_size_limit: 60,
-        offset: 0
+        offset: 0,
+        scope: nil,
+        category: nil
       }
     else
       opts

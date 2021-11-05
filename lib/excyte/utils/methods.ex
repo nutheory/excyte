@@ -1,7 +1,7 @@
 defmodule Excyte.Utils.Methods do
   alias Excyte.Utils.{
-    Address,
-    Contact,
+    AddressItem,
+    ContactItem,
     Theme
   }
 
@@ -11,8 +11,8 @@ defmodule Excyte.Utils.Methods do
   def stringify_keys(struct = %{struct: _}), do: struct
 
   def stringify_keys(date = %DateTime{}), do: date
-  def stringify_keys(address = %Address{}), do: Map.from_struct(address)
-  def stringify_keys(contact = %Contact{}), do: Map.from_struct(contact)
+  def stringify_keys(address = %AddressItem{}), do: Map.from_struct(address)
+  def stringify_keys(contact = %ContactItem{}), do: Map.from_struct(contact)
   def stringify_keys(theme = %Theme{}), do: Map.from_struct(theme)
 
   def stringify_keys(map = %{}) do

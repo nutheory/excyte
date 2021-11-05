@@ -1,10 +1,10 @@
-defmodule Excyte.Utils.Contact do
+defmodule Excyte.Utils.ContactItem do
   use Ecto.Schema
   import Ecto.Changeset
 
   @timestamps_opts [type: :utc_datetime]
   # @derive {Jason.Encoder, only: [:type, :name, :content, :textable]}
-  defimpl Jason.Encoder, for: [Excyte.Utils.Contact] do
+  defimpl Jason.Encoder, for: [Excyte.Utils.ContactItem] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
         ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc

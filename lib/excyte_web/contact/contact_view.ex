@@ -4,6 +4,11 @@ defmodule ExcyteWeb.ContactView do
     Create,
     ListItem,
     ListOptions,
-    Overview
+    Overview,
+    Settings
+  }
+  alias ExcyteWeb.Helpers.{UI}
+  alias ExcyteWeb.Components.{
+    ContactForm
   }
 end

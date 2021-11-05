@@ -77,7 +77,7 @@ defmodule ExcyteWeb.Router do
 
   ## Authentication routes
 
-  # live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
+  live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
     scope "/auth", ExcyteWeb do
       pipe_through [:app_browser, :require_authenticated_user]
       get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
@@ -107,10 +107,15 @@ defmodule ExcyteWeb.Router do
 
       scope "/contacts", Contact do
         live "/overview", Overview
-        # live "/create", Create
+        live "/create", Create
+      end
+
+      scope "/properties", Property do
+        live "/overview", Overview
+        live "/create", Create
       end
     end
-  # end
+  end
 
   # scope "/insights", ExcyteWeb.Insight do
   #   pipe_through [:app_browser, :require_authenticated_user]
@@ -180,8 +185,8 @@ defmodule ExcyteWeb.Router do
     pipe_through [:public, :redirect_if_user_is_authenticated, :auth]
     get "/brokerage/invite/:token", UserInvitationController, :accept
     put "/brokerage/invite/:token/:id/invite_update", UserInvitationController, :update_user
-    live "/agent/signup", AgentSignup
-    live "/brokerage/signup", BrokerageSignup
+    live "/agent/signup", Public.AgentSignup
+    live "/brokerage/signup", Public.BrokerageSignup
     get "/confirm", UserConfirmationController, :new
     post "/confirm", UserConfirmationController, :create
     get "/confirm/:token", UserConfirmationController, :confirm

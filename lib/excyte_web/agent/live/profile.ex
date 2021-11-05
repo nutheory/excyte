@@ -1,7 +1,14 @@
 defmodule ExcyteWeb.Agent.Profile do
   use ExcyteWeb, :live_view
-  alias Excyte.{Accounts, Agents, Utils.Contact, Mls.ResoMemberApi}
-  alias ExcyteWeb.{Helpers.Utilities, AgentView}
+  alias Excyte.{
+    Accounts, Agents,
+    Utils.ContactItem,
+    Mls.ResoMemberApi
+  }
+  alias ExcyteWeb.{
+    Helpers.Utilities,
+    AgentView
+  }
   on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
@@ -49,22 +56,22 @@ defmodule ExcyteWeb.Agent.Profile do
   end
 
   def handle_event("add-contact", _, %{assigns: a} = socket) do
-    existing_contacts = Map.get(a.changeset.changes, :contacts, a.profile.contacts)
+    existing_contacts = Map.get(a.changeset.changes, :contact_items, a.profile.contact_items)
     contacts =
       existing_contacts
-      |> Enum.concat([%Contact{temp_id: Utilities.get_temp_id()}])
+      |> Enum.concat([%ContactItem{temp_id: Utilities.get_temp_id()}])
 
-    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
+    cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
     {:noreply, assign(socket, changeset: cs)}
   end
 
   def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
     contacts =
-      Enum.reject(a.changeset.changes.contacts, fn %{data: contact} ->
+      Enum.reject(a.changeset.changes.contact_items, fn %{data: contact} ->
         contact.temp_id == remove_id
       end)
 
-    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
+    cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
     {:noreply, assign(socket, changeset: cs)}
   end
 
@@ -96,7 +103,7 @@ defmodule ExcyteWeb.Agent.Profile do
     if profile.updated_by_user === false && mls.member_key do
       mls_details = ResoMemberApi.getMemberDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
-        %Contact{
+        %ContactItem{
           temp_id: Utilities.get_temp_id(),
           name: cnt.name,
           content: cnt.content,
@@ -104,14 +111,14 @@ defmodule ExcyteWeb.Agent.Profile do
         }
       end)
 
-      contacts = profile.contacts ++ mls_contacts
+      contacts = profile.contact_items ++ mls_contacts
       Agents.change_profile(profile, mls_details)
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contact_items, contacts)
       # |> Map.put(:action, :validate)
     else
-      contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
+      contacts = if length(profile.contact_items) > 0, do: profile.contact_items, else: [%ContactItem{temp_id: Utilities.get_temp_id()}]
       Agents.change_profile(profile)
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contact_items, contacts)
     end
   end
 end

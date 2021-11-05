@@ -1,6 +1,9 @@
 defmodule ExcyteWeb.AgentView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/agent/templates", path: ""]}
-  alias ExcyteWeb.Helpers.Utilities
+  alias ExcyteWeb.Helpers.{
+    UI,
+    Utilities
+  }
   alias ExcyteWeb.Agent.{
     Dashboard,
     GettingStarted,

@@ -1,7 +1,14 @@
 defmodule ExcyteWeb.Brokerage.Profile do
   use ExcyteWeb, :live_view
-  alias Excyte.{Brokerages, Utils.Contact, Mls.ResoOfficeApi}
-  alias ExcyteWeb.{Helpers.Utilities, BrokerageView}
+  alias Excyte.{
+    Brokerages,
+    Utils.ContactItem,
+    Mls.ResoOfficeApi
+  }
+  alias ExcyteWeb.{
+    Helpers.Utilities,
+    BrokerageView
+  }
   on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("profile.html", assigns)
@@ -50,23 +57,23 @@ defmodule ExcyteWeb.Brokerage.Profile do
   end
 
   def handle_event("add-contact", _, %{assigns: a} = socket) do
-    existing_contacts = Map.get(a.changeset.changes, :contacts, a.profile.contacts)
+    existing_contacts = Map.get(a.changeset.changes, :contact_items, a.profile.contact_items)
     contacts =
       existing_contacts
-      |> Enum.concat([%Contact{temp_id: Utilities.get_temp_id()}])
+      |> Enum.concat([%ContactItem{temp_id: Utilities.get_temp_id()}])
 
-    cs = a.changeset |> Ecto.Changeset.put_embed(:contacts, contacts)
+    cs = a.changeset |> Ecto.Changeset.put_embed(:contact_items, contacts)
 
     {:noreply, assign(socket, changeset: cs)}
   end
 
   def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
     contacts =
-      Enum.reject(a.changeset.changes.contacts, fn %{data: contact} ->
+      Enum.reject(a.changeset.changes.contact_items, fn %{data: contact} ->
         contact.temp_id == remove_id
       end)
 
-    cs = Ecto.Changeset.put_embed(a.changeset, :contacts, contacts)
+    cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
 
     {:noreply, assign(socket, changeset: cs)}
   end
@@ -84,7 +91,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     if profile.updated_by_user === false && Map.has_key?(mls, :office_key) && mls.office_key do
       mls_details = ResoOfficeApi.getOfficeDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
-        %Contact{
+        %ContactItem{
           temp_id: Utilities.get_temp_id(),
           name: cnt.name,
           content: cnt.content,
@@ -92,14 +99,14 @@ defmodule ExcyteWeb.Brokerage.Profile do
         }
       end)
 
-      contacts = profile.contacts ++ mls_contacts
+      contacts = profile.contact_items ++ mls_contacts
       Brokerages.change_profile(profile, mls_details)
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contact_items, contacts)
       |> Map.put(:action, :validate)
     else
-      contacts = if length(profile.contacts) > 0, do: profile.contacts, else: [%Contact{temp_id: Utilities.get_temp_id()}]
+      contacts = if length(profile.contacts) > 0, do: profile.contact_items, else: [%ContactItem{temp_id: Utilities.get_temp_id()}]
       Brokerages.change_profile(profile)
-      |> Ecto.Changeset.put_embed(:contacts, contacts)
+      |> Ecto.Changeset.put_embed(:contact_items, contacts)
     end
   end
 end

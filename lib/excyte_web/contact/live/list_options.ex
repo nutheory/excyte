@@ -1,19 +1,13 @@
 defmodule ExcyteWeb.Contact.ListOptions do
   use ExcyteWeb, :live_component
-  alias ExcyteWeb.{ContactView}
+  alias ExcyteWeb.{
+    ContactView,
+    Helpers.Utilities
+  }
 
-  @scope_options [%{value: "all", text: "All Contacts"},
-                  %{value: "agent", text: "My Contacts"},
-                  %{value: "brokerage", text: "Brokerage Contacts"}]
-
-  @sort_options  [%{value: "name_desc", text: "Name A-Z"},
-                  %{value: "name_asc", text: "Name Z-A"},
-                  %{value: "client", text: "Add a Client"}]
-
-  @type_options  [%{value: nil, text: "All Types"},
-                  %{value: "leads", text: "Leads"},
-                  %{value: "clients", text: "Clients"},
-                  %{value: "brokers", text: "Brokers"}]
+  @scope_options Utilities.contact_scope_options()
+  @type_options Utilities.contact_type_options()
+  @sort_options Utilities.contact_sort_options()
 
   @impl true
   def render(assigns), do: ContactView.render("list_options.html", assigns)

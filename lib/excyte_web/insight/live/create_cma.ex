@@ -27,7 +27,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   end
 
   def handle_info({:setup_subject, %{prop_id: prop_id}}, %{assigns: a} = socket) do
-    case Properties.fetch_subject_details(prop_id, a.current_user.id) do
+    case Properties.fetch_listing_details(prop_id, a.current_user.id) do
       {:ok, subject} ->
         {:noreply, assign(socket,
           subject: subject,

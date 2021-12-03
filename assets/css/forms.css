@@ -67,11 +67,11 @@ form,
   }
 
   & input.text-field {
-    @apply text-gray-700 border bg-white border-bgray-200 rounded p-2 block w-full appearance-none;
+    @apply text-gray-700 border bg-white border-gray-300 rounded p-2 block w-full appearance-none;
   }
 
   & input.number-field {
-    @apply text-gray-700 border bg-white border-bgray-400 rounded leading-8 pl-3 block w-full;
+    @apply text-gray-700 border bg-white border-gray-300 rounded p-2 block w-full;
   }
 
   & textarea.textarea {
@@ -128,17 +128,17 @@ form,
 
   @media (min-width: 768px) {
     & h2 {
-      @apply text-lg leading-none font-bold text-gray-700;
+      @apply text-lg leading-none font-bold;
     }
   }
 
   @media (min-width: 1024px) {
     & h1 {
-      @apply text-2xl leading-none font-extrabold text-gray-700;
+      @apply text-2xl leading-none font-extrabold;
     }
 
     & h2 {
-      @apply text-xl leading-none font-bold text-gray-700;
+      @apply text-xl leading-none font-bold;
     }
 
     & h3 {
@@ -208,4 +208,50 @@ input.naked-text:focus {
   @apply bg-green-400;
 
   background-color: #68d391;
+}
+
+
+.pac-container {
+  @apply bg-white shadow-xl rounded p-3;
+
+  & .pac-icon {
+    @apply hidden;
+  }
+
+  & .pac-item {
+    @apply p-2 block text-base text-gray-400 w-full rounded border-0;
+  }
+
+  /* mouse hover */
+  & .pac-item:hover {
+    @apply bg-gray-100
+  }
+
+  /* keyboard traverse */
+  & .pac-item-selected {
+    @apply bg-cyan-100;
+  }
+
+  & .pac-item-query {
+    @apply text-base text-bgray-700;
+  }
+
+  & .pac-matched {
+
+  }
+}
+
+.pac-container:after {
+  background-image: none !important;
+  height: 0px;
+}
+
+.cta {
+  @apply block text-right p-4 md:px-6 md:py-3 shadow bg-gradient-to-br rounded-md leading-6 text-white;
+
+  text-shadow: 1px 1px 2px black;
+}
+
+.cta:hover {
+  text-decoration: none;
 }

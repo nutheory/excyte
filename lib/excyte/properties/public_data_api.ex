@@ -1,10 +1,11 @@
 defmodule Excyte.Properties.PublicDataApi do
   use Tesla, only: [:get], docs: false
+  alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://realty-in-us.p.rapidapi.com/"
   plug Tesla.Middleware.FollowRedirects, max_redirects: 5
   plug Tesla.Middleware.Headers, [
-    {"x-rapidapi-key", Application.get_env(:excyte, :realtor_rapid_api_key)},
+    {"x-rapidapi-key", cycle_api_keys()},
     {"x-rapidapi-host", "realty-in-us.p.rapidapi.com"},
     {"useQueryString", true}
   ]
@@ -37,6 +38,43 @@ defmodule Excyte.Properties.PublicDataApi do
       {:ok, %Tesla.Env{:body => _err} = _response} -> {:error, %{message: "no properties returned"}}
       {:error, %Tesla.Env{:body => _body} = _response} -> {:error, %{message: "data fetching failed"}}
       err -> {:error, err}
+    end
+  end
+
+  # def listing_properties(mls, %Property{} = subject, opts) do
+  #   query = get_expanded(mls)
+  #   get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
+  #   types = if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
+  #   mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}", else: ""
+  #   query_str = query.select_str
+  #     <> "$filter="
+  #     <> "(#{mb})%20and%20"
+  #     <> "(#{status(opts.selected_statuses)})%20and%20"
+  #     <> "#{types}"
+  #     <> "#{get_by_all_prices(mls, opts)}%20and%20"
+  #     <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
+  #     <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
+  #     <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
+  #     <> "#{get_by_distance(get_by_opts)}"
+
+  #   safe_str = String.trim_trailing(query_str, "%20and%20")
+  #   get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
+  #   |> format_response()
+  #   |> ProcessReso.process_init(subject)
+  #   |> case do
+  #     {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
+  #     {:error, err} -> {:error, err}
+  #   end
+  # end
+
+  def listing_properties(%Property{} = subject, opts) do
+    with {:ok, area} <- get_bounding_area(%{lat: subject.coords.lat, lng: subject.coords.lng}, opts.distance),
+         {:ok, query} <- build_query(area, opts),
+         {:ok, %Tesla.Env{:body => %{"properties" => active}}} <- get("/properties/v2/list-for-sale", query: query),
+         {:ok, %Tesla.Env{:body => %{"properties" => sold}}} <- get("/properties/v2/list-sold", query: query) do
+      IO.inspect(query, label: "QUERY")
+    else
+      err -> IO.inspect(err, label: "ERR")
     end
   end
 
@@ -189,8 +227,48 @@ defmodule Excyte.Properties.PublicDataApi do
     end
   end
 
+  defp get_bounding_area(%{lat: lat, lng: lng}, mi_radius) do
+    poi = [lat, lng]
+    radius = miles_to_meters(mi_radius)
+    Geocalc.bounding_box(poi, radius)
+  end
+
+  defp build_query(area, opts) do
+    IO.inspect(hd(area), label: "AREA HD")
+    IO.inspect(List.last(area), label: "AREA LAST")
+    query = [
+      prop_type: opts.property_type,
+      sort: "sold_date",
+      beds_min: opts.beds.low,
+      beds_max: opts.beds.high,
+      baths_min: opts.baths.low,
+      baths_max: opts.baths.high,
+      price_min: opts.price.low,
+      price_max: opts.price.high,
+      sqft_min: opts.sqft.low,
+      sqft_max: opts.sqft.high,
+      age_min: opts.age.low,
+      age_max: opts.age.high,
+      lot_sqft_min: opts.lot_sqft.low,
+      lot_sqft_max: opts.lot_sqft.high,
+      lat_min: hd(hd(area)),
+      lat_max: List.last(hd(area)),
+      lng_min: hd(List.last(area)),
+      lng_max: List.last(List.last(area))
+    ]
+  end
+
   defp acres_to_sqft(acres) do
     round(acres * 43560)
+  end
+
+  defp miles_to_meters(mi) do
+    round(mi * 1609.34)
+  end
+
+  defp cycle_api_keys() do
+    IO.inspect(Enum.random([1, 2, 3]), label: "Set on every call")
+    Application.get_env(:excyte, :realtor_rapid_api_key)
   end
 end
 

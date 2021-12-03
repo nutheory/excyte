@@ -93,23 +93,15 @@
           </div>
           <%= if @subject do %>
             <div class="flex-1">
-              <.live_component
-                module={Dropdown}
-                options={[
-                  %{value: 1, text: "Past month"},
-                  %{value: 2, text: "Past 2 months"},
-                  %{value: 3, text: "Past 3 months"},
-                  %{value: 6, text: "Past 6 months"},
-                  %{value: 9, text: "Past 9 months"},
-                  %{value: 12, text: "Past year"},
-                  %{value: 24, text: "Past 2 years"}
-                ]}
+              <label>Status Updated</label>
+              <UI.dropdown
+                options={@status_updated_options}
                 selected={@filters.status_updated}
-                attr={:status_updated}
-                show_top_label={true}
-                callback={:update_filter}
+                origin={"left"}
+                attr={"status_updated"}
+                callback={"update_filter"}
                 label={"Status updated"}
-                id={:status_updated}
+                id={"status_updated"}
               />
             </div>
           <% end %>

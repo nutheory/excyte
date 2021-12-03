@@ -9,8 +9,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
     baths: %{low: nil, high: nil},
     sqft: %{low: nil, high: nil},
     lot_size: %{low: nil, high: nil},
-    garage: %{text: "", value: ""},
-    stories: %{text: "", value: ""},
+    garage: %{value: "any", text: "Any"},
+    stories: %{value: "any", text: "Any"},
     property_types: [],
     features: [],
     selected_statuses: [%{value: "active", name: "Active"}]
@@ -18,7 +18,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
 
   def render(assigns), do: InsightView.render("create_buyer_tour.html", assigns)
 
-  def mount(_params, %{"return_to" => _rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, _, %{assigns: %{current_user: cu}} = socket) do
     {:ok, assign(socket,
       current_user: cu,
       coords: %{},
@@ -26,6 +26,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       distance: 10,
       autodetected: nil,
       listing_ids: "",
+      stories_options: Utilities.stories_options(),
+      garage_options: Utilities.garage_options(),
       feature_options: Utilities.feature_options(),
       property_options: Utilities.property_options(cu.current_mls.dataset_id),
       filters: Map.merge(@filters, %{dataset_id: cu.current_mls.dataset_id}),
@@ -48,6 +50,13 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
         Map.merge(a.filters, val)
       end
     {:noreply, assign(socket, filters: filters)}
+  end
+
+  def handle_event("update_filter", %{"attr" => attr, "option" => opt}, %{assigns: a} = socket) do
+    key = String.to_atom("#{attr}_options")
+    val = Enum.find(a[key], fn at -> at.value === opt end)
+    new_filter = Map.put(%{}, String.to_atom(attr), val)
+    {:noreply, assign(socket, filters: Map.merge(a.filters, new_filter))}
   end
 
   def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = _res, socket) do

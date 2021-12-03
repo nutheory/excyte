@@ -22,6 +22,11 @@
           />
         </div>
       <% else %>
+        <div class="">
+          <div class="">
+            <button class="cta from-cyan-200 to-blue-600" phx-click="create_public_cma">Create Public CMA</button>
+          </div>
+        </div>
           <.live_component
             module={SubjectProperty}
             current_user={@current_user}

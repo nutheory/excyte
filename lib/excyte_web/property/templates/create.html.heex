@@ -1,0 +1,216 @@
+<div class="my-8 max-w-lg mx-auto pt-16">
+  <%= if @fetching do %>
+    <div class="w-full mt-20 lg:mt-36 overflow-hidden">
+      <svg class="animate-spin h-12 w-12 mx-auto text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <h2 class="text-center text-gray-500 mt-3 mb-1 text-xl font-semibold">Collecting Property Data...</h2>
+      <p class="text-center text-gray-400">This may take a few seconds, please be patient.</p>
+    </div>
+  <% else %>
+    <UI.form_header return_to={Overview} socket={@socket}>
+      <:title>
+        <h2 class="mb-0 pt-6 text-2xl">Create Property</h2>
+      </:title>
+      <div class="flex h-full">
+      </div>
+    </UI.form_header>
+    <%= if @property_id do %>
+      <.form
+        let={f}
+        for={@changeset}
+        phx-change={"form_change"}
+        phx-submit={"form_submit"}
+      >
+        <div>
+          <h1 class="text-gray-600">Step 1 <span class="text-xl italic text-gray-400">of 2</span></h1>
+          <p class="text-sm">Please enter all relevant property information before proceeding on to Uploading Media.</p>
+          <div class="pt-8 pb-4">
+            <h3>Address</h3>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <div>
+                <%= label f, :street_number, "Street #", class: "text-sm" %>
+                <%= text_input f, :street_number, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :street_number %>
+              </div>
+              <div class="col-span-2">
+                <%= label f, :street_name %>
+                <%= text_input f, :street_name, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :street_name %>
+              </div>
+              <div>
+                <%= label f, :unit, "Unit #", class: "text-sm" %>
+                <%= text_input f, :unit, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :unit %>
+              </div>
+              <div class="col-span-2">
+                <%= label f, :city, class: "text-sm" %>
+                <%= text_input f, :city, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :city %>
+              </div>
+              <div>
+                <%= label f, :state, class: "text-sm" %>
+                <%= text_input f, :state, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :state %>
+              </div>
+              <div>
+                <%= label f, :zip, class: "text-sm" %>
+                <%= text_input f, :zip, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :zip %>
+              </div>
+            </div>
+          </div>
+          <div class="pt-6 pb-4 border-t border-gray-300">
+            <h3>Property Details</h3>
+            <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <div>
+                <%= label f, :beds %>
+                <%= text_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :beds %>
+              </div>
+              <div>
+                <%= label f, :baths %>
+                <%= text_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :baths %>
+              </div>
+              <div>
+                <%= label f, :sqft %>
+                <%= text_input f, :sqft, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :sqft %>
+              </div>
+              <div>
+                <%= label f, :stories %>
+                <%= text_input f, :stories, class: "text-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :stories %>
+              </div>
+              <div>
+                <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit"><%= @lotsize_unit %></span>)</label>
+                <%= text_input f, :lotsize_value, value: @lotsize_value, inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", class: "number-field", phx_debounce: "blur" %>
+                <%= error_tag f, :lotsize_value %>
+              </div>
+              <div>
+                <%= label f, :year_built %>
+                <%= text_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :year_built %>
+              </div>
+              <%# IO.inspect(@changeset.data, label: "CS") %>
+              <div>
+                <%= label f, :walkscore %>
+                <%= text_input f, :walkscore, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :walkscore %>
+              </div>
+              <div class="col-span-2">
+                <% IO.inspect(@changeset.changes[:property_type], label: "PT") %>
+                <%= label f, :property_type %>
+                <UI.dropdown
+                  options={@property_type_options}
+                  selected={@changeset.changes[:property_type]}
+                  origin={"left"}
+                  attr={"property_type"}
+                  callback={"update_property"}
+                  label={"Select"}
+                  id={"property_type"}
+                />
+              </div>
+              <div class="col-span-2">
+                <%= label f, :property_sub_type %>
+                <UI.dropdown
+                  options={@property_sub_type_options}
+                  selected={@changeset.changes[:property_sub_type]}
+                  origin={"left"}
+                  attr={"property_sub_type"}
+                  callback={"update_property"}
+                  label={"Select"}
+                  id={"property_sub_type"}
+                />
+              </div>
+              <div class="col-span-2">
+                <label>Parking Type</label>
+                <UI.dropdown
+                  options={@parking_options}
+                  selected={@changeset.changes[:parking_type]}
+                  origin={"left"}
+                  attr={"parking_type"}
+                  callback={"update_property"}
+                  label={"Parking type"}
+                  id={"parking_type"}
+                />
+              </div>
+              <div>
+                <%= label f, :parking_spaces %>
+                <%= text_input f, :parking_spaces, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :parking_spaces %>
+              </div>
+            </div>
+          </div>
+          <UI.accordian 
+            title="Features"
+            expanded={false}
+          >
+          </UI.accordian>
+          <UI.accordian 
+            title="Home Owners Association"
+            expanded={false}
+          >
+            <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <div class="col-span-2">
+                <%= label f, :association_name, class: "text-sm" %>
+                <%= text_input f, :association_name, class: "text-field", phx_debounce: "blur" %>
+                <%= error_tag f, :association_name %>
+              </div>
+              <div>
+                <%= label f, :association_fee_frequency, "Assoc. freq." %>
+                <UI.dropdown
+                  options={@association_fee_frequency_options}
+                  selected={@changeset.changes[:association_fee_frequency]}
+                  origin={"left"}
+                  attr={"association_fee_frequency"}
+                  callback={"update_property"}
+                  label={"Select"}
+                  id={"association_fee_frequency"}
+                />
+              </div>
+              <div>
+                <%= label f, :association_fee %>
+                <%= text_input f, :association_fee, class: "text-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
+                <%= error_tag f, :association_fee %>
+              </div>
+              <div class="col-span-2 sm:col-span-4">
+                <%= label f, :association_amenities %>
+                <%= textarea f, :association_amenities, class: "textarea", phx_debounce: "blur" %>
+                <%= error_tag f, :association_amenities %>
+              </div>
+            </div>
+          </UI.accordian>
+          <div class="pt-6 pb-4 border-t border-gray-300">
+            <h3 class="mb-2">Property Description</h3>
+            <%= textarea f, :public_remarks, class: "textarea", phx_debounce: "blur" %>
+            <%= error_tag f, :public_remarks %>
+          </div>
+          <div class="pt-6 pb-4 border-t border-gray-300">
+            <h3 class="mb-2">List Price</h3>
+            <div>
+              <%= text_input f, :list_price, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
+              <%= error_tag f, :list_price %>
+            </div>
+          </div>
+          <div class="flex items-center h-full mt-6">
+            <button class="submit w-full font-normal shadow">Save & Continue</button>
+          </div>
+        </div>
+      </.form>
+    <% else %>
+      <div class="">
+        <h2 class="text-center pb-2 mt-8">Get Started with an Address</h2>
+        <p class="mx-auto w-3/4 text-sm mb-4 text-center">Let us get you started by trying to fill out as much about a property as possible.</p>
+        <.live_component
+          module={AddressAutocomplete}
+          callback={:init_listing}
+          label={"Enter a location"}
+          id={:property_setup}
+        />
+      </div>
+    <% end %>
+  <% end %>
+</div>

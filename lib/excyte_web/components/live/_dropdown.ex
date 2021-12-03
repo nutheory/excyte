@@ -7,10 +7,12 @@ defmodule ExcyteWeb.Components.Dropdown do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
-      options: assigns.options,
+      data: assigns.data,
       attr: assigns.attr,
       label: assigns.label,
       pos: assigns.pos,
+      name: "filter",
+      placeholder: "BOOM",
       show_top_label: assigns.show_top_label,
       selected: assigns.selected,
       callback: assigns.callback

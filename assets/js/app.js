@@ -17,22 +17,22 @@ import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import {ViewportResize} from "./viewport_resize"
-import {InitSectionSortable, InitListingSortable} from "./sorting"
-import {InitGallery} from "./gallery"
-import {InitColorPicker} from "./theme"
-// import {InitEditor} from "./editor"
-import {ClosedListingsChart} from "./closed_listings_chart"
-import {VideoInitialize} from "./video"
-import {WalkNeighborhood} from "./walk_neighborhood"
-import {Mapping} from "./mapping"
-import {CustomizePreview} from "./customize_preview"
-import {ImageEditor} from "./image_editor"
-import {setupSizing} from "./mobile_sizing"
-import {MuxUploader} from "./mux_uploader"
-import {InitCheckout} from "./checkout"
-import {GeoLocation} from "./geo_location"
-import {AutocompleteLocation} from "./location"
+import {ViewportResize} from "./hooks/viewport_resize"
+import {InitSectionSortable, InitListingSortable} from "./hooks/sorting"
+import {InitGallery} from "./hooks/gallery"
+import {InitColorPicker} from "./hooks/theme"
+import {ClosedListingsChart} from "./hooks/closed_listings_chart"
+import {VideoInitialize} from "./hooks/video"
+import {WalkNeighborhood} from "./hooks/walk_neighborhood"
+import {Mapping} from "./hooks/mapping"
+import {CustomizePreview} from "./hooks/customize_preview"
+import {ImageEditor} from "./hooks/image_editor"
+import {PhotoGallery} from "./hooks/photo_gallery"
+import {setupSizing} from "./utilities"
+import {MuxUploader} from "./hooks/mux_uploader"
+import {InitCheckout} from "./hooks/checkout"
+import {GeoLocation} from "./hooks/geo_location"
+import {AutocompleteLocation} from "./hooks/location"
 import topbar from "topbar"
 
 let Uploaders = {}
@@ -45,7 +45,7 @@ Hooks.InitGallery = InitGallery
 Hooks.InitColorPicker = InitColorPicker
 Hooks.AutocompleteLocation = AutocompleteLocation
 Hooks.ViewportResize = ViewportResize
-// Hooks.InitEditor = InitEditor
+Hooks.PhotoGallery = PhotoGallery
 Hooks.CustomizePreview = CustomizePreview
 Hooks.ClosedListingsChart = ClosedListingsChart
 Hooks.VideoInitialize = VideoInitialize

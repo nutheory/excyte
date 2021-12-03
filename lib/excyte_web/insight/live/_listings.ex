@@ -10,6 +10,7 @@ defmodule ExcyteWeb.Insight.Listings do
       search: assigns.search,
       listings: assigns.listings,
       selected_listings: assigns.selected_listings,
+      status_updated_options: assigns.status_updated_options,
       subject: assigns.subject,
       show_listing_ids_form: false,
       show_filters: assigns.show_filters

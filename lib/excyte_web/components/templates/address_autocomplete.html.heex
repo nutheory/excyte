@@ -1,4 +1,4 @@
-<div class="" id="locationEventTarget" phx-hook="AutocompleteLocation" phx-target={@myself} >
+<div class="" id="locationEventTarget" phx-hook="AutocompleteLocation" phx-target={@myself}>
   <div class="relative" x-data="LocationAutocomplete()">
     <div
       @click.away="active=false; cursorIndex=-1"
@@ -7,6 +7,7 @@
       @keydown.arrow-up="moveUpList()"
       @keydown.enter="LocationAutocompleteHook.pushEventTo('#locationEventTarget', 'location-details', { opts: suggestions, idx: cursorIndex }, () => {active=false})">
       <input
+        id="pac-input"
         type="text"
         class="fake-text-field"
         placeholder={@label}
@@ -52,4 +53,3 @@
     </div>
   </div>
 </div>
-<%# <input class="fake-text-field" data-lpignore="true" id="location" /> %>

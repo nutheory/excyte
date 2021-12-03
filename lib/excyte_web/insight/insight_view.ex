@@ -4,6 +4,7 @@ defmodule ExcyteWeb.InsightView do
   alias ExcyteWeb.{
     Helpers.Utilities,
     Helpers.ClientFunctions,
+    Helpers.UI,
     Client.TemplateRender
   }
   alias ExcyteWeb.Insight.{

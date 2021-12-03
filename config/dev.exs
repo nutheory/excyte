@@ -64,6 +64,7 @@ config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :excyte, :stripe_signing_secret, System.get_env("STRIPE_SIGNING_SECRET")
 config :excyte, :base_url, System.get_env("EXCYTE_URL")
 config :excyte, :realtor_rapid_api_key, System.get_env("REALTOR_RAPID_API")
+config :excyte, :attom_api_key, System.get_env("ATTOM_API_KEY")
 config :excyte, :us_real_estate_rapid_api_key, System.get_env("US_REAL_ESTATE_RAPID_API")
 config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 

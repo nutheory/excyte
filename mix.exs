@@ -53,7 +53,7 @@ defmodule Excyte.MixProject do
       {:gettext, "~> 0.20"},
       {:tesla, "~> 1.4"},
       {:quantum, "~> 3.0"},
-      {:csv, "~> 2.4"},
+      {:nimble_csv, "~> 1.1"},
       {:key_convert, "~> 0.5.0"},
       {:hackney, "~> 1.20"},
       {:inflex, "~> 2.0.0"},
@@ -66,7 +66,7 @@ defmodule Excyte.MixProject do
       {:goth, "~> 1.2.0"},
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},
-      {:geocalc, "~> 0.5"},
+      {:geocalc, "~> 0.8"},
       {:solid, "~> 0.8"},
       {:timex, "~> 3.7.5"},
       {:cachex, "~> 3.6"},
@@ -79,6 +79,7 @@ defmodule Excyte.MixProject do
       {:bamboo_phoenix, "~> 1.0.0"},
       {:stripity_stripe, "~> 2.10.0"},
       {:openid_connect, "~> 0.2.2"},
+      {:export, github: "nutheory/export"},
       {:ex_twilio, github: "nutheory/ex_twilio"}
     ]
   end

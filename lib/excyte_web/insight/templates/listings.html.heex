@@ -71,6 +71,7 @@
             module={FilterListings}
             subject={if Map.has_key?(@subject, :__struct__), do: @subject, else: nil}
             filters={@filters}
+            status_updated_options={@status_updated_options}
             listing_count={length(@listings)}
             id={:filter_listings}
           />

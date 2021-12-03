@@ -5,8 +5,10 @@ defmodule Excyte.Contacts do
 
   # alias ExTwilio.JWT.AccessToken
   alias Excyte.{Repo, Activities, Contacts.Conversation, Contacts.Contact, Contacts.ContactNotifier, Insights}
+  alias NimbleCSV.RFC4180, as: CSV
 
   @proxies []
+
 
   def get_contacts(%{scope: %{agent_id: agent_id, brokerage_id: brk_id}} = list_opts) do
     opts = list_opts(list_opts)
@@ -21,9 +23,30 @@ defmodule Excyte.Contacts do
     Repo.all(query)
   end
 
-  def new_changeset(attrs \\ %{}) do
+  def get_contact(%{cid: id, uid: uid, bid: bid}) do
+    contact = Repo.get(id)
+
+    if contact && (contact.created_by_id === uid || contact.brokerage_id === bid) do
+      {:ok, contact}
+    else
+      {:ok, nil}
+    end
+  end
+
+  def change_contact(attrs \\ %{}) do
+    Contact.changeset(%Contact{}, attrs)
+  end
+
+  def create_contact(attrs \\ %{}) do
     %Contact{}
     |> Contact.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_contact(%Contact{} = contact, attrs \\ %{}) do
+    contact
+    |> Contact.changeset(attrs)
+    |> Repo.insert()
   end
 
   def import_google_contacts() do
@@ -34,6 +57,16 @@ defmodule Excyte.Contacts do
     # conn = GoogleApi.People.V1.Connection.new(token.token)
     # {:ok, contacts} = GoogleApi.People.V1.Api.People.people_people_connections_list(conn, "me", personFields: "names")
     # IO.inspect(contacts, label: "CONT")
+  end
+
+  def import_csv_contacts(file) do
+    Path.join([:code.priv_dir(:excyte), "/static#{file}"])
+    |> File.stream!()
+    |> CSV.parse_stream(skip_headers: false)
+    # |> Stream.map(fn m -> m end)
+    |> Enum.to_list()
+    |> IO.inspect()
+
   end
 
   def create_client(%{client: client, insight: insight, email: email} = all) do

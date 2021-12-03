@@ -104,7 +104,11 @@ defmodule ExcyteWeb.Brokerage.Profile do
       |> Ecto.Changeset.put_embed(:contact_items, contacts)
       |> Map.put(:action, :validate)
     else
-      contacts = if length(profile.contacts) > 0, do: profile.contact_items, else: [%ContactItem{temp_id: Utilities.get_temp_id()}]
+      contacts = if length(profile.contact_items) > 0 do
+        profile.contact_items
+      else
+        [%ContactItem{temp_id: Utilities.get_temp_id()}]
+      end
       Brokerages.change_profile(profile)
       |> Ecto.Changeset.put_embed(:contact_items, contacts)
     end

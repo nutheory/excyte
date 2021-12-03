@@ -10,6 +10,7 @@ defmodule Excyte.Contacts.Contact do
     Brokerages.Brokerage,
     Contacts.Contact,
     Insights.Insight,
+    Taggable.Tagging,
     Utils.AddressItem,
     Utils.ContactItem,
     Utils.MapType
@@ -34,6 +35,8 @@ defmodule Excyte.Contacts.Contact do
     field :email, :string
     field :state, :string
     field :zip_code, :string
+    has_many :taggings, Tagging
+    has_many :tags, through: [:taggings, :tag]
     embeds_many(:address_items, AddressItem)
     embeds_many(:contact_items, ContactItem, on_replace: :delete)
     many_to_many(:insights, Insight, join_through: "contact_insight", on_replace: :delete)

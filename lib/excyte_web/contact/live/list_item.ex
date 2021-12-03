@@ -11,7 +11,7 @@ defmodule ExcyteWeb.Contact.ListItem do
   def render(assigns), do: ContactView.render("list_item.html", assigns)
 
   @impl true
-  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
+  def update(assigns, socket) do
     {:ok, socket}
   end
 end

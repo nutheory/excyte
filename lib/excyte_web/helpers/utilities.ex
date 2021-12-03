@@ -134,6 +134,69 @@ defmodule ExcyteWeb.Helpers.Utilities do
     ]
   end
 
+  def contact_types() do
+    [
+      %{value: "lead", text: "Lead"},
+      %{value: "client", text: "client"},
+      %{value: "lender", text: "Lender"},
+      %{value: "team_member", text: "Team member"},
+      %{value: "personal", text: "Personal"},
+      %{value: "other", text: "Other"}
+    ]
+  end
+
+  def contact_priorities() do
+    [
+      %{value: "low", text: "Low"},
+      %{value: "medium", text: "Medium"},
+      %{value: "high", text: "High"},
+      %{value: "urgent", text: "Urgent"}
+    ]
+  end
+
+  def contact_scope_options() do
+    [
+      %{value: "all", text: "All Contacts"},
+      %{value: "agent", text: "My Contacts"},
+      %{value: "brokerage", text: "Brokerage Contacts"}
+    ]
+  end
+
+  def contact_sort_options() do
+    [
+      %{value: "name_desc", text: "Name A-Z"},
+      %{value: "name_asc", text: "Name Z-A"},
+      %{value: "client", text: "Add a Client"}
+    ]
+  end
+
+  def contact_type_options() do
+    [
+      %{value: nil, text: "All Types"},
+      %{value: "leads", text: "Leads"},
+      %{value: "clients", text: "Clients"},
+      %{value: "brokers", text: "Brokers"}
+    ]
+  end
+
+  def garage_options() do
+    [
+      %{value: "any", text: "Any"},
+      %{value: "1", text: "1"},
+      %{value: "2", text: "2"},
+      %{value: "2+", text: "2+"}
+    ]
+  end
+
+  def stories_options() do
+    [
+      %{value: "any", text: "Any"},
+      %{value: "1", text: "1"},
+      %{value: "2", text: "2"},
+      %{value: "2+", text: "2+"}
+    ]
+  end
+
   def assign_contact_type(content) do
     if is_binary(content) do
       cond do

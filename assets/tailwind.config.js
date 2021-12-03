@@ -19,6 +19,7 @@ module.exports = {
       red: colors.rose,
       gray: colors.coolGray,
       white: "#FFFFFF",
+      black: "#000000",
     },
     extend: {
       blur: {

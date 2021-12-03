@@ -3,7 +3,7 @@ defmodule ExcyteWeb.Components.ContactView do
 
   alias ExcyteWeb.{ComponentView, Helpers.Utilities}
 
-  def render(assigns), do: ComponentView.render("contact_view.html", assigns)
+  def render(assigns), do: ComponentView.render("contact_item.html", assigns)
 
   def update(assigns, socket) do
     {:ok, assign(socket,

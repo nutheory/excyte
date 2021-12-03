@@ -1,0 +1,26 @@
+<div class="my-8 max-w-lg mx-auto pt-16">
+  <UI.form_header return_to={Overview} socket={@socket}>
+    <:title>
+      <h2 class="mb-0 pt-6 text-2xl">Import Contacts</h2>
+    </:title>
+    <div class="flex h-full">
+      <%# <div class="flex items-center ml-2 h-full">
+        <button name={:another} class="subtle-button shadow">Save and create another</button>
+      </div> %>
+      <%# <div class="flex items-center ml-2 h-full">
+        <button class="submit font-normal shadow">Save contact</button>
+      </div> %>
+    </div>
+  </UI.form_header>
+  <form id="upload-form" phx-submit="save" phx-change="validate">
+
+    <%# <div 
+      class="container w-full h-32 bg-gray-800 rounded"
+      phx-drop-target={@uploads.contact_csv.ref} 
+    > %>
+      <%= live_file_input @uploads.contact_csv %>
+    <%# </div> %>
+    <button class="subtle-button" type="submit">Upload</button>
+  </form>
+  <%# <button phx-click="process_csv">Process</button> %>
+</div>

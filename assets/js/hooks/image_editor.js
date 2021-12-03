@@ -2,8 +2,8 @@ import Cropper from "cropperjs"
 import Dropzone from "dropzone"
 import axios from 'axios'
 import { nanoid } from 'nanoid'
-import "../node_modules/cropperjs/dist/cropper.css"
-import "../node_modules/dropzone/dist/dropzone.css"
+import "../../node_modules/cropperjs/dist/cropper.css"
+import "../../node_modules/dropzone/dist/dropzone.css"
 
 Dropzone.autoDiscover = false
 

@@ -14,11 +14,10 @@ defmodule ExcyteWeb.AgentView do
     Subscription
   }
   alias ExcyteWeb.Components.{
-    ContactForm,
-    Toggle,
-    JumboButton,
     Dropdown,
-    ImageEditor
+    Function,
+    ImageEditor,
+    JumboButton
   }
   alias ExcyteWeb.Insight.{CreateCma, CreateShowcase, CreateBuyerTour}
   alias ExcyteWeb.{

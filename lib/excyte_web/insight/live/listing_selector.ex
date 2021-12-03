@@ -10,6 +10,17 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 
+  @status_updated_options [
+                            %{value: 1, text: "Past month"},
+                            %{value: 2, text: "Past 2 months"},
+                            %{value: 3, text: "Past 3 months"},
+                            %{value: 6, text: "Past 6 months"},
+                            %{value: 9, text: "Past 9 months"},
+                            %{value: 12, text: "Past year"},
+                            %{value: 24, text: "Past 2 years"}
+                          ]
+
+
   def render(assigns), do: InsightView.render("listing_selector.html", assigns)
 
   def mount(params, _sesh, %{assigns: %{current_user: cu}} = socket) do
@@ -31,6 +42,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
         finder_input: "",
         sort_by: "ranking",
         key: params["insight_id"],
+        status_updated_options: @status_updated_options,
         fetching: (if params["insight_id"], do: true, else: false),
         listings: nil,
         preview: nil,
@@ -129,6 +141,19 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "auth/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
+  end
+
+  def handle_event("update_filter", %{"attr" => attr, "option" => opt}, %{assigns: a} = socket) do
+    res =
+      case Integer.parse(opt) do
+        {int, _} -> int
+        :error -> opt
+      end
+
+    key = String.to_atom("#{attr}_options")
+    val = Enum.find(a[key], fn at -> at.value === res end)
+    new_filter = Map.put(%{}, String.to_atom(attr), val)
+    {:noreply, assign(socket, filters: Map.merge(a.filters, new_filter))}
   end
 
   def handle_event("update-tour", _, %{assigns: a} = socket) do

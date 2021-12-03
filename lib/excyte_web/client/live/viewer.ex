@@ -16,6 +16,7 @@ defmodule ExcyteWeb.Client.Viewer do
     case Insights.get_published_insight(iid) do
       {:ok, res} ->
         sections = Enum.sort(res.insight.sections, fn a, b -> a.position <= b.position end)
+        IO.inspect(sections, label: "HEY")
         insight = merge_theme(res)
         send self(), {:load_view, %{}}
         {:ok, assign(socket,

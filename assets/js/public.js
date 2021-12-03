@@ -6,7 +6,7 @@ import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import videojs from '@mux/videojs-kit'
-import {validatePassword, toggleShowPassword} from "./auth"
+import {validatePassword, toggleShowPassword} from "./utilities"
 import topbar from "topbar"
 
 const regPassword = document.querySelector("#invite_password")
@@ -18,12 +18,6 @@ if (regPassword) {
 }
 
 let Hooks = {}
-
-Hooks.HomeSplit = {
-  mounted(){
-
-  }
-}
 
 Hooks.Registration = {
   mounted(){

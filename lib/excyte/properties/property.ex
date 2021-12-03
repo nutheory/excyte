@@ -7,6 +7,7 @@ defmodule Excyte.Properties.Property do
 
   alias Excyte.{
     Insights.Insight,
+    Properties.Feature,
     Utils.MapType
   }
 
@@ -36,7 +37,8 @@ defmodule Excyte.Properties.Property do
       :coords,
       :state,
       :status,
-      :parking,
+      :parking_type,
+      :parking_spaces,
       :public_remarks,
       :overview,
       :foreign_url,
@@ -59,7 +61,7 @@ defmodule Excyte.Properties.Property do
       :walkscore,
       :listing_key,
       :listing_id,
-      :features,
+      # :features,
       :last_modified,
       :dirty_info,
       :history,
@@ -95,7 +97,8 @@ defmodule Excyte.Properties.Property do
     field :coords, MapType
     field :state, :string
     field :status, :string
-    field :parking, :string
+    field :parking_type, :string
+    field :parking_spaces, :integer
     field :public_remarks, :string
     field :overview, :string
     field :foreign_url, :string
@@ -118,7 +121,7 @@ defmodule Excyte.Properties.Property do
     field :est_price, :integer
     field :listing_key, :string
     field :listing_id, :string
-    field :features, {:array, :map}
+    # field :features, {:array, :map}
     field :last_modified, :utc_datetime
     field :dirty_info, {:array, :map}
     field :history, MapType
@@ -141,6 +144,7 @@ defmodule Excyte.Properties.Property do
     field :tax_assessed_value, :string
     field :tax_annual_amount, :string
     field :tax_year, :string
+    embeds_many(:features, Feature)
     belongs_to(:insight, Insight)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:agent, User)
@@ -150,6 +154,7 @@ defmodule Excyte.Properties.Property do
   def changeset(property, attrs) do
     property
     |> cast(attrs, @cast_opts)
+    |> cast_embed(:features)
     |> validate_required([:agent_id, :internal_type, :beds, :baths])
     |> validate_number(:beds, greater_than: 0)
     |> validate_number(:baths, greater_than: 0)

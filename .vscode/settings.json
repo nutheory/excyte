@@ -67,7 +67,7 @@
       "password": "postgres"
     }
   ],
-  "workbench.iconTheme": "bearded-icons",
+  "workbench.iconTheme": "file-icons",
   "extensions.ignoreRecommendations": true,
   "[json]": {
   

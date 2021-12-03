@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Helpers.UI do
   use Phoenix.Component
+  use Phoenix.HTML
   alias Phoenix.LiveView.JS
   alias ExcyteWeb.Router.Helpers, as: Routes
 
@@ -16,7 +17,6 @@ defmodule ExcyteWeb.Helpers.UI do
   end
 
   def toggle_menu(js \\ %JS{}, id) do
-    IO.inspect(js, label: "JS:")
     js
     |> JS.toggle(
         to: "##{id}_menu",
@@ -50,6 +50,35 @@ defmodule ExcyteWeb.Helpers.UI do
             <%= render_slot(@header) %>
           </div>
         </div>
+        <%= render_slot(@inner_block) %>
+      </div>
+    </div>
+    """
+  end
+
+  def accordian(assigns) do
+    ~H"""
+    <div x-data={"{ expanded: #{@expanded} }"} role="region" class="border-t border-gray-300">
+        <button
+          type="button"
+          @click="expanded = !expanded"
+          :aria-expanded="expanded"
+          class="pt-6 pb-4 w-full flex"
+        >
+          <h3 class="flex-1 text-left mb-0"><%= @title %></h3>
+          <span x-show="!expanded" aria-hidden="true" class="ml-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+          <span x-show="expanded" aria-hidden="true" class="ml-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+          </span>
+        </button>
+
+      <div x-show="expanded" class="pb-4">
         <%= render_slot(@inner_block) %>
       </div>
     </div>
@@ -128,13 +157,26 @@ defmodule ExcyteWeb.Helpers.UI do
     """
   end
 
+  def large_toggle(assigns) do
+    ~H"""
+    <div
+      role="checkbox"
+      aria-checked={@enabled}
+      phx-click="toggle-enabled"
+      phx-value-id={@name}
+      class="relative cursor-pointer">
+      <% slider = if @enabled, do: "slider-selected ", else: "" %>
+      <% dot = if @enabled, do: "dot-selected ", else: "" %>
+      <div class={"#{slider}block bg-gray-400 w-14 h-8 rounded-full"}></div>
+      <div class={"#{dot}absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"}></div>
+    </div>
+    """
+  end
+
   def dropdown(assigns) do
     # fix away toggle after next update
     ~H"""
     <div class="w-full inline-block relative form origin-top-right origin-top-left">
-      <%= if @show_top_label do %>
-        <label><%= @label %></label>
-      <% end %>
       <div
         class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-1.5 py-1 pl-3 pr-1 bg-white"
         phx-click={toggle_menu(@id)}

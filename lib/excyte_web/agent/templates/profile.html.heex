@@ -82,11 +82,7 @@
       <div class=" mt-4 sub-form">
         <h2>Contacts</h2>
         <p class="text-xs mt-1">Add <strong>public</strong> contact information such as email addresses, phone numbers, links, or any other method of staying connected.</p>
-        <.live_component
-          module={ContactForm}
-          form={f}
-          id={:profile_contacts}
-        />
+        <Function.contact_form form={f} id={:profile_contacts} />
       </div>
       <%= submit "Update profile", class: "submit mt-4 w-full", phx_disable_with: "Updating..." %>
     </div>

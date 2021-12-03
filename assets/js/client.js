@@ -4,15 +4,15 @@ import 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
-import {ClientViewer} from "./client_viewer"
-import {setupSizing} from "./mobile_sizing"
-import {ClosedListingsChart} from "./closed_listings_chart"
-import {VideoInitialize} from "./video"
-import {WalkNeighborhood} from "./walk_neighborhood"
-import {Mapping} from "./mapping"
-import {TableOfContents} from "./table_of_contents"
-
+import {ClientViewer} from "./hooks/client_viewer"
+import {setupSizing} from "./utilities"
+import {ClosedListingsChart} from "./hooks/closed_listings_chart"
+import {VideoInitialize} from "./hooks/video"
+import {WalkNeighborhood} from "./hooks/walk_neighborhood"
+import {Mapping} from "./hooks/mapping"
+import {TableOfContents} from "./hooks/table_of_contents"
 import topbar from "topbar"
+
 let Hooks = {}
 
 Hooks.TableOfContents = TableOfContents

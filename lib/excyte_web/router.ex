@@ -108,11 +108,15 @@ defmodule ExcyteWeb.Router do
       scope "/contacts", Contact do
         live "/overview", Overview
         live "/create", Create
+        live "/edit/:id", Edit
+        live "/view/:id", Show
+        live "/import/csv", ImportCsv
       end
 
       scope "/properties", Property do
         live "/overview", Overview
         live "/create", Create
+        live "/:id/gallery", Gallery
       end
     end
   end

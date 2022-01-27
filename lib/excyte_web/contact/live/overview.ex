@@ -48,9 +48,9 @@ defmodule ExcyteWeb.Contact.Overview do
     {:noreply, assign(socket, current_view: view)}
   end
 
-  def handle_event("search_change", %{"search_filter" => %{"term" => filter}}, socket) do
-    IO.inspect(filter, label: "filt")
-    {:noreply, socket}
+  def handle_event("search_change", %{"search_filter" => %{"term" => filter}}, %{assigns: a} = socket) do
+    lo = Map.put(a.list_options, :filter, filter)
+    {:noreply, assign(socket, contacts: load_contacts(lo, a.default_scope))}
   end
 
   def handle_event("import_google_contacts", _, %{assigns: a} = socket) do

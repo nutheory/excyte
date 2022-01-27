@@ -1,14 +1,14 @@
 <div
   class="w-full inline-block relative form" 
   x-data={"{
-    data: #{@data},
+    data: JSON.stringify(#{Jason.encode!(@data)}),
     focusedOptionIndex: null, 
     emptyOptionsMessage: 'No results.',
     name: '#{@name}',
     open: false,
-    options: null,
     search: '',
-    placeholder: '#{@placeholder}',
+    value: null
+    placeholder: 'Source Data',
     selected: null,
     focusNextOption() {
       if (this.focusedOptionIndex === null) return this.focusedOptionIndex = Object.keys(this.option).length - 1
@@ -28,7 +28,7 @@
     },
     init() {
       this.options = this.data
-      if (! (this.value in this.options)) this.value = null
+      if (Map) this.value = null
       this.$watch('search', (value) => {
         if (! this.open || ! value) return this.options = this.data
         this.options.filter((opt) => opt.value.toLowerCase().includes(value.value.toLowerCase()))
@@ -66,7 +66,7 @@
     class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-1.5 py-1 pl-3 pr-1 bg-white"
   >
     <div 
-    :class="{ 'text-gray-500' : ! (value in options) }"
+    
     class="flex-1 pt-0.5 truncate"
     x-show="! open"
     x-text="value in options ? options[value] : placeholder"

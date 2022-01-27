@@ -5,11 +5,12 @@ defmodule ExcyteWeb.Settings.Dashboard do
 
   def render(assigns), do: UserView.render("settings_dashboard.html", assigns)
 
-def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
+def mount(_params, %{"user_token" => token}, %{assigns: a} = socket) do
+    cu = Accounts.get_user_by_session_token(token)
     {:ok, assign(socket,
       current_user: cu,
       section: "dash",
-      return_to: "/auth/settings?section=dash"
+      return_to: "/settings?section=dash"
     )}
   end
 

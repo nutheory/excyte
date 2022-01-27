@@ -3,9 +3,8 @@ defmodule Excyte.Repo.Migrations.Properties do
 
   def change do
     create table(:properties) do
-      add :brokerage_id, references(:brokerages)
-      add :agent_id, references(:users)
-      add :insight_id, references(:insights)
+      add :brokerage_id, references(:brokerages, on_delete: :delete_all)
+      add :agent_id, references(:users, on_delete: :nilify_all)
       add :foreign_id, :string
       add :doc_id, :integer
       add :internal_type, :string
@@ -17,7 +16,8 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :coords, :map, default: %{}
       add :state, :string
       add :status, :string
-      add :parking, :string
+      add :parking_type, :string
+      add :parking_spaces, :integer
       add :public_remarks, :text
       add :overview, :text
       add :foreign_url, :text
@@ -34,28 +34,20 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :close_date, :string
       add :pending_timestamp, :utc_datetime
       add :distance_from_subject, :string
-      add :list_price, :string
+      add :list_price, :integer
       add :est_price, :integer
       add :stories, :float
       add :walkscore, :integer
       add :listing_key, :string
       add :listing_id, :string
       add :features, :jsonb, default: "[]"
+      add :schools, :jsonb, default: "[]"
       add :last_modified, :utc_datetime
-      add :dirty_info, :jsonb, default: "[]"
       add :history, :map, default: %{}
-      add :public_records, :map, default: %{}
-      add :pool, :boolean, default: false
-      add :spa, :boolean, default: false
-      add :horses, :boolean, default: false
-      add :new_construction, :boolean, default: false
-      add :view, :boolean, default: false
-      add :waterfront, :boolean, default: false
       add :manually_updated, :boolean, default: false
       add :median_dom, :string
       add :median_sale_price, :string
       add :median_list_price, :string
-      add :schools, :jsonb, default: "[]"
       add :association_fee, :string
       add :association_amenities, :jsonb, default: "[]"
       add :association_name, :string
@@ -65,5 +57,8 @@ defmodule Excyte.Repo.Migrations.Properties do
       add :tax_year, :string
       timestamps()
     end
+
+    create index(:properties, [:agent_id])
+    create index(:properties, [:brokerage_id])
   end
 end

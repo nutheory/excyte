@@ -10,8 +10,8 @@ defmodule ExcyteWeb.Contact.ListItem do
   @impl true
   def render(assigns), do: ContactView.render("list_item.html", assigns)
 
-  @impl true
-  def update(assigns, socket) do
-    {:ok, socket}
-  end
+  # @impl true
+  # def update(%{contact: cnt}, socket) do
+  #   {:ok, assign(socket, contact: cnt)}
+  # end
 end

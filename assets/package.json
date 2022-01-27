@@ -12,9 +12,7 @@
     "@mux/upchunk": "^2.2.2",
     "@mux/videojs-kit": "^0.2.0",
     "@simonwep/pickr": "^1.8.1",
-    "@tailwindcss/aspect-ratio": "^0.2.1",
-    "@tailwindcss/typography": "^0.4.1",
-    "alpinejs": "^2.8.2",
+    "alpinejs": "^3.7.1",
     "axios": "^0.21.1",
     "chart.js": "^3.5.1",
     "cropperjs": "^1.5.12",
@@ -30,6 +28,8 @@
     "topbar": "^1.0.1"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.3.0",
+    "@tailwindcss/typography": "^0.5.0",
     "@types/dropzone": "^5.7.4",
     "autoprefixer": "^10.3.5",
     "esbuild": "^0.12.24",
@@ -38,6 +38,6 @@
     "postcss-cli": "^8.3.1",
     "postcss-import": "^14.0.2",
     "postcss-nesting": "^8.0.1",
-    "tailwindcss": "^2.2.15"
+    "tailwindcss": "^3.0.16"
   }
 }

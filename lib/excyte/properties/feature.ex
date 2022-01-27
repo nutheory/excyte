@@ -18,15 +18,15 @@ defmodule Excyte.Properties.Feature do
   embedded_schema do
     field :temp_id, :string, virtual: true
     field :delete, :boolean, virtual: true
-    field(:subject, :string)
-    field(:content, :string)
+    field(:name, :string)
+    field(:description, :string)
     timestamps()
   end
 
   def changeset(feature, attrs) do
     Map.put(feature, :temp_id, (feature.temp_id || attrs["temp_id"]))
-    |> cast(attrs, [:name, :subject, :content, :delete])
-    |> validate_required([:name, :content])
+    |> cast(attrs, [:name, :description, :delete])
+    |> validate_required([:name])
     |> maybe_mark_for_deletion()
   end
 

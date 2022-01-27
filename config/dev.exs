@@ -31,6 +31,9 @@ config :excyte, ExcyteWeb.Endpoint,
     node: ["esbuild.js", "--watch", cd: Path.expand("../assets", __DIR__)]
   ]
 
+config :excyte, ExcyteWeb.Endpoint,
+  phoenix_profiler: true
+
 config :ex_twilio,
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
   api_key: System.get_env("TWILIO_API_KEY"),

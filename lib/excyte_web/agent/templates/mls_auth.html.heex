@@ -10,6 +10,7 @@
               options={@mls_opts}
               selected={@mls}
               attr={:mls}
+              origin={"left"}
               callback={:set_mls}
               label={"Select your MLS"}
               id={:set_mls_dropdown}
@@ -97,8 +98,8 @@
     <% end %>
   <% end %>
   <%= if Map.fetch!(@socket, :id) === "mls_auth_gsb" && length(@mls_list) > 0 do %>
-    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "subscription"), replace: false do %>
+    <%#= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "subscription"), replace: false do %>
       <div class="action-button my-6">Continue...</div>
-    <% end %>
+    <%# end %>
   <% end %>
 </div>

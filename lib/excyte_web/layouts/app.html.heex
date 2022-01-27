@@ -1,4 +1,4 @@
-<%= live_render(@socket, ExcyteWeb.ProtectedHeader, id: "header") %>
+<.live_component module={ExcyteWeb.ProtectedHeader} current_user={@current_user} id="header" />
 <.flash_group flash={@flash} />
 <div role="main" phx-hook="ViewportResize" class="w-full px-4 md:px-6 lg:px-8 max-w-screen-xl mx-auto" id="main_body">
   <%= @inner_content %>

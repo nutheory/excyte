@@ -2,11 +2,11 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Accounts.User, Brokerages}
   alias ExcyteWeb.{Endpoint, Helpers.Utilities, BrokerageView}
-  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("manage_team.html", assigns)
 
-  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     acc = Accounts.get_account_with_brokerage_agents(%{brokerage: cu.brokerage_id, account: cu.account_id})
     bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})

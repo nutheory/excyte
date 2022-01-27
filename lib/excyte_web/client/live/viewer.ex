@@ -13,10 +13,10 @@ defmodule ExcyteWeb.Client.Viewer do
   @impl true
   def mount(%{"insight_id" => iid}, t, socket) do
     cu = if is_nil(t["user_token"]), do: nil, else: Accounts.get_user_by_session_token(t["user_token"])
+    IO.inspect(cu, label: "CU")
     case Insights.get_published_insight(iid) do
       {:ok, res} ->
         sections = Enum.sort(res.insight.sections, fn a, b -> a.position <= b.position end)
-        IO.inspect(sections, label: "HEY")
         insight = merge_theme(res)
         send self(), {:load_view, %{}}
         {:ok, assign(socket,
@@ -28,6 +28,7 @@ defmodule ExcyteWeb.Client.Viewer do
             brokerage: res.brokerage
           },
           theme: insight.document_attributes,
+          errors: nil,
           listings: Enum.map(insight.content.listings, fn lst ->
             Map.put(lst, "collapse", ["features", "layout_details"])
           end)
@@ -36,7 +37,8 @@ defmodule ExcyteWeb.Client.Viewer do
           end),
           loading: false
         )}
-      {:error, :insight, %{message: "No report found."}, %{}} -> {:ok, assign(socket, errors: [%{message: "Could not find published report."}])}
+      {:error, :insight, %{message: "No report found."}, %{}} ->
+        {:ok, assign(socket, errors: [%{message: "Could not find published report."}])}
       {:error, err} -> err
     end
   end

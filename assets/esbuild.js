@@ -20,7 +20,7 @@ let opts = {
   entryPoints: ['js/app.js', 'js/client.js', 'js/public.js'],
   bundle: true,
   logLevel: 'info',
-  target: 'es2016',
+  target: 'es2017',
   plugins: [
     postCssPlugin.default({
       plugins: [postCssImport, tailwindcss, postCssNesting, autoprefixer]

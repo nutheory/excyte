@@ -16,14 +16,16 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
     <script defer src={"https://maps.googleapis.com/maps/api/js?key=#{Application.get_env(:excyte, :gcp_places)}&libraries=places"}></script>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/client.css")}/>
-    <style type="text/css">
-       div.viewer-wrapper {background-color: <%= @theme.background %>; color: <%= @theme.sub_header_text %>; font-family: <%= @theme.font %>}
-       div.viewer-wrapper .bg-color {background-color: <%= @theme.background %>;}
-       div.viewer-wrapper .header-color {color: <%= @theme.sub_header_text %>}
-       div.viewer-wrapper .sub-header-color {color: <%= @theme.sub_header_text %>}
-       div.viewer-wrapper .accent-color {border-color: <%= @theme.accent %>}
-       div.viewer-wrapper .link {color: <%= @theme.link %>; border-color: <%= @theme.link %>}
-    </style>
+    <%= if !@errors do %>
+      <style type="text/css">
+        div.viewer-wrapper {background-color: <%= @theme.background %>; color: <%= @theme.sub_header_text %>; font-family: <%= @theme.font %>}
+        div.viewer-wrapper .bg-color {background-color: <%= @theme.background %>;}
+        div.viewer-wrapper .header-color {color: <%= @theme.sub_header_text %>}
+        div.viewer-wrapper .sub-header-color {color: <%= @theme.sub_header_text %>}
+        div.viewer-wrapper .accent-color {border-color: <%= @theme.accent %>}
+        div.viewer-wrapper .link {color: <%= @theme.link %>; border-color: <%= @theme.link %>}
+      </style>
+    <% end %>
   </head>
   <body class="">
     <%= @inner_content %>

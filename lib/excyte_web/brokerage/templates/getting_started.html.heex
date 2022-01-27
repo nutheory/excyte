@@ -1,4 +1,4 @@
-<div class="md:px-6 xl:px-8 mt-20 lg:mt-28 mb-6">
+<div class="md:px-6 xl:px-8 mt-16 mb-6">
   <div class="max-w-2xl mx-auto">
     <div class="flex">
       <div class="flex-1">
@@ -21,12 +21,6 @@
     <p class="mt-2 mb-12">This is a one time setup to get you up and running with our product. You can <span class="bg-yellow-200">edit anything done here under settings</span> in the future if you need to.</p>
   </div>
   <%= case @current_step do %>
-    <% "mls" -> %>
-      <div class="w-full md:w-1/2 mx-auto">
-        <% IO.inspect(@return_to) %>
-        <%= live_render @socket, MlsAuth, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :mls_auth_gsb %>
-      </div>
-
     <% "subscription" -> %>
       <div class="w-full lg:w-1/2 mx-auto">
         <%= if @account.current_period_end === nil do %>
@@ -75,11 +69,16 @@
           </div>
           <div>
             <%= if @current_user.completed_setup do %>
-              <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, Dashboard) %>
+              <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, Agent.Dashboard) %>
             <% end %>
           </div>
         </div>
-        <%= live_render @socket, Agent.Profile, session: %{"return_to" => "/agent/dash", "user_id" => @current_user.id}, id: "agent_profile_form" %>
+        <%= live_render @socket, Agent.Profile, session: %{"return_to" => "/auth/dash", "user_id" => @current_user.id}, id: "agent_profile_form" %>
+      </div>
+    <% _ -> %>
+      <div class="w-full md:w-1/2 mx-auto">
+        <%# IO.inspect(@return_to) %>
+        <%= live_render @socket, MlsAuth, session: %{"return_to" => @return_to, "user_id" => @current_user}, id: :mls_auth_gsb %>
       </div>
   <% end %>
 </div>

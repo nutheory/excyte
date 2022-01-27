@@ -1,6 +1,7 @@
 defmodule ExcyteWeb.Brokerage.Profile do
   use ExcyteWeb, :live_view
   alias Excyte.{
+    Accounts,
     Brokerages,
     Utils.ContactItem,
     Mls.ResoOfficeApi
@@ -9,11 +10,11 @@ defmodule ExcyteWeb.Brokerage.Profile do
     Helpers.Utilities,
     BrokerageView
   }
-  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("profile.html", assigns)
 
-  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"return_to" => rt, "user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     brokerage_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = maybe_attempt_prefill?(brokerage_profile, cu.current_mls)
     {:ok,
@@ -51,7 +52,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     params = filter_empty_contacts(profile_params)
     case Brokerages.update_profile(a.profile, Map.merge(params, %{ "updated_by_user" => true})) do
       {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
-                                    |> push_redirect(to: a.return_to)}
+                                    |> redirect(to: a.return_to)}
       {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
     end
   end
@@ -80,11 +81,11 @@ defmodule ExcyteWeb.Brokerage.Profile do
 
   defp filter_empty_contacts(profile_params) do
     contacts =
-      Enum.filter(profile_params["contacts"], fn {_k, v} ->
+      Enum.filter(profile_params["contact_items"], fn {_k, v} ->
         if v["name"] !== "" && v["content"] !== "", do: true, else: false
       end) |> Enum.map(fn {_k, v} -> v end)
 
-    Map.merge(profile_params, %{"contacts" => contacts})
+    Map.merge(profile_params, %{"contact_items" => contacts})
   end
 
   defp maybe_attempt_prefill?(profile, mls) do

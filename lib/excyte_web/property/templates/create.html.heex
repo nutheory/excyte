@@ -20,8 +20,8 @@
       <.form
         let={f}
         for={@changeset}
-        phx-change={"form_change"}
-        phx-submit={"form_submit"}
+        phx-change={"validate"}
+        phx-submit={"submit_property"}
       >
         <div>
           <h1 class="text-gray-600">Step 1 <span class="text-xl italic text-gray-400">of 2</span></h1>
@@ -101,7 +101,6 @@
                 <%= error_tag f, :walkscore %>
               </div>
               <div class="col-span-2">
-                <% IO.inspect(@changeset.changes[:property_type], label: "PT") %>
                 <%= label f, :property_type %>
                 <UI.dropdown
                   options={@property_type_options}
@@ -148,6 +147,7 @@
             title="Features"
             expanded={false}
           >
+            <Function.feature_form form={f} id={:property_features} />
           </UI.accordian>
           <UI.accordian 
             title="Home Owners Association"

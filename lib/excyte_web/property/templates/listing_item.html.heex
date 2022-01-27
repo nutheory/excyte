@@ -1,0 +1,61 @@
+<li class="col-span-1 flex flex-col text-center bg-white rounded-lg shadow divide-y divide-gray-200">
+  <div class="flex flex-col">
+    <div class="aspect-w-16 aspect-h-9 relative bg-black rounded-t-lg">
+      <img 
+        src={@listing.main_photo_url} 
+        alt="Property photo" 
+        class="w-full h-full object-center object-cover lg:w-full lg:h-full opacity-70 hover:opacity-90 rounded-t-lg" 
+      />
+    </div>
+    <div class="p-6 flex-1">
+      <h3 class="text-gray-900 text-sm font-medium">
+        <%= @listing.street_number %>
+        <%= @listing.street_name %>
+        <%= if @listing.unit do %>
+          Unit <%= @listing.unit %>
+        <% end %>
+      </h3>
+      <dl class="mt-1 flex-grow flex flex-col justify-between">
+        <dt class="sr-only">City, State, Zip</dt>
+        <dd class="text-gray-500 text-sm">
+          <%= if @listing.city do %>
+            <%= @listing.city %>,
+          <% end %>
+          <%= @listing.state %>
+          <%= @listing.zip %>
+        </dd>
+        <%= if @listing.est_price || @listing.list_price do %>
+          <dt class="sr-only">Price</dt>
+          <dd class="mt-2">
+            <span class="px-2 py-1 text-green-800 font-semibold text-sm bg-green-100 rounded-full">
+              <%= if @listing.est_price do %>
+                $<%= number_to_delimited(@listing.est_price, precision: 0) %>
+              <% else %>
+                $<%= number_to_delimited(@listing.list_price, precision: 0) %>
+              <% end %>
+            </span>
+          </dd>
+        <% end %>
+        <dt class="sr-only">Last updated</dt>
+        <dd class="mt-2">
+          <span class="px-2 py-1 text-gray-500 text-xs font-medium">Last updated: <%= Calendar.strftime(@listing.updated_at, "%b %d, %Y") %></span>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <div>
+    <div class="-mt-px flex divide-x divide-gray-200">
+      <div class="w-0 flex-1 flex">
+        
+      </div>
+      <div class="-ml-px w-0 flex-1 flex">
+        <div phx-click="send-insight" phx-value-ins-id={@insight.uuid} class="flex flex-1 w-12 items-center justify-center cursor-pointer">
+          <% color = if @insight.type, do: "#{Utilities.insight_type_to_color(@insight.type)}-radial-text", else: "" %>
+          <svg class={"w-6 h-6 #{color}"} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</li>

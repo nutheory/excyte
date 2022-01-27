@@ -2,11 +2,11 @@ defmodule ExcyteWeb.Agent.Subscription do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Accounts.Billing, EmailNotifiers}
   alias ExcyteWeb.{AgentView}
-  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: AgentView.render("subscription.html", assigns)
 
-  def mount(_params, %{"return_to" => _rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     plans = Application.get_env(:excyte, :agent_plans) |> Billing.get_plans(true)
     default_plan = Enum.find(plans, fn pl -> pl.default === true end)

@@ -2,11 +2,11 @@ const colors = require('tailwindcss/colors')
 
 module.exports = {
   mode: 'jit',
-  purge: ["./js/**/*.js", "../lib/*_web/**/*.*ex"],
+  content: ["./js/**/*.js", "../lib/*_web/**/*.*ex"],
   theme: {
     colors: {
-      bgray: colors.blueGray,
-      wgray: colors.warmGray,
+      bgray: colors.slate,
+      wgray: colors.stone,
       cyan: colors.cyan,
       teal: colors.teal,
       blue: colors.sky,
@@ -17,7 +17,7 @@ module.exports = {
       fuchsia: colors.fuchsia,
       pink: colors.pink,
       red: colors.rose,
-      gray: colors.coolGray,
+      gray: colors.gray,
       white: "#FFFFFF",
       black: "#000000",
     },

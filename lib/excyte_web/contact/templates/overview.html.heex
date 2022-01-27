@@ -48,7 +48,7 @@
           default_scope={@default_scope}
         />
       </div>
-      <div>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <%= for contact <- @contacts do %>
           <.live_component
             module={ListItem}
@@ -56,7 +56,7 @@
             contact={contact}
           />
         <% end %>
-      </div>
+      </ul>
     </div>
   <% end %>
 </div>

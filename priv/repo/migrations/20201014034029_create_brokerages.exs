@@ -3,9 +3,8 @@ defmodule Excyte.Repo.Migrations.Brokerages do
 
   def change do
     create table(:brokerages) do
-      add :account_id, references(:accounts)
+      add :account_id, references(:accounts, on_delete: :delete_all)
       add :name, :string
-      add :agent_limit, :integer, default: 0
       add :contact_settings, :map, default: %{}
       add :legal_link, :text
       add :legal_text, :text

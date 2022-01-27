@@ -99,4 +99,59 @@ defmodule ExcyteWeb.Components.Function do
     """
   end
 
+  def feature_form(assigns) do
+    ~H"""
+    <div>
+      <%= if @form do %>
+        <div class="mt-2 -mx-1">
+          <%= for fc <- inputs_for(@form, :features) do %>
+            <%= if fc.data.id do %>
+              <%= hidden_input fc, :id, value: fc.data.id %>
+            <% end %>
+            <div class="py-2 relative">
+              <%= if Map.has_key?(fc.params, "delete") && fc.params["delete"] == "true" do %>
+                <div class="text-xs bg-red-700 text-white absolute top-1 right-0 px-1">marked for delete</div>
+              <% end %>
+              <div class="flex">
+                <div class="px-1 flex-1">
+                  <%= label fc, :name, class: "text-xs" %>
+                  <%= text_input fc, :name, class: "text-field w-full", placeholder: "Mobile phone, Slack etc.", phx_debounce: "blur" %>
+                  <%= error_tag fc, :name %>
+                </div>
+                <div class="px-1 w-12">
+                  <%= checkbox fc, :delete, class: "appearance-none h-0" %>
+                  <%= if is_nil(fc.data.temp_id) do %>
+                    <%= label fc, :delete, class: "text-xs cursor-pointer" do %>
+                      <%= if Map.has_key?(fc.params, "delete") && fc.params["delete"] == "true" do %>
+                        <span class="inline-block mt-2.5 text-center">undo</span>
+                      <% else %>
+                        <span class="text-red-700 inline-block text-center">mark<br />delete</span>
+                      <% end %>
+                    <% end %>
+                  <% else %>
+                    <%= hidden_input fc, :temp_id %>
+                    <a href="#" class="delete-button mt-5 " phx-click="remove_feature" phx-value-remove={fc.data.temp_id}>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                      </svg>
+                    </a>
+                  <% end %>
+                </div>
+              </div>
+              <div class="mt-2">
+                <%= label fc, :description, class: "text-xs" %>
+                <%= text_input fc, :description, class: "text-field", placeholder: "Describe this feature", phx_debounce: 2000 %>
+                <%= error_tag fc, :description %>
+              </div>
+            </div>
+          <% end %>
+          <div class="pt-3">
+            <a href="#" class="pl-1 link-button" phx-click="add_feature">Add a Feature</a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    """
+  end
+
 end

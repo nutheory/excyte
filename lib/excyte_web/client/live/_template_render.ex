@@ -7,7 +7,7 @@ defmodule ExcyteWeb.Client.TemplateRender do
   def update(assigns, socket) do
     {:ok, assign(socket,
       current_user: assigns.current_user,
-      template: assigns.section.component_name,
+      template: assigns.template,
       theme: assigns.insight.document_attributes,
       brokerage: assigns.brokerage,
       content: assigns.content,
@@ -33,7 +33,7 @@ defmodule ExcyteWeb.Client.TemplateRender do
     listings = Enum.map(a.listings, fn lst ->
       %{
         address: "#{lst["street_number"]} #{lst["street_name"]}, #{lst["city"]}",
-        coords: %{lat: hd(tl(lst["coords"])), lng: hd(lst["coords"])},
+        coords: %{lat: lst["coords"]["lat"], lng: lst["coords"]["lng"]},
         main_photo_url: lst["main_photo_url"]
       }
     end)

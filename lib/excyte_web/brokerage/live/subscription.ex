@@ -2,17 +2,16 @@ defmodule ExcyteWeb.Brokerage.Subscription do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Accounts.Billing, EmailNotifiers}
   alias ExcyteWeb.{BrokerageView}
-  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: BrokerageView.render("subscription.html", assigns)
 
-  def mount(_params, %{"return_to" => _rt}, %{assigns: %{current_user: cu}} = socket) do
-    account = Accounts.get_account!(cu.account_id)
+  def mount(_params, %{"user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     plans = Application.get_env(:excyte, :brokerage_plans) |> Billing.get_plans(true)
     default_plan = Enum.find(plans, fn pl -> pl.default === true end)
     current_plan =
-      if account.source_subscription_id do
-        case Billing.get_current_subscription(account.source_subscription_id) do
+      if cu.account.source_subscription_id do
+        case Billing.get_current_subscription(cu.account.source_subscription_id) do
           {:ok, sub} -> sub
           {:error, err} -> {:ok, assign(socket, errors: [err])}
         end
@@ -21,7 +20,7 @@ defmodule ExcyteWeb.Brokerage.Subscription do
       end
     {:ok, assign(socket,
       plans: plans,
-      account: account,
+      account: cu.account,
       payment_success: false,
       updating_plan: (if current_plan, do: false, else: true),
       max_agents: default_plan.max_agents,

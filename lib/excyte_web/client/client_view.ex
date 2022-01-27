@@ -11,6 +11,7 @@ defmodule ExcyteWeb.ClientView do
     TemplateRender
   }
   alias ExcyteWeb.Components.{
+    AddressAutocomplete,
     ContactView,
     ShowcaseGallery,
     Collapsable

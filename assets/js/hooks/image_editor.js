@@ -42,7 +42,8 @@ export const ImageEditor = {
         }
       },
       init: function () {
-        if (imageUrl !== "") {
+        console.log("IMG", imageUrl)
+        if (imageUrl !== "" && imageUrl !== undefined) {
           var mockFile = { name: title }
           this.options.addedfile.call(this, mockFile)
           this.options.thumbnail.call(this, mockFile, imageUrl)
@@ -85,7 +86,7 @@ export const ImageEditor = {
         })
       },
       accept: function (file, done) {
-        axios.get(`/uploader/presigned`, {
+        axios.get(`/auth/uploader/presigned`, {
           params: {
             type: file.type,
             filename: file.upload.filename,

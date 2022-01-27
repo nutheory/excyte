@@ -212,7 +212,10 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   defp with_listings(listings, type) do
-    if Enum.member?(["cma", "buyer_tour"], type) && listings && length(listings) > 0 do
+    IO.inspect(type, label: "TYPE")
+    IO.inspect(length(listings), label: "LENG")
+    IO.inspect(hd(listings), label: "SLLL")
+    if Enum.member?(["cma_auto", "cma", "buyer_tour"], type) && listings && length(listings) > 0 do
       Enum.with_index(listings, 0)
       |> Enum.map(fn {sl, i} ->
         Map.merge(sl, %{"excyte_data" =>
@@ -266,6 +269,7 @@ defmodule ExcyteWeb.Insight.Customize do
 
   defp set_default_name(ins) do
     case ins.type do
+      "cma_auto" -> "#{ins.property.street_number} #{ins.property.street_name}"
       "cma" -> "#{ins.property.street_number} #{ins.property.street_name}"
       "buyer_tour" -> "#{hd(ins.content.listings)["street_number"]} #{hd(ins.content.listings)["street_name"]}"
       "showcase" -> "#{hd(ins.content.listings)["street_number"]} #{hd(ins.content.listings)["street_name"]}"

@@ -3,10 +3,10 @@ defmodule Excyte.Repo.Migrations.Insights do
 
   def change do
     create table(:insights) do
-      add :created_by_id, references(:users)
-      add :brokerage_id, references(:brokerages)
-      add :client_id, references(:clients)
-      add :document_template_id, references(:document_templates)
+      add :created_by_id, references(:users, on_delete: :nilify_all)
+      add :brokerage_id, references(:brokerages, on_delete: :delete_all)
+      add :document_template_id, references(:document_templates, on_delete: :nilify_all)
+      add :property_id, references(:properties, on_delete: :delete_all)
       add :type, :string
       add :mls, :string
       add :uuid, :string
@@ -17,6 +17,7 @@ defmodule Excyte.Repo.Migrations.Insights do
       add :content, :map, default: %{}
       add :saved_search, :map, default: %{}
       add :published, :boolean, default: false
+      add :auto_generated, :boolean, default: false
       timestamps()
     end
 

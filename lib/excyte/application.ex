@@ -4,14 +4,13 @@ defmodule Excyte.Application do
   @moduledoc false
 
   use Application
+  alias Excyte.RateLimiter
 
   def start(_type, args) do
     children =
       case args do
         [env: :test] ->
           [
-            # {Plug.Cowboy,
-            #   scheme: :http, plug: Mls.MockServer, options: [port: 4005]},
             Excyte.Repo,
             # ExcyteWeb.Telemetry,
             Excyte.Mls.MetaCache,
@@ -22,22 +21,18 @@ defmodule Excyte.Application do
           ]
         [env: :dev] ->
           [
-            {Plug.Cowboy,
-              scheme: :http, plug: Mls.MockServer, options: [port: 4004]},
             Excyte.Repo,
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,
             %{id: :insights_cache, start: {Cachex, :start_link, [:insights_cache, []]}},
-            %{id: :scrape_agent_cache, start: {Cachex, :start_link, [:scrape_agent_cache, []]}},
+            # %{id: :scrape_agent_cache, start: {Cachex, :start_link, [:scrape_agent_cache, []]}},
             ExcyteWeb.Telemetry,
             {Phoenix.PubSub, name: Excyte.PubSub},
             ExcyteWeb.Endpoint,
-            {OpenIDConnect.Worker, Application.get_env(:excyte, :openid_connect_providers)}
+            # {OpenIDConnect.Worker, Application.get_env(:excyte, :openid_connect_providers)}
           ]
         [_] ->
           [
-            {Plug.Cowboy,
-              scheme: :http, plug: Mls.MockServer, options: [port: 4004]},
             Excyte.Repo,
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,

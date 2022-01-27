@@ -3,8 +3,8 @@ defmodule Excyte.Repo.Migrations.ProfilesTable do
 
   def change do
     create table(:profiles) do
-      add :agent_id, references(:users)
-      add :brokerage_id, references(:brokerages)
+      add :agent_id, references(:users, on_delete: :delete_all)
+      add :brokerage_id, references(:brokerages, on_delete: :delete_all)
       add :photo_url, :text
       add :logo_url, :text
       add :intro_video_url, :text
@@ -16,8 +16,8 @@ defmodule Excyte.Repo.Migrations.ProfilesTable do
       add :job_title, :string
       add :tagline, :string
       add :urls, :jsonb, default: "[]"
-      add :contacts, :jsonb, default: "[]"
-      add :addresses, :jsonb, default: "[]"
+      add :contact_items, :jsonb, default: "[]"
+      add :address_items, :jsonb, default: "[]"
       add :theme_settings, :map, default: %{}
       add :updated_by_user, :boolean, default: false
       timestamps()

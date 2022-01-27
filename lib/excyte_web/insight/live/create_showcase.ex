@@ -65,7 +65,7 @@ defmodule ExcyteWeb.Insight.CreateShowcase do
 
   defp insight_data(property_attrs, key, a) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
-    template = Insights.get_document_templates(a.current_user, "showcase")
+    template = Insights.get_document_templates(a.current_user, %{type: "showcase", auto: false})
     %{
       uuid: key,
       type: "showcase",

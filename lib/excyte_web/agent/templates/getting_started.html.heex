@@ -51,7 +51,7 @@
           </div>
         </div>
         <%= live_render @socket, Profile,
-          session: %{"return_to" => "/agent/dash", "user_id" => @current_user.id, "profile_id" => nil},
+          session: %{"return_to" => "/auth/dash", "user_id" => @current_user.id, "profile_id" => nil},
           id: "profile_form" %>
       </div>
   <% end %>

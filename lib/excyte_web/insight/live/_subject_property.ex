@@ -8,7 +8,8 @@ defmodule ExcyteWeb.Insight.SubjectProperty do
     {:ok, assign(socket,
       current_user: assigns.current_user,
       errors: assigns.errors,
-      mls: assigns.current_user.current_mls,
+      mls_options: assigns.mls_options,
+      current_mls: assigns.current_mls,
       subject: assigns.subject
     )}
   end

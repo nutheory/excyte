@@ -23,33 +23,33 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def insight_type_to_name(type) do
     case type do
-      "cma" -> "CMA"
       "buyer_tour" -> "Buyer Tour"
       "showcase" -> "Showcase"
+      _ -> "CMA"
     end
   end
 
   def insight_type_to_color(type) do
     case type do
-      "cma" -> "blue"
       "buyer_tour" -> "orange"
       "showcase" -> "green"
+      _ -> "blue"
     end
   end
 
   def full_insight_type_to_name(type) do
     case type do
-      "cma" -> "Comparative Market Analysis"
       "buyer_tour" -> "Buyer Tour"
       "showcase" -> "Showcase"
+      _ -> "Comparative Market Analysis"
     end
   end
 
   def insight_type_to_component_name(type) do
     case type do
-      "cma" -> "comparable"
       "buyer_tour" -> "tour_stop"
       "showcase" -> "showcase"
+      _ -> "comparable"
     end
   end
 
@@ -71,9 +71,9 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def insight_dividers(type) do
     case type do
-      "cma" -> "CMA"
       "buyer_tour" -> "Buyer Tour"
       "showcase" -> "Showcase"
+      _ -> "CMA"
     end
   end
 
@@ -247,29 +247,51 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def default_filter(subject) do
     %{
       default: true,
-      dataset_id: subject.dataset_id,
-      price_min: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
-      price_max:
-        if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000),
+      # dataset_id: subject.dataset_id,
+      # price_min: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
+      # price_max:
+      #   if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000),
+      # price: %{
+      #   type: Integer,
+      #   low: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
+      #   high: if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000)
+      # },
+      # beds: %{
+      #   type: Integer,
+      #   low: if(subject.beds, do: subject.beds - 1, else: 0),
+      #   high: if(subject.beds, do: subject.beds + 1, else: 100)
+      # },
+      # baths: %{
+      #   type: Float,
+      #   low: if(subject.baths, do: round(subject.baths) - 1, else: 0),
+      #   high: if(subject.baths, do: round(subject.baths) + 1, else: 0)
+      # },
+      # sqft: %{
+      #   type: Integer,
+      #   low: if(subject.sqft, do: round(subject.sqft * 0.7), else: 0),
+      #   high: if(subject.sqft, do: round(subject.sqft * 1.4), else: 0)
+      dataset_id: subject["dataset_id"],
+      price_min: (if subject["est_price"], do: round((subject["est_price"]/1000) * 0.95), else: 0),
+      price_max: (if subject["est_price"], do: round((subject["est_price"]/1000) * 1.05), else: 100000000),
       price: %{
         type: Integer,
-        low: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
-        high: if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000)
+        low: (if subject["est_price"], do: round((subject["est_price"]/1000) * 0.95), else: 0),
+        high: (if subject["est_price"], do: round((subject["est_price"]/1000) * 1.05), else: 100000000)
       },
       beds: %{
         type: Integer,
-        low: if(subject.beds, do: subject.beds - 1, else: 0),
-        high: if(subject.beds, do: subject.beds + 1, else: 100)
+        low: (if subject["beds"], do: subject["beds"] - 1, else: 0),
+        high: (if subject["beds"], do: subject["beds"] + 1, else: 100)
       },
       baths: %{
         type: Float,
-        low: if(subject.baths, do: round(subject.baths) - 1, else: 0),
-        high: if(subject.baths, do: round(subject.baths) + 1, else: 0)
+        low: (if subject["baths"], do: round(subject["baths"]) - 1, else: 0),
+        high: (if subject["baths"], do: round(subject["baths"]) + 1, else: 0)
       },
       sqft: %{
         type: Integer,
-        low: if(subject.sqft, do: round(subject.sqft * 0.7), else: 0),
-        high: if(subject.sqft, do: round(subject.sqft * 1.4), else: 0)
+        low: (if subject["sqft"], do: round(subject["sqft"] * 0.7), else: 0),
+        high: (if subject["sqft"], do: round(subject["sqft"] * 1.4), else: 0)
       },
       property_types: set_property_type(subject),
       selected_statuses: [
@@ -376,25 +398,6 @@ defmodule ExcyteWeb.Helpers.Utilities do
       ""
     end
   end
-
-  # def time_to_text(listing, key) do
-  #   if Map.has_key?(listing, key) && listing[key] !== nil do
-  #     months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
-  #     cond do
-  #       months <= 2 ->
-  #         t = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
-  #         "#{t.days} #{Inflex.inflect("day", t.days)} ago"
-  #       months <= 18 ->
-  #         t = %{months: months}
-  #         "#{t.months} #{Inflex.inflect("month", t.months)} ago"
-  #       months > 18 ->
-  #         t = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
-  #         "over #{t.years} #{Inflex.inflect("year", t.years)} ago"
-  #     end
-  #   else
-  #     ""
-  #   end
-  # end
 
   def calculate_distance(subject_coords, listing_coords) do
     m = Geocalc.distance_between(subject_coords, listing_coords)
@@ -508,16 +511,15 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def set_property_type(subject) do
-    case subject.dataset_id do
+    case subject["dataset_id"] do
       "tmls" ->
-        case subject.property_type do
+        case subject["property_type"] do
           "single_family" -> [%{name: "Detached", value: "detached"}]
           "condo" -> [%{name: "Condo", value: "condominium"}]
           _ -> [%{name: "Attached", value: "attached"}]
         end
-
-      _ ->
-        nil
+      "public" -> subject["property_type"]
+      _ -> nil
     end
   end
 

@@ -101,14 +101,13 @@ defmodule Excyte.Contacts.Contact do
     where: c.category in ^cats
   end
 
-  def apply_fuzzy_search(query, filter) when is_nil(filter)  or byte_size(filter) === 0 do
-    start_character = String.slice(filter, 0..1)
-
+  def apply_fuzzy_search(query, filter) when byte_size(filter) > 0 do
     from c in query,
-    where: ilike(c.last_name, ^"#{start_character}%") or ilike(c.email, ^"#{start_character}%"),
+    where: ilike(c.last_name, ^"#{filter}%") or ilike(c.email, ^"#{filter}%"),
     where: fragment("SIMILARITY(?, ?) > 0", c.last_name, ^filter) or fragment("SIMILARITY(?, ?) > 0",  c.email, ^filter),
     order_by: fragment("LEVENSHTEIN(?, ?)", c.last_name, ^filter)
   end
+  def apply_fuzzy_search(query, _filter), do: query
 
   def apply_list_options(query, opts) do
     sk = String.to_atom(opts.sort_by)

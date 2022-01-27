@@ -13,7 +13,7 @@ import "../css/app.css"
 //     import socket from "./socket"
 //
 
-import 'alpinejs'
+import Alpine from 'alpinejs'
 import "phoenix_html"
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
@@ -34,6 +34,10 @@ import {InitCheckout} from "./hooks/checkout"
 import {GeoLocation} from "./hooks/geo_location"
 import {AutocompleteLocation} from "./hooks/location"
 import topbar from "topbar"
+
+window.Alpine = Alpine
+ 
+Alpine.start()
 
 let Uploaders = {}
 let Hooks = {}

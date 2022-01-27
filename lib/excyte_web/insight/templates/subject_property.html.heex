@@ -7,11 +7,11 @@
   <% end %>
   <%= if @subject || @errors do %>
     <div class="my-6 bg-white rounded-lg shadow">
-        <%= if @subject.main_photo_url do %>
+        <%= if @subject["main_photo_url"] do %>
           <div class="rounded-t-lg relative h-24 overflow-hidden bg-bgray-900 ">
-            <img src={@subject.main_photo_url} alt="" class="absolute h-full w-full object-cover grayscale-60 opacity-80" />
+            <img src={@subject["main_photo_url"]} alt="" class="absolute h-full w-full object-cover grayscale-60 opacity-80" />
             <div class="absolute h-full w-full top-4 left-4 deep-text-shadow">
-              <h2 class="text-white shadow"><%= @subject.street_number %> <%= @subject.street_name %></h2>
+              <h2 class="text-white shadow"><%= @subject["street_number"] %> <%= @subject["street_name"] %></h2>
             </div>
           </div>
         <% end %>
@@ -19,6 +19,8 @@
         <.live_component 
           module={SubjectForm}
           button_label={"Continue to Select Comparables"}
+          mls_options={@mls_options}
+          current_mls={@current_mls}
           current_user={@current_user}
           subject={@subject}
           id={:manual_subject_create}

@@ -138,7 +138,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       }
     }
     case Insights.update_insight(a.key, a.current_user.id, update) do
-      {:ok, _} -> {:noreply, push_redirect(socket, to: "auth/insights/#{a.key}/customize")}
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{a.key}/customize")}
       {:error, _} -> {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end

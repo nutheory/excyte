@@ -10,7 +10,5 @@ defmodule ExcyteWeb.ContactView do
     Settings
   }
   alias ExcyteWeb.Helpers.{UI}
-  alias ExcyteWeb.Components.{
-    Function
-  }
+  alias ExcyteWeb.Components.{Function}
 end

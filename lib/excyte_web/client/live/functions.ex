@@ -33,6 +33,8 @@ defmodule ExcyteWeb.Client.Functions do
         end)
         |> Enum.sort_by(&(&1.dom))
 
+      IO.inspect(closed_averages, label: "CLOSED")
+
       chart_data = Jason.encode!(%{
         min: round(closed_averages.min * 0.85),
         max: round(closed_averages.max * 1.15),
@@ -68,13 +70,14 @@ defmodule ExcyteWeb.Client.Functions do
   end
 
   defp format_averages(grp) do
+    IO.inspect(grp, label: "GRP")
     prices = grp.list_prices ++ grp.close_prices
     order =
       case grp.status do
         "Active" -> 3
+        "Closed" -> 1
         "Active Under Contract" -> 5
         "Canceled" -> 7
-        "Closed" -> 1
         "Expired" -> 4
         "Pending" -> 2
         "Withdrawn" -> 6
@@ -83,8 +86,8 @@ defmodule ExcyteWeb.Client.Functions do
     %{
       order: order,
       count: grp.count,
-      min: Enum.min(prices),
-      max: Enum.max(prices),
+      min: (if Enum.empty?(prices), do: nil, else: Enum.min(prices)),
+      max: (if Enum.empty?(prices), do: nil, else: Enum.max(prices)),
       status: grp.status,
       avg_sqft: (if length(grp.pp_sqfts) > 0, do: "$#{number_to_delimited(round(Enum.sum(grp.pp_sqfts) / length(grp.pp_sqfts)), precision: 0)}", else: 0),
       avg_dom: (if length(grp.doms) > 0, do: "#{number_to_delimited(round(Enum.sum(grp.doms) / length(grp.doms)), precision: 0)}", else: nil),

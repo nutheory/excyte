@@ -90,7 +90,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
 
   defp insight_data(tour_attrs, key, a) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
-    template = Insights.get_document_templates(a.current_user, "buyer_tour")
+    template = Insights.get_document_templates(a.current_user, %{type: "buyer_tour", auto: false})
     %{
       uuid: key,
       type: "buyer_tour",

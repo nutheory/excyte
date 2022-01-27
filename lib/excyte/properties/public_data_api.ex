@@ -9,6 +9,7 @@ defmodule Excyte.Properties.PublicDataApi do
     {"x-rapidapi-host", "realty-in-us.p.rapidapi.com"},
     {"useQueryString", true}
   ]
+  plug Excyte.RealtyMiddleware
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
@@ -21,62 +22,30 @@ defmodule Excyte.Properties.PublicDataApi do
     %{name: "Waterfront", value: "waterfront"}
   ]
 
-  def get_subject_by_foreign_id(foreign_id) do
-    get("/properties/v2/detail", query: [property_id: foreign_id])
-    |> process_subject()
-  end
-
   def get_listing_info(foreign_id) do
     case get("/properties/v2/detail", query: [property_id: foreign_id]) do
       {:ok, %Tesla.Env{:body => %{"properties" => properties}}} ->
-        prop = hd(properties)
-        if Map.has_key?(prop, "mls") do
-          {:ok, %{name: prop["mls"]["name"], id: prop["mls"]["id"]}}
-        else
-          {:error, %{message: "no mls info returned"}}
-        end
-      {:ok, %Tesla.Env{:body => _err} = _response} -> {:error, %{message: "no properties returned"}}
-      {:error, %Tesla.Env{:body => _body} = _response} -> {:error, %{message: "data fetching failed"}}
-      err -> {:error, err}
+        {:ok, process_property(hd(properties))}
+      {:ok, %Tesla.Env{:body => err}} -> IO.inspect(err, label: "ERR")
+      {:error, %Tesla.Env{:body => body}} ->
+        {:error, %{message: "Subject property processing failed", err: body}}
     end
   end
 
-  # def listing_properties(mls, %Property{} = subject, opts) do
-  #   query = get_expanded(mls)
-  #   get_by_opts = if query.coords, do: %{coords: subject.coords, distance: opts.distance}, else: %{zip: subject.zip}
-  #   types = if Map.has_key?(opts, :property_types) && length(opts.property_types) > 0, do: "(#{property_type(opts.property_types)})%20and%20", else: ""
-  #   mb = if Map.has_key?(opts, :status_updated), do: "#{get_by_months_back(opts)}", else: ""
-  #   query_str = query.select_str
-  #     <> "$filter="
-  #     <> "(#{mb})%20and%20"
-  #     <> "(#{status(opts.selected_statuses)})%20and%20"
-  #     <> "#{types}"
-  #     <> "#{get_by_all_prices(mls, opts)}%20and%20"
-  #     <> "#{get_attr_by_range(mls, %{attr: "LivingArea", low: opts.sqft.low, high: opts.sqft.high})}"
-  #     <> "#{get_attr_by_range(mls, %{attr: "BedroomsTotal", low: opts.beds.low, high: opts.beds.high})}"
-  #     <> "#{get_attr_by_range(mls, %{attr: "BathroomsTotalInteger", low: opts.baths.low, high: opts.baths.high})}"
-  #     <> "#{get_by_distance(get_by_opts)}"
-
-  #   safe_str = String.trim_trailing(query_str, "%20and%20")
-  #   get("#{mls.dataset_id}/Properties?access_token=#{mls.access_token}&$top=60&#{safe_str}")
-  #   |> format_response()
-  #   |> ProcessReso.process_init(subject)
-  #   |> case do
-  #     {:ok, resp} -> {:ok, Map.merge(resp, %{filters: opts})}
-  #     {:error, err} -> {:error, err}
+  # def get_listing_info(foreign_id) do
+  #   case get("/properties/v2/detail", query: [property_id: foreign_id]) do
+  #     {:ok, %Tesla.Env{:body => %{"properties" => properties}}} ->
+  #       prop = hd(properties)
+  #       if Map.has_key?(prop, "mls") do
+  #         {:ok, %{name: prop["mls"]["name"], id: prop["mls"]["id"]}}
+  #       else
+  #         {:error, %{message: "no mls info returned"}}
+  #       end
+  #     {:ok, %Tesla.Env{:body => _err} = _response} -> {:error, %{message: "no properties returned"}}
+  #     {:error, %Tesla.Env{:body => _body} = _response} -> {:error, %{message: "data fetching failed"}}
+  #     err -> {:error, err}
   #   end
   # end
-
-  def listing_properties(%Property{} = subject, opts) do
-    with {:ok, area} <- get_bounding_area(%{lat: subject.coords.lat, lng: subject.coords.lng}, opts.distance),
-         {:ok, query} <- build_query(area, opts),
-         {:ok, %Tesla.Env{:body => %{"properties" => active}}} <- get("/properties/v2/list-for-sale", query: query),
-         {:ok, %Tesla.Env{:body => %{"properties" => sold}}} <- get("/properties/v2/list-sold", query: query) do
-      IO.inspect(query, label: "QUERY")
-    else
-      err -> IO.inspect(err, label: "ERR")
-    end
-  end
 
   def merge_public_data(lst) do
     addr = "#{lst["street_number"]} #{lst["street_name"]} #{lst["city"]} #{lst["state"]} #{lst["zip"]}"
@@ -105,6 +74,57 @@ defmodule Excyte.Properties.PublicDataApi do
       %{} = best_result -> {:ok, best_result["mpr_id"]}
       nil -> nil
     end
+  end
+
+  def fetch_active_listings(query) do
+    case get("/properties/v2/list-for-sale", query: query, opts: [sort: "relevance"]) do
+      {:ok, %Tesla.Env{:body => %{"properties" => active}}} -> {:ok, %{active: active}}
+      {:error, err} ->
+        IO.inspect(err, label: "ERR-ACT")
+        {:error, []}
+    end
+  end
+
+  def fetch_closed_listings(query) do
+    case get("/properties/v2/list-sold", query: query, opts: [sort: "relevance"]) do
+      {:ok, %Tesla.Env{:body => %{"properties" => sold}}} -> {:ok, %{closed: sold}}
+      {:error, err} ->
+        IO.inspect(err, label: "ERR-CLO")
+        {:error, []}
+    end
+  end
+
+  def get_bounding_area(%{lat: lat, lng: lng}, mi_radius) do
+    poi = [lat, lng]
+    radius = miles_to_meters(mi_radius)
+    {:ok, Geocalc.bounding_box(poi, radius)}
+  end
+
+  def build_query(area, opts) do
+    IO.inspect(hd(area), label: "AREA HD")
+    IO.inspect(opts, label: "OPTS")
+    query = [
+      offset: 0,
+      limit: 5,
+      # prop_type: opts.public_prop_type,
+      beds_min: opts.beds.low,
+      beds_max: opts.beds.high,
+      baths_min: opts.baths.low,
+      baths_max: opts.baths.high,
+      price_min: (opts.price.low * 1000),
+      price_max: (opts.price.high * 1000),
+      sqft_min: opts.sqft.low,
+      sqft_max: opts.sqft.high,
+      # age_min: opts.age.low,
+      # age_max: opts.age.high,
+      # lot_sqft_min: opts.lot_sqft.low,
+      # lot_sqft_max: opts.lot_sqft.high,
+      lat_min: hd(hd(area)),
+      lat_max: hd(List.last(area)),
+      lng_min: List.last(hd(area)),
+      lng_max: List.last(List.last(area))
+    ]
+    {:ok, query}
   end
 
   defp fetch_public_listing(valid_id) do
@@ -158,47 +178,88 @@ defmodule Excyte.Properties.PublicDataApi do
     end
   end
 
-  defp process_subject({:ok, %Tesla.Env{:body => %{"properties" => properties}} = _response}) do
-    prop = hd(properties)
+  def process_property(prop) do
     street = String.split(prop["address"]["line"], " ", parts: 2)
-    property = %{
-      internal_type: "subject",
-      street_number: List.first(street),
-      street_name: List.last(street),
-      city: prop["address"]["city"],
-      zip: prop["address"]["postal_code"],
-      state: prop["address"]["state_code"],
-      unit: prop["address"]["unit_value"],
-      county: prop["address"]["county"],
-      coords: %{lat: prop["address"]["lat"], lng: prop["address"]["lon"]},
-      foreign_id: prop["property_id"],
-      main_photo_url: hd(prop["photos"])["href"],
-      est_price: prop["price"],
-      beds: prop["beds"],
-      baths: prop["baths"],
-      overview: prop["description"],
-      property_type: prop["prop_type"],
-      status: prop["prop_status"],
-      features: process_features(hd(prop["public_records"])),
-      lotsize_sqft: process_lotsize(prop["lot_size"]),
-      lotsize_preference: "sqft",
-      sqft: prop["building_size"]["size"],
-      history: %{overview: "", timeline_items: prop["property_history"]},
-      year_built: process_year_built(hd(prop["public_records"])),
-      stories: hd(prop["public_records"])["stories"],
-      public_records: hd(prop["public_records"]),
-      foreign_url: prop["rdc_web_url"]
+    closed = Enum.find(prop["property_history"], fn hist -> hist["event_name"] === "Sold" end)
+    listed = Enum.find(prop["property_history"], fn hist -> hist["event_name"] === "Listed" end)
+    %{
+      "internal_type" => "subject",
+      "street_number" => List.first(street),
+      "street_name" => List.last(street),
+      "city" => prop["address"]["city"],
+      "zip" => prop["address"]["postal_code"],
+      "state" => prop["address"]["state_code"],
+      "unit" => prop["address"]["unit_value"],
+      "county" => prop["address"]["county"],
+      "coords" => %{"lat" => prop["address"]["lat"], "lng" => prop["address"]["lon"]},
+      "foreign_id" => prop["property_id"],
+      "listing_id" => prop["property_id"],
+      "main_photo_url" => hd(prop["photos"])["href"],
+      "est_price" => prop["price"],
+      "excyte_price" => prop["price"],
+      "list_price" => listed["price"],
+      "list_date" => listed["date"],
+      "close_price" => closed["price"],
+      "close_date" => closed["date"],
+      "dom" => process_dom(%{closed: closed["date"], listed: listed["date"]}),
+      "beds" => prop["beds"],
+      "baths" => prop["baths"],
+      "overview" => prop["description"],
+      "property_type" => "Residential",
+      "property_sub_type" => process_type(prop["prop_type"]),
+      "status" => process_status(prop["prop_status"]),
+      # "features" => (if prop["public_records"], do: process_features(hd(prop["public_records"])), else: nil),
+      "lotsize_sqft" => process_lotsize(prop["lot_size"]),
+      "lotsize_preference" => "sqft",
+      "sqft" => prop["building_size"]["size"],
+      "history" => %{"overview" => "", "timeline_items" => prop["property_history"]},
+      "year_built" => (if prop["public_records"], do: process_year_built(hd(prop["public_records"])), else: nil),
+      "stories" => (if prop["public_records"], do: hd(prop["public_records"])["stories"], else: nil),
+      "foreign_url" => prop["rdc_web_url"],
+      "media" => process_media(prop["photos"])
     }
-
-    {:ok, property}
   end
 
-  defp process_subject({:ok, %Tesla.Env{:body => err} = _response}) do
-    IO.inspect(err, label: "ERROR")
+  def process_status(status) do
+    case status do
+      "not_for_sale" -> "Closed"
+      "for_sale" -> "Active"
+      "recently_sold" -> "Closed"
+    end
   end
 
-  defp process_subject({:error, %Tesla.Env{:body => body} = _response}) do
-    {:error, %{message: "Subject property processing failed", err: body}}
+  def process_type(type) do
+    case type do
+      "single_family" -> "Single family"
+      "multi_family" -> "Multi family"
+      _ -> type
+    end
+  end
+
+  def process_media(photos) do
+    Enum.with_index(photos, 0)
+    |> Enum.map(fn {ph, idx} ->
+      %{
+        "media_url" => ph["href"],
+        "order" => idx,
+        "short_description" => ""
+      }
+    end)
+  end
+
+  def process_dom(%{closed: cl, listed: lst}) when lst !== nil do
+    IO.inspect(cl, label: "BBOMMM")
+    dom =
+      with closed <- get_closed(cl),
+          {:ok, listed} <- NaiveDateTime.from_iso8601(lst) do
+        Date.diff(closed, listed)
+      end
+    if dom >= 0, do: dom, else: -1
+  end
+  def process_dom(_), do: -1
+
+  defp get_closed(cl) do
+    if is_nil(cl), do: NaiveDateTime.utc_now(), else: NaiveDateTime.from_iso8601!(cl)
   end
 
   defp process_features(feats) do
@@ -209,6 +270,7 @@ defmodule Excyte.Properties.PublicDataApi do
         acc
       end
     end)
+    |> IO.inspect(label: "FEAT")
   end
 
   defp process_year_built(recs) do
@@ -225,37 +287,6 @@ defmodule Excyte.Properties.PublicDataApi do
       lotsize["units"] === "acres" -> acres_to_sqft(lotsize["size"])
       true -> nil
     end
-  end
-
-  defp get_bounding_area(%{lat: lat, lng: lng}, mi_radius) do
-    poi = [lat, lng]
-    radius = miles_to_meters(mi_radius)
-    Geocalc.bounding_box(poi, radius)
-  end
-
-  defp build_query(area, opts) do
-    IO.inspect(hd(area), label: "AREA HD")
-    IO.inspect(List.last(area), label: "AREA LAST")
-    query = [
-      prop_type: opts.property_type,
-      sort: "sold_date",
-      beds_min: opts.beds.low,
-      beds_max: opts.beds.high,
-      baths_min: opts.baths.low,
-      baths_max: opts.baths.high,
-      price_min: opts.price.low,
-      price_max: opts.price.high,
-      sqft_min: opts.sqft.low,
-      sqft_max: opts.sqft.high,
-      age_min: opts.age.low,
-      age_max: opts.age.high,
-      lot_sqft_min: opts.lot_sqft.low,
-      lot_sqft_max: opts.lot_sqft.high,
-      lat_min: hd(hd(area)),
-      lat_max: List.last(hd(area)),
-      lng_min: hd(List.last(area)),
-      lng_max: List.last(List.last(area))
-    ]
   end
 
   defp acres_to_sqft(acres) do

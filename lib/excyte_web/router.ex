@@ -61,14 +61,18 @@ defmodule ExcyteWeb.Router do
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).
-  # if Mix.env() in [:dev, :test] do
-  #   import Phoenix.LiveDashboard.Router
+  if Mix.env() in [:dev, :test] do
+    import Phoenix.LiveDashboard.Router
 
-  #   scope "/" do
-  #     pipe_through :app_browser
-  #     live_dashboard "/dashboard", metrics: ExcyteWeb.Telemetry
-  #   end
-  # end
+    scope "/" do
+      pipe_through :app_browser
+      live_dashboard "/dashboard",
+        # additional_pages: [
+        #   _profiler: PhoenixProfiler.dashboard()
+        # ],
+        metrics: ExcyteWeb.Telemetry
+    end
+  end
 
   # if Mix.env() == :dev do
     # If using Phoenix
@@ -80,21 +84,11 @@ defmodule ExcyteWeb.Router do
   live_session :default, on_mount: ExcyteWeb.UserLiveAuth do
     scope "/auth", ExcyteWeb do
       pipe_through [:app_browser, :require_authenticated_user]
-      get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
-      delete "/log_out", UserSessionController, :delete
-
-      live "/agent/getting-started", Agent.GettingStarted
-      live "/brokerage/getting-started", Brokerage.GettingStarted
-
       get "/uploader/presigned", UploadController, :aws_signed_url
       get "/uploader/auth", UploadController, :aws_auth
+      # live "/", ProtectedHeader
       live "/dash", Agent.Dashboard
-      live "/dashboard", Agent.Dashboard
-
-      scope "/settings", Settings do
-        live "/", Dashboard
-        get "/confirm_email/:token", UserSettingsController, :confirm_email
-      end
+      # live "/dashboard", Agent.Dashboard
 
       scope "/insights", Insight do
         live "/cma/create", CreateCma
@@ -110,7 +104,7 @@ defmodule ExcyteWeb.Router do
         live "/create", Create
         live "/edit/:id", Edit
         live "/view/:id", Show
-        live "/import/csv", ImportCsv
+        # live "/import/csv", ImportCsv
       end
 
       scope "/properties", Property do
@@ -121,29 +115,27 @@ defmodule ExcyteWeb.Router do
     end
   end
 
-  # scope "/insights", ExcyteWeb.Insight do
-  #   pipe_through [:app_browser, :require_authenticated_user]
-  #   live "/cma/create", CreateCma
-  #   live "/buyertour/create", CreateBuyerTour
-  #   live "/showcase/create", CreateShowcase
-  #   live "/:insight_id/listings", ListingSelector
-  #   live "/:insight_id/customize", Customize
-  #   live "/editor", Editor
-  # end
+  scope "/", ExcyteWeb do
+    pipe_through [:app_browser, :require_authenticated_user]
+    get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
+    delete "/log_out", UserSessionController, :delete
 
-  # scope "/agent", ExcyteWeb.Agent do
-  #   pipe_through [:app_browser, :require_authenticated_user]
-  #   live "/dash", Dashboard
-  #   live "/dashboard", Dashboard
-  #   live "/getting-started", GettingStarted
-  # end
+    live "/agent/getting-started", Agent.GettingStarted
+    live "/brokerage/getting-started", Brokerage.GettingStarted
 
-  # scope "/brokerage", ExcyteWeb.Brokerage do
-  #   pipe_through [:app_browser, :require_authenticated_user]
-  #   live "/dash", Dashboard
-  #   live "/dashboard", Dashboard
-  #   live "/getting-started", GettingStarted
-  # end
+    scope "/settings", Settings do
+      live "/", Dashboard
+      get "/confirm_email/:token", UserSettingsController, :confirm_email
+    end
+  end
+
+  ## Public routes
+
+  scope "/client", ExcyteWeb.Client do
+    pipe_through [:published_insights]
+    live "/not_found", NotFound
+    live "/:insight_id", Viewer
+  end
 
   scope "/mux", ExcyteWeb do
     pipe_through [:app_browser, :require_authenticated_user]
@@ -169,26 +161,11 @@ defmodule ExcyteWeb.Router do
     post "/:provider/callback", UserOauth, :callback
   end
 
-  # scope "/", ExcyteWeb do
-  #   pipe_through [:app_browser, :require_authenticated_user]
-  #   get "/uploader/presigned", UploadController, :aws_signed_url
-  #   get "/uploader/auth", UploadController, :aws_auth
-  #   get "/confirm_mls/:mls", UserConfirmationController, :confirm_mls
-  #   delete "/log_out", UserSessionController, :delete
-  # end
-
-  ## Public routes
-
-  scope "/client", ExcyteWeb.Client do
-    pipe_through [:published_insights]
-    live "/not_found", NotFound
-    live "/:insight_id", Viewer
-  end
-
   scope "/", ExcyteWeb do
     pipe_through [:public, :redirect_if_user_is_authenticated, :auth]
     get "/brokerage/invite/:token", UserInvitationController, :accept
     put "/brokerage/invite/:token/:id/invite_update", UserInvitationController, :update_user
+    live "/home_worth/:uid", ExcyteWeb.Client.HomeWorth
     live "/agent/signup", Public.AgentSignup
     live "/brokerage/signup", Public.BrokerageSignup
     get "/confirm", UserConfirmationController, :new

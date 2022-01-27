@@ -12,7 +12,7 @@ defmodule ExcyteWeb.Components.Dropdown do
       label: assigns.label,
       pos: assigns.pos,
       name: "filter",
-      placeholder: "BOOM",
+      # placeholder: "BOOM",
       show_top_label: assigns.show_top_label,
       selected: assigns.selected,
       callback: assigns.callback

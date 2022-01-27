@@ -9,23 +9,23 @@ defmodule ExcyteWeb.Agent.Profile do
     Helpers.Utilities,
     AgentView
   }
-  on_mount ExcyteWeb.UserLiveAuth
 
   def render(assigns), do: AgentView.render("profile.html", assigns)
 
 
-  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"return_to" => rt, "user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     profile = Agents.get_agent_profile!(cu.id)
-    if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
-      {:ok, push_redirect(socket, to: "/auth/agent/getting-started")}
-    else
+    # if cu.current_mls === nil || Enum.empty?(cu.current_mls) do
+    #   {:ok, push_redirect(socket, to: "/agent/getting-started")}
+    # else
       cs = maybe_attempt_prefill?(profile, cu.current_mls)
       {:ok, assign(socket,
         changeset: cs,
         current_user: cu,
         return_to: rt,
         profile: profile)}
-    end
+    # end
   end
 
   def handle_info({:receive_uploads, %{upload_url: url, name: name}}, %{assigns: a} = socket) do
@@ -92,15 +92,15 @@ defmodule ExcyteWeb.Agent.Profile do
 
   defp filter_empty_contacts(profile_params) do
     contacts =
-      Enum.filter(profile_params["contacts"], fn {_k, v} ->
+      Enum.filter(profile_params["contact_items"], fn {_k, v} ->
         if v["name"] !== "" && v["content"] !== "", do: true, else: false
       end) |> Enum.map(fn {_k, v} -> v end)
 
-    Map.merge(profile_params, %{"contacts" => contacts})
+    Map.merge(profile_params, %{"contact_items" => contacts})
   end
 
   defp maybe_attempt_prefill?(profile, mls) do
-    if profile.updated_by_user === false && mls.member_key do
+    if profile.updated_by_user === false && Map.has_key?(mls, :member_key) && mls.member_key do
       mls_details = ResoMemberApi.getMemberDetails(mls)
       mls_contacts = Enum.map(mls_details.contacts, fn cnt ->
         %ContactItem{

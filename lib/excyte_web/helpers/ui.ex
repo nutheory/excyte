@@ -59,24 +59,24 @@ defmodule ExcyteWeb.Helpers.UI do
   def accordian(assigns) do
     ~H"""
     <div x-data={"{ expanded: #{@expanded} }"} role="region" class="border-t border-gray-300">
-        <button
-          type="button"
-          @click="expanded = !expanded"
-          :aria-expanded="expanded"
-          class="pt-6 pb-4 w-full flex"
-        >
-          <h3 class="flex-1 text-left mb-0"><%= @title %></h3>
-          <span x-show="!expanded" aria-hidden="true" class="ml-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </span>
-          <span x-show="expanded" aria-hidden="true" class="ml-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-            </svg>
-          </span>
-        </button>
+      <button
+        type="button"
+        @click="expanded = !expanded"
+        :aria-expanded="expanded"
+        class="pt-6 pb-4 w-full flex"
+      >
+        <h3 class="flex-1 text-left mb-0"><%= @title %></h3>
+        <span x-show="!expanded" aria-hidden="true" class="ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+        <span x-show="expanded" aria-hidden="true" class="ml-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+          </svg>
+        </span>
+      </button>
 
       <div x-show="expanded" class="pb-4">
         <%= render_slot(@inner_block) %>
@@ -174,52 +174,69 @@ defmodule ExcyteWeb.Helpers.UI do
   end
 
   def dropdown(assigns) do
-    # fix away toggle after next update
     ~H"""
-    <div class="w-full inline-block relative form origin-top-right origin-top-left">
-      <div
-        class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-1.5 py-1 pl-3 pr-1 bg-white"
-        phx-click={toggle_menu(@id)}
-        phx-click-away={hide_menu(@id)}
-      >
-        <%= if Map.has_key?(assigns, :left_icon), do: render_slot(@left_icon) %>
+    <div
+      x-data="{
+          open: false,
+          toggle() {
+              if (this.open) {
+                  return this.close()
+              }
 
-        <div class="flex-1 pt-0.5"><%= if @selected !== nil, do: extract_text(@selected), else: @label %></div>
-        <div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id={"#{@id}_arrow"} class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
-            <path fill-rule="evenodd" d="M15.3 10.3a1 1 0 011.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4l3.3 3.29 3.3-3.3z"/>
-          </svg>
+              this.open = true
+          },
+          close(focusAfter) {
+              this.open = false
+
+              focusAfter && focusAfter.focus()
+          }
+      }"
+      x-on:keydown.escape.prevent.stop="close($refs.button)"
+      x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+      x-id="['dropdown-button']"
+      class="relative"
+    >
+      <button
+          x-ref="button"
+          x-on:click="toggle()"
+          :aria-expanded="open"
+          :aria-controls="$id('dropdown-button')"
+          type="button"
+          class="border border-black py-2 focus:outline-none focus:ring-2 focus:ring-aqua-400 bg-white shadow rounded"
+      >
+        <div class="flex px-2">
+          <div class="ml-2"><%= if @selected !== nil, do: extract_text(@selected), else: @label %></div>
+          <div class="ml-2 -mt-0.5" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" :class="{'rotate-180': open}" class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
+              <path fill-rule="evenodd" d="M15.3 10.3a1 1 0 011.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4l3.3 3.29 3.3-3.3z"/>
+            </svg>
+          </div>
+        </div>
+      </button>
+      <div
+          x-ref="panel"
+          x-show="open"
+          x-transition.origin.top.left
+          x-on:click.outside="close($refs.button)"
+          :id="$id('dropdown-button')"
+          style="display: none;"
+          class="absolute left-0 mt-2 bg-white shadow rounded"
+      >
+        <div class="p-2">
+          <%= for opt <- @options do %>
+            <a
+                href="#"
+                phx-click={@callback}
+                phx-value-option={extract_value(opt)}
+                phx-value-attr={@attr}
+                class="py-2 px-4 cursor-pointer block hover:bg-blue-100 rounded focus:outline-none focus:bg-blue-100"
+              >
+                <%= extract_text(opt) %>
+              </a>
+          <% end %>
         </div>
       </div>
-      <.simple_menu
-        options={@options}
-        origin={@origin}
-        id={@id}
-        callback={@callback}
-        attr={@attr}
-      />
     </div>
-    """
-  end
-
-  def fancy_dropdown(assigns) do
-
-  end
-
-  def simple_menu(assigns) do
-    ~H"""
-    <ul id={"#{@id}_menu"} class={"origin-top-#{@origin} absolute #{@origin}-0 w-48 bg-white z-30 mt-1 shadow rounded overflow-hidden hidden py-1 text-bgray-600"}>
-      <%= for opt <- @options do %>
-        <li
-          phx-click={@callback}
-          phx-value-option={extract_value(opt)}
-          phx-value-attr={@attr}
-          class="py-2 px-4 cursor-pointer block hover:bg-blue-100"
-        >
-          <%= extract_text(opt) %>
-        </li>
-      <% end %>
-    </ul>
     """
   end
 

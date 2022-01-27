@@ -1,4 +1,4 @@
-defmodule Excyte.Repo.Migrations.PropertyAssetsUpdates do
+defmodule Excyte.Repo.Migrations.Tags do
   use Ecto.Migration
 
   def change do
@@ -14,21 +14,6 @@ defmodule Excyte.Repo.Migrations.PropertyAssetsUpdates do
       timestamps()
     end
 
-    alter table(:assets) do
-      add :contact_id, references(:contacts)
-      add :property_id, references(:properties)
-      add :is_main_photo, :boolean, default: false
-      add :position, :integer
-    end
-
-    alter table(:properties) do
-      remove :parking
-      add :parking_type, :string
-      add :parking_spaces, :integer
-    end
-
-    create index(:assets, [:contact_id])
-    create index(:assets, [:property_id])
     create index(:taggings, [:tag_id])
     create index(:taggings, [:contact_id])
     create unique_index(:tags, [:name])

@@ -16,6 +16,7 @@ defmodule Excyte.Insights.DocumentTemplate do
     field :is_excyte_made, :boolean, default: false
     field :is_public, :boolean, default: false
     field :is_shared, :boolean, default: false
+    field :is_auto_template, :boolean, default: false
     field :insight_type, :string
     field :name, :string
     belongs_to(:brokerage, Brokerage)
@@ -30,6 +31,7 @@ defmodule Excyte.Insights.DocumentTemplate do
       :brokerage_id,
       :created_by_id,
       :is_excyte_made,
+      :is_auto_template,
       :is_shared,
       :is_public,
       :type_default,
@@ -48,6 +50,12 @@ defmodule Excyte.Insights.DocumentTemplate do
   def by_public(query) do
     from dt in query,
     where: dt.is_public == true,
+    order_by: dt.name
+  end
+
+  def by_auto(query, auto) do
+    from dt in query,
+    where: dt.is_auto_template == ^auto,
     order_by: dt.name
   end
 

@@ -26,9 +26,11 @@ defmodule ExcyteWeb.Insight.UploadVideo do
          _ <- Assets.subscribe(uuid) do
 
       send self(), {Assets, [:asset, nil], asset}
-      {:noreply,
-        socket
-        |> push_event("directUpload", %{uuid: uuid, aid: a.current_user.id, bid: a.current_user.brokerage_id})}
+      {:noreply, push_event(socket, "directUpload", %{
+                    uuid: uuid,
+                    aid: a.current_user.id,
+                    bid: a.current_user.brokerage_id
+      })}
     else
       {:error, err} -> Activities.handle_errors(err, "ExcyteWeb.Insight.Customize")
     end

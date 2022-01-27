@@ -39,8 +39,8 @@ defmodule ExcyteWeb.Contact.Create do
 
   def handle_event("form_submit", %{"contact" => cnt}, %{assigns: a} = socket) do
     contact = Map.merge(cnt, %{
-      created_by_id: a.current_user.id,
-      brokerage_id: a.current_user.brokerage_id
+      "created_by_id" => a.current_user.id,
+      "brokerage_id" => a.current_user.brokerage_id
     })
     case Contacts.create_contact(contact) do
       {:ok, new_contact} ->

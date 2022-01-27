@@ -1,11 +1,12 @@
 defmodule ExcyteWeb.Agent.GettingStarted do
-  use ExcyteWeb, :live_view
+  use ExcyteWeb, :live_view_form
   alias Excyte.{Accounts, Agents, Mls}
   alias ExcyteWeb.AgentView
 
   def render(assigns), do: AgentView.render("getting_started.html", assigns)
 
-  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     account = Accounts.get_account!(cu.account_id)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     profile = Agents.get_agent_profile!(cu.id)
@@ -23,7 +24,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
       cond do
         a.current_user.invited_by_id -> "profile"
         params["step"] !== nil -> params["step"]
-        length(a.mls_list) === 0 -> "mls"
+        # length(a.mls_list) === 0 -> "mls"
         a.account.current_period_end === nil -> "subscription"
         a.profile.updated_by_user === false -> "profile"
         true -> "completed"
@@ -35,7 +36,7 @@ defmodule ExcyteWeb.Agent.GettingStarted do
           {:noreply,
             socket
             |> put_flash(:info, "Profile created successfully")
-            |> push_redirect(to: "/agent/dash")}
+            |> push_redirect(to: "/auth/dash")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
       end
     else

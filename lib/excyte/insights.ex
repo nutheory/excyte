@@ -35,7 +35,31 @@ defmodule Excyte.Insights do
   end
 
   def create_subject(_repo, %{insight: ins}, %{subject: sub}) do
-    Properties.create_property(Map.merge(sub, %{insight_id: ins.id}))
+    Properties.create_property(Map.merge(sub, %{"insight_id" => ins.id}))
+  end
+
+  def auto_create_cma(attrs) do
+    Multi.new()
+    |> Multi.run(:insight, __MODULE__, :create_insight, [attrs])
+    |> Multi.run(:subject, __MODULE__, :create_subject, [attrs])
+    |> Multi.run(:listings, __MODULE__, :fetch_auto_comparables, [attrs])
+    |> Multi.run(:complete, __MODULE__, :merge_insight_comparables, [attrs])
+    |> Repo.transaction()
+  end
+
+  def fetch_auto_comparables(_repo, %{subject: subj}, %{search_opts: opts}) do
+    Properties.comparable_properties(subj, opts)
+  end
+
+  def merge_insight_comparables(_repo, %{insight: ins, listings: lsts} = chng, _attrs) do
+    IO.inspect(hd(lsts), label: "LSTS")
+    Insight.changeset(ins, %{content: %{
+      suggested_subject_price: chng.subject.est_price,
+      avg_dom: Properties.calculate_averages(Enum.filter(Enum.map(lsts, fn lst -> lst["dom"] end), fn lst -> lst >= 0 end)),
+      avg_list: Properties.calculate_averages(Enum.map(lsts, fn lst -> lst["list_price"] end)),
+      avg_close: Properties.calculate_averages(Enum.map(lsts, fn lst -> lst["close_price"] end)),
+      listings: lsts
+    }}) |> Repo.update()
   end
 
   def update_insight(_repo, %{new_contact: contact}, %{id: id}) do
@@ -124,9 +148,10 @@ defmodule Excyte.Insights do
     |> Repo.insert()
   end
 
-  def get_document_templates(usr, type) do
+  def get_document_templates(usr, %{type: type, auto: auto}) do
     DocumentTemplate
     |> DocumentTemplate.by_type(type)
+    |> DocumentTemplate.by_auto(auto)
     |> DocumentTemplate.by_public()
     |> DocumentTemplate.by_creator(usr.id)
     |> DocumentTemplate.by_brokerage(usr.brokerage_id)
@@ -135,6 +160,13 @@ defmodule Excyte.Insights do
 
   def get_initial_insight(uid, iid) do
     Repo.get_by(Insight, %{created_by_id: uid, uuid: iid}) |> Repo.preload(:property)
+  end
+  def get_initial_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do
+    case Repo.get_by(Insight, %{created_by_id: uid, id: insid})
+    |> Repo.preload([:property, document_template: :section_templates]) do
+      %Insight{} = ins -> {:ok, ins}
+      nil -> {:error, %{message: "Insight could not be found."}}
+    end
   end
 
   def get_minimal_insight(uuid, uid) do
@@ -183,16 +215,6 @@ defmodule Excyte.Insights do
       {:error, err} -> {:error, %{error: err, message: "Oops something went wrong in the build."}}
     end
   end
-
-  def get_initial_insight(_repo, _changes, %{usr_id: uid, insight_id: insid}) do
-    case Repo.get_by(Insight, %{created_by_id: uid, id: insid})
-    |> Repo.preload([:property, document_template: :section_templates]) do
-      %Insight{} = ins -> {:ok, ins}
-      nil -> {:error, %{message: "Insight could not be found."}}
-    end
-  end
-
-
 
   def delete_insight(query_params) do
     ins = Repo.get_by(Insight, query_params)

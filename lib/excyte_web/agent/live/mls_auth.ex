@@ -2,16 +2,17 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Mls, Mls.ResoMemberApi}
   alias ExcyteWeb.{AgentView, UserConfirmationController}
-  on_mount ExcyteWeb.UserLiveAuth
 
   @token Application.get_env(:excyte, :bridge_server_key)
 
   def render(assigns), do: AgentView.render("mls_auth.html", assigns)
 
-  def mount(_params, %{"return_to" => rt}, %{assigns: %{current_user: cu}} = socket) do
+  def mount(_params, %{"return_to" => rt, "user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     mls_opts = Application.get_env(:excyte, :mls_auth_options)
-
+    IO.inspect(mls_list, label: "List")
+    IO.inspect(mls_opts, label: "OPTS")
     {:ok, assign(socket,
       current_user: cu,
       return_to: rt,
@@ -26,10 +27,16 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     )}
   end
 
-  def handle_info({:set_mls, %{mls: mls}}, %{assigns: a} = socket) do
-    if Enum.find(a.mls_list, fn ds -> ds.dataset_id === mls.value end) do
+  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
+    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
+  end
+
+  def handle_event("set_mls", %{"option" => mls}, %{assigns: a} = socket) do
+    IO.inspect(mls, label: "MLS")
+    if Enum.find(a.mls_list, fn ds -> ds.dataset_id === mls end) do
       {:noreply, socket}
     else
+      mls = Enum.find(a.mls_opts, fn m -> m.value === mls end)
       mls_q = %{access_token: @token, dataset_id: mls.value}
       if mls.type === "bridge" do
         case ResoMemberApi.getMembersByName(mls_q, a.current_user.full_name) do
@@ -40,10 +47,6 @@ defmodule ExcyteWeb.Agent.MlsAuth do
         {:noreply, assign(socket, mls: mls, show_auth_button: true)}
       end
     end
-  end
-
-  def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
-    {:noreply, assign(socket, current_user: cu, mls_list: creds)}
   end
 
   def handle_event("toggle-warning", _, socket) do

@@ -39,11 +39,14 @@ brokerages = [
 cma_template = excyte_cma_template(%{})
 showcase_template = excyte_showcase_template(%{})
 buyer_tour_template = excyte_buyer_tour_template(%{})
+auto_cma_template = excyte_auto_cma_template(%{})
+auto_showcase_template = excyte_auto_showcase_template(%{})
+auto_buyer_tour_template = excyte_auto_buyer_tour_template(%{})
 
 sections = [
   %{
     document_template_id: cma_template.id,
-    component_name: "cover",
+    component_name: "cover_cma",
     component_data_types: ["subject"],
     name: "Cover Page",
     description: "",
@@ -120,25 +123,25 @@ sections = [
   },
   %{
     document_template_id: cma_template.id,
-    component_name: "commission_distribution",
-    component_data_types: [],
-    name: "Commission Distribution",
+    component_name: "closed_analysis",
+    component_data_types: ["listing"],
+    name: "Closed Properties Analysis",
     description: "",
     type: "page",
     is_public: true,
     is_excyte_made: true,
-    position: 62
+    position: 60
   },
   %{
     document_template_id: cma_template.id,
-    component_name: "synopsis",
+    component_name: "suggested_price",
     component_data_types: ["subject", "listings"],
-    name: "Synopsis",
+    name: "Suggested List Price",
     description: "Suggested Price explanation.",
     type: "page",
     is_public: true,
     is_excyte_made: true,
-    position: 60
+    position: 61
   },
   %{
     document_template_id: cma_template.id,
@@ -149,7 +152,7 @@ sections = [
     type: "page",
     is_public: true,
     is_excyte_made: true,
-    position: 61
+    position: 62
   },
   %{
     document_template_id: showcase_template.id,
@@ -186,6 +189,17 @@ sections = [
   },
   %{
     document_template_id: buyer_tour_template.id,
+    component_name: "cover_buyer_tour",
+    component_data_types: ["listings"],
+    name: "Cover Page",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: buyer_tour_template.id,
     component_name: "tour_stop",
     component_data_types: ["listing"],
     name: "Property",
@@ -193,7 +207,7 @@ sections = [
     type: "page",
     is_public: true,
     is_excyte_made: true,
-    position: 0
+    position: 1
   },
   %{
     document_template_id: buyer_tour_template.id,
@@ -204,7 +218,7 @@ sections = [
     type: "page",
     is_public: true,
     is_excyte_made: true,
-    position: 1
+    position: 2
   },
   %{
     document_template_id: buyer_tour_template.id,
@@ -215,11 +229,205 @@ sections = [
     type: "page",
     is_public: true,
     is_excyte_made: true,
+    position: 3
+  },
+]
+
+auto_sections = [
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "cover_cma",
+    component_data_types: ["subject"],
+    name: "Cover Page",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "whats_cma",
+    component_data_types: [],
+    name: "What is a CMA",
+    description: "Simple explanation of a CMA for the client.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 1
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
+    description: "Details and Contact info for Brokerage",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
     position: 2
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "why_an_agent",
+    component_data_types: [],
+    name: "Why do I need a Agent",
+    description: "Explanation of agents importance.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 3
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
+    description: "Details and contact info for agent.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 4
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "subject",
+    component_data_types: ["subject"],
+    name: "Subject Property",
+    description: "Summary of clients property.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 5
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "comparable",
+    component_data_types: ["listing"],
+    name: "Comparable Listings",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 6
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "closed_analysis",
+    component_data_types: ["listing"],
+    name: "Closed Properties Analysis",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 60
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "suggested_price",
+    component_data_types: ["subject", "listings"],
+    name: "Suggested List Price",
+    description: "Suggested Price explanation.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 61
+  },
+  %{
+    document_template_id: auto_cma_template.id,
+    component_name: "pricing_strategy",
+    component_data_types: [],
+    name: "Pricing Strategy",
+    description: "How the suggested price fits into the overall pricing strategy.",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 62
+  },
+  %{
+    document_template_id: auto_showcase_template.id,
+    component_name: "showcase",
+    component_data_types: ["listing"],
+    name: "Property",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: auto_showcase_template.id,
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 1
+  },
+  %{
+    document_template_id: auto_showcase_template.id,
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 2
+  },
+  %{
+    document_template_id: auto_buyer_tour_template.id,
+    component_name: "cover_buyer_tour",
+    component_data_types: ["listings"],
+    name: "Cover Page",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 0
+  },
+  %{
+    document_template_id: auto_buyer_tour_template.id,
+    component_name: "tour_stop",
+    component_data_types: ["listing"],
+    name: "Property",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 1
+  },
+  %{
+    document_template_id: auto_buyer_tour_template.id,
+    component_name: "agent_profile",
+    component_data_types: ["agent"],
+    name: "Agent Profile",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 2
+  },
+  %{
+    document_template_id: auto_buyer_tour_template.id,
+    component_name: "brokerage_profile",
+    component_data_types: ["brokerage"],
+    name: "Brokerage Profile",
+    description: "",
+    type: "page",
+    is_public: true,
+    is_excyte_made: true,
+    position: 3
   },
 ]
 
 Enum.each(sections, fn s ->
+  excyte_section_template(s)
+end)
+
+Enum.each(auto_sections, fn s ->
   excyte_section_template(s)
 end)
 

@@ -3,6 +3,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   alias Excyte.{
     Activities,
     Insights,
+    Mls,
     Properties
   }
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
@@ -10,8 +11,19 @@ defmodule ExcyteWeb.Insight.CreateCma do
   def render(assigns), do: InsightView.render("create_cma.html", assigns)
 
   def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
+    mls_list = Mls.get_credentials(%{agent_id: cu.id})
+    mls_opts = Enum.map(mls_list, fn mls -> %{text: mls.mls_name, value: mls.dataset_id} end)
+    selected_mls =
+      if Enum.empty?(cu.current_mls) do
+        %{name: "Public Data", value: "public"}
+      else
+        m = cu.current_mls
+        %{name: m.mls_name, value: m.dataset_id}
+      end
 
     {:ok, assign(socket,
+      mls_options: mls_opts ++ [%{text: "Public Data", value: "public"}],
+      current_mls: selected_mls,
       current_user: cu,
       prop_id: nil,
       subject: nil,
@@ -31,7 +43,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
       {:ok, subject} ->
         {:noreply, assign(socket,
           subject: subject,
-          photo: subject.main_photo_url,
+          photo: subject["main_photo_url"],
           fetching: false)}
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false)}
     end
@@ -42,7 +54,17 @@ defmodule ExcyteWeb.Insight.CreateCma do
     case Insights.create_insight(insight_data(attrs, key, a)) do
       {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
       {:error, method, changeset, _} ->
-          Activities.handle_errors(changeset, method)
+          # Activities.handle_errors(changeset.errors, "create_cma.create_subject")
+          {:noreply, put_flash(socket, :error, "Something went wrong.")}
+    end
+  end
+
+  def handle_info({:auto_create_cma, attrs}, %{assigns: a} = socket) do
+    key = "cma#{a.current_user.id}#{System.os_time(:second)}"
+    case Insights.auto_create_cma(auto_insight_data(attrs, key, a)) do
+      {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/customize")}
+      {:error, method, changeset, _} ->
+          # Activities.handle_errors([%{}], "create_cma.auto_create_cma")
           {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
   end
@@ -55,9 +77,41 @@ defmodule ExcyteWeb.Insight.CreateCma do
     {:noreply, assign(socket, photo: "")}
   end
 
-  defp insight_data(subject, key, a) do
-    theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
-    template = Insights.get_document_templates(a.current_user, "cma")
+  def handle_event("select_source", %{"option" => opt}, %{assigns: a} = socket) do
+    mls = Enum.find(a.mls_options, fn o -> o.value === opt end)
+    {:noreply, assign(socket, current_mls: mls)}
+    # key = "cma#{a.current_user.id}#{System.os_time(:second)}"
+    # case Insights.auto_create_cma(auto_insight_data(a.subject, key, a)) do
+    #   {:ok, cma} -> {:noreply, socket}
+    #   {:error, cma} -> {:noreply, socket}
+    # end
+  end
+
+  defp auto_insight_data(subject, key, %{current_user: cu} = a) do
+    theme_attrs = Insights.get_theme_attributes(cu.id, cu.brokerage_id)
+    template = Insights.get_document_templates(cu, %{type: "cma", auto: true})
+    subject_attrs = Map.merge(subject, %{"main_photo_url" => a.photo, "brokerage_id" => cu.brokerage_id, "agent_id" => cu.id})
+    IO.inspect(subject, label: "SUB")
+    %{
+      insight: %{
+        uuid: key,
+        type: "cma_auto",
+        name: "auto draft",
+        document_attributes: Map.from_struct(theme_attrs),
+        document_template_id: hd(template).id,
+        cover_photo_url: subject_attrs["main_photo_url"],
+        created_by_id: cu.id,
+        brokerage_id: cu.brokerage_id,
+        published: false
+      },
+      subject: subject_attrs,
+      search_opts: Utilities.default_filter(Map.merge(a.subject, %{"dataset_id" => "public"}))
+    }
+  end
+
+  defp insight_data(subject, key, %{current_user: cu} = a) do
+    theme_attrs = Insights.get_theme_attributes(cu.id, cu.brokerage_id)
+    template = Insights.get_document_templates(cu, %{type: "cma", auto: false})
     subject_attrs = Map.merge(subject, %{main_photo_url: a.photo})
     %{
       insight: %{
@@ -67,16 +121,16 @@ defmodule ExcyteWeb.Insight.CreateCma do
         document_attributes: Map.from_struct(theme_attrs),
         document_template_id: hd(template).id,
         cover_photo_url: subject_attrs.main_photo_url,
-        created_by_id: a.current_user.id,
-        brokerage_id: a.current_user.brokerage_id,
+        created_by_id: cu.id,
+        brokerage_id: cu.brokerage_id,
         published: false,
-        mls: a.current_user.current_mls.dataset_id,
+        mls: a.current_mls.value,
         selected_listing_ids: [],
         saved_search: %{
           query: "",
           coords: subject_attrs.coords,
           zip: subject_attrs.zip,
-          criteria: Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: a.current_user.current_mls.dataset_id}))
+          criteria: Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: a.current_mls.value}))
         }
       },
       subject: subject_attrs

@@ -34,6 +34,7 @@ defmodule ExcyteWeb.Endpoint do
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :excyte
+    # plug PhoenixProfiler
   end
 
   # plug Phoenix.LiveDashboard.RequestLogger,

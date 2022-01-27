@@ -1,34 +1,30 @@
 defmodule ExcyteWeb.Brokerage.GettingStarted do
-  use ExcyteWeb, :live_view
+  use ExcyteWeb, :live_view_form
   alias Excyte.{Accounts, Agents, Brokerages, Mls}
   alias ExcyteWeb.BrokerageView
 
   def render(assigns), do: BrokerageView.render("getting_started.html", assigns)
 
-  def mount(_params, _sesh, %{assigns: %{current_user: cu}} = socket) do
-    if !cu.brokerage_id do
-      {:ok, push_redirect(socket, to: "/auth/getting-started")}
-    else
-      account = Accounts.get_account!(cu.account_id)
-      mls_list = Mls.get_credentials(%{agent_id: cu.id})
-      bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
-      profile = Agents.get_agent_profile!(cu.id)
-      if connected?(socket), do: Accounts.subscribe(account.id)
-      {:ok, assign(socket,
-        current_user: cu,
-        account: account,
-        mls_list: mls_list,
-        brokerage_profile: bk_profile,
-        profile: profile
-      )}
-    end
+  def mount(_params, %{"user_token" => token}, socket) do
+    cu = Accounts.get_user_by_session_token(token)
+    mls_list = Mls.get_credentials(%{agent_id: cu.id})
+    bk_profile = Brokerages.get_brokerage_profile(cu.brokerage_id)
+    profile = Agents.get_agent_profile!(cu.id)
+    if connected?(socket), do: Accounts.subscribe(cu.account_id)
+    {:ok, assign(socket,
+      current_user: cu,
+      account: cu.account,
+      mls_list: mls_list,
+      brokerage_profile: bk_profile,
+      profile: profile
+    )}
   end
 
   def handle_params(params, _uri, %{assigns: a} = socket) do
     current_step =
       cond do
         params["step"] !== nil -> params["step"]
-        length(a.mls_list) === 0 -> "mls"
+        # length(a.mls_list) === 0 -> "mls"
         a.account.current_period_end === nil -> "subscription"
         a.brokerage_profile.updated_by_user === false -> "brokerage_profile"
         a.profile.updated_by_user === false -> "agent_profile"
@@ -41,7 +37,7 @@ defmodule ExcyteWeb.Brokerage.GettingStarted do
           {:noreply,
             socket
             |> put_flash(:info, "Profile created successfully")
-            |> push_redirect(to: "/auth/dash")}
+            |> redirect(to: "/auth/dash")}
         {:error, err} -> {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
       end
     else

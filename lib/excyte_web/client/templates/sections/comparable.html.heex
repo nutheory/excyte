@@ -79,8 +79,8 @@
                 </div>
                 <div class="detail large-box-shadow ">
                   <h2 class="header-color">
-                    <%= if lst["baths"] && lst["baths"]["total"] do %>
-                      <%= lst["baths"]["total"] %>
+                    <%= if lst["baths"] && lst["baths"] do %>
+                      <%= lst["baths"] %>
                     <% else %>
                       N/A
                     <% end %>
@@ -257,11 +257,13 @@
                     </tr>
                   <% end %>
                   <%# IO.inspect(lst["custom_adjustments"], label: "gdfcfdhfdh") %>
-                  <%= for adj <- lst["custom_adjustments"] do %>
-                    <tr class="accent-color">
-                      <td class="text-left"><%= adj["name"] %></td>
-                      <td class="value">$<%= adj["value"] %></td>
-                    </tr>
+                  <%= if lst["custom_adjustments"] do %>
+                    <%= for adj <- lst["custom_adjustments"] do %>
+                      <tr class="accent-color">
+                        <td class="text-left"><%= adj["name"] %></td>
+                        <td class="value">$<%= adj["value"] %></td>
+                      </tr>
+                    <% end %>
                   <% end %>
                 </tbody>
               </table>

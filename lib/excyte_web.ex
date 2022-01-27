@@ -52,6 +52,7 @@ defmodule ExcyteWeb do
         layout: {ExcyteWeb.LayoutView, :app}
 
       use ViewportHelpers
+
       unquote(view_helpers())
     end
   end

@@ -12,6 +12,7 @@ defmodule Excyte.InsightFixtures do
         |> Enum.into(%{
           insight_type: "cma",
           is_excyte_made: true,
+          is_auto_template: false,
           type_default: true,
           name: "Excyte Basic CMA",
           is_public: true
@@ -26,6 +27,7 @@ defmodule Excyte.InsightFixtures do
         |> Enum.into(%{
           insight_type: "showcase",
           is_excyte_made: true,
+          is_auto_template: false,
           type_default: true,
           name: "Excyte Basic Showcase",
           is_public: true
@@ -40,8 +42,54 @@ defmodule Excyte.InsightFixtures do
         |> Enum.into(%{
           insight_type: "buyer_tour",
           is_excyte_made: true,
+          is_auto_template: false,
           type_default: true,
           name: "Excyte Basic Buyer Tour",
+          is_public: true
+        })
+        |> Insights.create_document_template()
+     temp
+  end
+
+    def excyte_auto_cma_template(attrs \\ %{}) do
+    {:ok, temp} =
+      attrs
+        |> Enum.into(%{
+          insight_type: "cma",
+          is_excyte_made: true,
+          is_auto_template: true,
+          type_default: true,
+          name: "Excyte Auto CMA",
+          is_public: true
+        })
+        |> Insights.create_document_template()
+     temp
+  end
+
+  def excyte_auto_showcase_template(attrs \\ %{}) do
+    {:ok, temp} =
+      attrs
+        |> Enum.into(%{
+          insight_type: "showcase",
+          is_excyte_made: true,
+          is_auto_template: true,
+          type_default: true,
+          name: "Excyte Auto Showcase",
+          is_public: true
+        })
+        |> Insights.create_document_template()
+     temp
+  end
+
+  def excyte_auto_buyer_tour_template(attrs \\ %{}) do
+    {:ok, temp} =
+      attrs
+        |> Enum.into(%{
+          insight_type: "buyer_tour",
+          is_excyte_made: true,
+          is_auto_template: true,
+          type_default: true,
+          name: "Excyte Auto Buyer Tour",
           is_public: true
         })
         |> Insights.create_document_template()

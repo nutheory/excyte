@@ -20,7 +20,7 @@ defmodule Excyte.MixProject do
   def application do
     [
       mod: {Excyte.Application, [env: Mix.env()]},
-      extra_applications: [:logger, :runtime_tools, :oauth2]
+      extra_applications: [:logger, :runtime_tools, :oauth2, :ex_rated]
     ]
   end
 
@@ -70,6 +70,7 @@ defmodule Excyte.MixProject do
       {:solid, "~> 0.8"},
       {:timex, "~> 3.7.5"},
       {:cachex, "~> 3.6"},
+      {:ex_rated, "~> 2.1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:ex_aws, "~> 2.2.4"},
       {:ex_aws_s3, "~> 2.3.0"},

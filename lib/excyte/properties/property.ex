@@ -4,6 +4,7 @@ defmodule Excyte.Properties.Property do
   """
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   alias Excyte.{
     Insights.Insight,
@@ -61,16 +62,8 @@ defmodule Excyte.Properties.Property do
       :walkscore,
       :listing_key,
       :listing_id,
-      # :features,
       :last_modified,
-      :dirty_info,
       :history,
-      :public_records,
-      :pool,
-      :spa,
-      :view,
-      :waterfront,
-      :horses,
       :manually_updated,
       :median_dom,
       :median_sale_price,
@@ -115,24 +108,16 @@ defmodule Excyte.Properties.Property do
     field :close_date, :string
     field :pending_timestamp, :utc_datetime
     field :distance_from_subject, :string
-    field :list_price, :string
+    field :list_price, :integer
     field :stories, :float
     field :walkscore, :integer
     field :est_price, :integer
     field :listing_key, :string
     field :listing_id, :string
-    # field :features, {:array, :map}
     field :last_modified, :utc_datetime
-    field :dirty_info, {:array, :map}
     field :history, MapType
-    field :public_records, MapType
-    field :pool, :boolean
-    field :spa, :boolean
-    field :waterfront, :boolean
-    field :view, :boolean
-    field :horses, :boolean
     field :manually_updated, :boolean
-    field :new_construction, :boolean
+    # field :new_construction, :boolean
     field :median_dom, :string
     field :median_sale_price, :string
     field :median_list_price, :string
@@ -145,7 +130,7 @@ defmodule Excyte.Properties.Property do
     field :tax_annual_amount, :string
     field :tax_year, :string
     embeds_many(:features, Feature)
-    belongs_to(:insight, Insight)
+    has_many(:insights, Insight)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:agent, User)
     timestamps()
@@ -158,6 +143,19 @@ defmodule Excyte.Properties.Property do
     |> validate_required([:agent_id, :internal_type, :beds, :baths])
     |> validate_number(:beds, greater_than: 0)
     |> validate_number(:baths, greater_than: 0)
+  end
+
+
+  def get_pocket_by_agent(query, agent_id) when is_nil(agent_id), do: query
+  def get_pocket_by_agent(query, agent_id) do
+    from p in query,
+    where: p.agent_id == ^agent_id and p.internal_type == "pocket"
+  end
+
+  def get_pocket_by_brokerage(query, brk_id) when is_nil(brk_id), do: query
+  def get_pocket_by_brokerage(query, brk_id) do
+    from p in query,
+    where: p.brokerage_id == ^brk_id and p.internal_type == "pocket"
   end
 
 end

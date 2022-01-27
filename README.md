@@ -37,6 +37,8 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
+## Idea for custom Auto generated reports
+Create a new document_template for every auto generated report type  with coresponding section_templates. Use the section templates instead of the sections to create/display the reports. This can be set when creating the initial insight inside liveviews like create_cma.
 ## Links
 
 [https://app.termly.io/dashboard/website/a8753703-0c59-4716-9c48-dbf36dd964c4/terms-of-service](Termly Terms of service)

@@ -255,8 +255,8 @@ defmodule ExcyteWeb.Client.Components do
   def map_view(lst) do
     assigns = %{lst: lst}
     ~H"""
-      <%= if @lst["coords"] && hd(@lst["coords"]) do %>
-        <a href={"https://www.google.com/maps/search/?api=1&query=#{hd(tl(@lst["coords"]))}%2C#{hd(@lst["coords"])}"} rel="noopener noreferrer" target="_blank">
+      <%= if @lst["coords"] && @lst["coords"]["lat"] do %>
+        <a href={"https://www.google.com/maps/search/?api=1&query=#{@lst["coords"]["lat"]}%2C#{@lst["coords"]["lng"]}"} rel="noopener noreferrer" target="_blank">
           <svg version="1.1" class="svg-shadow w-12 md:w-20 mx-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
             viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
             <polygon style="fill:#C7CFE2;" points="344.276,512 167.724,450.207 167.724,114.759 344.276,176.552 "/>

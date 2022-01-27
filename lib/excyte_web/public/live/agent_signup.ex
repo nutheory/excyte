@@ -37,7 +37,7 @@ defmodule ExcyteWeb.Public.AgentSignup do
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
-    with {:ok, %{agent: agent, account: acc}} <- Accounts.register_agent(Utilities.key_to_atom(attrs)),
+    with {:ok, %{agent: agent, account: _acc}} <- Accounts.register_agent(Utilities.key_to_atom(attrs)),
          {:ok, token} <- Accounts.generate_login_token(agent) do
       {:noreply,
         socket

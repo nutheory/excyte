@@ -36,11 +36,12 @@ defmodule Excyte.Insights.Insight do
     field :content, MapType
     field :published, :boolean
     field :cover_photo_url, :string
+    field :auto_generated, :boolean, default: false
     embeds_one(:document_attributes, Theme, on_replace: :delete)
     embeds_one(:saved_search, SavedSearch, on_replace: :update)
-    has_one(:property, Property, foreign_key: :insight_id)
     has_many(:sections, Section, on_delete: :delete_all)
     many_to_many(:contacts, Contact, join_through: "contact_insight", on_replace: :delete)
+    belongs_to(:property, Property)
     belongs_to(:document_template, DocumentTemplate)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:created_by, User)
@@ -56,8 +57,10 @@ defmodule Excyte.Insights.Insight do
       :uuid,
       :selected_listing_ids,
       :cover_photo_url,
+      :auto_generated,
       :content,
       :published,
+      :property_id,
       :document_template_id,
       :brokerage_id,
       :created_by_id

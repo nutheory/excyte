@@ -34,7 +34,7 @@
       </div>
     </div>
     <div class="flex py-4">
-      <%= if @subject.main_photo_url do %>
+      <%= if @subject["main_photo_url"] do %>
         <div class="mr-4">
           <p class="font-bold">Property Photo</p>
           <p>We found a public photo for this property but feel free to upload your own photo.</p>
@@ -50,7 +50,7 @@
           name={"main_photo"}
           title={"Property Photo"}
           bucket={"property_photos"}
-          image_url={@subject.main_photo_url}
+          image_url={@subject["main_photo_url"]}
           aspect_ratio={16/9}
           upload_text={"Upload<br />Property Photo"}
           width={160}
@@ -58,6 +58,18 @@
           id={:photo_image_editor}
         />
       </div>
+    </div>
+
+    <div>
+      <UI.dropdown
+        options={@mls_options}
+        selected={nil}
+        attr={"source"}
+        origin={"left"}
+        callback={"select_source"}
+        label={"Select Source"}
+        id={:select_source}
+      />
     </div>
     <div class="mt-2">
       <button class="submit w-full"><%= @button_label %></button>

@@ -5,16 +5,19 @@ defmodule ExcyteWeb.Insight.SubjectForm do
 
   def render(assigns), do: InsightView.render("subject_form.html", assigns)
 
-  def update(%{subject: subj } = assigns, socket) do
-    subject = Map.merge(subj, %{internal_type: "subject", agent_id: assigns.current_user.id})
+  def update(%{subject: subj} = a, socket) do
+    subject = Map.merge(subj, %{"internal_type" => "subject", "agent_id" => a.current_user.id})
     cs = Properties.change_property(subject)
+
     {:ok, assign(socket,
       changeset: cs,
-      current_user: assigns.current_user,
-      lotsize_unit: subject.lotsize_preference,
-      lotsize_value: subject.lotsize_sqft,
+      mls_options: a.mls_options,
+      current_user: a.current_user,
+      current_mls: a.current_mls,
+      lotsize_unit: subject["lotsize_preference"],
+      lotsize_value: subject["lotsize_sqft"],
       subject: subject,
-      button_label: assigns.button_label,
+      button_label: a.button_label,
       feature_options: Utilities.feature_options()
     )}
   end
@@ -33,22 +36,28 @@ defmodule ExcyteWeb.Insight.SubjectForm do
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
     subject_attrs =
       Map.merge(a.subject, %{
-        beds: sanitize_number(form["beds"], Integer),
-        baths: sanitize_number(form["baths"], Float),
-        sqft: sanitize_number(form["sqft"], Integer),
-        stories: sanitize_number(form["stories"], Integer),
-        year_built: sanitize_number(form["year_built"], Integer),
+        "beds" => sanitize_number(form["beds"], Integer),
+        "baths" => sanitize_number(form["baths"], Float),
+        "sqft" => sanitize_number(form["sqft"], Integer),
+        "stories" => sanitize_number(form["stories"], Integer),
+        "year_built" => sanitize_number(form["year_built"], Integer),
       })
       |> Map.merge(sanitize_lotsize(%{
-        lotsize_unit: a.lotsize_unit,
-        lotsize_value: form["lotsize_value"]
+        "lotsize_unit" => a.lotsize_unit,
+        "lotsize_value" => form["lotsize_value"]
       }))
 
     cs = Properties.change_property(subject_attrs)
     if cs.valid? do
-      send self(), {:create_subject, subject_attrs}
+      IO.inspect(a.current_mls.value, label: "MLS")
+      if a.current_mls.value === "public" do
+        send self(), {:auto_create_cma, subject_attrs}
+      else
+        send self(), {:create_subject, subject_attrs}
+      end
       {:noreply, socket}
     else
+      IO.inspect(cs, label: "INV")
       {:noreply, assign(socket, changeset: cs)}
     end
   end
@@ -67,15 +76,16 @@ defmodule ExcyteWeb.Insight.SubjectForm do
     end
   end
 
-  defp sanitize_lotsize(%{lotsize_unit: unit, lotsize_value: val}) do
+  defp sanitize_lotsize(%{"lotsize_unit" => unit, "lotsize_value" => val}) do
     if unit === "acres" do
-      %{lotsize_preference: "acres", lotsize_sqft: trunc(Utilities.acres_to_sqft(sanitize_number(val, Float)))}
+      %{"lotsize_preference" => "acres", "lotsize_sqft" => trunc(Utilities.acres_to_sqft(sanitize_number(val, Float)))}
     else
-      %{lotsize_preference: "sqft", lotsize_sqft: sanitize_number(val, Integer)}
+      %{"lotsize_preference" => "sqft", "lotsize_sqft" => sanitize_number(val, Integer)}
     end
   end
 
   defp sanitize_number(str, to_type) do
+    IO.inspect(str, label: "BOOM: #{to_type}")
     if str !== "", do: elem(to_type.parse(str), 0), else: nil
   end
 end

@@ -27,6 +27,12 @@ config :ueberauth, Ueberauth,
 
 config :tesla, :adapter, Tesla.Adapter.Hackney
 
+config :ex_rated,
+  timeout: 1_000,
+  cleanup_rate: 1_000,
+  persistent: false,
+  name: :realty_ratelimiter
+
 config :money,
   default_currency: :USD,
   separator: ".",

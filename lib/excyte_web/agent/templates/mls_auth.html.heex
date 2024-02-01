@@ -93,9 +93,9 @@
     <% end %>
   </div>
   <%= if Map.fetch!(@socket, :id) === "mls_auth_gsa" && length(@mls_list) > 0 do %>
-    <%= live_patch to: Routes.live_path(@socket, ExcyteWeb.Agent.GettingStarted, step: "subscription"), replace: false do %>
+    <.link patch={~p"/agent/getting-started?step=subscription"}>
       <div class="action-button my-6">Continue...</div>
-    <% end %>
+    </.link>
   <% end %>
   <%= if Map.fetch!(@socket, :id) === "mls_auth_gsb" && length(@mls_list) > 0 do %>
     <%#= live_patch to: Routes.live_path(@socket, ExcyteWeb.Brokerage.GettingStarted, step: "subscription"), replace: false do %>

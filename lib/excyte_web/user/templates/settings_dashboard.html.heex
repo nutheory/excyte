@@ -4,34 +4,34 @@
       <h2 class="font-bold text-gray-700 px-3">Settings</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-white w-full shadow rounded p-4">
-          <%= live_patch "Agent Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile"), class: "fancy font-bold block text-lg" %>
+          <.link patch={~p"/settings/?section=agent_profile"} class="fancy font-bold block text-lg">Agent Profile</.link>
           <p class="text-sm">Information about yourself we include by default in all reports.</p>
         </div>
         <%= if Utilities.authorized?(@current_user.brokerage_role) do %>
           <div class="bg-white w-full shadow rounded p-4">
-            <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile"), class: "fancy font-bold block text-lg" %>
+            <.link patch={~p"/settings/?section=brokerage_profile"} class="fancy font-bold block text-lg">Brokerage Profile</.link>
             <p class="text-sm">Information about your brokerage we include by default in all reports.</p>
           </div>
           <div class="bg-white w-full shadow rounded p-4">
-            <%= live_patch "Manage Team", to: Routes.live_path(@socket, Dashboard, section: "manage_team"), class: "fancy font-bold block text-lg" %>
+            <.link patch={~p"/settings/?section=manage_team"} class="fancy font-bold block text-lg">Manage Team</.link>
             <p class="text-sm">Invite new team members and manage your agents.</p>
           </div>
         <% end %>
         <div class="bg-white w-full shadow rounded p-4">
-          <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme"), class: "fancy font-bold block text-lg" %>
+          <.link patch={~p"/settings/?section=theme"} class="fancy font-bold block text-lg">Theme</.link>
           <p class="text-sm">Styled colors to personalize your reports.</p>
         </div>
         <div class="bg-white w-full shadow rounded p-4">
-          <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth"), class: "fancy font-bold block text-lg" %>
+          <.link patch={~p"/settings/?section=mls_auth"} class="fancy font-bold block text-lg">MLS Authorization</.link>
           <p class="text-sm">Manage your MLS's.</p>
         </div>
         <div class="bg-white w-full shadow rounded p-4">
-          <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account"), class: "fancy font-bold block text-lg" %>
+          <.link patch={~p"/settings/?section=account"} class="fancy font-bold block text-lg">Account</.link>
           <p class="text-sm">Change your email/password or cancel your account.</p>
         </div>
         <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
           <div class="bg-white w-full shadow rounded p-4">
-            <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription"), class: "fancy font-bold block text-lg" %>
+            <.link patch={~p"/settings/?section=subscription"} class="fancy font-bold block text-lg">Subscription</.link>
             <p class="text-sm">Update your subscription and payment information.</p>
           </div>
         <% end %>
@@ -45,68 +45,68 @@
           <ul>
             <%= if @section === "agent_profile" do %>
               <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile") %>
+                <.link patch={~p"/settings/?section=agent_profile"}>Profile</.link>
               </li>
             <% else %>
               <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                <%= live_patch "Profile", to: Routes.live_path(@socket, Dashboard, section: "agent_profile") %>
+                <.link patch={~p"/settings/?section=agent_profile"}>Profile</.link>
               </li>
             <% end %>
             <%= if @current_user && Utilities.authorized?(@current_user.brokerage_role) do %>
               <%= if @section === "brokerage_profile" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                  <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
+                  <.link patch={~p"/settings/?section=brokerage_profile"}>Brokerage Profile</.link>
                 </li>
               <% else %>
                 <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                  <%= live_patch "Brokerage Profile", to: Routes.live_path(@socket, Dashboard, section: "brokerage_profile") %>
+                  <.link patch={~p"/settings/?section=brokerage_profile"}>Brokerage Profile</.link>
                 </li>
               <% end %>
               <%= if @section === "manage_team" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                  <%= live_patch "Manage Team", to: Routes.live_path(@socket, Dashboard, section: "manage_team") %>
+                  <.link patch={~p"/settings/?section=manage_team"}>Manage Team</.link>
                 </li>
               <% else %>
                 <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                  <%= live_patch "Manage Team", to: Routes.live_path(@socket, Dashboard, section: "manage_team") %>
+                  <.link patch={~p"/settings/?section=manage_team"}>Manage Team</.link>
                 </li>
               <% end %>
             <% end %>
             <%= if @section === "theme" do %>
               <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme") %>
+                <.link patch={~p"/settings/?section=theme"}>Theme</.link>
               </li>
             <% else %>
               <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                <%= live_patch "Theme", to: Routes.live_path(@socket, Dashboard, section: "theme") %>
+                <.link patch={~p"/settings/?section=theme"}>Theme</.link>
               </li>
             <% end %>
             <%= if @section === "mls_auth" do %>
               <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
+                <.link patch={~p"/settings/?section=mls_auth"}>MLS Authorization</.link>
               </li>
             <% else %>
               <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                <%= live_patch "MLS Authorization", to: Routes.live_path(@socket, Dashboard, section: "mls_auth") %>
+                <.link patch={~p"/settings/?section=mls_auth"}>MLS Authorization</.link>
               </li>
             <% end %>
             <%= if @section === "account" do %>
               <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
+                <.link patch={~p"/settings/?section=account"}>Account</.link>
               </li>
             <% else %>
               <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                <%= live_patch "Account", to: Routes.live_path(@socket, Dashboard, section: "account") %>
+                <.link patch={~p"/settings/?section=account"}>Account</.link>
               </li>
             <% end %>
             <%= if !@current_user.brokerage_id || Utilities.authorized?(@current_user.brokerage_role) do %>
               <%= if @section === "subscription" do %>
                 <li class="px-3 py-2 border-t border-gray-100 font-bold bg-bgray-200">
-                  <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription") %>
+                  <.link patch={~p"/settings/?section=subscription"}>Subscription</.link>
                 </li>
               <% else %>
                 <li class="px-3 py-2 border-t border-gray-100 hover:underline">
-                  <%= live_patch "Subscription", to: Routes.live_path(@socket, Dashboard, section: "subscription") %>
+                  <.link patch={~p"/settings/?section=subscription"}>Subscription</.link>
                 </li>
               <% end %>
             <% end %>

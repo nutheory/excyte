@@ -29,9 +29,9 @@
           <div class="text-center">
             <h2 class="py-8 link">Thank you, payment method saved.</h2>
             <h4>We will notify you before your trial ends on <%= Calendar.strftime(@account.current_period_end, "%b %d, %Y") %>. You can edit future payment information in settings.</h4>
-            <%= live_patch to: Routes.live_path(@socket, GettingStarted, step: "brokerage_profile"), replace: false, class: "hover:no-underline" do %>
+            <.link patch={~p"/brokerage/getting-started?step=brokerage_profile"} class="hover:no-underline">
               <div class="action-button my-6">Continue...</div>
-            <% end %>
+            </.link>
           </div>
         <% end %>
       </div>
@@ -55,7 +55,7 @@
             <h3 class="text-lg leading-none font-extrabold text-bgray-800">Invite team members</h3>
           </div>
           <div class="flex items-end">
-            <%= live_patch "continue...", to: Routes.live_path(@socket, GettingStarted, step: "agent_profile") %>
+            <.link patch={~p"/brokerage/getting-started?step=agent_profile"}>continue...</.link>
           </div>
         </div>
         <%= live_render @socket, ManageTeam, session: %{"return_to" => "/brokerage/getting-started?step=agent_profile", "user_id" => @current_user.id}, id: "manage_team" %>

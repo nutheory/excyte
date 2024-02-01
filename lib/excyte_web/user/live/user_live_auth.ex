@@ -1,14 +1,12 @@
 defmodule ExcyteWeb.UserLiveAuth do
-  import Phoenix.LiveView
+  use ExcyteWeb, :live_view
   alias Excyte.{Accounts}
   alias ExcyteWeb.{Helpers.Utilities}
 
   def on_mount(:default, _params, %{"user_token" => token} = _sesh, socket) do
-    socket = assign_new(socket, :current_user, fn ->
-      Accounts.get_user_by_session_token(token)
-    end)
+    cu = Accounts.get_user_by_session_token(token)
+    socket = assign(socket, :current_user, cu)
 
-    cu = socket.assigns.current_user
     if cu do
       period_end = cu.account.current_period_end
       IO.inspect(period_end > DateTime.utc_now, label: "PE")

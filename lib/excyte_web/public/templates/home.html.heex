@@ -6,7 +6,7 @@
         <div class="flex py-1 px-3 bg-amber-50 rounded-b shadow">
           <div class=""><a href="mailto:gary@excyte.io">Contact Us</a></div>
           <div class="px-2 text-bgray-400">|</div>
-          <div class=""><%= link "Login", to: "/login", class: "" %></div>
+          <div class=""><.link navigate={~p"/login"}>Login</.link></div>
         </div>
       </div>
       <div class="w-full px-4 sm:w-4/5 lg:w-2/3 pt-8">
@@ -91,14 +91,14 @@
           </div>
           <div class="flex p-4">
             <div class="flex-1"></div>
-            <%= link to: "/agent/signup", class: "cta from-cyan-200 to-blue-600 ml-4" do %>
+            <.link navigate={~p"/agent/signup"} class="cta from-cyan-200 to-blue-600 ml-4">
               <h5 class="font-semibold leading-none text-white">Agent Sign Up</h5>
               <p class="text-xs italic leading-4 text-white">3 week free trial</p>
-            <% end %>
-            <%= link to: "/brokerage/signup", class: "cta from-yellow-300 to-red-600 ml-4" do %>
+            </.link>
+            <.link navigate={~p"/brokerage/signup"} class="cta from-yellow-300 to-red-600 ml-4">
               <h5 class="font-semibold leading-none text-white">Brokerage Sign Up</h5>
               <p class="text-xs italic leading-4 text-white">3 week free trial</p>
-            <% end %>
+            </.link>
           </div>
         </div>
       </div>
@@ -225,14 +225,14 @@
         <h3 class="mt-6 text-right pr-6">Start your free trial now!</h3>
         <div class="flex p-4">
           <div class="flex-1"></div>
-          <%= link to: "/agent/signup", class: "cta from-cyan-200 to-blue-600 ml-4" do %>
+          <.link navigate={~p"/agent/signup"} class="cta from-cyan-200 to-blue-600 ml-4">
             <h5 class="font-semibold leading-none text-white">Agent Sign Up</h5>
             <p class="text-xs italic leading-4 text-white">3 week free trial</p>
-          <% end %>
-          <%= link to: "/brokerage/signup", class: "cta from-yellow-300 to-red-600 ml-4" do %>
+          </.link>
+          <.link navigate={~p"/brokerage/signup"} class="cta from-yellow-300 to-red-600 ml-4">
             <h5 class="font-semibold leading-none text-white">Brokerage Sign Up</h5>
             <p class="text-xs italic leading-4 text-white">3 week free trial</p>
-          <% end %>
+          </.link>
         </div>
       </div>
     </div>

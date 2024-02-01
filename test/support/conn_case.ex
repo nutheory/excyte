@@ -24,7 +24,7 @@ defmodule ExcyteWeb.ConnCase do
       import Phoenix.ConnTest
       import ExcyteWeb.ConnCase
 
-      alias ExcyteWeb.Router.Helpers, as: Routes
+      use ExcyteWeb, :verified_routes
 
       # The default endpoint for testing
       @endpoint ExcyteWeb.Endpoint

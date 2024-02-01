@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 import_config "dev_open_id_providers.exs"
 # import_config "proxies.exs"

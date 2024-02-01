@@ -9,7 +9,7 @@ defmodule ExcyteWeb.BrokerageSignup do
     cs = Agent.pre_register_brokerage(%Agent{}, %{})
 
     {:ok, assign(socket,
-      changeset: cs,
+      form: to_form(cs),
       password_type: "password",
       password_value: "",
       show_text: "show password"
@@ -33,7 +33,7 @@ defmodule ExcyteWeb.BrokerageSignup do
 
   def handle_event("validate", %{"agent" => attrs}, socket) do
     cs = Agent.pre_register_brokerage(%Agent{}, attrs)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do

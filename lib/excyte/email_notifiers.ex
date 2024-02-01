@@ -119,7 +119,7 @@ defmodule Excyte.EmailNotifiers do
   defp base_email do
     new_email()
     |> from("no-reply@excyte.io")
-    |> put_html_layout({ExcyteWeb.LayoutView, "email.html"}) # Set default layout
+    |> put_html_layout({ExcyteWeb.LayoutView, :email}) # Set default layout
     # |> put_text_layout({ExcyteWeb.LayoutView, "email.text"}) # Set default text layout
   end
 end

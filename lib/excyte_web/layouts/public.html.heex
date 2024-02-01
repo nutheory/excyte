@@ -1,12 +1,7 @@
-<%= live_component @socket, ExcyteWeb.PublicHeader, content: nil %>
+<.live_component module={ExcyteWeb.PublicHeader} content={nil} id="public-header" />
 <div class="sm:flex-1">
   <main role="main" class="">
-  <p class="alert alert-info" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
-  <p class="alert alert-danger" role="alert"
-    phx-click="lv:clear-flash"
-    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+<.flash_group flash={@flash} />
     <%= @inner_content %>
   </main>
   <script defer phx-track-static type="text/javascript" src="/assets/public.js"></script>

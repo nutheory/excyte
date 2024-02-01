@@ -129,7 +129,7 @@
         to life. Including video in your report may be the reason you won a client over your competition
         today.</p>
       </div>
-      <div phx-update="ignore" class="col-span-2 lg:pl-24">
+      <div phx-update="ignore" id="video-preview" class="col-span-2 lg:pl-24">
         <video id="my-player" class="video-js vjs-16-9" controls="controls" preload="auto" width="100%" data-setup='{
             "plugins": {
               "mux": {
@@ -241,9 +241,9 @@
     <div class="flex mx-auto">
       <div>&copy; Copyright 2021</div>
       <div class="mx-2">|</div>
-      <div><%= link "Terms of Service", to: "/terms" %></div>
+      <div><.link navigate={~p"/terms"}>Terms of Service</.link></div>
       <div class="mx-2">|</div>
-      <div><%= link "Privacy Policy", to: "/privacy" %></div>
+      <div><.link navigate={~p"/privacy"}>Privacy Policy</.link></div>
     </div>
   </div>
 </div>

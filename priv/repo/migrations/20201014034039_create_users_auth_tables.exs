@@ -8,8 +8,8 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
       add :account_id, references(:accounts, on_delete: :delete_all)
       add :brokerage_id, references(:brokerages)
       add :invited_by_id, references(:users)
-      add :full_name, :string, null: false
-      add :email, :citext, null: false
+      add :full_name, :string
+      add :email, :citext
       add :timezone, :string, default: "America/Los_Angeles"
       add :invite_message, :text
       add :brokerage_role, :string
@@ -30,9 +30,9 @@ defmodule Excyte.Repo.Migrations.CreateUsersAuthTables do
     create unique_index(:users, [:email])
 
     create table(:users_tokens) do
-      add :user_id, references(:users, on_delete: :delete_all), null: false
-      add :token, :binary, null: false
-      add :context, :string, null: false
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :token, :binary
+      add :context, :string
       add :sent_to, :string
       timestamps(updated_at: false)
     end

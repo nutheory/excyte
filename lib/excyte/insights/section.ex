@@ -11,7 +11,7 @@ defmodule Excyte.Insights.Section do
   @timestamps_opts [type: :utc_datetime]
 
   schema "sections" do
-    field :name, :string, null: false
+    field :name, :string
     field :description, :string, default: ""
     field :enabled, :boolean, default: true
     field :component_name, :string

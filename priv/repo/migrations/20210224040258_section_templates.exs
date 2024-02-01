@@ -9,7 +9,7 @@ defmodule Excyte.Repo.Migrations.SectionTemplates do
       add :is_excyte_made, :boolean, default: false
       add :component_name, :string
       add :component_data_types, :jsonb, default: "[]"
-      add :name, :string, null: false
+      add :name, :string
       add :description, :text
       add :html_content, :text
       add :type, :string

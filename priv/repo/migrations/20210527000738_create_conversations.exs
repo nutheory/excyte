@@ -3,7 +3,7 @@ defmodule Excyte.Repo.Migrations.CreateConversations do
 
   def change do
     create table(:conversations) do
-      add :conversation_sid, :string, null: false
+      add :conversation_sid, :string
       add :sms_participant_sid, :string
       add :chat_service_sid, :string
       add :friendly_name, :string

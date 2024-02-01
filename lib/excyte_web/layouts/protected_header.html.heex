@@ -24,18 +24,18 @@
       >
         <div class="w-full bg-gray-800 text-bgray-100 rounded">
           <div class="flex flex-col pb-2">
-            <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
+            <.link navigate={~p"/dashboard"} class="block">
               <div class="p-4 hover:bg-bgray-700">
                 <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
                 <p class="text-xs text-bgray-400">Overview</p>
               </div>
-            <% end %>
+            </.link>
           </div>
         </div>
       </div>
     </div>
     <div class="flex-1 lg:flex-none flex justify-center items-center lg:w-44 xl:w-48 lg:pl-6 cursor-pointer">
-      <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard) do %>
+      <.link navigate={~p"/dashboard"}>
         <svg class="w-18 lg:w-36 h-8 lg:h-14 mx-auto" viewBox="0 0 353 114" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <defs>
             <linearGradient x1="-21.0047568%" y1="136.393098%" x2="50%" y2="0%" id="linearGradient-1">
@@ -82,17 +82,17 @@
             </g>
           </g>
         </svg>
-      <% end %>
+      </.link>
     </div>
     <div class="lg:flex-auto h-12 lg:h-18 flex items-center justify-between px-4 lg:px-6 lg:mx-6">
       <div class="hidden lg:block w-full">
         <div class="flex">
-          <%= live_redirect to: Routes.live_path(@socket, ExcyteWeb.Agent.Dashboard), class: "block" do %>
+          <.link navigate={~p"/dashboard"} class="block">
             <div class="mt-1">
               <h3 class="text-lg font-bold leading-5 text-blue-600 mb-0">Dash</h3>
               <p class="text-xs text-bgray-400">Overview</p>
             </div>
-          <% end %>
+          </.link>
         </div>
       </div>
       <div class="flex-1"></div>
@@ -140,8 +140,8 @@
               </li>
             <% end %>
           <% end %>
-          <li class="pt-1 border-t border-bgray-300"><%= live_redirect "Settings", to: Routes.live_path(@socket, ExcyteWeb.Settings.Dashboard), class: " block py-2 px-4 hover:bg-blue-100" %></li>
-          <li class=""><%= link "Log out", to: "/log_out", method: :delete, class: "block py-2 px-4 hover:bg-blue-100" %></li>
+          <li class="pt-1 border-t border-bgray-300"><.link navigate={~p"/settings"} class="block py-2 px-4 hover:bg-blue-100">Settings</.link></li>
+          <li class=""><.link href={~p"/log_out"} method="delete", class="block py-2 px-4 hover:bg-blue-100" >Log out</.link></li>
         </ul>
       </div>
     </div>

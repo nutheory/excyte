@@ -13,7 +13,7 @@
 #   @timestamps_opts [type: :utc_datetime]
 
 #   schema "documents" do
-#     field :title, :string, null: false
+#     field :title, :string
 #     field :description, :string
 #     field :type, :string
 #     field :content, MapType

@@ -1,28 +1,29 @@
-use Mix.Config
+import Config
 
-config :excyte,
-       :mls_auth_options, [
-         %{value: "miamire", text: "Miami AOR (MIAMIRE)", type: "bridge"},
-         %{value: "riar", text: "Rhode Island (RIAR)", type: "bridge"},
-         %{value: "tmls", text: "Triangle MLS (TMLS)", type: "bridge"},
-         %{value: "test", text: "Test", type: "bridge"}
-        ]
+config :excyte, :mls_auth_options, [
+  %{value: "miamire", text: "Miami AOR (MIAMIRE)", type: "bridge"},
+  %{value: "riar", text: "Rhode Island (RIAR)", type: "bridge"},
+  %{value: "tmls", text: "Triangle MLS (TMLS)", type: "bridge"},
+  %{value: "test", text: "Test", type: "bridge"},
+  %{value: "none", text: "No MLS", type: "none"}
+]
 
 config :excyte,
        :openid_connect_providers,
        actris_ref: [
-        discovery_document_uri: "http://localhost:4004/actris_ref/.well-known/openid-configuration",
-        client_id: "184991032516-u7rfoihpggj3q1rs1a6df1onjoq2o1i7.apps.googleusercontent.com",
-        client_secret: "JKvXPvqulBY4fZGokDaCnuID",
-        redirect_uri: "http://localhost:4000/confirm_mls/crmls",
-        response_type: "code",
-        scope: "openid"
-      ],
-      test: [
-        discovery_document_uri: "http://localhost:4004/test/.well-known/openid-configuration",
-        client_id: "JufbUZM7YgSPn2fGSbHn",
-        client_secret: "01EOMai00EPYiwO6HK0ZAPEIzlBV3ULVoVS4hr7O",
-        redirect_uri: "http://localhost:4000/confirm_mls/crmls",
-        response_type: "code",
-        scope: "openid"
-      ]
+         discovery_document_uri:
+           "http://localhost:4004/actris_ref/.well-known/openid-configuration",
+         client_id: "184991032516-u7rfoihpggj3q1rs1a6df1onjoq2o1i7.apps.googleusercontent.com",
+         client_secret: "JKvXPvqulBY4fZGokDaCnuID",
+         redirect_uri: "http://localhost:4000/confirm_mls/crmls",
+         response_type: "code",
+         scope: "openid"
+       ],
+       test: [
+         discovery_document_uri: "http://localhost:4004/test/.well-known/openid-configuration",
+         client_id: "JufbUZM7YgSPn2fGSbHn",
+         client_secret: "01EOMai00EPYiwO6HK0ZAPEIzlBV3ULVoVS4hr7O",
+         redirect_uri: "http://localhost:4000/confirm_mls/crmls",
+         response_type: "code",
+         scope: "openid"
+       ]

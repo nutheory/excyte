@@ -1,11 +1,13 @@
 defmodule ExcyteWeb.Helpers.Utilities do
-  import Phoenix.LiveView.Helpers
+  import Phoenix.Component
   use Timex
   import Number.{Delimit}
 
-  def authorized?(role), do: if role && Enum.member?(["admin", "owner"], role), do: true, else: false
+  def authorized?(role),
+    do: if(role && Enum.member?(["admin", "owner"], role), do: true, else: false)
 
-  def subscribed?(status), do: if Enum.member?(["trialing", "active"], status), do: true, else: false
+  def subscribed?(status),
+    do: if(Enum.member?(["trialing", "active"], status), do: true, else: false)
 
   def build_url(path) do
     "//excyte.s3.amazonaws.com/#{path}"
@@ -77,10 +79,16 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def social_description(ins, agt) do
     cnt = hd(agt.contacts)
+
     case ins.type do
-      "cma" -> "Comparative Market Analysis (CMA) - #{ins.name} created by #{agt.name} (#{cnt.content})"
-      "buyer_tour" -> "Buyer Tour - #{ins.name} created by #{agt.name} (#{cnt.content})"
-      "showcase" -> "Showcase - #{ins.name} created by #{agt.name} (#{cnt.content})"
+      "cma" ->
+        "Comparative Market Analysis (CMA) - #{ins.name} created by #{agt.name} (#{cnt.content})"
+
+      "buyer_tour" ->
+        "Buyer Tour - #{ins.name} created by #{agt.name} (#{cnt.content})"
+
+      "showcase" ->
+        "Showcase - #{ins.name} created by #{agt.name} (#{cnt.content})"
     end
   end
 
@@ -93,12 +101,13 @@ defmodule ExcyteWeb.Helpers.Utilities do
           %{value: "condominium", name: "Condo"},
           %{value: "manufactured home", name: "Manufactured Home"}
         ]
+
       _ ->
         [
           %{value: "single family residence", name: "Single Family"},
           %{value: "condominium", name: "Condominium"},
           %{value: "townhouse", name: "Townhouse"},
-          %{value: "multi family", name: "Multi Family"},
+          %{value: "multi family", name: "Multi Family"}
         ]
     end
   end
@@ -128,10 +137,23 @@ defmodule ExcyteWeb.Helpers.Utilities do
   def assign_contact_type(content) do
     if is_binary(content) do
       cond do
-        String.match?(content, ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/) -> "phone"
-        String.match?(content, ~r/^\S+@\S+\.\S+$/) -> "email"
-        String.match?(content, ~r/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/) -> "url"
-        true -> nil
+        String.match?(
+          content,
+          ~r/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/
+        ) ->
+          "phone"
+
+        String.match?(content, ~r/^\S+@\S+\.\S+$/) ->
+          "email"
+
+        String.match?(
+          content,
+          ~r/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+        ) ->
+          "url"
+
+        true ->
+          nil
       end
     else
       nil
@@ -140,14 +162,20 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def adjustment_value(adj_diff) do
     adj = to_string(adj_diff)
+
     if String.starts_with?(adj, "-") do
       assigns = %{__changed__: nil, adj: adj}
-      ~L"""
+
+      ~H"""
         <span class="font-bold text-red-700"><%= @adj %></span>
       """
     else
-      assigns = if String.starts_with?(adj, "+"), do: %{__changed__: nil,adj: String.slice(adj, 1..20)}, else: %{__changed__: nil, adj: adj}
-      ~L"""
+      assigns =
+        if String.starts_with?(adj, "+"),
+          do: %{__changed__: nil, adj: String.slice(adj, 1..20)},
+          else: %{__changed__: nil, adj: adj}
+
+      ~H"""
         <span class="font-bold"><%= @adj %></span>
       """
     end
@@ -157,27 +185,28 @@ defmodule ExcyteWeb.Helpers.Utilities do
     %{
       default: true,
       dataset_id: subject.dataset_id,
-      price_min: (if subject.est_price, do: round((subject.est_price/1000) * 0.95), else: 0),
-      price_max: (if subject.est_price, do: round((subject.est_price/1000) * 1.05), else: 100000000),
+      price_min: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
+      price_max:
+        if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000),
       price: %{
         type: Integer,
-        low: (if subject.est_price, do: round((subject.est_price/1000) * 0.95), else: 0),
-        high: (if subject.est_price, do: round((subject.est_price/1000) * 1.05), else: 100000000)
+        low: if(subject.est_price, do: round(subject.est_price / 1000 * 0.95), else: 0),
+        high: if(subject.est_price, do: round(subject.est_price / 1000 * 1.05), else: 100_000_000)
       },
       beds: %{
         type: Integer,
-        low: (if subject.beds, do: subject.beds - 1, else: 0),
-        high: (if subject.beds, do: subject.beds + 1, else: 100)
+        low: if(subject.beds, do: subject.beds - 1, else: 0),
+        high: if(subject.beds, do: subject.beds + 1, else: 100)
       },
       baths: %{
         type: Float,
-        low: (if subject.baths, do: round(subject.baths) - 1, else: 0),
-        high: (if subject.baths, do: round(subject.baths) + 1, else: 0)
+        low: if(subject.baths, do: round(subject.baths) - 1, else: 0),
+        high: if(subject.baths, do: round(subject.baths) + 1, else: 0)
       },
       sqft: %{
         type: Integer,
-        low: (if subject.sqft, do: round(subject.sqft * 0.7), else: 0),
-        high: (if subject.sqft, do: round(subject.sqft * 1.4), else: 0)
+        low: if(subject.sqft, do: round(subject.sqft * 0.7), else: 0),
+        high: if(subject.sqft, do: round(subject.sqft * 1.4), else: 0)
       },
       property_types: set_property_type(subject),
       selected_statuses: [
@@ -192,7 +221,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def summarize_auto_adjust(%{adjustment: adj, difference: diff, price_per_sqft: pps}) do
     assigns = %{__changed__: nil, adj: adj, diff: diff, price_per_sqft: pps}
-    ~L"""
+
+    ~H"""
       Total has been adjusted <strong><%= number_to_delimited(@adj, precision: 0) %></strong>
       based on a difference of <%= diff %> at $<%= pps %> per sqft
     """
@@ -200,7 +230,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def summarize_auto_adjust(_) do
     assigns = %{__changed__: nil}
-    ~L"""
+
+    ~H"""
       None
     """
   end
@@ -210,6 +241,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       if listing.close_price !== nil do
         when_text = time_to_text(listing, :close_date)
         assigns = %{__changed__: nil, listing: listing, when_text: when_text}
+
         ~H"""
           Closed for $<strong><%= number_to_delimited(@listing.close_price, precision: 0) %></strong>
           <%= if Map.has_key?(@listing, :close_date) do %>
@@ -220,6 +252,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       else
         when_text = time_to_text(listing, :on_market_date)
         assigns = %{__changed__: nil, listing: listing, when_text: when_text}
+
         ~H"""
           Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
           <%= if Map.has_key?(@listing, :days_on_market) do %>
@@ -235,20 +268,43 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def time_to_text(listing, key) do
     if Map.has_key?(listing, key) && listing[key] !== nil do
-      months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+      months =
+        Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+
       cond do
         months <= 2 ->
-          assigns = %{__changed__: nil, days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+          assigns = %{
+            __changed__: nil,
+            days:
+              Timex.diff(
+                DateTime.utc_now(),
+                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
+                :days
+              )
+          }
+
           ~H"""
             <%= @days %> <%= Inflex.inflect("day", @days) %> ago
           """
+
         months <= 18 ->
           assigns = %{__changed__: nil, months: months}
+
           ~H"""
             <%= @months %> <%= Inflex.inflect("month", @months) %> ago
           """
+
         months > 18 ->
-          assigns = %{__changed__: nil, years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+          assigns = %{
+            __changed__: nil,
+            years:
+              Timex.diff(
+                DateTime.utc_now(),
+                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
+                :years
+              )
+          }
+
           ~H"""
             over <%= @years %> <%= Inflex.inflect("year", @years) %> ago
           """
@@ -272,7 +328,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
           acc
         end
       end)
-    ~L"""
+
+    ~H"""
       <ul class="feature-list">
         <%= for {{key, val}, _idx} <- Enum.with_index(assigns) do %>
           <li class="feature-item">
@@ -284,8 +341,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
     """
   end
 
-
-  def get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64 |> binary_part(0, 5)
+  def get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64() |> binary_part(0, 5)
 
   def key_to_atom(map) do
     Enum.reduce(map, %{}, fn
@@ -309,7 +365,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def sqft_to_acres(sqft) do
-    if sqft, do: Float.round(sqft/43560, 2), else: ""
+    if sqft, do: Float.round(sqft / 43560, 2), else: ""
   end
 
   def format_str_json(body) do
@@ -325,37 +381,62 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   def insight_type_icon(type) do
     case type do
-      "cma" -> """
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-      """
-      "buyer_tour" -> """
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      """
-      "showcase" -> """
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-        </svg>
-      """
+      "cma" ->
+        """
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+        """
+
+      "buyer_tour" ->
+        """
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        """
+
+      "showcase" ->
+        """
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full accent-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        """
     end
   end
 
   def time_to_text(listing, key) do
     if Map.has_key?(listing, key) && listing[key] !== nil do
-      months = Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+      months =
+        Timex.diff(DateTime.utc_now(), Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :months)
+
       cond do
         months <= 2 ->
-          t = %{days: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :days)}
+          t = %{
+            days:
+              Timex.diff(
+                DateTime.utc_now(),
+                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
+                :days
+              )
+          }
+
           "#{t.days} #{Inflex.inflect("day", t.days)} ago"
+
         months <= 18 ->
           t = %{months: months}
           "#{t.months} #{Inflex.inflect("month", t.months)} ago"
+
         months > 18 ->
-          t = %{years: Timex.diff(DateTime.utc_now, Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"), :years)}
+          t = %{
+            years:
+              Timex.diff(
+                DateTime.utc_now(),
+                Timex.parse!(listing[key], "{YYYY}-{0M}-{0D}"),
+                :years
+              )
+          }
+
           "over #{t.years} #{Inflex.inflect("year", t.years)} ago"
       end
     else
@@ -391,7 +472,9 @@ defmodule ExcyteWeb.Helpers.Utilities do
           "condo" -> [%{name: "Condo", value: "condominium"}]
           _ -> [%{name: "Attached", value: "attached"}]
         end
-      _ -> nil
+
+      _ ->
+        nil
     end
   end
 
@@ -409,7 +492,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
 
   defp handle_nested_atom(v) when is_map(v) do
     Map.new(v, fn {k, vm} ->
-      {Atom.to_string(k), handle_nested_atom(vm)} end)
+      {Atom.to_string(k), handle_nested_atom(vm)}
+    end)
   end
 
   defp handle_nested_atom(v), do: v

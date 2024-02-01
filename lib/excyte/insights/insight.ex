@@ -31,7 +31,7 @@ defmodule Excyte.Insights.Insight do
     field :mls, :string
     field :uuid, :string
     field :selected_listing_ids, {:array, :string}
-    field :name, :string, null: false
+    field :name, :string
     field :content, MapType
     field :published, :boolean
     field :cover_photo_url, :string

@@ -17,13 +17,17 @@ defmodule ExcyteWeb do
   and import those modules here.
   """
 
+  def static_paths do
+    ~w(assets fonts images favicon.ico robots.txt)
+  end
+
   def controller do
     quote do
       use Phoenix.Controller, namespace: ExcyteWeb
 
       import Plug.Conn
       import ExcyteWeb.Gettext
-      alias ExcyteWeb.Router.Helpers, as: Routes
+      unquote(verified_routes())
     end
   end
 
@@ -35,7 +39,7 @@ defmodule ExcyteWeb do
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
-        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
@@ -45,17 +49,17 @@ defmodule ExcyteWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "app.html"}
+        layout: {ExcyteWeb.LayoutView, :app}
+
       use ViewportHelpers
       unquote(view_helpers())
     end
   end
 
-
   def live_auth_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "auth.html"}
+        layout: {ExcyteWeb.LayoutView, :auth}
 
       unquote(view_helpers())
     end
@@ -64,7 +68,7 @@ defmodule ExcyteWeb do
   def live_public_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "public.html"}
+        layout: {ExcyteWeb.LayoutView, :public}
 
       unquote(view_helpers())
     end
@@ -107,17 +111,30 @@ defmodule ExcyteWeb do
   defp view_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+      import Phoenix.HTML
 
       # Import LiveView helpers (live_render, live_component, live_patch, etc)
-      import Phoenix.LiveView.Helpers
+      # import Phoenix.LiveView.Helpers
+      import Phoenix.Component
+      import ExcyteWeb.CoreComponents
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
       import ExcyteWeb.ErrorHelpers
       import ExcyteWeb.Gettext
-      alias ExcyteWeb.Router.Helpers, as: Routes
+
+      alias Phoenix.LiveView.JS
+      unquote(verified_routes())
+    end
+  end
+
+  def verified_routes do
+    quote do
+      use Phoenix.VerifiedRoutes,
+        endpoint: ExcyteWeb.Endpoint,
+        router: ExcyteWeb.Router,
+        statics: ExcyteWeb.static_paths()
     end
   end
 

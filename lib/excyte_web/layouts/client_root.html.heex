@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Excyte" %>
+    <.live_title>
+      <%= assigns[:page_title] || "Excyte" %>
+    </.live_title>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content={get_csrf_token()} />
     <meta property="og:title" content={"#{ExcyteWeb.Helpers.Utilities.insight_type_to_name(@insight.type)} >> #{String.capitalize(@insight.name)}"} />
     <meta property="og:description" content={ExcyteWeb.Helpers.Utilities.social_description(@insight, @data.agent_profile)}/>
     <meta property="og:type" content="website" />

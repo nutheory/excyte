@@ -6,7 +6,7 @@
           <h4>Update Payment Method</h4>
         </div>
       <% end %>
-      <div phx-update="ignore">
+      <div phx-update="ignore" id="card-form">
         <input id="mode" type="hidden" value={if @card, do: 'update', else: 'new'}>
         <label for="card-element" class="tag-label">
           Credit or debit card
@@ -44,7 +44,6 @@
             phx-target={@myself}
             class="link-button font-bold text-base">edit</button>
         </div>
-      </div>
         <%= if @status.value !== "good" do %>
           <div class="alert-danger p-2 my-2">
             <label>Status</label>

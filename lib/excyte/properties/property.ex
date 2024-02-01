@@ -7,6 +7,7 @@ defmodule Excyte.Properties.Property do
   import Ecto.Query
 
   alias Excyte.{
+    Assets.Asset,
     Insights.Insight,
     Properties.Feature,
     Utils.MapType
@@ -27,7 +28,6 @@ defmodule Excyte.Properties.Property do
   @cast_opts [
       :agent_id,
       :foreign_id,
-      :insight_id,
       :doc_id,
       :internal_type,
       :street_name,
@@ -131,6 +131,7 @@ defmodule Excyte.Properties.Property do
     field :tax_year, :string
     embeds_many(:features, Feature)
     has_many(:insights, Insight)
+    has_many(:assets, Asset)
     belongs_to(:brokerage, Brokerage)
     belongs_to(:agent, User)
     timestamps()

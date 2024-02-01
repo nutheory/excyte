@@ -5,8 +5,9 @@ defmodule Excyte.Assets.Asset do
   alias Excyte.{
     Accounts.User,
     Brokerages.Brokerage,
-    Utils.MapType,
-    Repo
+    Properties.Property,
+    Repo,
+    Utils.MapType
   }
 
   @timestamps_opts [type: :utc_datetime]
@@ -32,6 +33,7 @@ defmodule Excyte.Assets.Asset do
     field :content, MapType
     belongs_to(:brokerage, Brokerage)
     belongs_to(:uploaded_by, User)
+    belongs_to(:property, Property)
     timestamps()
   end
 
@@ -56,6 +58,7 @@ defmodule Excyte.Assets.Asset do
       :last_used,
       :is_shared,
       :content,
+      :property_id,
       :uploaded_by_id,
       :brokerage_id
     ])

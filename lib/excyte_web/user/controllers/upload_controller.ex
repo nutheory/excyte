@@ -16,18 +16,18 @@ defmodule ExcyteWeb.UploadController do
   end
 
   # get signature for evaporate js
-  def aws_auth(conn, params) do
-    aws = Application.get_env(:excyte, :aws)
-    config = %{
-      region: "us-west-1",
-      access_key_id: aws.access_key_id,
-      secret_access_key: aws.secret_access_key
-    }
+  # def aws_auth(conn, params) do
+  #   aws = Application.get_env(:excyte, :aws)
+  #   config = %{
+  #     region: "us-west-1",
+  #     access_key_id: aws.access_key_id,
+  #     secret_access_key: aws.secret_access_key
+  #   }
 
-    expires = String.slice(params["datetime"], 0..7)
-    signature = ExcyteWeb.Helpers.SimpleS3Upload.signature(config, expires, params["to_sign"])
-    text(conn, signature)
-  end
+  #   expires = String.slice(params["datetime"], 0..7)
+  #   signature = ExcyteWeb.Helpers.SimpleS3Upload.signature(config, expires, params["to_sign"])
+  #   text(conn, signature)
+  # end
 
   def mux_auth_url(conn, params) do
     client = Mux.client()

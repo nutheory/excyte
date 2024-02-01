@@ -268,6 +268,7 @@ defmodule ExcyteWeb.Insight.Customize do
   end
 
   defp set_default_name(ins) do
+    IO.inspect(ins, label: "BOOYA")
     case ins.type do
       "cma_auto" -> "#{ins.property.street_number} #{ins.property.street_name}"
       "cma" -> "#{ins.property.street_number} #{ins.property.street_name}"

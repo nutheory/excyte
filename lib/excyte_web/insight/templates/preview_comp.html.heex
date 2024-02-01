@@ -48,7 +48,7 @@
       <div class="flex-1 p-3 text-left">
         <%= if @listing.list_price !== nil || @listing.close_price !== nil do %>
           <%= if @listing.close_price !== nil do %>
-            <p class="leading-snug">Closed for
+            <p class="leading-snug">Closed for</p>
             <h3 class="mb-0">$<%= number_to_delimited(@listing.close_price, precision: 0) %></h3>
             <%= if Map.has_key?(@listing, :close_date) do %>
               <p class="leading-snug">after <strong><%= @listing.days_on_market %> days</strong> on the market</p>

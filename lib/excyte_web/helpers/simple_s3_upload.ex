@@ -32,7 +32,7 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
           expires_in: :timer.hours(1)
         )
   """
-  def sign_form_upload(config, bucket, opts) do
+  def sign_upload_form(config, bucket, opts) do
     key = Keyword.fetch!(opts, :key)
     max_file_size = Keyword.fetch!(opts, :max_file_size)
     content_type = Keyword.fetch!(opts, :content_type)
@@ -77,7 +77,7 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
 
   defp amz_date(time) do
     time
-    |> DateTime.to_iso8601()
+    |> NaiveDateTime.to_iso8601()
     |> String.split(".")
     |> List.first()
     |> String.replace("-", "")
@@ -89,21 +89,14 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
     "#{config.access_key_id}/#{short_date(expires_at)}/#{config.region}/s3/aws4_request"
   end
 
-  def signature(config, %DateTime{} = expires_at, encoded_policy) do
+  defp signature(config, %DateTime{} = expires_at, encoded_policy) do
     config
     |> signing_key(expires_at, "s3")
     |> sha256(encoded_policy)
     |> Base.encode16(case: :lower)
   end
 
-  def signature(config, expires_at, encoded_policy) do
-    config
-    |> signing_key(expires_at, "s3")
-    |> sha256(encoded_policy)
-    |> Base.encode16(case: :lower)
-  end
-
-  def signing_key(%{} = config, %DateTime{} = expires_at, service) when service in ["s3"] do
+  defp signing_key(%{} = config, %DateTime{} = expires_at, service) when service in ["s3"] do
     amz_date = short_date(expires_at)
     %{secret_access_key: secret, region: region} = config
 
@@ -114,21 +107,11 @@ defmodule ExcyteWeb.Helpers.SimpleS3Upload do
     |> sha256("aws4_request")
   end
 
-  def signing_key(%{} = config, expires_at, service) when service in ["s3"] do
-    %{secret_access_key: secret, region: region} = config
-
-    ("AWS4" <> secret)
-    |> sha256(expires_at)
-    |> sha256(region)
-    |> sha256(service)
-    |> sha256("aws4_request")
-  end
-
-  def short_date(%DateTime{} = expires_at) do
+  defp short_date(%DateTime{} = expires_at) do
     expires_at
     |> amz_date()
     |> String.slice(0..7)
   end
 
-  def sha256(secret, msg), do: :crypto.mac(:hmac, :sha256, secret, msg)
+  defp sha256(secret, msg), do: :crypto.mac(:hmac, :sha256, secret, msg)
 end

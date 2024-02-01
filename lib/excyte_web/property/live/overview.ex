@@ -13,6 +13,7 @@ defmodule ExcyteWeb.Property.Overview do
       listings: listings,
       show_send_panel: false,
       insight_to_send: nil,
+      insight: nil,
       current_user: cu
     )}
   end

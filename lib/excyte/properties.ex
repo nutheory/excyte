@@ -2,6 +2,7 @@ defmodule Excyte.Properties do
   import Ecto.Query, warn: false
   alias Excyte.{
     Activities,
+    Assets.Asset,
     Properties.Property,
     Properties.PublicDataApi,
     RateLimiter,
@@ -37,6 +38,10 @@ defmodule Excyte.Properties do
 
   def get_property(id) do
     Repo.get_by(Property, %{id: id})
+  end
+
+  def get_property_assets(property_id) do
+    Repo.get_by(Asset, %{property_id: property_id})
   end
 
   def comparable_properties(%Property{} = subject, opts) do

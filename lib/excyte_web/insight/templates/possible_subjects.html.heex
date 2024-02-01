@@ -2,7 +2,7 @@
   <div class="flex h-full">
     <%= if @prop["MainPhotoUrl"] do %>
       <div 
-        :class="{'rounded-bl-none rounded-br': open}" 
+        x-bind:class="{'rounded-bl-none rounded-br': open}" 
         class="main-photo" 
         style={"background-repeat: no-repeat; background-size: cover; background-image: url(#{@prop["MainPhotoUrl"]})"}></div>
     <% end %>

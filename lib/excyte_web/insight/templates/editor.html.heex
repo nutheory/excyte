@@ -30,9 +30,9 @@
           </div>
         </div>
         <div x-ref="editor" class="w-full p-4 lg:p-6 xl:p-10 h-full bg-white shadow rounded-md"></div>
-        <%# <div class="blackout" :class="{ 'block': imagePanelVisible }"></div> %>
+        <%# <div class="blackout" x-bind:class="{ 'block': imagePanelVisible }"></div> %>
         <div
-          :class="{ 'right-0': imagePanelVisible }"
+          x-bind:class="{ 'right-0': imagePanelVisible }"
           class="panel-slidein bg-gray-100"
           id="image-panel"
           @click.away=""

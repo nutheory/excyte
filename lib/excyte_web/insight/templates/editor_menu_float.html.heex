@@ -3,7 +3,7 @@
     <nav class="">
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 1 }) }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 1 }) }"
         @click="editor.chain().focus().toggleHeading({ level: 1 }).run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -13,7 +13,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 2 }) }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 2 }) }"
         @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -23,7 +23,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 3 }) }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('heading', { level: 3 }) }"
         @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -33,7 +33,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': imagePanelVisible }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': imagePanelVisible }"
         @click="toggleAddImage()"
       >
         <svg class="w-6 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,7 +42,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('blockquote') }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('blockquote') }"
         @click="editor.chain().focus().toggleBlockquote().run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -52,7 +52,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('bulletList') }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('bulletList') }"
         @click="editor.chain().focus().toggleBulletList().run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -62,7 +62,7 @@
       </button>
       <button
         class="hover:bg-gray-200 rounded px-1 py-1"
-        :class="{ 'bg-gray-600 fill-current text-white': editor.isActive('orderedList') }"
+        x-bind:class="{ 'bg-gray-600 fill-current text-white': editor.isActive('orderedList') }"
         @click="editor.chain().focus().toggleOrderedList().run()"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">

@@ -1,5 +1,5 @@
 defmodule ExcyteWeb.Brokerage.GettingStarted do
-  use ExcyteWeb, :live_view_form
+  use ExcyteWeb, :live_view
   alias Excyte.{Accounts, Agents, Brokerages, Mls}
   alias ExcyteWeb.BrokerageView
 

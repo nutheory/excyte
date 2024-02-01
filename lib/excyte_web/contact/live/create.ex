@@ -1,5 +1,5 @@
 defmodule ExcyteWeb.Contact.Create do
-  use ExcyteWeb, :live_view_form
+  use ExcyteWeb, :live_view
   alias Excyte.{
     Contacts,
     Utils.ContactItem,

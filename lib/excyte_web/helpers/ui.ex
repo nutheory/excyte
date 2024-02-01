@@ -62,7 +62,7 @@ defmodule ExcyteWeb.Helpers.UI do
       <button
         type="button"
         @click="expanded = !expanded"
-        :aria-expanded="expanded"
+        aria-expanded="expanded"
         class="pt-6 pb-4 w-full flex"
       >
         <h3 class="flex-1 text-left mb-0"><%= @title %></h3>
@@ -199,15 +199,15 @@ defmodule ExcyteWeb.Helpers.UI do
       <button
           x-ref="button"
           x-on:click="toggle()"
-          :aria-expanded="open"
-          :aria-controls="$id('dropdown-button')"
+          aria-expanded="open"
+          aria-controls="$id('dropdown-button')"
           type="button"
           class="border border-black py-2 focus:outline-none focus:ring-2 focus:ring-aqua-400 bg-white shadow rounded"
       >
         <div class="flex px-2">
           <div class="ml-2"><%= if @selected !== nil, do: extract_text(@selected), else: @label %></div>
           <div class="ml-2 -mt-0.5" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" :class="{'rotate-180': open}" class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" x-bind:class="{'rotate-180': open}" class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
               <path fill-rule="evenodd" d="M15.3 10.3a1 1 0 011.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4l3.3 3.29 3.3-3.3z"/>
             </svg>
           </div>
@@ -218,7 +218,7 @@ defmodule ExcyteWeb.Helpers.UI do
           x-show="open"
           x-transition.origin.top.left
           x-on:click.outside="close($refs.button)"
-          :id="$id('dropdown-button')"
+          x-id="$id('dropdown-button')"
           style="display: none;"
           class="absolute left-0 mt-2 bg-white shadow rounded"
       >

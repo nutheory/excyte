@@ -1,5 +1,5 @@
 defmodule ExcyteWeb.Contact.ImportCsv do
-  use ExcyteWeb, :live_view_form
+  use ExcyteWeb, :live_view
     alias Excyte.{
     Contacts
   }

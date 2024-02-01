@@ -62,7 +62,7 @@
     x-ref="button"
     @click="toggleListboxVisiblility()"
     aria-expanded="open"
-    :class="{ 'font-semibold': open, 'shadow-none': open }"
+    x-bind:class="{ 'font-semibold': open, 'shadow-none': open }"
     class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-1.5 py-1 pl-3 pr-1 bg-white"
   >
     <div 
@@ -83,7 +83,7 @@
       class="form-control w-full h-full focus:outline-none"
     />
     <div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" :class="{'rotate-180': open}" class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" x-bind:class="{'rotate-180': open}" class="ml-1 inline-block fill-current text-gray-500 w-6 h-6">
         <path fill-rule="evenodd" d="M15.3 10.3a1 1 0 011.4 1.4l-4 4a1 1 0 01-1.4 0l-4-4a1 1 0 011.4-1.4l3.3 3.29 3.3-3.3z"/>
       </svg>
     </div>
@@ -118,11 +118,11 @@
           @mouseenter="focusedOptionIndex = index"
           @mouseleave="focusedOptionIndex = null"
           class="py-2 px-4 cursor-pointer block hover:bg-blue-100"
-          :class="{ 'text-white bg-indigo-600': index === focusedOptionIndex, 'text-gray-700': index !== focusedOptionIndex }"
+          x-bind:class="{ 'text-white bg-indigo-600': index === focusedOptionIndex, 'text-gray-700': index !== focusedOptionIndex }"
         >
           <span 
             x-text="opt.text"
-            :class="{ 'font-semibold': index === focusedOptionIndex, 'font-normal': index !== focusedOptionIndex }"
+            x-bind:class="{ 'font-semibold': index === focusedOptionIndex, 'font-normal': index !== focusedOptionIndex }"
             class="block truncate font-normal"
           ></span>
           <%# opt.text %>

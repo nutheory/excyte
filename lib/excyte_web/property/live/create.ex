@@ -1,5 +1,5 @@
 defmodule ExcyteWeb.Property.Create do
-  use ExcyteWeb, :live_view_form
+  use ExcyteWeb, :live_view
   alias Excyte.{
     Properties,
     Properties.Feature

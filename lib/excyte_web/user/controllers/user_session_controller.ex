@@ -1,9 +1,9 @@
 defmodule ExcyteWeb.UserSessionController do
   use ExcyteWeb, :controller
+  import Phoenix.Component, only: [to_form: 1]
 
   alias Excyte.Accounts
   alias ExcyteWeb.UserAuth
-  alias ExcyteWeb.Router.Helpers, as: Routes
 
   plug :put_view, ExcyteWeb.UserView
 

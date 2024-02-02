@@ -60,41 +60,41 @@
             Optionally, you may enter a exact price instead
           </p>
         <% end %>
-        <.form let={f} for={:suggested_price} phx-change="suggested-update" phx-submit="save-cma" phx-target={@myself}>
+        <.form for={@form} phx-change="suggested-update" phx-submit="save-cma" phx-target={@myself}>
           <div class="flex my-6">
             <div class="mr-1 pt-1 text-lg">$</div>
             <%= if @range do %>
               <div class="flex-1">
-                <%= text_input f, :min,
-                  class: "number-field",
-                  inputmode: "numeric",
-                  pattern: "[0-9]*",
-                  placeholder: "Min",
-                  value: @suggested_price_min,
-                  phx_debounce: "blur"
-                %>
+                <.input 
+                  type="number"
+                  field={@form[:min]}
+                  class="number-field"
+                  pattern="[0-9]*"
+                  placeholder="Min"
+                  phx_debounce="blur"
+                />
               </div>
               <div class="mx-1 pt-1 font-bold"> - </div>
               <div class="flex-1">
-                <%= text_input f, :max,
-                  class: "number-field",
-                  inputmode: "numeric",
-                  pattern: "[0-9]*",
-                  placeholder: "Max",
-                  value: @suggested_price_max,
-                  phx_debounce: "blur"
-                %>
+                <.input 
+                  type="number"
+                  field={@form[:max]}
+                  class="number-field"
+                  pattern="[0-9]*"
+                  placeholder="Max"
+                  phx_debounce="blur"
+                />
               </div>
             <% else %>
               <div class="w-28 mr-3 text-right">
-                <%= text_input f, :exact,
-                  class: "number-field",
-                  inputmode: "numeric",
-                  pattern: "[0-9]*",
-                  placeholder: "Price",
-                  value: @suggested_price,
-                  phx_debounce: "blur"
-                %>
+                <.input 
+                  type="number"
+                  field={@form[:exact]}
+                  class="number-field"
+                  pattern="[0-9]*"
+                  placeholder="Exact"
+                  phx_debounce="blur"
+                />
               </div>
               <p class="text-sm text-right mt-1.5 flex-1"
               >
@@ -106,7 +106,7 @@
               </p>
             <% end %>
           </div>
-          <%= submit "Continue with selected", class: "submit block w-full" %>
+          <.button class="submit block w-full">Continue with selected</.button>
         </.form>
       </div>
     <% else %>

@@ -1,10 +1,12 @@
 <div class="flex my-4">
   <div class="flex-1">
     <div class="max-w-sm">
-      <.form let={f} for={:search_filter} phx-change={"search_change"}>
-        <%= text_input f, :term,
-          placeholder: "Filter by Name/Email",
-          class: "text-field shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-2 py-1 bg-white" %>
+      <.form for={@form} phx-change={"search_change"}>
+        <.input
+          field={@form[:term]},
+          placeholder="Filter by Name/Email"
+          class="text-field shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-2 py-1 bg-white"
+        />
       </.form> 
     </div>
   </div>

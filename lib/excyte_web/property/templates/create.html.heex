@@ -18,8 +18,7 @@
     </UI.form_header>
     <%= if @property_id do %>
       <.form
-        let={f}
-        for={@changeset}
+        for={@form}
         phx-change={"validate"}
         phx-submit={"submit_property"}
       >
@@ -30,34 +29,58 @@
             <h3>Address</h3>
             <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
-                <%= label f, :street_number, "Street #", class: "text-sm" %>
-                <%= text_input f, :street_number, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :street_number %>
+                <.input 
+                  label={"Street #"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:street_number]}
+                  class={"text-field"}
+                />
               </div>
               <div class="col-span-2">
-                <%= label f, :street_name %>
-                <%= text_input f, :street_name, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :street_name %>
+               <.input 
+                  label={"Street name"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:street_name]}
+                  class={"text-field"}
+                />
               </div>
               <div>
-                <%= label f, :unit, "Unit #", class: "text-sm" %>
-                <%= text_input f, :unit, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :unit %>
+               <.input 
+                  label={"Unit #"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:unit]}
+                  class={"text-field"}
+                />
               </div>
               <div class="col-span-2">
-                <%= label f, :city, class: "text-sm" %>
-                <%= text_input f, :city, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :city %>
+                <.input 
+                  label={"City"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:city]}
+                  class={"text-field"}
+                />
               </div>
               <div>
-                <%= label f, :state, class: "text-sm" %>
-                <%= text_input f, :state, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :state %>
+                <.input 
+                  label={"State"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:state]}
+                  class={"text-field"}
+                />
               </div>
               <div>
-                <%= label f, :zip, class: "text-sm" %>
-                <%= text_input f, :zip, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :zip %>
+                <.input 
+                  label={"Zip"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:zip]}
+                  class={"text-field"}
+                />
               </div>
             </div>
           </div>
@@ -65,81 +88,114 @@
             <h3>Property Details</h3>
             <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
-                <%= label f, :beds %>
-                <%= text_input f, :beds, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :beds %>
+                <.input 
+                  label={"Beds"}
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  step={"0.5"}
+                  phx-debounce={"blur"}
+                  field={@form[:beds]}
+                  class={"number-field"}
+                />
               </div>
               <div>
-                <%= label f, :baths %>
-                <%= text_input f, :baths, class: "number-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :baths %>
+                <.input 
+                  label={"Baths"}
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  step={"0.5"}
+                  phx-debounce={"blur"}
+                  field={@form[:baths]}
+                  class={"number-field"}
+                />
               </div>
               <div>
-                <%= label f, :sqft %>
-                <%= text_input f, :sqft, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :sqft %>
+                <.input 
+                  label={"Sqft"}
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  phx-debounce={"blur"}
+                  field={@form[:sqft]}
+                  class={"number-field"}
+                />
               </div>
               <div>
-                <%= label f, :stories %>
-                <%= text_input f, :stories, class: "text-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :stories %>
+                <.input 
+                  label={"Stories"}
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  step={"0.5"}
+                  phx-debounce={"blur"}
+                  field={@form[:stories]}
+                  class={"number-field"}
+                />
               </div>
               <div>
                 <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit"><%= @lotsize_unit %></span>)</label>
-                <%= text_input f, :lotsize_value, value: @lotsize_value, inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", class: "number-field", phx_debounce: "blur" %>
-                <%= error_tag f, :lotsize_value %>
+                <.input 
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  phx-debounce={"blur"}
+                  field={@form[:lotsize]}
+                  class={"number-field"}
+                />
               </div>
               <div>
-                <%= label f, :year_built %>
-                <%= text_input f, :year_built, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :year_built %>
+                <.input 
+                  label={"Year Built"}
+                  type={"number"}
+                  pattern={"[0-9]*[.]?[0-9]*"}
+                  phx-debounce={"blur"}
+                  field={@form[:year_build]}
+                  class={"number-field"}
+                />
               </div>
-              <%# IO.inspect(@changeset.data, label: "CS") %>
               <div>
-                <%= label f, :walkscore %>
-                <%= text_input f, :walkscore, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :walkscore %>
+                <.input 
+                  label={"Walkscore"} 
+                  type={"number"} 
+                  pattern={"[0-9]*[.]?[0-9]*"} 
+                  phx-debounce={"blur"} 
+                  field={@form[:walkscore]} 
+                  class={"number-field"} 
+                />
               </div>
               <div class="col-span-2">
-                <%= label f, :property_type %>
-                <UI.dropdown
+                <.input
+                  type={"select"}
+                  label={"Property Type"}
+                  field={@form[:property_type]}
                   options={@property_type_options}
-                  selected={@changeset.changes[:property_type]}
-                  origin={"left"}
-                  attr={"property_type"}
-                  callback={"update_property"}
-                  label={"Select"}
-                  id={"property_type"}
+                  prompt="Select..."
                 />
               </div>
               <div class="col-span-2">
-                <%= label f, :property_sub_type %>
-                <UI.dropdown
+                <.input
+                  type={"select"}
+                  label={"Property Sub Type"}
+                  field={@form[:property_sub_type]}
                   options={@property_sub_type_options}
-                  selected={@changeset.changes[:property_sub_type]}
-                  origin={"left"}
-                  attr={"property_sub_type"}
-                  callback={"update_property"}
-                  label={"Select"}
-                  id={"property_sub_type"}
+                  prompt="Select..."
                 />
               </div>
               <div class="col-span-2">
-                <label>Parking Type</label>
-                <UI.dropdown
-                  options={@parking_options}
-                  selected={@changeset.changes[:parking_type]}
-                  origin={"left"}
-                  attr={"parking_type"}
-                  callback={"update_property"}
-                  label={"Parking type"}
-                  id={"parking_type"}
+                <.input
+                  type={"select"}
+                  label={"Parking Type"}
+                  field={@form[:parking_type]}
+                  options={@parking_type_options}
+                  prompt="Select..."
                 />
               </div>
               <div>
-                <%= label f, :parking_spaces %>
-                <%= text_input f, :parking_spaces, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :parking_spaces %>
+                <.input 
+                  label={"Parking Spaces"} 
+                  type={"number"} 
+                  pattern={"[0-9]*[.]?[0-9]*"} 
+                  phx-debounce={"blur"} 
+                  field={@form[:parking_spaces]} 
+                  class={"number-field"} 
+                />
               </div>
             </div>
           </div>
@@ -147,7 +203,7 @@
             title="Features"
             expanded={false}
           >
-            <Function.feature_form form={f} id={:property_features} />
+            <Function.feature_form form={@form} id={:property_features} />
           </UI.accordian>
           <UI.accordian 
             title="Home Owners Association"
@@ -155,44 +211,63 @@
           >
             <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div class="col-span-2">
-                <%= label f, :association_name, class: "text-sm" %>
-                <%= text_input f, :association_name, class: "text-field", phx_debounce: "blur" %>
-                <%= error_tag f, :association_name %>
-              </div>
-              <div>
-                <%= label f, :association_fee_frequency, "Assoc. freq." %>
-                <UI.dropdown
-                  options={@association_fee_frequency_options}
-                  selected={@changeset.changes[:association_fee_frequency]}
-                  origin={"left"}
-                  attr={"association_fee_frequency"}
-                  callback={"update_property"}
-                  label={"Select"}
-                  id={"association_fee_frequency"}
+                <.input 
+                  label={"Association Name"}
+                  type={"text"}
+                  phx-debounce={"blur"}
+                  field={@form[:association_name]}
+                  class={"text-field"}
                 />
               </div>
               <div>
-                <%= label f, :association_fee %>
-                <%= text_input f, :association_fee, class: "text-field", inputmode: "numeric", pattern: "[0-9]*[.]?[0-9]*", phx_debounce: "blur" %>
-                <%= error_tag f, :association_fee %>
+                <.input
+                  type={"select"}
+                  label={"Assoc. freq."}
+                  field={@form[:association_fee_frequency]}
+                  options={@association_fee_frequency_options}
+                  prompt="Select..."
+                />
+              </div>
+              <div>
+                <.input 
+                  label={"Association Fee"} 
+                  type={"number"} 
+                  pattern={"[0-9]*[.]?[0-9]*"} 
+                  phx-debounce={"blur"} 
+                  field={@form[:association_fee]} 
+                  class={"number-field"} 
+                />
               </div>
               <div class="col-span-2 sm:col-span-4">
-                <%= label f, :association_amenities %>
-                <%= textarea f, :association_amenities, class: "textarea", phx_debounce: "blur" %>
-                <%= error_tag f, :association_amenities %>
+                <.input 
+                  label={"Association Amenities"}
+                  type={"textarea"}
+                  phx-debounce={"blur"}
+                  field={@form[:association_amenities]}
+                  class={"text-field"}
+                />
               </div>
             </div>
           </UI.accordian>
           <div class="pt-6 pb-4 border-t border-gray-300">
             <h3 class="mb-2">Property Description</h3>
-            <%= textarea f, :public_remarks, class: "textarea", phx_debounce: "blur" %>
-            <%= error_tag f, :public_remarks %>
+              <.input 
+                type={"textarea"}
+                phx-debounce={"blur"}
+                field={@form[:public_remarks]}
+                class={"text-field"}
+              />
           </div>
           <div class="pt-6 pb-4 border-t border-gray-300">
             <h3 class="mb-2">List Price</h3>
             <div>
-              <%= text_input f, :list_price, class: "number-field", inputmode: "numeric", pattern: "[0-9]*", phx_debounce: "blur" %>
-              <%= error_tag f, :list_price %>
+              <.input 
+                type={"number"} 
+                pattern={"[0-9]*[.]?[0-9]*"} 
+                phx-debounce={"blur"} 
+                field={@form[:list_price]} 
+                class={"number-field"} 
+              />
             </div>
           </div>
           <div class="flex items-center h-full mt-6">

@@ -15,6 +15,7 @@ defmodule ExcyteWeb.Contact.ListOptions do
   @impl true
   def update(%{list_options: lo, default_scope: ds}, socket) do
     {:ok, assign(socket,
+      form: to_form(%{}),
       default_scope: ds,
       scope_options: @scope_options,
       sort_options: @sort_options,

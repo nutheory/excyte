@@ -83,7 +83,7 @@
   <div class="pt-16 lg:pt-20 flex">
     <div class="w-full my-2">
       <%= if @show_listing_ids_form do %>
-        <.form let={f} for={:finder} phx-submit={:finder_submit}>
+        <.form for={:finder} phx-submit={:finder_submit}>
           <div class="flex">
             <div class="flex-1">
               <%= label f, :listing_ids, "Find by Listing ID's" %>
@@ -101,7 +101,7 @@
               %>
             </div>
             <div class="w-full md:w-32">
-              <%= submit "Find listings", class: "submit md:ml-3" %>
+              <.button class="submit md:ml-3">Find listings</.button>
             </div>
           </div>
         </.form>

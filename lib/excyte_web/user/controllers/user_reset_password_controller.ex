@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.UserResetPasswordController do
   use ExcyteWeb, :controller
+  import Phoenix.Component, only: [to_form: 1]
 
   alias Excyte.Accounts
 
@@ -7,10 +8,10 @@ defmodule ExcyteWeb.UserResetPasswordController do
   plug :get_user_by_reset_password_token when action in [:edit, :update]
 
   def new(conn, _params) do
-    render(conn, "send_password_reset.html")
+    render(conn, "send_password_reset.html", form: to_form(%{email: ""}))
   end
 
-  def create(conn, %{"user" => %{"email" => email}}) do
+  def create(conn, %{"email" => email}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
         user,
@@ -29,7 +30,7 @@ defmodule ExcyteWeb.UserResetPasswordController do
 
   def edit(conn, _params) do
     render(conn, "password_reset.html",
-      changeset: Accounts.change_user_password(conn.assigns.user)
+      form: to_form(Accounts.change_user_password(conn.assigns.user))
     )
   end
 
@@ -43,7 +44,7 @@ defmodule ExcyteWeb.UserResetPasswordController do
         |> redirect(to: Routes.user_session_path(conn, :new))
 
       {:error, changeset} ->
-        render(conn, "password_reset.html", changeset: changeset)
+        render(conn, "password_reset.html", form: changeset)
     end
   end
 

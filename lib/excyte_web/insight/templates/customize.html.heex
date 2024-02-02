@@ -109,12 +109,10 @@
               />
               <ul class="mt-8">
                 <li id="adding-file" class="hidden">
-                  <div phx-update="ignore">
-                    <div class="rounded bg-cyan-100 p-2">
-                      <h4 class="font-normal text-base">Uploading... <span class="font-bold" id="filename"></span></h4>
-                      <label for="file-field">Progress:</label>
-                      <progress id="upload-progress" max="100" value="0"></progress>
-                    </div>
+                  <div class="rounded bg-cyan-100 p-2">
+                    <h4 class="font-normal text-base">Uploading... <span class="font-bold" id="filename"></span></h4>
+                    <label for="file-field">Progress:</label>
+                    <progress id="upload-progress" max="100" value="0"></progress>
                   </div>
                 </li>
                 <%= if length(@assets) < 1 do %>
@@ -195,7 +193,7 @@
             Close preview
           </div>
         </div>
-        <div class="relative antialiased h-screen overflow-y-auto" phx-update="ignore">
+        <div class="relative antialiased h-screen overflow-y-auto" phx-update="ignore" id="template-render">
           <div class="lg:max-w-5xl mx-auto h-full">
             <%= for {section, idx} <- Enum.with_index(@sections) do %>
               <%= if section.enabled do %>

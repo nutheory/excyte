@@ -10,13 +10,12 @@
     </div>
   </UI.form_header>
   <.form
-    let={f}
     for={@changeset}
     phx-change={"form_change"}
     phx-submit={"form_submit"}
   >
     <FC.form
-      f={f}
+      f={@form}
       contact_types={@contact_types}
       type={@type}
       priorities={@priorities}

@@ -7,6 +7,7 @@ defmodule ExcyteWeb.Insight.SelectedComps do
   def update(assigns, socket) do
     average = average(Enum.map(assigns.selected, fn sel -> sel.excyte_price end))
     {:ok, assign(socket,
+      form: to_form(%{}),
       size: length(assigns.selected),
       selected: sort_selected_by_status(assigns.selected),
       suggested_price: (if average, do: trunc(average), else: nil),

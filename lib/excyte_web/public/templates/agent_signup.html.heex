@@ -60,21 +60,29 @@
       <p class="text-sm mt-1">This sign up form is for single agents. 
       If you would like to sign up a team for group discounting you may 
       want to use our <.link navigate={~p"/brokerage/signup"}>brokerage sign up page</.link>.</p>
-      <.form let={f} for={@changeset} phx-change="validate" phx-submit="save" id="agent-registration-form">
+      <.form for={@form} phx-change="validate" phx-submit="save" id="agent-registration-form">
         <div class="mt-4">
-          <%= label f, :full_name %>
-          <%= text_input f, :full_name, class: "text-field", phx_debounce: "blur" %>
-          <%= error_tag f, :full_name %>
+          <.input 
+            label={"Name"}
+            type={"text"}
+            phx-debounce={"blur"}
+            field={@form[:full_name]}
+            class={"text-field"}
+          />
         </div>
         <div class="mt-4">
-          <%= label f, :email %>
-          <%= email_input f, :email, class: "text-field", phx_debounce: "blur" %>
-          <%= error_tag f, :email %>
+          <.input 
+            label={"Email"}
+            type={"text"}
+            phx-debounce={"blur"}
+            field={@form[:email]}
+            class={"text-field"}
+          />
         </div>
         <div class="mt-4 relative">
           <div id="show_password_txt" class="absolute top-0 right-0 pt-1 cursor-pointer text-xs" phx-click="togglePassword"><%= @show_text %></div>
-          <%= label f, :password %>
-          <%= error_tag f, :password %>
+          <.label for={@form[:password]}>Password</.label>
+          <.error :for={msg <- @errors}><%= msg %></.error>
           <input type={@password_type} id="user_password" value={@password_value} name="agent[password]" class="text-field pr-12" phx-hook="Registration" />
         </div>
           <ul class="text-sm text-gray-700 mt-1">
@@ -83,7 +91,7 @@
             <li id="pw_special">Must contain at least one number or special character</li>
           </ul>
         <div class="mt-4">
-          <%= submit "Start your free trial", class: "submit w-full block", phx_disable_with: "Creating" %>
+          <.button class="submit w-full block" phx_disable_with="Creating">Start your free trial</.button>
         </div>
         <p class="text-xs mt-4">By clicking "Start your free trial", you agree to our <.link navigate={~p"/terms"} target="_blank" rel="noopener noreferrer">Terms & Conditions</.link>.
         You can also read our <.link navigate={~p"/privacy"} target="_blank" rel="noopener noreferrer">Privacy Policy</.link> to understand how we will use and protect your data.</p>

@@ -6,6 +6,7 @@ defmodule ExcyteWeb.Insight.FilterListings do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
+      form: to_form(%{}),
       subject: assigns.subject,
       status_options: Utilities.status_options,
       status_updated_options: assigns.status_updated_options,

@@ -176,18 +176,23 @@
           </div>
         </div>
       </div>
-      <.form let={f} for={:commit} phx-change={:update_commit} phx-submit={:create_tour}>
+      <.form for={:commit} phx-change={:update_commit} phx-submit={:create_tour}>
         <div class="w-full flex flex-wrap mt-4">
           <div class="flex md:w-full w-32 mt-4">
             <div class="mr-4 w-32">
-              <%= label f, :distance, "Distance (mi)" %>
-              <%= text_input f, :distance, class: "text-field w-24", value: @distance %>
+              <.input
+                type="number"
+                label="Distance (mi)"
+                field={@form[:distance]}
+                class="text-field w-24"
+              />
+
             </div>
             <div class="flex-1 flex items-end pb-0.5">
               <%= if Map.has_key?(@coords, :lat) do %>
-                <%= submit "Search", class: "submit w-full" %>
+                <.button class="submit w-full">Search</.button>
               <% else %>
-                <%= submit "Search", class: "submit w-full", disabled: "disabled" %>
+                <.button class="submit w-full" disabled="disabled">Search</.button>
               <% end %>
             </div>
           </div>

@@ -12,8 +12,8 @@ defmodule ExcyteWeb.Settings.Account do
 
     {:ok, assign(socket,
       current_user: assigns.current_user,
-      email_changeset: email,
-      password_changeset: password,
+      email_form: to_form(email),
+      password_form: to_form(password),
       email_saved: false,
       password_saved: false
     )}
@@ -33,7 +33,7 @@ defmodule ExcyteWeb.Settings.Account do
           &Routes.user_settings_url(socket, :confirm_email, &1)
         )
         {:noreply, assign(socket, email_saved: true)}
-      {:error, err} -> {:noreply, assign(socket, email_changeset: err)}
+      {:error, err} -> {:noreply, assign(socket, email_form: to_form(err))}
     end
   end
 
@@ -45,7 +45,7 @@ defmodule ExcyteWeb.Settings.Account do
     user = socket.assigns.current_user
     case Accounts.update_user_password(user, cp, Utilities.key_to_atom(attrs)) do
       {:ok, _} -> {:noreply, assign(socket, password_saved: true)}
-      {:error, err} -> {:noreply, assign(socket, password_changeset: err)}
+      {:error, err} -> {:noreply, assign(socket, password_form: to_form(err))}
     end
   end
 end

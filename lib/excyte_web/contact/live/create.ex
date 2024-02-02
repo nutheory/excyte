@@ -26,7 +26,7 @@ defmodule ExcyteWeb.Contact.Create do
       type: nil,
       priority: nil,
       valid_address: false,
-      changeset: cs
+      form: to_form(cs)
     )}
   end
 
@@ -34,7 +34,7 @@ defmodule ExcyteWeb.Contact.Create do
     addr = contact["address_items"]["0"]
     cs = Contacts.change_contact(contact) |> Map.put(:action, :validate)
     valid_address = if addr["address_one"] && addr["city"] && addr["state"] && addr["zip"], do: true, else: false
-    {:noreply, assign(socket, changeset: cs, valid_address: valid_address)}
+    {:noreply, assign(socket, form: to_form(cs), valid_address: valid_address)}
   end
 
   def handle_event("form_submit", %{"contact" => cnt}, %{assigns: a} = socket) do
@@ -60,7 +60,7 @@ defmodule ExcyteWeb.Contact.Create do
     contacts = Enum.concat(existing_contacts, [%ContactItem{temp_id: Utilities.get_temp_id()}])
 
     cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
@@ -70,7 +70,7 @@ defmodule ExcyteWeb.Contact.Create do
       end)
 
     cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   defp filter_points_of_contact(poc) do

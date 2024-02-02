@@ -14,6 +14,60 @@ defmodule ExcyteWeb.CoreComponents do
   import ExcyteWeb.Gettext
 
   @doc """
+  Renders a Uploader.
+  """
+
+  attr :upload, :map, required: true
+
+  def upload(assigns) do
+    ~H"""
+    <section
+      phx-drop-target={@upload.ref}
+      class=" h-full relative mt-0.5 border-2 border-dashed border-[#6b7280] px-4 text-sm text-[#6b7280] py-3 rounded-lg"
+    >
+      <.live_file_input
+        upload={@upload}
+        class="opacity-0 top-0 left-0 absolute h-full w-full hover:cursor-pointer z-20"
+      />
+      <div class="w-full h-full flex items-center justify-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          class="w-6 h-6 stroke-[#6b7280]"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
+          />
+        </svg>
+        <p class="ml-2 text-sm">Drop an image here, or browse</p>
+      </div>
+      <%= for entry <- @upload.entries do %>
+        <article class="upload-entry absolute top-0 left-0 w-full h-full">
+          <progress value={entry.progress} max="100"><%= entry.progress %>%</progress>
+          <button
+            type="button"
+            phx-click="cancel-upload"
+            phx-value-ref={entry.ref}
+            aria-label="cancel"
+          >
+            &times;
+          </button>
+
+          <%= for err <- upload_errors(@upload, entry) do %>
+            <p class="alert alert-danger"><%= error_to_string(err) %></p>
+          <% end %>
+        </article>
+      <% end %>
+    </section>
+    """
+  end
+
+  @doc """
   Renders a modal.
 
   ## Examples
@@ -690,4 +744,8 @@ defmodule ExcyteWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 end

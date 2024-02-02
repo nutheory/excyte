@@ -18,7 +18,7 @@ defmodule ExcyteWeb.Property.Create do
     cs = Properties.change_property(%{})
     {:ok, assign(socket,
       property_id: nil,
-      changeset: cs,
+      form: to_form(cs),
       parking_options: FC.parking_options(),
       property_type_options: FC.property_type_options(),
       property_sub_type_options: FC.property_sub_type_options(),
@@ -39,7 +39,7 @@ defmodule ExcyteWeb.Property.Create do
     with {:ok, listing} <- Properties.fetch_listing_details(prop_id, a.current_user.id),
                      cs <- Properties.change_property(listing) |> Ecto.Changeset.put_embed(:features, [%Feature{temp_id: Utilities.get_temp_id()}]) do
         {:noreply, assign(socket,
-          changeset: cs,
+          form: to_form(cs),
           photo: listing["main_photo_url"],
           fetching: false)}
     else

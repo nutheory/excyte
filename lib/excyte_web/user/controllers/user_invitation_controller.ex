@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.UserInvitationController do
   use ExcyteWeb, :controller
+  import Phoenix.Component, only: [to_form: 1]
 
   alias Excyte.{Accounts}
   alias ExcyteWeb.UserAuth
@@ -10,7 +11,7 @@ defmodule ExcyteWeb.UserInvitationController do
     case Accounts.fetch_user_from_invitation(token) do
       {:ok, user} ->
         changeset = Accounts.change_invitation(user)
-        render(conn, "accept_invitation.html", changeset: changeset, user: user,
+        render(conn, "accept_invitation.html", form: to_form(changeset), user: user,
         token: token, password_type: "password", brokerage: user.brokerage.profile,
         password_value: "", show_text: "show password")
 
@@ -25,7 +26,7 @@ defmodule ExcyteWeb.UserInvitationController do
       {:error, %Ecto.Changeset{} = changeset} ->
         case Accounts.fetch_user_from_invitation(token) do
           {:ok, user} ->
-            render(conn, "accept_invitation.html", changeset: changeset,
+            render(conn, "accept_invitation.html", form: to_form(changeset),
             user: user, token: token, brokerage: user.brokerage.profile,
             password_type: "password", password_value: "", show_text: "show password")
           _ -> invalid_token(conn)

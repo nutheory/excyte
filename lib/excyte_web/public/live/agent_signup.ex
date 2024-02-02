@@ -9,7 +9,7 @@ defmodule ExcyteWeb.Public.AgentSignup do
     cs = Agent.pre_register_agent(%Agent{}, %{})
 
     {:ok, assign(socket,
-      changeset: cs,
+      form: to_form(cs),
       password_type: "password",
       password_value: "",
       show_text: "show password"
@@ -33,7 +33,7 @@ defmodule ExcyteWeb.Public.AgentSignup do
 
   def handle_event("validate", %{"agent" => attrs}, socket) do
     cs = Agent.pre_register_agent(%Agent{}, attrs)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("save", %{"agent" => attrs}, socket) do
@@ -46,7 +46,7 @@ defmodule ExcyteWeb.Public.AgentSignup do
       }
     else
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, form: to_form(changeset))}
       err ->
         IO.inspect(err, label: "AGENT SIGNUP ERR")
         {:noreply, socket}

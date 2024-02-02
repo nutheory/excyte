@@ -78,7 +78,7 @@ defmodule ExcyteWeb do
   def live_client_view do
     quote do
       use Phoenix.LiveView,
-        layout: {ExcyteWeb.LayoutView, "client.html"}
+        layout: {ExcyteWeb.LayoutView, :client}
 
       unquote(view_helpers())
     end

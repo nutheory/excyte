@@ -10,7 +10,7 @@ defmodule ExcyteWeb.Insight.SubjectForm do
     cs = Properties.change_property(subject)
 
     {:ok, assign(socket,
-      changeset: cs,
+      form: to_form(cs),
       mls_options: a.mls_options,
       current_user: a.current_user,
       current_mls: a.current_mls,
@@ -30,7 +30,7 @@ defmodule ExcyteWeb.Insight.SubjectForm do
         round(String.to_integer(form["lotsize_value"]))
       end
     cs = Properties.change_property(form)
-    {:noreply, assign(socket, changeset: cs, lotsize_value: ls_val)}
+    {:noreply, assign(socket, form: to_form(cs), lotsize_value: ls_val)}
   end
 
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
@@ -58,7 +58,7 @@ defmodule ExcyteWeb.Insight.SubjectForm do
       {:noreply, socket}
     else
       IO.inspect(cs, label: "INV")
-      {:noreply, assign(socket, changeset: cs)}
+      {:noreply, assign(socket, form: to_form(cs))}
     end
   end
 

@@ -9,16 +9,17 @@
     </h2>
     <%= if @current_view !== "settings" do %>
       <div class="form">
-        <%= live_redirect to: Routes.live_path(@socket, Create), 
-          class: "focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-2 py-1 bg-white", 
-          replace: false do %>
+        <.link 
+          navigate={~p"/contacts/create"}
+          class="focus:outline-none shadow cursor-pointer text-gray-700 hover:text-black flex border border-bgray-400 rounded px-2 py-1 bg-white", 
+        >
           <div class="mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stroke-current text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
           </div> 
           <div class="flex-1 pt-0.5">New Contact</div>
-        <% end %>
+        </.link>
       </div>
     <% end %>
     <div class="ml-2">

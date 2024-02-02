@@ -65,37 +65,21 @@
       </h3>
     </a>
 
-    <%# <div class="mt-4 flex items-center justify-between">
-        <span class="border-b w-1/5 lg:w-1/4"></span>
-        <a href="#" class="text-xs text-center text-gray-500 uppercase">or login with email</a>
-        <span class="border-b w-1/5 lg:w-1/4"></span>
-    </div> %>
-    <%= form_for @conn, Routes.user_session_path(@conn, :create), [as: :user], fn f -> %>
-      <%= if @error_message do %>
-        <div class="alert alert-danger">
-          <p><%= @error_message %></p>
-        </div>
-      <% end %>
-      <div class="mt-4">
-        <label>Email address</label>
-        <%= email_input f, :email, required: true, class: "text-field" %>
-      </div>
-      <div class="mt-4">
-        <div class="flex justify-between">
-            <label>Password</label>
-            <.link navigate={~p"/reset_password"} class="text-xs text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150">Forgot password?</.link>
-        </div>
-        <%= password_input f, :password, required: true, class: "text-field" %>
-      </div>
-      <%# <div class="ml-1 mt-2 flex items-center justify-between">
-        <div class="flex items-center"> %>
-          <%#= checkbox f, :remember_me, class: "form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out" %>
-          <%#= label f, :remember_me, "Remember me", class: "ml-2 block text-sm leading-5 text-gray-900" %>
-        <%# </div>
-      </div> %>
-      <div class="mt-4">
-          <button type="submit" class="submit w-full">Login</button>
-      </div>
-    <% end %>
+    <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
+      <.input field={@form[:email]} type="email" label="Email" required />
+      <.input field={@form[:password]} type="password" label="Password" required />
+
+      <:actions>
+        <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
+        <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
+          Forgot your password?
+        </.link>
+      </:actions>
+      <:actions>
+        <.button phx-disable-with="Signing in..." class="w-full">
+          Sign in <span aria-hidden="true">→</span>
+        </.button>
+      </:actions>
+    </.simple_form>
   </div>
 </div>

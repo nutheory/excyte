@@ -242,7 +242,7 @@
           <%= if !@added do %>
             <%= if @show_adjustment_form do %>
               <li class="p-2 border-b border-gray-300">
-                <.form let={f} for={:adjustment} phx-change="change-adjustment-item" phx-submit="commit-adjustment-item" phx-target={@myself}>
+                <.form for={@form} phx-change="change-adjustment-item" phx-submit="commit-adjustment-item" phx-target={@myself}>
                   <div class="flex">
                     <div class="mr-2 flex items-center">
                       <svg
@@ -254,22 +254,24 @@
                       </svg>
                     </div>
                     <div class="mr-2 flex-1">
-                      <%= text_input f, :adj_name,
-                        class: "text-field",
-                        value: @adj_name,
-                        placeholder: "Name"
-                      %>
+                      <.input
+                        type="text"
+                        class="text-field"
+                        field={@form[:adj_name]}
+                        placeholder="Name"
+                        phx-debounce="500"
+                      />
                     </div>
                     <div class="text-lg flex items-center">$</div>
                     <div class="ml-1 mr-2 w-24">
-                      <%= text_input f, :adj_value,
-                        class: "text-field",
-                        inputmode: "numeric",
-                        title: "Numbers only.",
-                        pattern: "[0-9]*",
-                        value: @adj_value,
-                        placeholder: "Value"
-                      %>
+                      <.input
+                        type="number"
+                        class="text-field"
+                        pattern="^-?[0-9]*"
+                        field={@form[:adj_value]}
+                        placeholder="Value"
+                        phx-debounce="500"
+                      />
                     </div>
                     <div class="flex blue-radial border border-blue-800 rounded">
                       <button type="submit" name="add" class="rounded-l px-2 text-white border-r border-blue-800">

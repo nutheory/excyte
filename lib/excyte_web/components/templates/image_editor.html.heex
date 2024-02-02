@@ -12,7 +12,7 @@
   data-aspect-ratio={@aspect_ratio}
   phx-target={@myself}
   phx-hook="ImageEditor">
-  <div div class="w-full h-full" phx-update="ignore">
+  <div div class="w-full h-full" phx-update="ignore" id="image-inner">
     <div id={"#{@name}Target"} class="dropzone" style={"width: #{@width}px; height: #{@height}px;"}>
     </div>
   </div>

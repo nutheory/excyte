@@ -5,29 +5,25 @@
       <div class="mr-1 pt-1 text-lg"><%= @prefix %></div>
     <% end %>
     <div class="flex-1">
-      <input
+      <.input
         type="text"
-        name="min"
+        field={@form[:min]}
         class="number-field"
-        inputmode="numeric"
         pattern="[0-9]*"
         placeholder="min"
-        value={@min}
         phx-debounce="blur"
-      >
+      />
     </div>
     <div class="mx-1 pt-1 font-bold"> - </div>
     <div class="flex-1">
-      <input
+      <.input
         type="text"
-        name="max"
+        field={@form[:max]}
         class="number-field"
-        inputmode="numeric"
         pattern="[0-9]*"
-        placeholder="max"
-        value={@max}
+        placeholder="min"
         phx-debounce="blur"
-      >
+      />
     </div>
     <%= if @suffix !== nil do %>
       <div class="ml-1 pt-1 text-lg"><%= @suffix %></div>

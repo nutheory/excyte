@@ -83,10 +83,10 @@
   <div class="pt-16 lg:pt-20 flex">
     <div class="w-full my-2">
       <%= if @show_listing_ids_form do %>
-        <.form for={:finder} phx-submit={:finder_submit}>
+        <.form for={@form} phx-submit={:finder_submit}>
           <div class="flex">
             <div class="flex-1">
-              <%= label f, :listing_ids, "Find by Listing ID's" %>
+              <.label for={@form[:listings]}>"Find by Listing ID's</.label>
             </div>
             <div class="link-button">
               <span phx-click="toggle-finder" phx-target={@myself}>Close</span>
@@ -94,11 +94,12 @@
           </div>
           <div class="flex flex-wrap">
             <div class="w-full md:flex-1">
-              <%= text_input f, :listing_ids,
-                class: "text-field",
-                placeholder: "Enter comma seperated Listing ID's",
-                value: @search
-              %>
+              <.input
+                field={@form[:listings]}
+                phx-debounce="500"
+                type="text"
+                class="text-field"
+              />
             </div>
             <div class="w-full md:w-32">
               <.button class="submit md:ml-3">Find listings</.button>

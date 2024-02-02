@@ -157,14 +157,19 @@
               </div>
             </div>
             <div class="p-3 rounded shadow bg-white">
-              <.form let={f} for={:publish} phx-submit={:publish}>
+              <.form for={@form} phx-submit={:publish}>
                 <h4 class="mb-0">Name and Publish</h4>
                 <div class="flex">
                   <div class="flex-1">
-                    <%= text_input f, :name, class: "text-field", placeholder: "Name", value: @name %>
+                    <.input 
+                      field={@form[:name]}
+                      placeholder="Name your report"
+                      class="text-field"
+                      type="text"
+                    />
                   </div>
                   <div class="ml-3">
-                    <%= submit "Publish", class: "submit" %>
+                    <.button class="submit">Publish</.button>
                   </div>
                 </div>
               </.form>

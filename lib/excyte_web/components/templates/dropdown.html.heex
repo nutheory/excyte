@@ -103,18 +103,18 @@
       x-ref="listbox"
       role="listbox"
       tabindex="-1"
-      :aria-activedescendant="name + 'Option' + focusedOptionIndex"
+      aria-activedescendant="name + 'Option' + focusedOptionIndex"
       class="max-h-60 overflow-auto focus:outline-none"
     >
-      <template x-for="(opt, index) in options" :key="index">
+      <template x-for="(opt, index) in options" x-bind:key="index">
         <li
-          :id="name + 'Option' + index"
+          id="name + 'Option' + index"
           phx-click="option_select"
           phx-value-option="opt.value"
           phx-target={@myself}
           role="option"
           @click="selectOption()"
-          :aria-selected="index === focusedOptionIndex"
+          aria-selected="index === focusedOptionIndex"
           @mouseenter="focusedOptionIndex = index"
           @mouseleave="focusedOptionIndex = null"
           class="py-2 px-4 cursor-pointer block hover:bg-blue-100"

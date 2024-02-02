@@ -23,7 +23,7 @@
             x-show.transition.in.duration.300ms.origin.top.right.opacity.scale.65="optsVisible"
             class="flex-1 flex w-full py-2 bg-bgray-200 text-gray-700 rounded-bl"
           >
-            <%= live_redirect to: Routes.live_path(@socket, Create, "property"), class: "w-full" do %>
+            <.link navigate={~p"/insights/cma/create"} class="w-full">
               <div class="flex h-full cursor-pointer hover:bg-cyan-300 items-center px-2">
                 <div class="h-6 w-6">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,8 +36,8 @@
                   <p class="font-bold">Summary</p>
                 </div>
               </div>
-            <% end %>
-            <%= live_redirect to: Routes.live_path(@socket, Create, "property"), class: "w-full" do %>
+            </.link>
+            <.link navigate={~p"/insights/showcase/create"} class="w-full">
               <div class="flex h-full cursor-pointer hover:bg-cyan-300 items-center px-2">
                 <div class="h-6 w-6">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -49,7 +49,7 @@
                   <p class="font-bold">Showcase</p>
                 </div>
               </div>
-            <% end %>
+            </.link>
           </div>
           <div
             @click="optsVisible = !optsVisible"

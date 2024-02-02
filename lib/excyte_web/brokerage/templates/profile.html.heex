@@ -1,5 +1,5 @@
 <div>
-  <.form let={f} for={@changeset}
+  <.form for={@form}
     id="profile_form"
     phx-change="validate"
     phx-submit="save">
@@ -26,26 +26,38 @@
         </div>
       </div>
       <div class="mt-4">
-        <%= label f, :company_name %>
-        <%= text_input f, :company_name, class: "text-field", phx_debounce: "blur" %>
-        <%= error_tag f, :company_name %>
+        <.input
+          type="text"
+          field={@form[:company_name]}
+          class="text-field"
+          label="Company Name"
+          phx_debounce="blur"
+        />
       </div>
       <div class="mt-4">
-        <%= label f, :tagline %>
-        <%= text_input f, :tagline, class: "text-field", phx_debounce: "blur" %>
-        <%= error_tag f, :tagline %>
+        <.input
+          type="text"
+          field={@form[:tagline]}
+          class="text-field"
+          label="Tagline"
+          phx_debounce="blur"
+        />
       </div>
       <div class="mt-4">
-        <%= label f, :description %>
-        <%= textarea f, :description, class: "textarea", phx_debounce: "blur" %>
-        <%= error_tag f, :description %>
+        <.input
+          type="textarea"
+          field={@form[:description]}
+          class="text-field"
+          label="Description"
+          phx_debounce="blur"
+        />
       </div>
       <div class=" mt-4 sub-form">
         <h2>Contacts</h2>
         <p class="text-xs mt-1">Add <strong>public</strong> contact information such as email addresses, phone numbers, links, or any other method of staying connected.</p>
-        <Function.contact_form form={f} id={:profile_contacts} />
+        <Function.contact_form form={@form} id={:profile_contacts} />
       </div>
-      <%= submit "Update brokerage profile", class: "submit mt-4 w-full", phx_disable_with: "Updating..." %>
+      <.button class="submit mt-4 w-full" phx_disable_with="Updating...">Update brokerage profile</.button>
     </div>
   </.form>
 </div>

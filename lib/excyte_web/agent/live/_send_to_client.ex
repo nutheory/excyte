@@ -24,6 +24,7 @@ defmodule ExcyteWeb.Agent.SendToClient do
     subject = "#{profile.name} #{subject_type_text}."
     message = "Dear {{client}},\nI have created a #{message_type_text}."
     {:ok, assign(socket,
+      form: to_form(%{}),
       insight: assigns.insight,
       last_sent: last_sent,
       profile: profile,

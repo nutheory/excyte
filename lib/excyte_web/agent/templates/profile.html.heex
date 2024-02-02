@@ -1,5 +1,5 @@
 <div>
-  <.form let={f} for={@changeset}
+  <.form for={@form}
     id="profile_form" 
     phx-change="validate" 
     phx-submit="save"
@@ -8,23 +8,35 @@
       <p class="text-base mb-4">Information about yourself we include by default in all reports.</p>
       <div class="w-full lg:flex-1 mt-10 lg:mt-0">
         <div class="">
-          <%= label f, :name %>
-          <%= text_input f, :name, class: "text-field", phx_debounce: "blur" %>
-          <%= error_tag f, :name %>
+          <.input 
+            type="text"
+            field={@form[:name]}
+            label="Name"
+            phx_debounce="blur"
+            class="text-field"
+          />
         </div>
         <div class="mt-4 flex flex-wrap -mx-2">
           <div class="w-full md:w-1/2">
             <div class="px-2">
-              <%= label f, :company_name %>
-              <%= text_input f, :company_name, class: "text-field", phx_debounce: "blur" %>
-              <%= error_tag f, :company_name %>
+              <.input 
+                type="text"
+                field={@form[:company_name]}
+                label="Company Name"
+                phx_debounce="blur"
+                class="text-field"
+              />
             </div>
           </div>
           <div class="w-full md:w-1/2">
             <div class="px-2">
-              <%= label f, :job_title %>
-              <%= text_input f, :job_title, class: "text-field", phx_debounce: "blur" %>
-              <%= error_tag f, :job_title %>
+              <.input 
+                type="text"
+                field={@form[:job_title]}
+                label="Job Title"
+                phx_debounce="blur"
+                class="text-field"
+              />
             </div>
           </div>
         </div>
@@ -68,23 +80,31 @@
         </div>
       </div>
       <div class="mt-4">
-        <%= label f, :tagline %>
-        <%= text_input f, :tagline, class: "text-field", phx_debounce: "blur" %>
-        <%= error_tag f, :tagline %>
+        <.input 
+          type="text"
+          field={@form[:tagline]}
+          label="Tagline"
+          phx_debounce="blur"
+          class="text-field"
+        />
       </div>
       <div class="flex flex-wrap mt-4">
         <div class="w-full lg:flex-1">
-          <%= label f, :bio %>
-          <%= textarea f, :bio, class: "textarea", phx_debounce: "blur" %>
-          <%= error_tag f, :bio %>
+          <.input 
+            type="textarea"
+            field={@form[:bio]}
+            label="Bio"
+            phx_debounce="blur"
+            class="text-field"
+          />
         </div>
       </div>
       <div class=" mt-4 sub-form">
         <h2>Contacts</h2>
         <p class="text-xs mt-1">Add <strong>public</strong> contact information such as email addresses, phone numbers, links, or any other method of staying connected.</p>
-        <Function.contact_form form={f} id={:profile_contacts} />
+        <Function.contact_form form={@form} id={:profile_contacts} />
       </div>
-      <%= submit "Update profile", class: "submit mt-4 w-full", phx_disable_with: "Updating..." %>
+      <.button class="submit mt-4 w-full" phx_disable_with="Updating...">Update profile</.button>
     </div>
   </.form>
 </div>

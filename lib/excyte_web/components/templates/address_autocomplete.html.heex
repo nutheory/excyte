@@ -35,7 +35,7 @@
             <div x-ref="list">
               <template x-if="suggestions.length > 0 && active">
                 <ul>
-                  <template x-for="(loc, index) in suggestions" :key="index">
+                  <template x-for="(loc, index) in suggestions" x-bind:key="index">
                     <li
                       x-bind:active="false"
                       @click="LocationAutocompleteHook.pushEventTo('#locationEventTarget', 'location-details', { opts: suggestions, idx: index }, (res) => {active=false; inputValue=loc.address})"

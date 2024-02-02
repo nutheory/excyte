@@ -11,24 +11,26 @@
     interval: (if @subject.est_price !== nil, do: round(@subject.est_price * 0.005), else: 3000),
     buffer: 5
   }, callback: :update_filter, id: :price_filter %>
-  <.form let={f} for={:slider} phx-change="slider-update" phx-target={@myself}>
+  <.form for={@form} phx-change="slider-update" phx-target={@myself}>
     <div class="flex justify-center items-center">
       <div class="relative w-full">
         <div>
-          <%= range_input f, :low_slide, [
-            step: @opts.interval,
-            min: @opts.min,
-            max: @opts.max,
-            value: @opts.low,
-            class: "absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
-          ] %>
-          <%= range_input f, :high_slide, [
-            step: @opts.interval,
-            min: @opts.min,
-            max: @opts.max,
-            value: @opts.high,
-            class: "absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
-          ] %>
+          <.input
+            type="range"
+            field={@form[:low_slide]} 
+            step={@opts.interval}
+            min={@opts.min}
+            max={@opts.max}
+            class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          />
+          <.input
+            type="range"
+            field={@form[:high_slide]} 
+            step={@opts.interval}
+            min={@opts.min}
+            max={@opts.max}
+            class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          />
           <div class="relative z-10 h-2">
             <div class="absolute z-10 left-0 right-0 bottom-0 top-0 rounded-md bg-gray-300"></div>
             <div

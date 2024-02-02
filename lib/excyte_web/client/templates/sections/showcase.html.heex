@@ -331,69 +331,79 @@
         <ul class="border-t accent-color">
           <%= if lst["layout_details"] && length(lst["layout_details"]) > 0 do %>
             <li class="border-b accent-color">
-              <%= live_component Collapsable,
-                id: "ld_#{lst["listing_id"]}",
-                listing_id: lst["listing_id"],
-                public_data: lst["public_data"],
-                title: "Property Details",
-                name: "layout_details",
-                open: Enum.member?(lst["collapse"], "layout_details") do %>
+              <.live_component 
+                Module={Collapsable}
+                id={"ld_#{lst["listing_id"]}"}
+                listing_id={lst["listing_id"]}
+                public_data={lst["public_data"]}
+                title={"Property Details"}
+                name={"layout_details"}
+                open={Enum.member?(lst["collapse"], "layout_details")}
+              >
                 <%= Components.property_details(lst["layout_details"], lst["listing_id"]) %>
-              <% end %>
+              </.live_component>
             </li>
           <% end %>
           <%= if lst["features"] && length(lst["features"]) > 0 do %>
             <li class="border-b accent-color">
-              <%= live_component Collapsable,
-                id: "pf_#{lst["listing_id"]}",
-                listing_id: lst["listing_id"],
-                public_data: lst["public_data"],
-                title: "Property Features",
-                name: "features",
-                open: Enum.member?(lst["collapse"], "features") do %>
+              <.live_component 
+                Module={Collapsable}
+                id={"pf_#{lst["listing_id"]}"}
+                listing_id={lst["listing_id"]}
+                public_data={lst["public_data"]}
+                title={"Property Features"}
+                name={"features"}
+                open={Enum.member?(lst["collapse"], "features")}
+              >
                 <%= Components.property_features(lst["features"], lst["listing_id"]) %>
-              <% end %>
+              </.live_component>
             </li>
           <% end %>
           <li class="border-b accent-color">
-            <%= live_component Collapsable,
-              id: "ph_#{lst["listing_id"]}",
-              listing_id: lst["listing_id"],
-              public_data: lst["public_data"],
-              title: "Property History",
-              name: "property_history",
-              open: Enum.member?(lst["collapse"], "property_history") do %>
+            <.live_component 
+              Module={Collapsable}
+              id={"ph_#{lst["listing_id"]}"}
+              listing_id={lst["listing_id"]}
+              public_data={lst["public_data"]}
+              title={"Property History"}
+              name={"property_history"}
+              open={Enum.member?(lst["collapse"], "property_history")}
+            >
               <%= if lst["public_data"] && is_list(lst["public_data"]["property_history"]) && length(lst["public_data"]["property_history"]) > 0 do %>
                 <%= Components.property_price_history(lst["public_data"]["property_history"], lst["listing_id"]) %>
               <% end %>
-            <% end %>
+            </.live_component>
           </li>
           <li class="border-b accent-color">
-            <%= live_component Collapsable,
-              id: "th_#{lst["listing_id"]}",
-              listing_id: lst["listing_id"],
-              public_data: lst["public_data"],
-              title: "Tax History",
-              name: "tax_history",
-              open: Enum.member?(lst["collapse"], "tax_history") do %>
+            <.live_component 
+              Module={Collapsable}
+              id={"th_#{lst["listing_id"]}"}
+              listing_id={lst["listing_id"]}
+              public_data={lst["public_data"]}
+              title={"Tax History"}
+              name={"tax_history"}
+              open={Enum.member?(lst["collapse"], "tax_history")}
+            >
               <%= if lst["public_data"] && is_list(lst["public_data"]["tax_history"]) && length(lst["public_data"]["tax_history"]) > 0 do %>
                 <%= Components.property_tax_history(lst["public_data"]["tax_history"], lst["listing_id"]) %>
               <% end %>
-            <% end %>
+            </.live_component>
           </li>
           <li class="border-b accent-color">
-            <%= live_component Collapsable,
-              id: "sch_#{lst["listing_id"]}",
-              listing_id: lst["listing_id"],
-              public_data: lst["public_data"],
-              title: "Schools",
-              name: "schools",
-              open: Enum.member?(lst["collapse"], "schools") do %>
+            <.live_component 
+              Module={Collapsable}
+              id={"sch_#{lst["listing_id"]}"}
+              listing_id={lst["listing_id"]}
+              public_data={lst["public_data"]}
+              title={"Schools"}
+              name={"schools"}
+              open={Enum.member?(lst["collapse"], "schools")}
+            >
               <%= if lst["public_data"] && is_list(lst["public_data"]["schools"]) && length(lst["public_data"]["schools"]) > 0 do %>
                 <%= Components.schools(lst["public_data"]["schools"], lst["listing_id"]) %>
               <% else %>
               <% end %>
-            <% end %>
+            </.live_component>
           </li>
         </ul>
       </div>

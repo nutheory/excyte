@@ -46,7 +46,7 @@
         <div class="text-right">
           <div>
             <%= if @current_user.completed_setup do %>
-              <%= live_redirect "Go to dashboard...", to: Routes.live_path(@socket, Dashboard) %>
+               <.link navigate={~p"/auth/dash"}>Go to dashboard...</.link>
             <% end %>
           </div>
         </div>

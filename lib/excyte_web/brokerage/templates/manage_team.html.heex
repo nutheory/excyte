@@ -1,30 +1,42 @@
 <div>
   <%= if length(@members) < @account.agent_limit do %>
-    <.form let={f} for={@changeset} id="manage_team_form" phx-change="validate" phx-submit="save">
+    <.form for={@form} id="manage_team_form" phx-change="validate" phx-submit="save">
       <div class="shadow-md bg-white rounded-md p-4">
         <div class="mt-4">
-          <%= label f, :full_name %>
-          <%= text_input f, :full_name, class: "text-field", phx_debounce: "blur" %>
-          <%= error_tag f, :full_name %>
+          <.input 
+            field={@form[:full_name]}
+            type="text"
+            class="text-field"
+            label="Name"
+            phx_debounce="blur"
+          />
         </div>
         <div class="mt-4">
-          <%= label f, :email %>
-          <%= text_input f, :email, class: "text-field", phx_debounce: "blur" %>
-          <%= error_tag f, :email %>
+          <.input 
+            field={@form[:email]}
+            type="email"
+            class="text-field"
+            label="Email"
+            phx_debounce="blur"
+          />
         </div>
         <div class="mt-4">
           <div class="flex">
             <div class="flex-1">
-              <%= label f, :invite_message %>
+              <.label for={@form[:invite_message]}>Invite Message</.label>
             </div>
             <div class="link-button" phx-click="reset-message">
               Reset message
             </div>
           </div>
-          <%= textarea f, :invite_message, class: "textarea", phx_debounce: "blur" %>
-          <%= error_tag f, :invite_message %>
+          <.input 
+            class="textarea"
+            phx_debounce="blur"
+            field={@form[:invite_message]}
+            type="textarea"
+          />
         </div>
-        <%= submit "Send invite", class: "submit mt-4 w-full", phx_disable_with: "Sending invite..." %>
+        <.button class="submit mt-4 w-full" phx_disable_with="Sending invite...">Send invite</.button>
       </div>
     </.form>
   <% else %>
@@ -52,11 +64,12 @@
         <li class="pt-2">No invitations</li>
       <% else %>
         <%= for member <- @members do %>
-          <%= live_component TeamMember,
-            member: member,
-            show_actions: (if @current_user.id !== member.id && Utilities.authorized?(@current_user.brokerage_role), do: true, else: false),
-            id: "member_#{member.id}"
-          %>
+          <.live_component 
+            module={TeamMember}
+            member={member}
+            show_actions={(if @current_user.id !== member.id && Utilities.authorized?(@current_user.brokerage_role), do: true, else: false)}
+            id={"member_#{member.id}"}
+          />
         <% end %>
       <% end %>
     </ul>

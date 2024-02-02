@@ -32,55 +32,48 @@
       </div>
     <% end %>
   </div>
-  <.form let={f} for={:send_to} class="p-2" phx-change="validate-email-form" phx-submit="submit-email-form" phx-target={@myself}>
+  <.form lfor={@form} class="p-2" phx-change="validate-email-form" phx-submit="submit-email-form" phx-target={@myself}>
     <div class="rounded shadow bg-white p-4">
       <p class="font-bold">Email link</p>
       <p class="text-sm mb-4">We will attach the link and send the message for you. Edit the subject and message as you wish.</p>
       <div class="mb-2">
-        <%= label f, :name %>
-        <%= text_input f, :client_name,
-          class: "text-field",
-          placeholder: "Name",
-          value: @client_name,
-          phx_blur: "name-blur",
-          phx_target: @myself
-        %>
+        <.input 
+          type="text"
+          field={@form[:name]}
+          label="Name"
+          phx_debounce="blur"
+          class="text-field"
+        />
       </div>
       <div class="mb-2">
-        <%= label f, :email, "Send to" %>
-        <%= text_input f, :email,
-          class: "text-field",
-          placeholder: "Email address",
-          value: @email
-        %>
+        <.input 
+          type="text"
+          field={@form[:email]}
+          label="Email"
+          phx_debounce="blur"
+          class="text-field"
+        />
       </div>
       <div class="mb-2">
-        <%= label f, :subject %>
-        <%= text_input f, :subject,
-          class: "text-field",
-          placeholder: "Email subject",
-          value: @subject
-        %>
+        <.input 
+          type="text"
+          field={@form[:subject]}
+          label="Subject"
+          phx_debounce="blur"
+          class="text-field"
+        />
       </div>
       <div class="mb-2">
-        <%= label f, :message %>
-        <%= textarea f, :message,
-          class: "textarea",
-          placeholder: "Message",
-          value: @message
-        %>
+        <.input 
+          type="textarea"
+          field={@form[:message]}
+          label="Message"
+          phx_debounce="blur"
+          class="text-field"
+        />
       </div>
-      <%= if length(@errors) > 0 do %>
-        <ul class="text-red-700 text-base font-bold my-4">
-          <%= for err <- @errors do %>
-            <li>
-              <%= err.message %>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
       <div class="">
-        <%= submit "Send message",  class: "submit w-full" %>
+        <.button class="submit w-full">Send message</.button>
       </div>
     </div>
   </.form>

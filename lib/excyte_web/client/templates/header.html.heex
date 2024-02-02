@@ -52,7 +52,7 @@
     <div class="absolute top-4 left-4 bg-gray-100 border border-gray-400 z-40 rounded ex-shadow flex px-1">
       <%= if @current_user do %>
         <div class="p-1">
-          < navigate={"/auth/dash"}>
+          <.link navigate={~p"/auth/dash"}>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto link -mb-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>

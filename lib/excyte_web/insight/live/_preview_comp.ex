@@ -6,6 +6,7 @@ defmodule ExcyteWeb.Insight.PreviewComp do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
+      form: to_form(%{}),
       excyte_price: (if assigns.listing.excyte_price, do: assigns.listing.excyte_price, else: assigns.listing.excyte_suggested_price),
       custom_adjustments: assigns.listing.custom_adjustments,
       auto_adjusted: assigns.listing.auto_adjusted,

@@ -7,6 +7,7 @@ defmodule ExcyteWeb.Client.MoreInfo do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
+      form: to_form(%{}),
       current_user: assigns.current_user,
       listing_id: assigns.listing_id,
       listing: nil,

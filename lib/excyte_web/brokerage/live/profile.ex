@@ -19,7 +19,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     cs = maybe_attempt_prefill?(brokerage_profile, cu.current_mls)
     {:ok,
       assign(socket,
-        changeset: cs,
+        form: to_form(cs),
         current_user: cu,
         return_to: rt,
         profile: brokerage_profile)}
@@ -30,7 +30,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     case Brokerages.update_profile(a.profile, upload_url) do
       {:ok, profile} -> {:noreply, assign(socket, profile: profile)}
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
 
@@ -39,13 +39,13 @@ defmodule ExcyteWeb.Brokerage.Profile do
     case Brokerages.update_profile(a.profile, destroy_url) do
       {:ok, profile} -> {:noreply, assign(socket, profile: profile)}
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
     cs = Brokerages.change_profile(a.profile, attrs)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("save", %{"profile" => profile_params}, %{assigns: a} = socket) do
@@ -53,7 +53,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
     case Brokerages.update_profile(a.profile, Map.merge(params, %{ "updated_by_user" => true})) do
       {:ok, _profile} -> {:noreply, put_flash(socket, :info, "Brokerage Profile updated successfully")
                                     |> redirect(to: a.return_to)}
-      {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, changeset: changeset)}
+      {:error, %Ecto.Changeset{} = changeset} -> {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
 
@@ -65,7 +65,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
 
     cs = a.changeset |> Ecto.Changeset.put_embed(:contact_items, contacts)
 
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
@@ -76,7 +76,7 @@ defmodule ExcyteWeb.Brokerage.Profile do
 
     cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
 
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   defp filter_empty_contacts(profile_params) do

@@ -5,7 +5,11 @@ defmodule ExcyteWeb.Components.RangeSlider do
   def render(assigns), do: ComponentView.render("range_slider.html", assigns)
 
   def update(assigns, socket) do
-    {:ok, assign(socket, opts: assigns.opts, callback: assigns.callback)}
+    {:ok, assign(socket,
+      form: to_form(%{}),
+      opts: assigns.opts,
+      callback: assigns.callback
+    )}
   end
 
   def handle_event("slider-update", %{"slider" => s, "_target" => target}, %{assigns: a} = socket) do
@@ -28,6 +32,6 @@ defmodule ExcyteWeb.Components.RangeSlider do
         end
       end
     send self(), {a.callback, %{price: new_opts}}
-    {:noreply, assign(socket, opts: new_opts)}
+    {:noreply, assign(socket, form: to_form(%{}), opts: new_opts)}
   end
 end

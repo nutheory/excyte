@@ -1,16 +1,26 @@
 <div class="relative">
-  <.form let={f} for={:video_form} phx-change="validate-video-details" phx-submit="create-new-video" phx-target={@myself}>
+  <.form for={@form} phx-change="validate-video-details" phx-submit="create-new-video" phx-target={@myself}>
     <p class="hidden" id="errors">Please make sure you have entered a title and selected a video.</p>
     <div class="mb-2">
-      <%= text_input f, :title, class: "text-field", placeholder: "Title", value: @video_form.title %>
+      <.input
+        field={@form[:title]}
+        class="text-field"
+        placeholder="Title"
+        type="text"
+      />
     </div>
     <div class="mb-2">
-      <%= textarea f, :description, class: "textarea", placeholder: "Description", value: @video_form.description %>
+      <.input
+        field={@form[:description]}
+        class="text-field"
+        placeholder="Description"
+        type="textarea"
+      />
     </div>
     <div class="flex">
       <div class="flex-1"></div>
       <div class="">
-        <%= submit "Add Video", class: "submit" %>
+        <.button class="submit">Add Video</.button>
       </div>
     </div>
   </.form>

@@ -19,6 +19,7 @@ defmodule ExcyteWeb.Insight.Customize do
       %Insight{} = ins ->
         send self(), {:get_sections, %{insight: ins}}
         {:ok, assign(socket,
+          form: to_form(%{}),
           current_user: cu,
           insight: ins,
           sections: [],

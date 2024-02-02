@@ -10,7 +10,7 @@ defmodule ExcyteWeb.Insight.UploadVideo do
       current_user: assigns.current_user,
       uuid: assigns.uuid,
       errors: [],
-      video_form: %{title: "", description: ""}
+      form: to_form(%{title: "", description: ""})
     )}
   end
 

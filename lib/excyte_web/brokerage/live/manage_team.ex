@@ -11,7 +11,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
     bp = Brokerages.get_brokerage_profile(cu.brokerage_id)
     cs = Accounts.change_invitation(%User{}, %{})
     {:ok, assign(socket,
-      changeset: cs,
+      form: to_form(cs),
       current_user: cu,
       brokerage: bp,
       account: acc,
@@ -49,7 +49,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
         ivt
       end
     cs = Accounts.change_invitation(%User{}, m)
-    {:noreply, assign(socket, changeset: cs, message_user_edited: ue)}
+    {:noreply, assign(socket, form: to_form(cs), message_user_edited: ue)}
   end
 
   def handle_event("reset-message", _, %{assigns: a} = socket) do
@@ -58,7 +58,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
         to: a.changeset.changes["full_name"],
         from: a.current_user.full_name,
         brokerage: a.brokerage.company_name})}))
-    {:noreply, assign(socket, changeset: cs, message_user_edited: false)}
+    {:noreply, assign(socket, form: to_form(cs), message_user_edited: false)}
   end
 
   def handle_event("save", %{"user" => ivt}, %{assigns: a} = socket) do
@@ -80,7 +80,7 @@ defmodule ExcyteWeb.Brokerage.ManageTeam do
           {:noreply, put_flash(socket, :info, "Invite sent to #{ivt["email"]}.")
                     |> assign(members: [invite | a.members])}
         else
-          {:error, %Ecto.Changeset{} = err_cs} -> {:noreply, assign(socket, changeset: err_cs)}
+          {:error, %Ecto.Changeset{} = err_cs} -> {:noreply, assign(socket, form: to_form(err_cs))}
         end
       else
         {:noreply, assign(socket, errors: [%{message: "You have maxed out your agent sign ups."}])}

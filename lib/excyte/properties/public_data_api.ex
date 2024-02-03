@@ -23,10 +23,10 @@ defmodule Excyte.Properties.PublicDataApi do
   ]
 
   def get_listing_info(foreign_id) do
-    case get("/properties/v2/detail", query: [property_id: foreign_id]) do
-      {:ok, %Tesla.Env{:body => %{"properties" => properties}}} ->
-        {:ok, process_property(hd(properties))}
-      {:ok, %Tesla.Env{:body => err}} -> IO.inspect(err, label: "ERR")
+    case get("/properties/v3/detail", query: [property_id: foreign_id]) do
+      {:ok, %Tesla.Env{:body => %{"data" => %{"home" => detail}}}} ->
+        {:ok, process_property(detail)}
+      {:ok, %Tesla.Env{:body => err}} -> IO.inspect(err, label: "ERR HIT")
       {:error, %Tesla.Env{:body => body}} ->
         {:error, %{message: "Subject property processing failed", err: body}}
     end
@@ -128,10 +128,10 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   defp fetch_public_listing(valid_id) do
-    case get("/properties/v2/detail", query: [property_id: valid_id]) do
+    case get("/properties/v3/detail", query: [property_id: valid_id]) do
       {:ok, %Tesla.Env{:body => %{"properties" => properties}}} -> {:ok, hd(properties)}
       {:error, err} ->
-        IO.inspect(err, label: "ERR")
+        IO.inspect(err, label: "ERR MISS")
         {:error, err}
       res ->
         IO.inspect(res, label: "RES")

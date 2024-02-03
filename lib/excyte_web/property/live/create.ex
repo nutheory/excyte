@@ -78,7 +78,7 @@ defmodule ExcyteWeb.Property.Create do
         {:noreply, put_flash(socket, :info, "Property updated successfully")
                  |> push_redirect(to: "/auth/properties/#{res.id}/gallery")}
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset, label: "ERR")
+        IO.inspect(changeset, label: "ERR CHANGES")
         {:noreply, assign(socket, changeset: changeset)}
     end
   end

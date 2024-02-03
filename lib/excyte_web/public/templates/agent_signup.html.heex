@@ -67,7 +67,7 @@
             type={"text"}
             phx-debounce={"blur"}
             field={@form[:full_name]}
-            class={"text-field"}
+            class="text-field"
           />
         </div>
         <div class="mt-4">
@@ -76,13 +76,12 @@
             type={"text"}
             phx-debounce={"blur"}
             field={@form[:email]}
-            class={"text-field"}
+            class="text-field"
           />
         </div>
         <div class="mt-4 relative">
           <div id="show_password_txt" class="absolute top-0 right-0 pt-1 cursor-pointer text-xs" phx-click="togglePassword"><%= @show_text %></div>
-          <.label for={@form[:password]}>Password</.label>
-          <.error :for={msg <- @errors}><%= msg %></.error>
+          <.label for={@form[:password].id}>Password</.label>
           <input type={@password_type} id="user_password" value={@password_value} name="agent[password]" class="text-field pr-12" phx-hook="Registration" />
         </div>
           <ul class="text-sm text-gray-700 mt-1">

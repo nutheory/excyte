@@ -175,7 +175,7 @@ defmodule ExcyteWeb.Insight.ListingSelector do
       case ResoApi.get_by_listing_ids(a.current_user.current_mls, ids, subject) do
         {:ok, %{listings: listings}} -> Enum.map(listings, fn lst -> Map.merge(lst, %{search_by_listing: true}) end)
         {:error, err} ->
-          IO.inspect(err, label: "ERR")
+          IO.inspect(err, label: "ERR GETTING BY LISTING IDS")
       end
     {:noreply, assign(socket, finder_input: "", listings: res ++ a.listings)}
   end

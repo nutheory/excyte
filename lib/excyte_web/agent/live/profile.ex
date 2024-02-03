@@ -21,7 +21,7 @@ defmodule ExcyteWeb.Agent.Profile do
     # else
       cs = maybe_attempt_prefill?(profile, cu.current_mls)
       {:ok, assign(socket,
-        changeset: cs,
+        form: to_form(cs),
         current_user: cu,
         return_to: rt,
         profile: profile)}
@@ -35,7 +35,7 @@ defmodule ExcyteWeb.Agent.Profile do
       {:noreply, assign(socket, profile: profile)}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, form: to_form(changeset))}
     end
   end
 
@@ -46,13 +46,13 @@ defmodule ExcyteWeb.Agent.Profile do
       {:noreply, assign(socket, profile: profile)}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, to_form(changeset))}
     end
   end
 
   def handle_event("validate", %{"profile" => attrs}, %{assigns: a} = socket) do
     cs = Agents.change_profile(a.profile, attrs) |> Map.put(:action, :validate)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, to_form(cs))}
   end
 
   def handle_event("add-contact", _, %{assigns: a} = socket) do
@@ -62,7 +62,7 @@ defmodule ExcyteWeb.Agent.Profile do
       |> Enum.concat([%ContactItem{temp_id: Utilities.get_temp_id()}])
 
     cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, to_form(cs))}
   end
 
   def handle_event("remove-contact", %{"remove" => remove_id}, %{assigns: a} = socket) do
@@ -72,7 +72,7 @@ defmodule ExcyteWeb.Agent.Profile do
       end)
 
     cs = Ecto.Changeset.put_embed(a.changeset, :contact_items, contacts)
-    {:noreply, assign(socket, changeset: cs)}
+    {:noreply, assign(socket, to_form(cs))}
   end
 
   def handle_event("save", %{"profile" => profile_params}, %{assigns: a} = socket) do
@@ -82,7 +82,7 @@ defmodule ExcyteWeb.Agent.Profile do
       {:noreply, put_flash(socket, :info, "Profile updated successfully") |> push_redirect(to: a.return_to)}
     else
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, assign(socket, to_form(changeset))}
     end
   end
 

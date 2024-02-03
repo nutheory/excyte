@@ -42,6 +42,7 @@ defmodule Excyte.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_live_view, "~> 0.20.1"},
       {:phoenix_view, "~> 2.0"},
+      {:dart_sass, "~> 0.7", runtime: Mix.env() == :dev},
       {:floki, ">= 0.27.0"},
       {:faker, "~> 0.17", only: [:dev, :test]},
       {:ex_machina, "~> 2.4", only: :test},

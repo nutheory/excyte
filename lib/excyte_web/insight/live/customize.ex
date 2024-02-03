@@ -295,8 +295,8 @@ defmodule ExcyteWeb.Insight.Customize do
                 _ <- ExAws.request!(ExAws.S3.put_object("excyte", "insights/buyer_tour_covers/#{insight.id}/cover.png", image, acl: :public_read, content_type: "image/png")) do
               "//excyte.s3.amazonaws.com/insights/buyer_tour_covers/#{insight.id}/cover.png"
             else
-              {:error, err} -> IO.inspect(err, label: "ERR")
-              err -> IO.inspect(err, label: "ERR")
+              {:error, err} -> IO.inspect(err, label: "ERR CUSTOMIZE BUYER TOUR COVER")
+              err -> IO.inspect(err, label: "ERRFAIL CUSTOMIZE BUYER TOUR COVER")
             end
           "showcase" ->
             first = hd(listings)

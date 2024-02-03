@@ -2,6 +2,7 @@ defmodule ExcyteWeb.Public.AgentSignup do
   use ExcyteWeb, :live_public_view
   alias Excyte.{Accounts, Agents.Agent}
   alias ExcyteWeb.{PublicView, Helpers.Utilities}
+  alias ExcyteWeb.Router.Helpers, as: Routes
 
   def render(assigns), do: PublicView.render("agent_signup.html", assigns)
 

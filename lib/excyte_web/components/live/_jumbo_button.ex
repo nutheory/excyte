@@ -6,7 +6,7 @@ defmodule ExcyteWeb.Components.JumboButton do
 
   def update(assigns, socket) do
     {:ok, assign(socket,
-      action: assigns.action,
+      path: URI.decode(assigns.path),
       color: assigns.color,
       title: assigns.title,
       text: assigns.text

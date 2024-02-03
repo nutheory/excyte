@@ -93,7 +93,7 @@ defmodule Excyte.BulkAgentInfo do
   end
 
   defp format_response({:error, err}) do
-    IO.inspect(err, label: "ERR")
+    IO.inspect(err, label: "ERR FMAT RESP")
     {:error, err}
   end
 

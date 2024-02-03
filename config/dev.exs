@@ -74,6 +74,20 @@ config :excyte, :bridge_server_key, System.get_env("BRIDGE_SERVER_KEY")
 config :excyte, :agent_plans, "prod_JuN1ffhB572SjI"
 config :excyte, :brokerage_plans, "prod_JuulizEStSJO7L"
 
+config :dart_sass,
+  version: "1.61.0",
+  default: [
+    args: ~w(css/app.css ../priv/static/assets/app.css),
+    cd: Path.expand("../assets", __DIR__)
+  ]
+
+config :dart_sass,
+  version: "1.61.0",
+  public: [
+    args: ~w(css/public.css ../priv/static/assets/public.css),
+    cd: Path.expand("../assets", __DIR__)
+  ]
+
 # config :excyte, :twilio_numbers, System.get_env("TWILIO_NUMBERS") |> File.read!()
 # config :excyte, env: "#{Mix.env()}"
 

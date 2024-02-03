@@ -58,7 +58,7 @@
     <div class="bg-white rounded shadow-md px-6 py-4">
       <h2 class="text-xl leading-none font-extrabold text-bgray-700">Create a Brokerage Account</h2>
       <p class="text-sm mt-1">This sign up page is entended for teams of agents. If you are a single agent you may want to consider using our <.link navigate={~p"/agent/signup"}>agent sign up page</.link>.</p>
-      <.form for={@changeset} phx-change="validate" phx-submit="save" id="brokerage-registration-form">
+      <.form for={@form} phx-change="validate" phx-submit="save" id="brokerage-registration-form">
         <div class="mt-4">
           <.input 
             label={"Brokerage Name"}
@@ -97,8 +97,7 @@
         </div>
         <div class="mt-4 relative">
           <div id="show_password_txt" class="absolute top-0 right-0 pt-1 cursor-pointer text-xs" phx-click="togglePassword"><%= @show_text %></div>
-          <.label for={@form[:password]}>Password</.label>
-          <.error :for={msg <- @errors}><%= msg %></.error>
+          <.label for={@form[:password].id}>Password</.label>
           <input type={@password_type} id="user_password" value={@password_value} name="agent[password]" class="text-field pr-12" phx-hook="Registration" />
         </div>
           <ul class="text-sm text-gray-700 mt-1">

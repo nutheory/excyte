@@ -4,7 +4,7 @@
     <div>
       <.live_component 
         module={JumboButton}
-        action={CreateCma} 
+        path={~p"/auth/insights/cma/create"}
         title={"CMA"}
         text={"Create a Comparative Market Analysis report"} 
         color={"blue"}
@@ -14,7 +14,7 @@
     <div>
       <.live_component 
         module={JumboButton}
-        action={CreateShowcase}
+        path={~p"/auth/insights/showcase/create"}
         title={"Showcase"}
         text={"Create a sharable, detailed, listing report"}
         color={"green"}
@@ -24,7 +24,7 @@
     <div>
       <.live_component 
         module={JumboButton}
-        action={CreateBuyerTour} 
+        path={~p"/auth/insights/buyertour/create"}
         title={"Buyer Tour"}
         text={"Create a mapped route of lisings on the market"}
         color={"orange"}

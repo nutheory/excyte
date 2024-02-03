@@ -348,6 +348,7 @@ defmodule ExcyteWeb.CoreComponents do
     doc: "a form field struct retrieved from the form, for example: @form[:email]"
   )
 
+  attr(:class, :string, default: nil)
   attr(:errors, :list, default: [])
   attr(:checked, :boolean, doc: "the checked flag for checkbox inputs")
   attr(:prompt, :string, default: nil, doc: "the prompt for select inputs")
@@ -421,6 +422,7 @@ defmodule ExcyteWeb.CoreComponents do
           "text-zinc-900 focus:border-zinc-400 focus:outline-none focus:ring-4 focus:ring-zinc-800/5 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
+          @class,
           @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
@@ -444,6 +446,7 @@ defmodule ExcyteWeb.CoreComponents do
           "text-zinc-900 focus:outline-none focus:ring-4 sm:text-sm sm:leading-6",
           "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400 phx-no-feedback:focus:ring-zinc-800/5",
           "border-zinc-300 focus:border-zinc-400 focus:ring-zinc-800/5",
+          @class,
           @errors != [] && "border-rose-400 focus:border-rose-400 focus:ring-rose-400/10"
         ]}
         {@rest}
@@ -732,9 +735,9 @@ defmodule ExcyteWeb.CoreComponents do
     # should be written to the errors.po file. The :count option is
     # set by Ecto and indicates we should also apply plural rules.
     if count = opts[:count] do
-      Gettext.dngettext(GimmieWeb.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(ExcyteWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(GimmieWeb.Gettext, "errors", msg, opts)
+      Gettext.dgettext(ExcyteWeb.Gettext, "errors", msg, opts)
     end
   end
 

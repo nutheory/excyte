@@ -98,6 +98,7 @@
       @apply relative z-40 max-w-screen-xl mx-auto h-12 lg:h-18;
     }
   }
+  
 
   .client-footer {
     @apply relative;

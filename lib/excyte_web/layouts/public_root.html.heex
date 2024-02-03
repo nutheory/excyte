@@ -10,7 +10,7 @@
       <%= assigns[:page_title] || "Excyte" %>
     </.live_title>
     <script src="https://js.stripe.com/v3/"></script>
-    <link phx-track-static rel="stylesheet" type="text/css" href={Routes.static_path(@conn, "/assets/public.css")}/>
+    <link phx-track-static rel="stylesheet" type="text/css" href={~p"/assets/public.css"}/>
   </head>
   <body>
     <%= @inner_content %>

@@ -1,11 +1,11 @@
 defmodule Excyte.Properties do
   import Ecto.Query, warn: false
+
   alias Excyte.{
     Activities,
     Assets.Asset,
     Properties.Property,
     Properties.PublicDataApi,
-    RateLimiter,
     Repo
   }
 
@@ -17,7 +17,9 @@ defmodule Excyte.Properties do
 
   def fetch_listing_details(mpr_id, _aid) do
     case PublicDataApi.get_listing_info(mpr_id) do
-      {:ok, res} -> {:ok, res}
+      {:ok, res} ->
+        {:ok, res}
+
       {:error, err} ->
         Activities.handle_errors(err, "Excyte.Properties.fetch_listing_details")
         {:error, err}
@@ -33,7 +35,8 @@ defmodule Excyte.Properties do
       agent_id: aid,
       street_number: sn,
       street_name: attrs.street_name,
-      internal_type: "subject"})
+      internal_type: "subject"
+    })
   end
 
   def get_property(id) do
@@ -45,7 +48,11 @@ defmodule Excyte.Properties do
   end
 
   def comparable_properties(%Property{} = subject, opts) do
-    with {:ok, area} <- PublicDataApi.get_bounding_area(%{lat: subject.coords.lat, lng: subject.coords.lng}, opts.distance),
+    with {:ok, area} <-
+           PublicDataApi.get_bounding_area(
+             %{lat: subject.coords.lat, lng: subject.coords.lng},
+             opts.distance
+           ),
          {:ok, query} <- PublicDataApi.build_query(area, opts),
          {:ok, listings} <- fetch_listings(query),
          {:ok, full_listings} <- fetch_comp_listing_details(listings) do
@@ -60,12 +67,13 @@ defmodule Excyte.Properties do
       Task.async(fn -> PublicDataApi.fetch_active_listings(query) end),
       Task.async(fn -> PublicDataApi.fetch_closed_listings(query) end)
     ]
+
     Task.await_many(tasks)
     |> Enum.reduce(%{}, fn tsk_res, acc ->
       acc =
         case tsk_res do
           {:ok, tsk} -> Map.merge(acc, tsk)
-          {:error, _} ->  acc
+          {:error, _} -> acc
         end
     end)
     |> case do
@@ -83,7 +91,7 @@ defmodule Excyte.Properties do
         |> Task.await_many()
         |> Enum.map(fn {_, lst} -> lst end)
       end)
-    IO.inspect(length(deats), label: "BOOM")
+
     {:ok, deats}
   end
 
@@ -105,8 +113,10 @@ defmodule Excyte.Properties do
 
   def update_property(id, uid, attrs) do
     prop = Repo.get_by(Property, %{id: id, agent_id: uid})
+
     Property.changeset(prop, attrs)
     |> Repo.update()
+
     # |> notify_subscribers([:property, :updated])
   end
 
@@ -121,8 +131,9 @@ defmodule Excyte.Properties do
 
   def calculate_averages(attr) when length(attr) > 0 do
     nums = Enum.filter(attr, fn num -> num !== nil && num >= 0 end)
-    trunc(Enum.sum(nums)/length(nums))
+    trunc(Enum.sum(nums) / length(nums))
   end
+
   def calculate_averages(_), do: 0
 
   # defp active_listings(res, res), do: IO.inspect(res, label: "RES")

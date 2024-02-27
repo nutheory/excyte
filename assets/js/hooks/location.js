@@ -99,6 +99,7 @@ window.LocationAutocomplete = () => {
 
 export const AutocompleteLocation = {
   mounted() {
+    console.log("AutocompleteLocation mounted", this)
     window.LocationAutocompleteHook = this
   }
 }

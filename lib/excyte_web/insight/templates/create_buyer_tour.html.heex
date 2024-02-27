@@ -176,14 +176,14 @@
           </div>
         </div>
       </div>
-      <.form for={:commit} phx-change={:update_commit} phx-submit={:create_tour}>
+      <.form :let={f} for={%{}} as={:commit} phx-change={:update_commit} phx-submit={:create_tour}>
         <div class="w-full flex flex-wrap mt-4">
           <div class="flex md:w-full w-32 mt-4">
             <div class="mr-4 w-32">
               <.input
                 type="number"
                 label="Distance (mi)"
-                field={@form[:distance]}
+                field={f[:distance]}
                 class="text-field w-24"
               />
 

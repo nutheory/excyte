@@ -19,21 +19,22 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   def render(assigns), do: InsightView.render("create_buyer_tour.html", assigns)
 
   def mount(_params, _, %{assigns: %{current_user: cu}} = socket) do
-    {:ok, assign(socket,
-      current_user: cu,
-      coords: %{},
-      zip_code: "",
-      distance: 10,
-      autodetected: nil,
-      listing_ids: "",
-      stories_options: Utilities.stories_options(),
-      garage_options: Utilities.garage_options(),
-      feature_options: Utilities.feature_options(),
-      property_options: Utilities.property_options(cu.current_mls.dataset_id),
-      filters: Map.merge(@filters, %{dataset_id: cu.current_mls.dataset_id}),
-      errors: nil,
-      fetching: false
-    )}
+    {:ok,
+     assign(socket,
+       current_user: cu,
+       coords: %{},
+       zip_code: "",
+       distance: 10,
+       autodetected: nil,
+       listing_ids: "",
+       stories_options: Utilities.stories_options(),
+       garage_options: Utilities.garage_options(),
+       feature_options: Utilities.feature_options(),
+       property_options: Utilities.property_options(),
+       filters: @filters,
+       errors: nil,
+       fetching: false
+     )}
   end
 
   def handle_info({:starting_point, %{geo: geo, address: addr}}, socket) do
@@ -41,6 +42,8 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
+    IO.inspect(val, label: "VAL")
+
     filters =
       if Map.has_key?(val, :price) do
         low = val.price.low
@@ -49,21 +52,32 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       else
         Map.merge(a.filters, val)
       end
+
     {:noreply, assign(socket, filters: filters)}
   end
 
   def handle_event("update_filter", %{"attr" => attr, "option" => opt}, %{assigns: a} = socket) do
+    IO.inspect(attr, label: "attr")
+    IO.inspect(opt, label: "opt")
     key = String.to_atom("#{attr}_options")
     val = Enum.find(a[key], fn at -> at.value === opt end)
     new_filter = Map.put(%{}, String.to_atom(attr), val)
     {:noreply, assign(socket, filters: Map.merge(a.filters, new_filter))}
   end
 
-  def handle_event("current_location_coords", %{"lat" => lat, "lng" => lng, "autodetected" => auto} = _res, socket) do
+  def handle_event(
+        "current_location_coords",
+        %{"lat" => lat, "lng" => lng, "autodetected" => auto} = _res,
+        socket
+      ) do
     {:noreply, assign(socket, coords: %{lat: lat, lng: lng}, autodetected: auto)}
   end
 
-  def handle_event("current_location_coords", %{"message" => _msg, "autodetected" => auto}, socket) do
+  def handle_event(
+        "current_location_coords",
+        %{"message" => _msg, "autodetected" => auto},
+        socket
+      ) do
     {:noreply, assign(socket, autodetected: auto)}
   end
 
@@ -78,10 +92,13 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   def handle_event("create_tour", _, %{assigns: a} = socket) do
     if Map.has_key?(a.coords, :lat) || a.zip_code !== "" do
       key = "tour#{a.current_user.id}#{System.os_time(:second)}"
+
       case Insights.create_insight(insight_data(a.filters, key, a)) do
-        {:ok, _} -> {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
+        {:ok, _} ->
+          {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
+
         {:error, _method, _changeset, _} ->
-            {:noreply, put_flash(socket, :error, "Something went wrong.")}
+          {:noreply, put_flash(socket, :error, "Something went wrong.")}
       end
     else
       {:noreply, assign(socket, :error, "Please enter a starting point to continue.")}
@@ -91,6 +108,7 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
   defp insight_data(tour_attrs, key, a) do
     theme_attrs = Insights.get_theme_attributes(a.current_user.id, a.current_user.brokerage_id)
     template = Insights.get_document_templates(a.current_user, %{type: "buyer_tour", auto: false})
+
     %{
       uuid: key,
       type: "buyer_tour",
@@ -100,12 +118,18 @@ defmodule ExcyteWeb.Insight.CreateBuyerTour do
       document_attributes: Map.from_struct(theme_attrs),
       document_template_id: hd(template).id,
       published: false,
-      mls: a.current_user.current_mls.dataset_id,
-      selected_listing_ids: Enum.filter(String.split(a.listing_ids, [" ", ",", "\n"]), fn l -> l !== "" end),
+      # mls: a.current_user.current_mls.dataset_id,
+      selected_listing_ids:
+        Enum.filter(String.split(a.listing_ids, [" ", ",", "\n"]), fn l -> l !== "" end),
       saved_search: %{
         query: "",
         zip: a.zip_code,
-        criteria: Map.merge(tour_attrs, %{distance: a.distance, coords: a.coords, zip: a.zip_code, dataset_id: a.current_user.current_mls.dataset_id})
+        criteria:
+          Map.merge(tour_attrs, %{
+            distance: a.distance,
+            coords: a.coords,
+            zip: a.zip_code
+          })
       }
     }
   end

@@ -92,24 +92,13 @@ defmodule ExcyteWeb.Helpers.Utilities do
     end
   end
 
-  def property_options(dataset_id) do
-    case dataset_id do
-      "tmls" ->
-        [
-          %{value: "detached", name: "Detached"},
-          %{value: "attached", name: "Attached"},
-          %{value: "condominium", name: "Condo"},
-          %{value: "manufactured home", name: "Manufactured Home"}
-        ]
-
-      _ ->
-        [
-          %{value: "single family residence", name: "Single Family"},
-          %{value: "condominium", name: "Condominium"},
-          %{value: "townhouse", name: "Townhouse"},
-          %{value: "multi family", name: "Multi Family"}
-        ]
-    end
+  def property_options() do
+    [
+      %{value: "single family residence", name: "Single Family"},
+      %{value: "condominium", name: "Condominium"},
+      %{value: "townhouse", name: "Townhouse"},
+      %{value: "multi family", name: "Multi Family"}
+    ]
   end
 
   def status_options() do
@@ -230,7 +219,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
       assigns = %{__changed__: nil, adj: adj}
 
       ~H"""
-        <span class="font-bold text-red-700"><%= @adj %></span>
+      <span class="font-bold text-red-700"><%= @adj %></span>
       """
     else
       assigns =
@@ -239,7 +228,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
           else: %{__changed__: nil, adj: adj}
 
       ~H"""
-        <span class="font-bold"><%= @adj %></span>
+      <span class="font-bold"><%= @adj %></span>
       """
     end
   end
@@ -271,27 +260,32 @@ defmodule ExcyteWeb.Helpers.Utilities do
       #   low: if(subject.sqft, do: round(subject.sqft * 0.7), else: 0),
       #   high: if(subject.sqft, do: round(subject.sqft * 1.4), else: 0)
       dataset_id: subject["dataset_id"],
-      price_min: (if subject["est_price"], do: round((subject["est_price"]/1000) * 0.95), else: 0),
-      price_max: (if subject["est_price"], do: round((subject["est_price"]/1000) * 1.05), else: 100000000),
+      price_min: if(subject["est_price"], do: round(subject["est_price"] / 1000 * 0.95), else: 0),
+      price_max:
+        if(subject["est_price"], do: round(subject["est_price"] / 1000 * 1.05), else: 100_000_000),
       price: %{
         type: Integer,
-        low: (if subject["est_price"], do: round((subject["est_price"]/1000) * 0.95), else: 0),
-        high: (if subject["est_price"], do: round((subject["est_price"]/1000) * 1.05), else: 100000000)
+        low: if(subject["est_price"], do: round(subject["est_price"] / 1000 * 0.95), else: 0),
+        high:
+          if(subject["est_price"],
+            do: round(subject["est_price"] / 1000 * 1.05),
+            else: 100_000_000
+          )
       },
       beds: %{
         type: Integer,
-        low: (if subject["beds"], do: subject["beds"] - 1, else: 0),
-        high: (if subject["beds"], do: subject["beds"] + 1, else: 100)
+        low: if(subject["beds"], do: subject["beds"] - 1, else: 0),
+        high: if(subject["beds"], do: subject["beds"] + 1, else: 100)
       },
       baths: %{
         type: Float,
-        low: (if subject["baths"], do: round(subject["baths"]) - 1, else: 0),
-        high: (if subject["baths"], do: round(subject["baths"]) + 1, else: 0)
+        low: if(subject["baths"], do: round(subject["baths"]) - 1, else: 0),
+        high: if(subject["baths"], do: round(subject["baths"]) + 1, else: 0)
       },
       sqft: %{
         type: Integer,
-        low: (if subject["sqft"], do: round(subject["sqft"] * 0.7), else: 0),
-        high: (if subject["sqft"], do: round(subject["sqft"] * 1.4), else: 0)
+        low: if(subject["sqft"], do: round(subject["sqft"] * 0.7), else: 0),
+        high: if(subject["sqft"], do: round(subject["sqft"] * 1.4), else: 0)
       },
       property_types: set_property_type(subject),
       selected_statuses: [
@@ -308,8 +302,8 @@ defmodule ExcyteWeb.Helpers.Utilities do
     assigns = %{__changed__: nil, adj: adj, diff: diff, price_per_sqft: pps}
 
     ~H"""
-      Total has been adjusted <strong><%= number_to_delimited(@adj, precision: 0) %></strong>
-      based on a difference of <%= diff %> at $<%= pps %> per sqft
+    Total has been adjusted <strong><%= number_to_delimited(@adj, precision: 0) %></strong>
+    based on a difference of <%= diff %> at $<%= pps %> per sqft
     """
   end
 
@@ -317,7 +311,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
     assigns = %{__changed__: nil}
 
     ~H"""
-      None
+    None
     """
   end
 
@@ -328,22 +322,22 @@ defmodule ExcyteWeb.Helpers.Utilities do
         assigns = %{__changed__: nil, listing: listing, when_text: when_text}
 
         ~H"""
-          Closed for $<strong><%= number_to_delimited(@listing.close_price, precision: 0) %></strong>
-          <%= if Map.has_key?(@listing, :close_date) do %>
-            after <%= @listing.days_on_market %> days on the market
-          <% end %>
-          <%= @when_text %>
+        Closed for $<strong><%= number_to_delimited(@listing.close_price, precision: 0) %></strong>
+        <%= if Map.has_key?(@listing, :close_date) do %>
+          after <%= @listing.days_on_market %> days on the market
+        <% end %>
+        <%= @when_text %>
         """
       else
         when_text = time_to_text(listing, :on_market_date)
         assigns = %{__changed__: nil, listing: listing, when_text: when_text}
 
         ~H"""
-          Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
-          <%= if Map.has_key?(@listing, :days_on_market) do %>
-            with <strong><%= @listing.days_on_market %></strong> days on the market
-          <% end %>
-          <%= when_text %>
+        Listed for $<strong><%= number_to_delimited(@listing.list_price, precision: 0) %></strong>
+        <%= if Map.has_key?(@listing, :days_on_market) do %>
+          with <strong><%= @listing.days_on_market %></strong> days on the market
+        <% end %>
+        <%= when_text %>
         """
       end
     else
@@ -369,14 +363,14 @@ defmodule ExcyteWeb.Helpers.Utilities do
           }
 
           ~H"""
-            <%= @days %> <%= Inflex.inflect("day", @days) %> ago
+          <%= @days %> <%= Inflex.inflect("day", @days) %> ago
           """
 
         months <= 18 ->
           assigns = %{__changed__: nil, months: months}
 
           ~H"""
-            <%= @months %> <%= Inflex.inflect("month", @months) %> ago
+          <%= @months %> <%= Inflex.inflect("month", @months) %> ago
           """
 
         months > 18 ->
@@ -391,7 +385,7 @@ defmodule ExcyteWeb.Helpers.Utilities do
           }
 
           ~H"""
-            over <%= @years %> <%= Inflex.inflect("year", @years) %> ago
+          over <%= @years %> <%= Inflex.inflect("year", @years) %> ago
           """
       end
     else
@@ -415,14 +409,14 @@ defmodule ExcyteWeb.Helpers.Utilities do
       end)
 
     ~H"""
-      <ul class="feature-list">
-        <%= for {{key, val}, _idx} <- Enum.with_index(assigns) do %>
-          <li class="feature-item">
-            <label class="block"><%= split_by_case(key) %></label>
-            <p class="text-sm"><%= Enum.join(val, ", ") %></p>
-          </li>
-         <% end %>
-      </ul>
+    <ul class="feature-list">
+      <%= for {{key, val}, _idx} <- Enum.with_index(assigns) do %>
+        <li class="feature-item">
+          <label class="block"><%= split_by_case(key) %></label>
+          <p class="text-sm"><%= Enum.join(val, ", ") %></p>
+        </li>
+      <% end %>
+    </ul>
     """
   end
 
@@ -518,8 +512,12 @@ defmodule ExcyteWeb.Helpers.Utilities do
           "condo" -> [%{name: "Condo", value: "condominium"}]
           _ -> [%{name: "Attached", value: "attached"}]
         end
-      "public" -> subject["property_type"]
-      _ -> nil
+
+      "public" ->
+        subject["property_type"]
+
+      _ ->
+        nil
     end
   end
 

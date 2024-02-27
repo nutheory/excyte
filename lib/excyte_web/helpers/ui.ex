@@ -179,11 +179,7 @@ defmodule ExcyteWeb.Helpers.UI do
       x-data="{
           open: false,
           toggle() {
-              if (this.open) {
-                  return this.close()
-              }
-
-              this.open = true
+            this.open = this.open ? this.close() : true
           },
           close(focusAfter) {
               this.open = false
@@ -218,7 +214,7 @@ defmodule ExcyteWeb.Helpers.UI do
           x-show="open"
           x-transition.origin.top.left
           x-on:click.outside="close($refs.button)"
-          x-id="$id('dropdown-button')"
+          x-bind:id="$id('dropdown-button')"
           style="display: none;"
           class="absolute left-0 mt-2 bg-white shadow rounded"
       >

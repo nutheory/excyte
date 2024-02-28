@@ -11,7 +11,7 @@ defmodule ExcyteWeb.ProtectedHeader do
        assign(socket,
          current_user: cu,
          current_mls_id: nil,
-         current_mls_name: nil,
+         current_mls_name: "No MLS",
          mls_options: mls_list
        )}
     else

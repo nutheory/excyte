@@ -78,10 +78,13 @@ defmodule ExcyteWeb.Helpers.Utilities do
   end
 
   def social_description(ins, agt) do
-    cnt = hd(agt.contacts)
+    cnt = hd(agt.contact_items)
 
     case ins.type do
       "cma" ->
+        "Comparative Market Analysis (CMA) - #{ins.name} created by #{agt.name} (#{cnt.content})"
+
+      "cma_auto" ->
         "Comparative Market Analysis (CMA) - #{ins.name} created by #{agt.name} (#{cnt.content})"
 
       "buyer_tour" ->

@@ -17,8 +17,6 @@ defmodule ExcyteWeb.Insight.SubjectForm do
        mls_options: a.mls_options,
        current_user: a.current_user,
        current_mls: a.current_mls,
-       lotsize_unit: subject["lotsize_preference"],
-       lotsize: subject["lotsize"],
        subject: subject,
        button_label: a.button_label,
        feature_options: Utilities.feature_options()
@@ -26,17 +24,8 @@ defmodule ExcyteWeb.Insight.SubjectForm do
   end
 
   def handle_event("update-form", %{"property" => form}, %{assigns: a} = socket) do
-    IO.inspect(form, label: "FORM 1")
-
-    ls_val =
-      if a.lotsize_unit === "acres" do
-        round(Utilities.acres_to_sqft(String.to_float(form["lotsize"])))
-      else
-        round(String.to_integer(form["lotsize"]))
-      end
-
     cs = Properties.change_property(form)
-    {:noreply, assign(socket, form: to_form(cs), lotsize: ls_val)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
@@ -47,20 +36,13 @@ defmodule ExcyteWeb.Insight.SubjectForm do
         "sqft" => sanitize_number(form["sqft"], Integer),
         "stories" => sanitize_number(form["stories"], Integer),
         "year_built" => sanitize_number(form["year_built"], Integer),
+        "lotsize_sqft" => sanitize_number(form["lotsize_sqft"], Integer),
         "overview" => nil
       })
-      |> Map.merge(
-        sanitize_lotsize(%{
-          "lotsize_unit" => a.lotsize_unit,
-          "lotsize" => form["lotsize"]
-        })
-      )
 
     cs = Properties.change_property(subject_attrs)
 
     if cs.valid? do
-      IO.inspect(a.current_mls.value, label: "MLS")
-
       if a.current_mls.value === "public" do
         send(self(), {:auto_create_cma, subject_attrs})
       else
@@ -69,7 +51,6 @@ defmodule ExcyteWeb.Insight.SubjectForm do
 
       {:noreply, socket}
     else
-      IO.inspect(cs, label: "INV")
       {:noreply, assign(socket, form: to_form(cs))}
     end
   end
@@ -89,17 +70,6 @@ defmodule ExcyteWeb.Insight.SubjectForm do
   #      )}
   #   end
   # end
-
-  defp sanitize_lotsize(%{"lotsize_unit" => unit, "lotsize" => val}) do
-    if unit === "acres" do
-      %{
-        "lotsize_preference" => "acres",
-        "lotsize_sqft" => trunc(Utilities.acres_to_sqft(sanitize_number(val, Float)))
-      }
-    else
-      %{"lotsize_preference" => "sqft", "lotsize" => sanitize_number(val, Integer)}
-    end
-  end
 
   defp sanitize_number(str, to_type) do
     if str !== "", do: elem(to_type.parse(str), 0), else: nil

@@ -44,9 +44,9 @@
         />
       </div>
       <div>
-        <label>Lotsize (<span class="cursor-pointer hover:underline"><%= @lotsize_unit %></span>)</label>
+        <label>Lotsize (<span>sqft</span>)</label>
         <.input 
-          field={@form[:lotsize]}
+          field={@form[:lotsize_sqft]}
           type={"number"}
           phx_debounce={"blur"}
           pattern={"[0-9]*[.]?[0-9]*"}

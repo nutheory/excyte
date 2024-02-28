@@ -48,12 +48,10 @@ defmodule Excyte.Properties do
   end
 
   def comparable_properties(%Property{} = subject, opts) do
-    with {:ok, area} <-
-           PublicDataApi.get_bounding_area(
-             %{lat: subject.coords.lat, lng: subject.coords.lng},
-             opts.distance
-           ),
-         {:ok, query} <- PublicDataApi.build_query(area, opts),
+    area =
+      "#{subject.street_number} #{subject.street_name}, #{subject.city}, #{subject.state}, #{subject.zip}"
+
+    with {:ok, query} <- PublicDataApi.build_query(area, opts),
          {:ok, listings} <- fetch_listings(query),
          {:ok, full_listings} <- fetch_comp_listing_details(listings) do
       {:ok, Enum.concat(full_listings)}
@@ -62,7 +60,9 @@ defmodule Excyte.Properties do
     end
   end
 
-  def fetch_listings(query) when is_list(query) do
+  def fetch_listings(query) do
+    IO.inspect(query, label: "QUERY")
+
     tasks = [
       Task.async(fn -> PublicDataApi.fetch_active_listings(query) end),
       Task.async(fn -> PublicDataApi.fetch_closed_listings(query) end)
@@ -86,9 +86,11 @@ defmodule Excyte.Properties do
     deats =
       Enum.map(listings, fn {_k, v} ->
         Enum.map(v, fn lst ->
+          # :timer.apply_after(500, PublicDataApi, :get_listing_info, [lst["property_id"]])
           Task.async(fn -> PublicDataApi.get_listing_info(lst["property_id"]) end)
+          # Process.sleep(500)
         end)
-        |> Task.await_many()
+        |> Task.await_many(50000)
         |> Enum.map(fn {_, lst} -> lst end)
       end)
 

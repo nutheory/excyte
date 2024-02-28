@@ -10,7 +10,7 @@
     </div>
   </UI.form_header>
   <.form
-    for={@changeset}
+    for={@form}
     phx-change={"form_change"}
     phx-submit={"form_submit"}
   >
@@ -21,7 +21,7 @@
       priorities={@priorities}
       priority={@priority}
     />
-    <div class="flex items-center ml-2 h-full">
+    <div class="flex items-center mt-2 h-full">
       <button class="submit font-normal shadow">Save contact</button>
     </div>
   </.form>

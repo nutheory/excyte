@@ -15,15 +15,15 @@
   <% end %>
   <%= if length(@previews) > 0 do %>
     <%= for preview <- @previews do %>
-      <a
-        href={preview["media_url"]}
-        style={"background-image: url(#{preview["media_url"]})"}
-        data-gallery={"gallery_#{@listing_id}"}
-        data-description={preview["short_description"]}
-        class="glightbox preview"></a>
+        <a
+          href={preview["media_url"]}
+          style={"background-image: url(#{preview["media_url"]})"}
+          data-gallery={"gallery_#{@listing_id}"}
+          data-description={preview["short_description"]}
+          class="glightbox preview"></a>
     <% end %>
   <% end %>
-  <%= if length(@hidden) > 0 do %>
+  <%!-- <%= if length(@hidden) > 0 do %>
     <div class="hidden">
       <%= for hidden <- @hidden do %>
         <a
@@ -34,5 +34,5 @@
           class="glightbox preview"></a>
       <% end %>
     </div>
-  <% end %>
+  <% end %> --%>
 </div>

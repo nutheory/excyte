@@ -5,13 +5,12 @@ defmodule ExcyteWeb.Components.ShowcaseGallery do
   def render(assigns), do: ComponentView.render("showcase_gallery.html", assigns)
 
   def update(assigns, socket) do
-    media = assigns.media
-    groups = Enum.split(media, 4)
-    {:ok, assign(socket,
-      main: hd(elem(groups, 0)),
-      previews: tl(elem(groups, 0)),
-      hidden: elem(groups, 1),
-      listing_id: assigns.listing_id
-    )}
+    {:ok,
+     assign(socket,
+       main: List.first(assigns.media),
+       previews: if(length(assigns.media) > 1, do: Enum.drop(assigns.media, 1), else: []),
+       #  hidden: elem(groups, 1),
+       listing_id: assigns.listing_id
+     )}
   end
 end

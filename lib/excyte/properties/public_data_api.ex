@@ -1,5 +1,5 @@
 defmodule Excyte.Properties.PublicDataApi do
-  use Tesla, only: [:get], docs: false
+  use Tesla, only: [:get, :post], docs: false
   alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://realty-in-us.p.rapidapi.com/"
@@ -8,6 +8,8 @@ defmodule Excyte.Properties.PublicDataApi do
   plug Tesla.Middleware.Headers, [
     {"x-rapidapi-key", cycle_api_keys()},
     {"x-rapidapi-host", "realty-in-us.p.rapidapi.com"},
+    {"content-type", "application/json"},
+    {"accept", "application/json"},
     {"useQueryString", true}
   ]
 
@@ -90,20 +92,46 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   def fetch_active_listings(query) do
-    case get("/properties/v2/list-for-sale", query: query, opts: [sort: "relevance"]) do
-      {:ok, %Tesla.Env{:body => %{"properties" => active}}} ->
-        {:ok, %{active: active}}
+    body =
+      Map.delete(query, :sold_price)
+      |> Map.merge(%{
+        status: [
+          "for_sale",
+          "ready_to_build"
+        ]
+      })
+      |> Jason.encode!()
+
+    case post("/properties/v3/list", body) do
+      {:ok, %Tesla.Env{:body => %{"data" => %{"home_search" => %{"results" => res}}}}} ->
+        {:ok, %{active: res}}
 
       {:error, err} ->
         IO.inspect(err, label: "ERR-ACT")
         {:error, []}
+
+      res ->
+        IO.inspect(res, label: "RES")
     end
   end
 
   def fetch_closed_listings(query) do
-    case get("/properties/v2/list-sold", query: query, opts: [sort: "relevance"]) do
-      {:ok, %Tesla.Env{:body => %{"properties" => sold}}} ->
-        {:ok, %{closed: sold}}
+    body =
+      Map.delete(query, :list_price)
+      |> Map.merge(%{
+        sold_date: %{
+          max: DateTime.to_iso8601(DateTime.utc_now()),
+          min: DateTime.to_iso8601(DateTime.add(DateTime.utc_now(), -365, :day))
+        },
+        status: [
+          "sold"
+        ]
+      })
+      |> Jason.encode!()
+
+    case post("/properties/v3/list", body) do
+      {:ok, %Tesla.Env{:body => %{"data" => %{"home_search" => %{"results" => res}}}}} ->
+        {:ok, %{closed: res}}
 
       {:error, err} ->
         IO.inspect(err, label: "ERR-CLO")
@@ -118,30 +146,34 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   def build_query(area, opts) do
-    IO.inspect(hd(area), label: "AREA HD")
-    IO.inspect(opts, label: "OPTS")
-
-    query = [
+    query = %{
       offset: 0,
-      limit: 5,
-      # prop_type: opts.public_prop_type,
-      beds_min: opts.beds.low,
-      beds_max: opts.beds.high,
-      baths_min: opts.baths.low,
-      baths_max: opts.baths.high,
-      price_min: opts.price.low * 1000,
-      price_max: opts.price.high * 1000,
-      sqft_min: opts.sqft.low,
-      sqft_max: opts.sqft.high,
-      # age_min: opts.age.low,
-      # age_max: opts.age.high,
-      # lot_sqft_min: opts.lot_sqft.low,
-      # lot_sqft_max: opts.lot_sqft.high,
-      lat_min: hd(hd(area)),
-      lat_max: hd(List.last(area)),
-      lng_min: List.last(hd(area)),
-      lng_max: List.last(List.last(area))
-    ]
+      limit: 3,
+      search_location: %{
+        radius: 10,
+        location: area
+      },
+      beds: %{
+        max: opts.beds.high,
+        min: opts.beds.low
+      },
+      baths: %{
+        max: opts.baths.high,
+        min: opts.baths.low
+      },
+      sqft: %{
+        max: opts.sqft.high,
+        min: opts.sqft.low
+      },
+      sold_price: %{
+        max: opts.price.high,
+        min: opts.price.low
+      },
+      list_price: %{
+        max: opts.price.high,
+        min: opts.price.low
+      }
+    }
 
     {:ok, query}
   end
@@ -252,7 +284,7 @@ defmodule Excyte.Properties.PublicDataApi do
       "property_sub_type" => process_type(prop["description"]["type"]),
       "status" => process_status(prop["status"]),
       # "features" => (if prop["public_records"], do: process_features(hd(prop["public_records"])), else: nil),
-      "lotsize" => prop["description"]["lot_sqft"],
+      "lotsize_sqft" => prop["description"]["lot_sqft"],
       "lotsize_preference" => "sqft",
       "sqft" => prop["description"]["sqft"],
       "history" => %{"overview" => "", "timeline_items" => prop["property_history"]},
@@ -300,7 +332,7 @@ defmodule Excyte.Properties.PublicDataApi do
   def process_dom(%{closed: cl, listed: lst}) when lst !== nil do
     dom =
       with closed <- get_closed(cl),
-           {:ok, listed} <- NaiveDateTime.from_iso8601(lst) do
+           {:ok, listed} <- Date.from_iso8601(lst) do
         Date.diff(closed, listed)
       end
 
@@ -310,7 +342,7 @@ defmodule Excyte.Properties.PublicDataApi do
   def process_dom(_), do: -1
 
   defp get_closed(cl) do
-    if is_nil(cl), do: NaiveDateTime.utc_now(), else: NaiveDateTime.from_iso8601!(cl)
+    if is_nil(cl), do: Date.utc_today(), else: Date.from_iso8601!(cl)
   end
 
   defp process_features(feats) do

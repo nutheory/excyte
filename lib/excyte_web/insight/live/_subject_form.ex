@@ -43,11 +43,7 @@ defmodule ExcyteWeb.Insight.SubjectForm do
     cs = Properties.change_property(subject_attrs)
 
     if cs.valid? do
-      if a.current_mls.value === "public" do
-        send(self(), {:auto_create_cma, subject_attrs})
-      else
-        send(self(), {:create_subject, subject_attrs})
-      end
+      send(self(), {:create_subject, subject_attrs})
 
       {:noreply, socket}
     else

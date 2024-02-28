@@ -248,7 +248,7 @@ defmodule Excyte.Properties.PublicDataApi do
   end
 
   def process_property(prop) do
-    IO.inspect(prop["description"], label: "PROP")
+    IO.inspect(prop, label: "PROP")
     street = String.split(prop["location"]["address"]["line"], " ", parts: 2)
     closed = Enum.find(prop["property_history"], fn hist -> hist["event_name"] === "Sold" end)
     listed = Enum.find(prop["property_history"], fn hist -> hist["event_name"] === "Listed" end)

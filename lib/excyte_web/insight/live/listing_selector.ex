@@ -1,5 +1,7 @@
 defmodule ExcyteWeb.Insight.ListingSelector do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
+
   alias Excyte.{
     Accounts,
     Insights,
@@ -26,29 +28,31 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   def mount(params, _sesh, %{assigns: %{current_user: cu}} = socket) do
     {:ok, prev_state} = Cachex.get(:insights_cache, params["insight_id"])
     if prev_state do
-      send self(), {:query_mls, %{
+      send(self(), {:query_mls, %{
         insight: prev_state.insight,
         filters: Utilities.format_quoted_json(prev_state.insight.saved_search.criteria)
-      }}
+      }})
       {:ok, assign(socket, Map.merge(prev_state, %{listings: [], fetching: true}))}
     else
-      if params["insight_id"], do: send self(), {:load_from_store, params["insight_id"]}
-      {:ok, assign(socket,
-        current_user: cu,
-        selected_listings: [],
-        filters: %{},
-        client_info: assign_client_info(socket),
-        subject: nil,
-        finder_input: "",
-        sort_by: "ranking",
-        key: params["insight_id"],
-        status_updated_options: @status_updated_options,
-        fetching: (if params["insight_id"], do: true, else: false),
-        listings: nil,
-        preview: nil,
-        show_panel: false,
-        show_filters: false
-      )}
+      if params["insight_id"], do: send(self(), {:load_from_store, params["insight_id"]})
+
+      {:ok,
+        socket
+        |> assign(:current_user, cu)
+        |> assign(:selected_listings, [])
+        |> assign(:filters, %{})
+        |> assign_client_info()
+        |> assign(:subject, nil)
+        |> assign(:finder_input, "")
+        |> assign(:sort_by, "ranking")
+        |> assign(:key, params["insight_id"])
+        |> assign(:status_updated_options, @status_updated_options)
+        |> assign(:fetching, (if params["insight_id"], do: true, else: false))
+        |> assign(:listings, nil)
+        |> assign(:preview, nil)
+        |> assign(:show_panel, false)
+        |> assign(:show_filters, false)
+      }
     end
   end
 
@@ -65,15 +69,26 @@ defmodule ExcyteWeb.Insight.ListingSelector do
   end
 
   def handle_info({:query_mls, %{insight: ins, filters: filters}}, %{assigns: a} = socket) do
-    case ResoApi.listing_properties(a.current_user.current_mls, ins.property, filters) do
-      {:ok, c} -> %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, ins.property, filters, socket)
-        {:noreply, assign(socket, insight: ins, listings: ls, fetching: false, filters: fs,
+    case Insights.fetch_comparables(%{subject: ins.property, search_opts: filters}) do
+      {:ok, c} -> %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, subject, filters, socket)
+        {:noreply, assign(socket, insight: subject, listings: ls, fetching: false, filters: fs,
           subject: ns, comp_count: c.count, show_filters: length(ls) === 0)}
 
       {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
-                        subject: ins.property)}
+                        subject: subject)}
     end
   end
+
+  # def handle_info({:query_mls, %{insight: ins, filters: filters}}, %{assigns: a} = socket) do
+  #   case ResoApi.listing_properties(a.current_user.current_mls, ins.property, filters) do
+  #     {:ok, c} -> %{listings: ls, subject: ns, filters: fs} = sort_by(c.listings, ins.property, filters, socket)
+  #       {:noreply, assign(socket, insight: ins, listings: ls, fetching: false, filters: fs,
+  #         subject: ns, comp_count: c.count, show_filters: length(ls) === 0)}
+
+  #     {:error, err} -> {:noreply, assign(socket, errors: err, fetching: false,
+  #                       subject: ins.property)}
+  #   end
+  # end
 
   def handle_info({:update_filter, val}, %{assigns: a} = socket) do
     filters =

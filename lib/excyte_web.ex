@@ -51,8 +51,6 @@ defmodule ExcyteWeb do
       use Phoenix.LiveView,
         layout: {ExcyteWeb.LayoutView, :app}
 
-      use ViewportHelpers
-
       unquote(view_helpers())
     end
   end

@@ -75,7 +75,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
 
     case Insights.auto_create_cma(auto_insight_data(attrs, key, a)) do
       {:ok, _} ->
-        {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
+        {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/customize")}
 
       {:error, method, changeset, _} ->
         # Activities.handle_errors([%{}], "create_cma.auto_create_cma")
@@ -124,7 +124,8 @@ defmodule ExcyteWeb.Insight.CreateCma do
         cover_photo_url: subject_attrs["main_photo_url"],
         created_by_id: cu.id,
         brokerage_id: cu.brokerage_id,
-        published: false
+        published: false,
+        auto_generated: true
       },
       subject: subject_attrs,
       search_opts: Utilities.default_filter(Map.merge(a.subject, %{"dataset_id" => "public"}))
@@ -134,7 +135,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
   defp insight_data(subject, key, %{current_user: cu} = a) do
     theme_attrs = Insights.get_theme_attributes(cu.id, cu.brokerage_id)
     template = Insights.get_document_templates(cu, %{type: "cma", auto: false})
-    subject_attrs = Map.merge(subject, %{main_photo_url: a.photo})
+    subject_attrs = Map.merge(subject, %{"main_photo_url" => a.photo})
 
     %{
       insight: %{
@@ -143,18 +144,18 @@ defmodule ExcyteWeb.Insight.CreateCma do
         name: "draft",
         document_attributes: Map.from_struct(theme_attrs),
         document_template_id: hd(template).id,
-        cover_photo_url: subject_attrs.main_photo_url,
+        cover_photo_url: subject_attrs["main_photo_url"],
         created_by_id: cu.id,
         brokerage_id: cu.brokerage_id,
         published: false,
-        mls: a.current_mls.value,
+        mls: "public",
         selected_listing_ids: [],
         saved_search: %{
           query: "",
-          coords: subject_attrs.coords,
-          zip: subject_attrs.zip,
+          coords: subject_attrs["coords"],
+          zip: subject_attrs["zip"],
           criteria:
-            Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: a.current_mls.value}))
+            Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: "public"}))
         }
       },
       subject: subject_attrs

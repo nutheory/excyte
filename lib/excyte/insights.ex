@@ -44,6 +44,13 @@ defmodule Excyte.Insights do
     end
   end
 
+  def fetch_comparables(attrs) do
+    Multi.new()
+    |> Multi.run(:listings, __MODULE__, :fetch_auto_comparables, [attrs])
+    |> Multi.run(:complete, __MODULE__, :merge_insight_comparables, [attrs])
+    |> Repo.transaction()
+  end
+
   def auto_create_cma(attrs) do
     Multi.new()
     |> Multi.run(:subject, __MODULE__, :find_or_create_subject, [attrs])

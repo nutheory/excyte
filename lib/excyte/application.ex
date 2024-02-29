@@ -6,6 +6,13 @@ defmodule Excyte.Application do
   use Application
 
   def start(_type, args) do
+    credentials =
+      "GOOGLE_APPLICATION_CREDENTIALS"
+      |> System.fetch_env!()
+      |> Jason.decode!()
+
+    source = {:service_account, credentials}
+
     children =
       case args do
         [env: :test] ->
@@ -22,6 +29,7 @@ defmodule Excyte.Application do
         [env: :dev] ->
           [
             Excyte.Repo,
+            {Goth, name: Vibrant.Goth, source: source},
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,
             %{id: :insights_cache, start: {Cachex, :start_link, [:insights_cache, []]}},
@@ -35,6 +43,7 @@ defmodule Excyte.Application do
         [_] ->
           [
             Excyte.Repo,
+            {Goth, name: Vibrant.Goth, source: source},
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,
             {Cachex, name: :insights_cache},

@@ -19,11 +19,11 @@ config :excyte, Excyte.Repo,
 config :excyte, ExcyteWeb.Endpoint,
   http: [port: 4000],
   https: [
-      port: 4001,
-      cipher_suite: :strong,
-      certfile: "priv/cert/selfsigned.pem",
-      keyfile: "priv/cert/selfsigned_key.pem"
-    ],
+    port: 4001,
+    cipher_suite: :strong,
+    certfile: "priv/cert/selfsigned.pem",
+    keyfile: "priv/cert/selfsigned_key.pem"
+  ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -31,8 +31,7 @@ config :excyte, ExcyteWeb.Endpoint,
     node: ["esbuild.js", "--watch", cd: Path.expand("../assets", __DIR__)]
   ]
 
-config :excyte, ExcyteWeb.Endpoint,
-  phoenix_profiler: true
+config :excyte, ExcyteWeb.Endpoint, phoenix_profiler: true
 
 config :ex_twilio,
   account_sid: System.get_env("TWILIO_ACCOUNT_SID"),
@@ -52,15 +51,12 @@ config :mux,
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, [default_scope: "email profile plus.me"]}
+    google: {Ueberauth.Strategy.Google, [default_scope: "email profile"]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Google.OAuth,
   client_id: System.get_env("GOOGLE_CLIENT_ID"),
   client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
-
-config :goth,
-  json: System.get_env("GOOGLE_APPLICATION_CREDENTIALS") |> File.read!()
 
 config :excyte, Excyte.Mailer, adapter: Bamboo.LocalAdapter
 config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")

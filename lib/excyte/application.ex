@@ -29,7 +29,7 @@ defmodule Excyte.Application do
         [env: :dev] ->
           [
             Excyte.Repo,
-            {Goth, name: Vibrant.Goth, source: source},
+            {Goth, name: Excyte.Goth, source: source},
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,
             %{id: :insights_cache, start: {Cachex, :start_link, [:insights_cache, []]}},
@@ -43,7 +43,7 @@ defmodule Excyte.Application do
         [_] ->
           [
             Excyte.Repo,
-            {Goth, name: Vibrant.Goth, source: source},
+            {Goth, name: Excyte.Goth, source: source},
             Excyte.Mls.MetaCache,
             Excyte.Scheduler,
             {Cachex, name: :insights_cache},

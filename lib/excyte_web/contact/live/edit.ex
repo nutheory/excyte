@@ -4,8 +4,7 @@ defmodule ExcyteWeb.Contact.Edit do
 
   alias Excyte.{
     Contacts,
-    Utils.ContactItem,
-    Utils.AddressItem
+    Utils.ContactItem
   }
 
   alias ExcyteWeb.{
@@ -71,7 +70,7 @@ defmodule ExcyteWeb.Contact.Edit do
     end
   end
 
-  def handle_event("select_change", %{"attr" => attr, "option" => opt}, %{assigns: a} = socket) do
+  def handle_event("select_change", %{"attr" => attr, "option" => opt}, socket) do
     new_assign = Map.put(%{}, String.to_atom(attr), opt)
     {:noreply, assign(socket, new_assign)}
   end
@@ -94,7 +93,7 @@ defmodule ExcyteWeb.Contact.Edit do
     {:noreply, assign(socket, changeset: cs)}
   end
 
-  defp filter_points_of_contact(poc) do
-    # Enum.filter(poc, fn item ->  end)
-  end
+  # defp filter_points_of_contact(poc) do
+  #   # Enum.filter(poc, fn item ->  end)
+  # end
 end

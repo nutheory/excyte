@@ -1,12 +1,13 @@
 defmodule ExcyteWeb.InsightView do
   use ExcyteWeb, {:view, [root: "lib/excyte_web/insight/templates", path: ""]}
   import Number.{Delimit}
+
   alias ExcyteWeb.{
     Helpers.Utilities,
-    Helpers.ClientFunctions,
     Helpers.UI,
     Client.TemplateRender
   }
+
   alias ExcyteWeb.Insight.{
     EditorMenuBubble,
     EditorMenuCommands,
@@ -23,9 +24,9 @@ defmodule ExcyteWeb.InsightView do
     SubjectProperty,
     UploadVideo
   }
+
   alias ExcyteWeb.Components.{
     AddressAutocomplete,
-    Dropdown,
     Gallery,
     MultiSelect,
     RangeInputs,

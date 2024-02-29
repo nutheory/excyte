@@ -41,6 +41,7 @@ defmodule ExcyteWeb.Contact.Overview do
      )}
   end
 
+  @impl true
   def handle_params(_params, _, socket) do
     {:noreply, socket}
   end
@@ -68,7 +69,7 @@ defmodule ExcyteWeb.Contact.Overview do
     {:noreply, assign(socket, contacts: load_contacts(lo, a.default_scope))}
   end
 
-  def handle_event("import_google_contacts", _, %{assigns: a} = socket) do
+  def handle_event("import_google_contacts", _, socket) do
     Contacts.import_google_contacts()
     {:noreply, socket}
   end

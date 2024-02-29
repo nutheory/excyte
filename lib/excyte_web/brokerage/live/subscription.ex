@@ -9,6 +9,7 @@ defmodule ExcyteWeb.Brokerage.Subscription do
     cu = Accounts.get_user_by_session_token(token)
     plans = Application.get_env(:excyte, :brokerage_plans) |> Billing.get_plans(true)
     default_plan = Enum.find(plans, fn pl -> pl.default === true end)
+
     current_plan =
       if cu.account.source_subscription_id do
         case Billing.get_current_subscription(cu.account.source_subscription_id) do
@@ -18,35 +19,58 @@ defmodule ExcyteWeb.Brokerage.Subscription do
       else
         nil
       end
-    {:ok, assign(socket,
-      plans: plans,
-      account: cu.account,
-      payment_success: false,
-      updating_plan: (if current_plan, do: false, else: true),
-      max_agents: default_plan.max_agents,
-      errors: [],
-      selected_plan: default_plan,
-      current_plan: current_plan,
-      current_user: cu
-    )}
+
+    {:ok,
+     assign(socket,
+       plans: plans,
+       account: cu.account,
+       payment_success: false,
+       updating_plan: if(current_plan, do: false, else: true),
+       max_agents: default_plan.max_agents,
+       errors: [],
+       selected_plan: default_plan,
+       current_plan: current_plan,
+       current_user: cu
+     )}
   end
 
-  def handle_event("payment-success", %{"id" => pm_id, "mode" => "update"}, %{assigns: %{account: acc} = a} = socket) do
-    with {:ok, sub} <- Billing.update_payment_method(%{
-                        customer_id: acc.source_customer_id,
-                        subscription_id: acc.source_subscription_id,
-                        payment_id: pm_id}),
+  def handle_event(
+        "payment-success",
+        %{"id" => pm_id, "mode" => "update"},
+        %{assigns: %{account: acc} = a} = socket
+      ) do
+    with {:ok, sub} <-
+           Billing.update_payment_method(%{
+             customer_id: acc.source_customer_id,
+             subscription_id: acc.source_subscription_id,
+             payment_id: pm_id
+           }),
          {:ok, _} <- Accounts.update_account_details(acc.id, %{payment: pm_id}) do
-      {:noreply, assign(socket, current_plan: sub, payment_success: true,)}
+      {:noreply, assign(socket, current_plan: sub, payment_success: true)}
     else
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
   end
 
-  def handle_event("payment-success", %{"id" => pm_id}, %{assigns: %{account: acc, selected_plan: pl} = a} = socket) do
+  def handle_event(
+        "payment-success",
+        %{"id" => pm_id},
+        %{assigns: %{account: acc, selected_plan: pl} = a} = socket
+      ) do
     with {:ok, %{sub: sub, sub_item: item}} <-
-            create_subscription(%{account: acc, plan_id: pl.plan_id, payment_id: pm_id, max_agents: a.max_agents}),
-         {:ok, account} <- update_account(acc.id, %{sub: sub, item: item, payment: pm_id, max_agents: a.max_agents}),
+           create_subscription(%{
+             account: acc,
+             plan_id: pl.plan_id,
+             payment_id: pm_id,
+             max_agents: a.max_agents
+           }),
+         {:ok, account} <-
+           update_account(acc.id, %{
+             sub: sub,
+             item: item,
+             payment: pm_id,
+             max_agents: a.max_agents
+           }),
          {:ok, _} <- EmailNotifiers.deliver_welcome_email(a.current_user, account) do
       {:noreply, assign(socket, payment_success: true)}
     else
@@ -55,7 +79,11 @@ defmodule ExcyteWeb.Brokerage.Subscription do
   end
 
   def handle_event("update-plan", _, %{assigns: %{account: acc, selected_plan: pl} = a} = socket) do
-    case Billing.update_subscription(%{account: acc, price_id: pl.plan_id, max_agents: a.max_agents}) do
+    case Billing.update_subscription(%{
+           account: acc,
+           price_id: pl.plan_id,
+           max_agents: a.max_agents
+         }) do
       {:ok, sub} -> {:noreply, assign(socket, current_plan: sub, updating_plan: false)}
       {:error, err} -> {:noreply, assign(socket, errors: [err | a.errors])}
     end
@@ -68,11 +96,13 @@ defmodule ExcyteWeb.Brokerage.Subscription do
 
   def handle_event("toggle-updating-plan", _, %{assigns: a} = socket) do
     selected = Enum.find(a.plans, fn pl -> pl.plan_id === a.current_plan.plan.id end)
-    {:noreply, assign(socket,
-      updating_plan: !a.updating_plan,
-      selected_plan: selected,
-      max_agents: selected.max_agents
-    )}
+
+    {:noreply,
+     assign(socket,
+       updating_plan: !a.updating_plan,
+       selected_plan: selected,
+       max_agents: selected.max_agents
+     )}
   end
 
   defp create_subscription(%{account: acc, plan_id: pl_id, payment_id: pm_id, max_agents: max}) do

@@ -6,9 +6,9 @@ defmodule Excyte.Accounts.Account do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
   import Ecto.Changeset
+
   alias Excyte.{
-    Accounts.User,
-    Repo
+    Accounts.User
   }
 
   schema "accounts" do
@@ -39,7 +39,7 @@ defmodule Excyte.Accounts.Account do
       :payment_method_id,
       :agent_limit,
       :current_period_end
-      ])
+    ])
   end
 
   def update_changeset(acc, attrs) do
@@ -55,7 +55,6 @@ defmodule Excyte.Accounts.Account do
       :current_period_end,
       :latest_invoice_id,
       :deleted_at
-      ])
+    ])
   end
-
 end

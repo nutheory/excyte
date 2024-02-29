@@ -1,23 +1,10 @@
 defmodule ExcyteWeb.Property.FC do
-  use Phoenix.Component
-  use Phoenix.HTML
-  alias Phoenix.LiveView.JS
-  alias ExcyteWeb.Components.{Function}
-  alias ExcyteWeb.Helpers.{UI}
-  alias ExcyteWeb.Router.Helpers, as: Routes
-
-  # def status_options() do
-  #   [
-  #     %{}
-  #   ]
-  # end
-
   def association_fee_frequency_options() do
     [
       %{value: "Annually", text: "Annually"},
       %{value: "Monthly", text: "Monthly"},
       %{value: "Quarterly", text: "Quarterly"},
-      %{value: "Semi Annually", text: "Semi Annually"},
+      %{value: "Semi Annually", text: "Semi Annually"}
     ]
   end
 
@@ -26,7 +13,7 @@ defmodule ExcyteWeb.Property.FC do
       %{value: "Garage (attached)", text: "Garage (attached)"},
       %{value: "Garage (detached)", text: "Garage (detached)"},
       %{value: "Carport", text: "Carport"},
-      %{value: "Street", text: "Street"},
+      %{value: "Street", text: "Street"}
     ]
   end
 
@@ -50,13 +37,4 @@ defmodule ExcyteWeb.Property.FC do
       %{value: "Manufactured Home", text: "Manufactured Home"}
     ]
   end
-
-  # def form(assigns) do
-  #   ~H"""
-  #   <div>
-
-  #   </div>
-  #   """
-  # end
-
 end

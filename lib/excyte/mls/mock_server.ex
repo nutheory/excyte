@@ -2,9 +2,11 @@ defmodule Mls.MockServer do
   use Plug.Router
   use Plug.Debugger
   use Plug.ErrorHandler
-  plug Plug.Parsers, parsers: [:json],
-                    pass:  ["text/*"],
-                    json_decoder: Jason
+
+  plug Plug.Parsers,
+    parsers: [:json],
+    pass: ["text/*"],
+    json_decoder: Jason
 
   plug :match
   plug :dispatch
@@ -80,16 +82,26 @@ defmodule Mls.MockServer do
   get "/o/oauth2/v2/:dataset" do
     at =
       case dataset do
-        "actris_ref" -> "access_token=c72f9c07c32759011128b84001acb35d&member_key=e76e47e5a909f6f6a283644795c3f42b&office_key=15180c7764a1dafc1d90da4b8399a674"
-        "test" -> "access_token=6baca547742c6f96a6ff71b138424f21&member_key=M_5dba1fa4a2a50c5b81f082d9&office_key=O_5af6019c75f1043ad481d99a"
-        _ -> "oops"
+        "actris_ref" ->
+          "access_token=c72f9c07c32759011128b84001acb35d&member_key=e76e47e5a909f6f6a283644795c3f42b&office_key=15180c7764a1dafc1d90da4b8399a674"
+
+        "test" ->
+          "access_token=6baca547742c6f96a6ff71b138424f21&member_key=M_5dba1fa4a2a50c5b81f082d9&office_key=O_5af6019c75f1043ad481d99a"
+
+        _ ->
+          "oops"
       end
 
     nm = String.split(dataset, "_") |> hd() |> String.upcase()
-    qs = "code=5465c65&mls_name=#{nm}&dataset_id=#{dataset}&#{at}&refresh_token=3o0iipzrpiknijyxtjrugkt29&id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazci&expires_in=3600"
+
+    qs =
+      "code=5465c65&mls_name=#{nm}&dataset_id=#{dataset}&#{at}&refresh_token=3o0iipzrpiknijyxtjrugkt29&id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazci&expires_in=3600"
 
     conn
-    |> Plug.Conn.put_resp_header("location", "#{conn.params["redirect_uri"]}?#{qs}&excyte_user_id=#{conn.params["excyte_user_id"]}&return_to=#{conn.params["return_to"]}")
+    |> Plug.Conn.put_resp_header(
+      "location",
+      "#{conn.params["redirect_uri"]}?#{qs}&excyte_user_id=#{conn.params["excyte_user_id"]}&return_to=#{conn.params["return_to"]}"
+    )
     |> Plug.Conn.send_resp(conn.status || 302, "hey")
   end
 
@@ -102,10 +114,10 @@ defmodule Mls.MockServer do
     |> Plug.Conn.send_resp(200, Jason.encode!(body))
   end
 
-  defp failure(conn, body) do
-    conn
-    |> Plug.Conn.send_resp(422, Jason.encode!(body))
-  end
+  # defp failure(conn, body) do
+  #   conn
+  #   |> Plug.Conn.send_resp(422, Jason.encode!(body))
+  # end
 
   defp handle_errors(conn, %{kind: kind, reason: reason, stack: _stack}) do
     send_resp(

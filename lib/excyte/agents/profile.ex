@@ -14,9 +14,9 @@ defmodule Excyte.Agents.Profile do
   defimpl Jason.Encoder, for: [Excyte.Agents.Profile] do
     def encode(struct, opts) do
       Enum.reduce(Map.from_struct(struct), %{}, fn
-        ({_k, %Ecto.Association.NotLoaded{}}, acc) -> acc
-        ({:__meta__, _}, acc) -> acc
-        ({k, v}, acc) -> Map.put(acc, k, v)
+        {_k, %Ecto.Association.NotLoaded{}}, acc -> acc
+        {:__meta__, _}, acc -> acc
+        {k, v}, acc -> Map.put(acc, k, v)
       end)
       |> Jason.Encode.map(opts)
     end
@@ -61,7 +61,7 @@ defmodule Excyte.Agents.Profile do
 
   def registration_changeset(profile, attrs) do
     profile
-    |> cast(attrs, [:name, :agent_id])
+    |> cast(attrs, [:name, :agent_id, :updated_by_user])
     |> cast_embed(:contact_items)
     |> cast_embed(:theme_settings)
     |> validate_required([:name, :agent_id])

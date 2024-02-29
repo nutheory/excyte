@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Agent.GettingStarted do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Accounts, Agents, Mls}
   alias ExcyteWeb.AgentView
 
@@ -11,12 +12,14 @@ defmodule ExcyteWeb.Agent.GettingStarted do
     mls_list = Mls.get_credentials(%{agent_id: cu.id})
     profile = Agents.get_agent_profile!(cu.id)
     if connected?(socket), do: Accounts.subscribe(account.id)
-    {:ok, assign(socket,
-      current_user: cu,
-      account: account,
-      mls_list: mls_list,
-      profile: profile
-    )}
+
+    {:ok,
+     assign(socket,
+       current_user: cu,
+       account: account,
+       mls_list: mls_list,
+       profile: profile
+     )}
   end
 
   def handle_params(params, _uri, %{assigns: a} = socket) do
@@ -34,16 +37,19 @@ defmodule ExcyteWeb.Agent.GettingStarted do
       case Accounts.update_user(a.current_user.id, %{completed_setup: true}) do
         {:ok, _} ->
           {:noreply,
-            socket
-            |> put_flash(:info, "Profile created successfully")
-            |> push_redirect(to: "/auth/dash")}
-        {:error, err} -> {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
+           socket
+           |> put_flash(:info, "Profile created successfully")
+           |> push_redirect(to: "/auth/dash")}
+
+        {:error, err} ->
+          {:noreply, put_flash(socket, :error, "An error has occured. #{err}")}
       end
     else
-      {:noreply, assign(socket,
-        current_step: current_step,
-        return_to: "/agent/getting-started?step=#{current_step}"
-      )}
+      {:noreply,
+       assign(socket,
+         current_step: current_step,
+         return_to: "/agent/getting-started?step=#{current_step}"
+       )}
     end
   end
 

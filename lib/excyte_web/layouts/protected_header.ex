@@ -25,6 +25,7 @@ defmodule ExcyteWeb.ProtectedHeader do
     end
   end
 
+  @impl true
   def handle_event("switch-mls", %{"mls-id" => mid}, %{assigns: assigns} = socket) do
     mls = Enum.find(assigns.mls_options, fn x -> x.id === String.to_integer(mid) end)
 
@@ -321,7 +322,7 @@ defmodule ExcyteWeb.ProtectedHeader do
                 </.link>
               </li>
               <li class="">
-                <.link href={~p"/log_out"} method="delete" , class="block py-2 px-4 hover:bg-blue-100">
+                <.link href={~p"/log_out"} method="delete" class="block py-2 px-4 hover:bg-blue-100">
                   Log out
                 </.link>
               </li>

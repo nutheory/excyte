@@ -3,7 +3,6 @@ defmodule ExcyteWeb.Insight.CreateCma do
   use ViewportHelpers
 
   alias Excyte.{
-    Activities,
     Insights,
     Mls,
     Properties
@@ -65,7 +64,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
       {:ok, _} ->
         {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/listings")}
 
-      {:error, method, changeset, _} ->
+      {:error, _method, _changeset, _} ->
         # Activities.handle_errors(changeset.errors, "create_cma.create_subject")
         {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
@@ -78,7 +77,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
       {:ok, _} ->
         {:noreply, push_redirect(socket, to: "/auth/insights/#{key}/customize")}
 
-      {:error, method, changeset, _} ->
+      {:error, _method, changeset, _} ->
         # Activities.handle_errors([%{}], "create_cma.auto_create_cma")
         {:noreply, put_flash(socket, :error, "Something went wrong.")}
     end
@@ -155,8 +154,7 @@ defmodule ExcyteWeb.Insight.CreateCma do
           query: "",
           coords: subject_attrs["coords"],
           zip: subject_attrs["zip"],
-          criteria:
-            Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: "public"}))
+          criteria: Utilities.default_filter(Map.merge(subject_attrs, %{dataset_id: "public"}))
         }
       },
       subject: subject_attrs

@@ -1,7 +1,5 @@
 defmodule Excyte.Mls.ResoOfficeApi do
   use Tesla, only: [:get], docs: false
-  import SweetXml
-  alias Excyte.Mls.{MetaCache}
 
   plug Tesla.Middleware.BaseUrl, "https://api.bridgedataoutput.com/api/v2/OData"
   # plug Tesla.Middleware.Headers,
@@ -16,28 +14,32 @@ defmodule Excyte.Mls.ResoOfficeApi do
       {:ok, md} ->
         %{
           contacts: process_contacts(md),
-          address: [%{
-            address_one: md["OfficeAddress1"],
-            address_two: md["OfficeAddress2"],
-            zip: md["OfficePostalCode"],
-            city: md["OfficeCity"],
-            state: md["OfficeStateOrProvince"]
-          }]
+          address: [
+            %{
+              address_one: md["OfficeAddress1"],
+              address_two: md["OfficeAddress2"],
+              zip: md["OfficePostalCode"],
+              city: md["OfficeCity"],
+              state: md["OfficeStateOrProvince"]
+            }
+          ]
         }
-      {:error, err} -> {:error, err}
+
+      {:error, err} ->
+        {:error, err}
     end
   end
 
   defp process_contacts(member) do
     fields = ["OfficeEmail", "OfficeFax", "OfficePhone"]
+
     Enum.reduce(fields, [], fn md, acc ->
       if member[md] !== nil do
-        [%{ name: split_name_by_case(md), content: member[md] } | acc]
+        [%{name: split_name_by_case(md), content: member[md]} | acc]
       else
         acc
       end
     end)
-
   end
 
   def split_name_by_case(str) do

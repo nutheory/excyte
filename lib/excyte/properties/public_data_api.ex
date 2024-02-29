@@ -1,6 +1,5 @@
 defmodule Excyte.Properties.PublicDataApi do
   use Tesla, only: [:get, :post], docs: false
-  alias Excyte.{Properties.Property}
 
   plug Tesla.Middleware.BaseUrl, "https://realty-in-us.p.rapidapi.com/"
   plug Tesla.Middleware.FollowRedirects, max_redirects: 5
@@ -17,14 +16,14 @@ defmodule Excyte.Properties.PublicDataApi do
   plug Tesla.Middleware.JSON
   plug Tesla.Middleware.Logger
 
-  @features [
-    %{name: "New Construction", value: "construction"},
-    %{name: "View", value: "view"},
-    %{name: "Pool", value: "pool"},
-    %{name: "Spa", value: "spa"},
-    %{name: "Horse Stable", value: "horses"},
-    %{name: "Waterfront", value: "waterfront"}
-  ]
+  # @features [
+  #   %{name: "New Construction", value: "construction"},
+  #   %{name: "View", value: "view"},
+  #   %{name: "Pool", value: "pool"},
+  #   %{name: "Spa", value: "spa"},
+  #   %{name: "Horse Stable", value: "horses"},
+  #   %{name: "Waterfront", value: "waterfront"}
+  # ]
 
   def get_listing_info(foreign_id) do
     case get("/properties/v3/detail", query: [property_id: foreign_id]) do
@@ -345,16 +344,16 @@ defmodule Excyte.Properties.PublicDataApi do
     if is_nil(cl), do: Date.utc_today(), else: Date.from_iso8601!(cl)
   end
 
-  defp process_features(feats) do
-    Enum.reduce(@features, [], fn f, acc ->
-      if Map.has_key?(feats, f.value) && feats[f.value] !== nil do
-        [f | acc]
-      else
-        acc
-      end
-    end)
-    |> IO.inspect(label: "FEAT")
-  end
+  # defp process_features(feats) do
+  #   Enum.reduce(@features, [], fn f, acc ->
+  #     if Map.has_key?(feats, f.value) && feats[f.value] !== nil do
+  #       [f | acc]
+  #     else
+  #       acc
+  #     end
+  #   end)
+  #   |> IO.inspect(label: "FEAT")
+  # end
 
   # defp process_year_built(recs) do
   #   if recs["year_built"] do
@@ -372,9 +371,9 @@ defmodule Excyte.Properties.PublicDataApi do
   #   end
   # end
 
-  defp acres_to_sqft(acres) do
-    round(acres * 43560)
-  end
+  # defp acres_to_sqft(acres) do
+  #   round(acres * 43560)
+  # end
 
   defp miles_to_meters(mi) do
     round(mi * 1609.34)

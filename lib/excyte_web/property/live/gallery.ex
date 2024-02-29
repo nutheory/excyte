@@ -16,12 +16,16 @@ defmodule ExcyteWeb.Property.Gallery do
   @impl true
   def mount(%{"id" => id} = params, _sesh, %{assigns: a} = socket) do
     assets = Assets.get_property_assets(id)
-    step = if params["step"] === "false" do
-      false
-    else
-      true
-    end
+
+    step =
+      if params["step"] === "false" do
+        false
+      else
+        true
+      end
+
     IO.inspect(params, label: "PARAMS")
+
     {:ok,
      assign(socket,
        asset: nil,
@@ -34,7 +38,11 @@ defmodule ExcyteWeb.Property.Gallery do
      )}
   end
 
-  def handle_info({:receive_uploads, %{upload_url: url, name: name, asset: asset}}, %{assigns: a} = socket) do
+  @impl true
+  def handle_info(
+        {:receive_uploads, %{upload_url: url, name: name, asset: asset}},
+        %{assigns: a} = socket
+      ) do
     case Assets.update_asset(asset, %{property_id: a.property_id}) do
       {:ok, asset} -> {:noreply, assign(socket, asset: nil, assets: [asset | a.assets])}
       {:error, _} -> {:noreply, socket}
@@ -42,14 +50,14 @@ defmodule ExcyteWeb.Property.Gallery do
   end
 
   def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
-  #   destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
-  #   with {:ok, profile} <- Agents.update_profile(a.profile, destroy_url),
-  #        _ <- update_user_avatar?(a.current_user.id, %{upload_url: "", name: name}) do
-  #     {:noreply, assign(socket, profile: profile)}
-  #   else
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket}
-  #   end
+    #   destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
+    #   with {:ok, profile} <- Agents.update_profile(a.profile, destroy_url),
+    #        _ <- update_user_avatar?(a.current_user.id, %{upload_url: "", name: name}) do
+    #     {:noreply, assign(socket, profile: profile)}
+    #   else
+    #     {:error, %Ecto.Changeset{} = changeset} ->
+    {:noreply, socket}
+    #   end
   end
 
   def handle_event("upload_and_save", params, socket) do
@@ -67,7 +75,11 @@ defmodule ExcyteWeb.Property.Gallery do
     IO.inspect(id, label: "ID")
 
     asset = Enum.find(a.assets, fn asset -> asset.id == String.to_integer(id) end)
-    Properties.update_property(a.property_id, asset.uploaded_by_id, %{main_photo_url: asset.large_url})
+
+    Properties.update_property(a.property_id, asset.uploaded_by_id, %{
+      main_photo_url: asset.large_url
+    })
+
     {:noreply, socket}
   end
 

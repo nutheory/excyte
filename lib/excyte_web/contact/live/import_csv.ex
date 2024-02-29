@@ -1,8 +1,11 @@
 defmodule ExcyteWeb.Contact.ImportCsv do
   use ExcyteWeb, :live_view
-    alias Excyte.{
+  use ViewportHelpers
+
+  alias Excyte.{
     Contacts
   }
+
   alias ExcyteWeb.{
     ContactView,
     Helpers.Utilities
@@ -12,12 +15,13 @@ defmodule ExcyteWeb.Contact.ImportCsv do
 
   @impl Phoenix.LiveView
   def mount(_params, _session, socket) do
-    {:ok, assign(socket,
-        csv_file: nil,
-        contacts: [],
-        mappings: []
-      )
-      |> allow_upload(:contact_csv, accept: ~w(.txt .csv), max_entries: 1)}
+    {:ok,
+     assign(socket,
+       csv_file: nil,
+       contacts: [],
+       mappings: []
+     )
+     |> allow_upload(:contact_csv, accept: ~w(.txt .csv), max_entries: 1)}
   end
 
   @impl Phoenix.LiveView

@@ -1,8 +1,11 @@
 defmodule ExcyteWeb.Property.Gallery do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
+
   alias Excyte.{
     Properties
   }
+
   alias ExcyteWeb.{Helpers.SimpleS3Upload, Property.FC, PropertyView}
 
   @impl true
@@ -12,20 +15,16 @@ defmodule ExcyteWeb.Property.Gallery do
   def mount(%{"id" => id}, _sesh, %{assigns: a} = socket) do
     assets = Properties.get_property_assets(id)
 
-    {:ok, assign(socket,
-      property_id: id,
-      cover_uuid: nil,
-      uploading: false,
-      done: false,
-      assets: [],
-      uploaded_files: []
-      ) |> allow_upload(
-        :photo,
-        accept: ~w(.jpg .jpeg .png .gif),
-        max_entries: 40,
-        max_file_size: 800_000,
-        external: &presign_entry/2
-      )}
+    {:ok,
+     assign(socket,
+       asset: nil,
+       property_id: id,
+       cover_uuid: nil,
+       uploading: false,
+       done: false,
+       assets: assets,
+       uploaded_files: []
+     )}
   end
 
   def handle_event("upload_and_save", params, socket) do
@@ -58,7 +57,9 @@ defmodule ExcyteWeb.Property.Gallery do
 
   @bucket "excyte"
   defp s3_host, do: "//#{@bucket}.s3.amazonaws.com"
-  defp s3_key(entry, property_id), do: "property_photos/#{property_id}/#{entry.uuid}.#{ext(entry)}"
+
+  defp s3_key(entry, property_id),
+    do: "property_photos/#{property_id}/#{entry.uuid}.#{ext(entry)}"
 
   defp presign_entry(entry, %{assigns: a} = socket) do
     uploads = a.uploads

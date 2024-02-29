@@ -12,26 +12,25 @@
    
   </div>
 </div>
-  <%# <div class="bg-black p-4 rounded-lg h-60">
-    <h2 class="mb-2 text-white">Upload Media</h2>
-    <p class="text-sm text-white"></p>
-    <div class="w-40 h-32 relative mx-auto"> %>
-      <%# <.live_component
-        module={ImageEditor}
-        show_image_panel={false}
-        current_user={@current_user}
-        model={"property"}
-        model_id={@current_user.id}
-        name={"main_photo"}
-        title={"Property Photo"}
-        bucket={"property_photos"}
-        image_url={@main_photo_url}
-        aspect_ratio={16/9}
-        upload_text={"Upload<br />Property Photo"}
-        width={160}
-        height={120}
-        id={:photo_image_editor}
-      /> %>
-    <%# </div>
+<div class="bg-black p-4 rounded-lg h-60">
+  <h2 class="mb-2 text-white">Upload Media</h2>
+  <p class="text-sm text-white"></p>
+  <div class="w-40 h-32 relative mx-auto">
+    <.live_component
+      module={ImageEditor}
+      show_image_panel={false}
+      current_user={@current_user}
+      model={"property"}
+      model_id={@current_user.id}
+      name={"main_photo"}
+      title={"Property Photo"}
+      bucket={"property_photos"}
+      image_url={@asset["raw_url"]}
+      aspect_ratio={16/9}
+      upload_text={"Upload<br />Property Photo"}
+      width={160}
+      height={120}
+      id={:photo_image_editor}
+    />
   </div>
-</div> %>
+</div>

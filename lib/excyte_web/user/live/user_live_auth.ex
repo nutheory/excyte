@@ -9,11 +9,12 @@ defmodule ExcyteWeb.UserLiveAuth do
 
     if cu do
       period_end = cu.account.current_period_end
-      IO.inspect(period_end > DateTime.utc_now, label: "PE")
       role = if cu.brokerage_id, do: "brokerage", else: "agent"
+
       cond do
         !cu.completed_setup ->
           {:halt, redirect(socket, to: "/#{role}/getting-started")}
+
         # !period_end || !(period_end > DateTime.utc_now) ->
         #   {:halt, redirect(socket, to: "/settings?section=subscription")}
         true ->

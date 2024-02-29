@@ -9,28 +9,23 @@ defmodule ExcyteWeb.Insight.SubjectForm do
     subject = Map.merge(subj, %{"internal_type" => "subject", "agent_id" => a.current_user.id})
     cs = Properties.change_property(subject)
 
-    {:ok, assign(socket,
-      form: to_form(cs),
-      mls_options: a.mls_options,
-      current_user: a.current_user,
-      current_mls: a.current_mls,
-      lotsize_unit: subject["lotsize_preference"],
-      lotsize_value: subject["lotsize_sqft"],
-      subject: subject,
-      button_label: a.button_label,
-      feature_options: Utilities.feature_options()
-    )}
+    IO.inspect(subject, label: "SUBJECT")
+
+    {:ok,
+     assign(socket,
+       form: to_form(cs),
+       mls_options: a.mls_options,
+       current_user: a.current_user,
+       current_mls: a.current_mls,
+       subject: subject,
+       button_label: a.button_label,
+       feature_options: Utilities.feature_options()
+     )}
   end
 
   def handle_event("update-form", %{"property" => form}, %{assigns: a} = socket) do
-    ls_val =
-      if a.lotsize_unit === "acres" do
-        round(Utilities.acres_to_sqft(String.to_float(form["lotsize_value"])))
-      else
-        round(String.to_integer(form["lotsize_value"]))
-      end
     cs = Properties.change_property(form)
-    {:noreply, assign(socket, form: to_form(cs), lotsize_value: ls_val)}
+    {:noreply, assign(socket, form: to_form(cs))}
   end
 
   def handle_event("save-subject", %{"property" => form}, %{assigns: a} = socket) do
@@ -41,51 +36,42 @@ defmodule ExcyteWeb.Insight.SubjectForm do
         "sqft" => sanitize_number(form["sqft"], Integer),
         "stories" => sanitize_number(form["stories"], Integer),
         "year_built" => sanitize_number(form["year_built"], Integer),
+        "lotsize_sqft" => sanitize_number(form["lotsize_sqft"], Integer),
+        "overview" => nil
       })
-      |> Map.merge(sanitize_lotsize(%{
-        "lotsize_unit" => a.lotsize_unit,
-        "lotsize_value" => form["lotsize_value"]
-      }))
 
     cs = Properties.change_property(subject_attrs)
+
     if cs.valid? do
-      IO.inspect(a.current_mls.value, label: "MLS")
       if a.current_mls.value === "public" do
-        send self(), {:auto_create_cma, subject_attrs}
+        send(self(), {:auto_create_cma, subject_attrs})
       else
-        send self(), {:create_subject, subject_attrs}
+        send(self(), {:create_subject, subject_attrs})
       end
+
       {:noreply, socket}
     else
-      IO.inspect(cs, label: "INV")
       {:noreply, assign(socket, form: to_form(cs))}
     end
   end
 
-  def handle_event("toggle-lot-unit", _, %{assigns: a}  = socket) do
-    if a.lotsize_unit === "acres" do
-      {:noreply, assign(socket,
-        lotsize_unit: "sqft",
-        lotsize_value: round(Utilities.acres_to_sqft(a.lotsize_value))
-      )}
-    else
-      {:noreply, assign(socket,
-        lotsize_unit: "acres",
-        lotsize_value: Utilities.sqft_to_acres(a.lotsize_value)
-      )}
-    end
-  end
-
-  defp sanitize_lotsize(%{"lotsize_unit" => unit, "lotsize_value" => val}) do
-    if unit === "acres" do
-      %{"lotsize_preference" => "acres", "lotsize_sqft" => trunc(Utilities.acres_to_sqft(sanitize_number(val, Float)))}
-    else
-      %{"lotsize_preference" => "sqft", "lotsize_sqft" => sanitize_number(val, Integer)}
-    end
-  end
+  # def handle_event("toggle-lot-unit", _, %{assigns: a} = socket) do
+  #   if a.lotsize_unit === "acres" do
+  #     {:noreply,
+  #      assign(socket,
+  #        lotsize_unit: "sqft",
+  #        lotsize_value: round(Utilities.acres_to_sqft(a.lotsize_value))
+  #      )}
+  #   else
+  #     {:noreply,
+  #      assign(socket,
+  #        lotsize_unit: "acres",
+  #        lotsize_value: Utilities.sqft_to_acres(a.lotsize_value)
+  #      )}
+  #   end
+  # end
 
   defp sanitize_number(str, to_type) do
-    IO.inspect(str, label: "BOOM: #{to_type}")
     if str !== "", do: elem(to_type.parse(str), 0), else: nil
   end
 end

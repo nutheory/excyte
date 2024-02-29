@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.Editor do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
 
   # alias Excyte.{Accounts, Insights, ApiServices}
   alias ExcyteWeb.{InsightView}

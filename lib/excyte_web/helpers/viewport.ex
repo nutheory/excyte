@@ -1,5 +1,5 @@
 defmodule ViewportHelpers do
-  alias Phoenix.{LiveView}
+  alias Phoenix.{Component}
 
   # in sync with css/shared/_media_queries.scss
   # @sm_max_width 640
@@ -17,7 +17,7 @@ defmodule ViewportHelpers do
       import ViewportHelpers
 
       def handle_event("viewport_resize", %{"width" => width}, socket) do
-        {:noreply, assign(socket, client_info: %{ width: width, media: display_size(width) })}
+        {:noreply, Component.assign(socket, client_info: %{ width: width, media: display_size(width) })}
       end
     end
   end
@@ -27,7 +27,7 @@ defmodule ViewportHelpers do
       socket.private
       |> get_in([:connect_params, "viewport", "width"])
 
-    LiveView.assign(socket, client_info: %{ width: width, media: display_size(width) })
+    Component.assign(socket, client_info: %{ width: width, media: display_size(width) })
   end
 
   def display_size(width) when width >= @xl_max_width, do: @display_size_xl

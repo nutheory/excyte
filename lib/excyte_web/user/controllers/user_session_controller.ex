@@ -8,22 +8,27 @@ defmodule ExcyteWeb.UserSessionController do
   plug :put_view, ExcyteWeb.UserView
 
   def new(conn, _params) do
-    render(conn, "login.html", error_message: nil)
+    render(conn, "login.html", error_message: nil, form: to_form(%{}))
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
     %{"email" => email, "password" => password} = user_params
 
     if user = Accounts.get_user_by_email_and_password(email, password) do
       UserAuth.log_in_user(conn, user, user_params)
     else
-      render(conn, "login.html", error_message: "Invalid email or password")
+      render(conn, "login.html",
+        error_message: "Invalid email or password",
+        form: to_form(user_params)
+      )
     end
   end
 
   def create_from_token(conn, %{"email" => email, "token" => token}) do
     case Accounts.get_user_by_email_and_token(token) do
-      {:ok, user} -> UserAuth.log_in_user(conn, user, %{})
+      {:ok, user} ->
+        UserAuth.log_in_user(conn, user, %{})
+
       err ->
         IO.inspect(err, label: "TOKEN LOGIN ERR")
         render(conn, "login.html", error_message: "Invalid email or token")

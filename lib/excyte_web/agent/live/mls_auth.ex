@@ -1,9 +1,8 @@
 defmodule ExcyteWeb.Agent.MlsAuth do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Accounts, Mls, Mls.ResoMemberApi}
-  alias ExcyteWeb.{AgentView, UserConfirmationController}
-
-  @token Application.get_env(:excyte, :bridge_server_key)
+  alias ExcyteWeb.{AgentView}
 
   def render(assigns), do: AgentView.render("mls_auth.html", assigns)
 
@@ -13,18 +12,20 @@ defmodule ExcyteWeb.Agent.MlsAuth do
     mls_opts = Application.get_env(:excyte, :mls_auth_options)
     IO.inspect(mls_list, label: "List")
     IO.inspect(mls_opts, label: "OPTS")
-    {:ok, assign(socket,
-      current_user: cu,
-      return_to: rt,
-      show_auth_button: false,
-      agents: nil,
-      login_id: "",
-      agent: nil,
-      mls: nil,
-      brokerage_approved: false,
-      mls_opts: mls_opts,
-      mls_list: mls_list
-    )}
+
+    {:ok,
+     assign(socket,
+       current_user: cu,
+       return_to: rt,
+       show_auth_button: false,
+       agents: nil,
+       login_id: "",
+       agent: nil,
+       mls: nil,
+       brokerage_approved: false,
+       mls_opts: mls_opts,
+       mls_list: mls_list
+     )}
   end
 
   def handle_info({:update_mls, %{current_user: cu, mls_list: creds}}, socket) do
@@ -32,16 +33,21 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   end
 
   def handle_event("set_mls", %{"option" => mls}, %{assigns: a} = socket) do
-    IO.inspect(mls, label: "MLS")
+    token = Application.get_env(:excyte, :bridge_server_key)
+
     if Enum.find(a.mls_list, fn ds -> ds.dataset_id === mls end) do
       {:noreply, socket}
     else
       mls = Enum.find(a.mls_opts, fn m -> m.value === mls end)
-      mls_q = %{access_token: @token, dataset_id: mls.value}
+      mls_q = %{access_token: token, dataset_id: mls.value}
+
       if mls.type === "bridge" do
         case ResoMemberApi.getMembersByName(mls_q, a.current_user.full_name) do
-          {:ok, agents} -> {:noreply, assign(socket, agents: agents, mls: mls, show_auth_button: true)}
-          {:error, _err} -> {:noreply, assign(socket, agents: [], mls: mls, show_auth_button: false)}
+          {:ok, agents} ->
+            {:noreply, assign(socket, agents: agents, mls: mls, show_auth_button: true)}
+
+          {:error, _err} ->
+            {:noreply, assign(socket, agents: [], mls: mls, show_auth_button: false)}
         end
       else
         {:noreply, assign(socket, mls: mls, show_auth_button: true)}
@@ -59,21 +65,24 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   end
 
   def handle_event("authorize", %{"login-id" => l_id}, %{assigns: a} = socket) do
+    token = Application.get_env(:excyte, :bridge_server_key)
+
     if a.mls.type === "bridge" do
       with {:ok, agent} <- agent_check(l_id, socket),
-                    _ <- IO.inspect(agent, label: "AG"),
-           {:ok, _mls} <- Mls.create_credential(%{
-                        agent_id: a.current_user.id,
-                        access_token: @token,
-                        member_key: (if agent, do: agent["MemberKey"], else: nil),
-                        office_key: (if agent, do: agent["Office"]["OfficeKey"], else: nil),
-                        mls_name: a.mls.text,
-                        dataset_id: a.mls.value,
-                        sub: "bridge"
-                      }) do
-          mls_list = Mls.get_credentials(%{agent_id: a.current_user.id})
-          send self(), {:update_mls, %{current_user: a.current_user, mls_list: mls_list}}
-          {:noreply, assign(socket, current_user: a.current_user, mls_list: mls_list)}
+           _ <- IO.inspect(agent, label: "AG"),
+           {:ok, _mls} <-
+             Mls.create_credential(%{
+               agent_id: a.current_user.id,
+               access_token: token,
+               member_key: if(agent, do: agent["MemberKey"], else: nil),
+               office_key: if(agent, do: agent["Office"]["OfficeKey"], else: nil),
+               mls_name: a.mls.text,
+               dataset_id: a.mls.value,
+               sub: "bridge"
+             }) do
+        mls_list = Mls.get_credentials(%{agent_id: a.current_user.id})
+        send(self(), {:update_mls, %{current_user: a.current_user, mls_list: mls_list}})
+        {:noreply, assign(socket, current_user: a.current_user, mls_list: mls_list)}
       else
         {:error, _err} -> {:noreply, socket}
         _err -> {:noreply, socket}
@@ -92,12 +101,13 @@ defmodule ExcyteWeb.Agent.MlsAuth do
   end
 
   def handle_event("disconnect", %{"cred-id" => cred_id}, socket) do
-    new_creds = Mls.destroy_credential(%{
-      cred_id: String.to_integer(cred_id),
-      agent_id: socket.assigns.current_user.id
-    })
+    new_creds =
+      Mls.destroy_credential(%{
+        cred_id: String.to_integer(cred_id),
+        agent_id: socket.assigns.current_user.id
+      })
 
-    send self(), {:update_mls, %{current_user: socket.assigns.current_user, mls_list: new_creds}}
+    send(self(), {:update_mls, %{current_user: socket.assigns.current_user, mls_list: new_creds}})
     {:noreply, assign(socket, current_user: socket.assigns.current_user, mls_list: new_creds)}
   end
 

@@ -1,32 +1,34 @@
-<form phx-change="range-update" phx-target={@myself}>
-  <label><%= @label %></label>
-  <div class="flex">
-    <%= if @prefix !== nil do %>
-      <div class="mr-1 pt-1 text-lg"><%= @prefix %></div>
-    <% end %>
-    <div class="flex-1">
-      <.input
-        type="text"
-        field={@form[:min]}
-        class="number-field"
-        pattern="[0-9]*"
-        placeholder="min"
-        phx-debounce="blur"
-      />
+<div>
+  <.form :let={f} for={%{}} as={@attribute} phx-change="range-update" phx-target={@myself}>
+    <label><%= @label %></label>
+    <div class="flex">
+      <%= if @prefix !== nil do %>
+        <div class="mr-1 pt-1 text-lg"><%= @prefix %></div>
+      <% end %>
+      <div class="flex-1">
+        <.input
+          type="text"
+          field={f[:min]}
+          class="number-field"
+          pattern="[0-9]*"
+          placeholder="min"
+          phx-debounce="blur"
+        />
+      </div>
+      <div class="mx-1 pt-1 font-bold"> - </div>
+      <div class="flex-1">
+        <.input
+          type="text"
+          field={f[:max]}
+          class="number-field"
+          pattern="[0-9]*"
+          placeholder="max"
+          phx-debounce="blur"
+        />
+      </div>
+      <%= if @suffix !== nil do %>
+        <div class="ml-1 pt-1 text-lg"><%= @suffix %></div>
+      <% end %>
     </div>
-    <div class="mx-1 pt-1 font-bold"> - </div>
-    <div class="flex-1">
-      <.input
-        type="text"
-        field={@form[:max]}
-        class="number-field"
-        pattern="[0-9]*"
-        placeholder="min"
-        phx-debounce="blur"
-      />
-    </div>
-    <%= if @suffix !== nil do %>
-      <div class="ml-1 pt-1 text-lg"><%= @suffix %></div>
-    <% end %>
-  </div>
-</form>
+  </.form>
+</div>

@@ -1,10 +1,5 @@
 defmodule ExcyteWeb.Contact.ListItem do
   use ExcyteWeb, :live_component
-  alias Excyte.{
-    Insights,
-    Accounts,
-    Properties.PublicDataApi
-  }
   alias ExcyteWeb.{ContactView}
 
   @impl true

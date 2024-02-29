@@ -1,6 +1,6 @@
 <div>
   <h4>Subject details</h4>
-  <.form for={@form} phx-change="update-form" phx-submit="save-subject" phx_target={@myself}>
+  <.form for={@form} phx-change="update-form" phx-submit="save-subject" phx-target={@myself}>
     <div class="mt-2 grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <div>
         <.input 
@@ -44,9 +44,9 @@
         />
       </div>
       <div>
-        <label>Lotsize (<span class="cursor-pointer hover:underline" phx-click="toggle-lot-unit" phx-target={@myself}><%= @lotsize_unit %></span>)</label>
+        <label>Lotsize (<span>sqft</span>)</label>
         <.input 
-          field={@form[:lotsize]}
+          field={@form[:lotsize_sqft]}
           type={"number"}
           phx_debounce={"blur"}
           pattern={"[0-9]*[.]?[0-9]*"}
@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <div>
+    <%!-- <div>
       <UI.dropdown
         options={@mls_options}
         selected={nil}
@@ -101,7 +101,7 @@
         label={"Select Source"}
         id={:select_source}
       />
-    </div>
+    </div> --%>
     <div class="mt-2">
       <button class="submit w-full"><%= @button_label %></button>
     </div>

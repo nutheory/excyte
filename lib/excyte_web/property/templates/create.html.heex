@@ -165,7 +165,7 @@
                   type={"select"}
                   label={"Property Type"}
                   field={@form[:property_type]}
-                  options={@property_type_options}
+                  options={Enum.map(@property_type_options, fn pto -> {pto.text, pto.value} end)}
                   prompt="Select..."
                 />
               </div>
@@ -174,7 +174,7 @@
                   type={"select"}
                   label={"Property Sub Type"}
                   field={@form[:property_sub_type]}
-                  options={@property_sub_type_options}
+                  options={Enum.map(@property_sub_type_options, fn psto -> {psto.text, psto.value} end)}
                   prompt="Select..."
                 />
               </div>
@@ -183,7 +183,7 @@
                   type={"select"}
                   label={"Parking Type"}
                   field={@form[:parking_type]}
-                  options={@parking_type_options}
+                  options={Enum.map(@parking_options, fn po -> {po.text, po.value} end)}
                   prompt="Select..."
                 />
               </div>
@@ -224,7 +224,7 @@
                   type={"select"}
                   label={"Assoc. freq."}
                   field={@form[:association_fee_frequency]}
-                  options={@association_fee_frequency_options}
+                  options={Enum.map(@association_fee_frequency_options, fn affo -> {affo.text, affo.value} end)}
                   prompt="Select..."
                 />
               </div>

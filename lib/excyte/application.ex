@@ -4,7 +4,6 @@ defmodule Excyte.Application do
   @moduledoc false
 
   use Application
-  alias Excyte.RateLimiter
 
   def start(_type, args) do
     children =
@@ -19,6 +18,7 @@ defmodule Excyte.Application do
             ExcyteWeb.Endpoint,
             {OpenIDConnect.Worker, Application.get_env(:excyte, :openid_connect_providers)}
           ]
+
         [env: :dev] ->
           [
             Excyte.Repo,
@@ -28,9 +28,10 @@ defmodule Excyte.Application do
             # %{id: :scrape_agent_cache, start: {Cachex, :start_link, [:scrape_agent_cache, []]}},
             ExcyteWeb.Telemetry,
             {Phoenix.PubSub, name: Excyte.PubSub},
-            ExcyteWeb.Endpoint,
+            ExcyteWeb.Endpoint
             # {OpenIDConnect.Worker, Application.get_env(:excyte, :openid_connect_providers)}
           ]
+
         [_] ->
           [
             Excyte.Repo,
@@ -43,7 +44,6 @@ defmodule Excyte.Application do
             {OpenIDConnect.Worker, Application.get_env(:excyte, :openid_connect_providers)}
           ]
       end
-
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

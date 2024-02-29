@@ -10,6 +10,13 @@ defmodule Excyte.Assets do
     Phoenix.PubSub.subscribe(Excyte.PubSub, @topic <> "#{asset_uuid}")
   end
 
+  def get_property_assets(pid) do
+    Asset
+    |> where([a], a.property_id == ^pid)
+    |> order_by([a], desc: a.inserted_at)
+    |> Repo.all()
+  end
+
   def get_agent_assets(%{agent_id: aid, brokerage_id: bid}) do
     Asset.all_available_assets(aid, bid)
     |> Repo.all()
@@ -26,8 +33,8 @@ defmodule Excyte.Assets do
     |> Repo.insert()
   end
 
-  def update_asset(uuid, attrs) do
-    Repo.get_by!(Asset, %{uuid: uuid})
+  def update_asset(asset, attrs) do
+    asset
     |> Asset.changeset(attrs)
     |> Repo.update()
     |> notify_subscribers([:asset, :updated])

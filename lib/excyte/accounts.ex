@@ -147,7 +147,10 @@ defmodule Excyte.Accounts do
   def staging_whitelist_check(_repo, _changes, attrs \\ %{}) do
     if Application.get_env(:excyte, :env) === :staging do
       wl = Application.get_env(:excyte, :whitelist)
-      if Enum.member?(wl, attrs.email), do: {:ok, %{}}, else: {:error, %{message: "Not whitelisted"}}
+
+      if Enum.member?(wl, attrs.email),
+        do: {:ok, %{}},
+        else: {:error, %{message: "Not whitelisted"}}
     else
       {:ok, %{}}
     end
@@ -155,27 +158,32 @@ defmodule Excyte.Accounts do
 
   def create_brokerage(_repo, %{account: acc}, attrs) do
     %Brokerage{}
-    |> Brokerage.registration_changeset(Map.merge(attrs, %{
-      account_id: acc.id,
-      name: attrs.brokerage_name,
-      contact_settings: %{
-        point_of_contact: %{
-          name: attrs.full_name,
-          email: attrs.email,
-          phone_number: attrs.phone
-        },
-        send_text_alerts: true
-      }
-    }))
+    |> Brokerage.registration_changeset(
+      Map.merge(attrs, %{
+        account_id: acc.id,
+        name: attrs.brokerage_name,
+        contact_settings: %{
+          point_of_contact: %{
+            name: attrs.full_name,
+            email: attrs.email,
+            phone_number: attrs.phone
+          },
+          send_text_alerts: true
+        }
+      })
+    )
     |> Repo.insert()
   end
 
   def create_brokerage_owner(_repo, %{brokerage: bk, account: acc}, attrs) do
     %User{}
-    |> Agent.brokerage_registration_changeset(Map.merge(attrs, %{
-      brokerage_id: bk.id,
-      account_id: acc.id
-    }))
+    |> Agent.brokerage_registration_changeset(
+      Map.merge(attrs, %{
+        brokerage_id: bk.id,
+        account_id: acc.id,
+        completed_setup: true
+      })
+    )
     |> Repo.insert()
   end
 
@@ -197,29 +205,37 @@ defmodule Excyte.Accounts do
 
   def create_agent(_repo, %{account: acc}, attrs) do
     %User{}
-    |> Agent.registration_changeset(Map.put(attrs, :account_id, acc.id))
+    |> Agent.registration_changeset(
+      Map.merge(attrs, %{account_id: acc.id, completed_setup: true})
+    )
     |> Repo.insert()
   end
 
   def create_agent_profile(_repo, %{agent: agent}, attrs) do
     %Agents.Profile{}
-    |> Agents.Profile.registration_changeset(Map.merge(attrs, %{
-      agent_id: agent.id,
-      name: attrs.full_name,
-      theme_settings: @default_theme,
-      contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
-    }))
+    |> Agents.Profile.registration_changeset(
+      Map.merge(attrs, %{
+        agent_id: agent.id,
+        name: attrs.full_name,
+        updated_by_user: true,
+        theme_settings: @default_theme,
+        contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
+      })
+    )
     |> Repo.insert()
   end
 
   def create_brokerage_profile(_repo, %{brokerage: bk}, attrs) do
     %Brokerages.Profile{}
-    |> Brokerages.Profile.registration_changeset(Map.merge(attrs, %{
-      brokerage_id: bk.id,
-      company_name: attrs.brokerage_name,
-      theme_settings: @default_theme,
-      contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
-    }))
+    |> Brokerages.Profile.registration_changeset(
+      Map.merge(attrs, %{
+        brokerage_id: bk.id,
+        updated_by_user: true,
+        company_name: attrs.brokerage_name,
+        theme_settings: @default_theme,
+        contact_items: [%{content: attrs.email, name: "Email", type: "email"}]
+      })
+    )
     |> Repo.insert()
   end
 
@@ -227,8 +243,15 @@ defmodule Excyte.Accounts do
     case create_stripe_customer(attrs) do
       {:ok, customer} ->
         %Account{}
-        |> Account.registration_changeset(Map.put(attrs, :source_customer_id, customer.id))
+        |> Account.registration_changeset(
+          Map.merge(attrs, %{
+            source_customer_id: customer.id,
+            status: "active",
+            current_period_end: DateTime.utc_now() |> DateTime.add(5000, :day)
+          })
+        )
         |> Repo.insert()
+
       err ->
         {:error, err}
     end
@@ -415,7 +438,6 @@ defmodule Excyte.Accounts do
     Repo.one(query) |> Repo.preload(:account)
   end
 
-
   # def get_full_user(token) do
   #   {:ok, query} = UserToken.verify_session_token_query(token)
   #   Repo.one(query) |> Repo.preload([:account, :profiles])
@@ -491,7 +513,11 @@ defmodule Excyte.Accounts do
       when is_function(reset_password_url_fun, 1) do
     {encoded_token, user_token} = UserToken.build_email_token(user, "reset_password")
     Repo.insert!(user_token)
-    EmailNotifiers.deliver_reset_password_instructions(user, reset_password_url_fun.(encoded_token))
+
+    EmailNotifiers.deliver_reset_password_instructions(
+      user,
+      reset_password_url_fun.(encoded_token)
+    )
   end
 
   @doc """
@@ -571,7 +597,7 @@ defmodule Excyte.Accounts do
 
   def fetch_user_from_invitation(token) do
     with {:ok, query} <- UserToken.verify_email_token_query(token, "invitation"),
-         %User{} = user <- Repo.one(query) |> Repo.preload([brokerage: :profile]) do
+         %User{} = user <- Repo.one(query) |> Repo.preload(brokerage: :profile) do
       {:ok, user}
     else
       _ -> :error
@@ -631,13 +657,17 @@ defmodule Excyte.Accounts do
     acc = Repo.get_by(Account, %{id: acc_id})
 
     if acc do
-      Account.update_changeset(acc, %{deleted_at: DateTime.utc_now, status: "canceled"})
+      Account.update_changeset(acc, %{deleted_at: DateTime.utc_now(), status: "canceled"})
       |> Repo.update()
     end
   end
 
   defp create_stripe_customer(attrs) do
-    desc = if Map.has_key?(attrs, :brokerage_name), do: "Brokerage - #{attrs.brokerage_name}", else: "Agent"
+    desc =
+      if Map.has_key?(attrs, :brokerage_name),
+        do: "Brokerage - #{attrs.brokerage_name}",
+        else: "Agent"
+
     Customer.create(%{
       email: attrs.email,
       description: "ExcyteCMA - #{desc}",
@@ -651,6 +681,7 @@ defmodule Excyte.Accounts do
       @topic <> "#{result.id}",
       {__MODULE__, event, result}
     )
+
     {:ok, result}
   end
 

@@ -1,37 +1,45 @@
-<div class="my-8 max-w-4xl mx-auto pt-16 form">
-  <UI.form_header return_to={Overview} socket={@socket}>
-    <:title>
-      <h2 class="mb-0 pt-6 text-2xl">Property Gallery</h2>
-    </:title>
-    <div class="flex h-full">
+<div>
+  <div class="my-8 max-w-4xl mx-auto pt-16 form">
+    <UI.form_header return_to={Overview} socket={@socket}>
+      <:title>
+        <h2 class="mb-0 pt-6 text-2xl">Property Gallery</h2>
+      </:title>
+      <div class="flex h-full">
+      </div>
+    </UI.form_header>
+    <div class="p-6">
+      <div id="imageCanvas"></div>
+      <h1 :if={@step} class="text-gray-600 px-2">Step 2 <span class="text-xl italic text-gray-400">of 2</span></h1>
+      <div class="bg-black p-4 rounded-lg h-96">
+        <h2 class="mb-2 text-white">Upload Media</h2>
+        <p class="text-sm text-white"></p>
+        <div class="w-full h-full relative mx-auto">
+          <.live_component
+            module={ImageEditor}
+            show_image_panel={false}
+            current_user={@current_user}
+            model={"property"}
+            model_id={@current_user.id}
+            name={"large"}
+            title={"Property Photo"}
+            bucket={"property_photos"}
+            image_url={@asset["large_url"]}
+            aspect_ratio={4/3}
+            upload_text={"Upload<br />Property Photo"}
+            width={320}
+            height={260}
+            id={:photo_image_editor}
+          />
+        </div>
+      </div>
     </div>
-  </UI.form_header>
-  <div class="p-6">
-    <div id="imageCanvas"></div>
-    <h1 class="text-gray-600 px-2">Step 2 <span class="text-xl italic text-gray-400">of 2</span></h1>
-   
+  </div>
+  <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+  <%= for asset <- @assets do %>
+    <div>
+      <img src={asset.large_url} class="w-full" />
+      <div><button type="button" phx-click="select-cover-photo" phx-value-id={asset.id}>set as main</button></div>
+    </div>
+  <% end %>
   </div>
 </div>
-  <%# <div class="bg-black p-4 rounded-lg h-60">
-    <h2 class="mb-2 text-white">Upload Media</h2>
-    <p class="text-sm text-white"></p>
-    <div class="w-40 h-32 relative mx-auto"> %>
-      <%# <.live_component
-        module={ImageEditor}
-        show_image_panel={false}
-        current_user={@current_user}
-        model={"property"}
-        model_id={@current_user.id}
-        name={"main_photo"}
-        title={"Property Photo"}
-        bucket={"property_photos"}
-        image_url={@main_photo_url}
-        aspect_ratio={16/9}
-        upload_text={"Upload<br />Property Photo"}
-        width={160}
-        height={120}
-        id={:photo_image_editor}
-      /> %>
-    <%# </div>
-  </div>
-</div> %>

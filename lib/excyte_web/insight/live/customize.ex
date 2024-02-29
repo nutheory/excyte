@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.Customize do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
 
   alias Excyte.{
     Assets,

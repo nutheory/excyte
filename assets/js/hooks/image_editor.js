@@ -52,6 +52,11 @@ export const ImageEditor = {
           mockFile.previewElement.classList.add('dz-success')
           mockFile.previewElement.classList.add('dz-complete')
         }
+
+        this.on("complete", function(file) { 
+          preview = document.querySelector(".dz-preview")
+          preview.remove()
+        })
       },
       renameFile: function (_file) {
         return nanoid(10)

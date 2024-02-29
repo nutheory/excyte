@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Agent.Dashboard do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Clients, Insights}
   alias ExcyteWeb.{AgentView, Helpers.Utilities}
 

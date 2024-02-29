@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Brokerage.Dashboard do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Accounts, Insights}
   alias ExcyteWeb.AgentView
 

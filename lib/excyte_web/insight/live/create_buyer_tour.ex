@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateBuyerTour do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Insights}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 

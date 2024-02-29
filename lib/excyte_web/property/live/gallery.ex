@@ -1,8 +1,10 @@
 defmodule ExcyteWeb.Property.Gallery do
+  alias Excyte.Properties.Property
   use ExcyteWeb, :live_view
   use ViewportHelpers
 
   alias Excyte.{
+    Assets,
     Properties
   }
 
@@ -12,19 +14,42 @@ defmodule ExcyteWeb.Property.Gallery do
   def render(assigns), do: PropertyView.render("gallery.html", assigns)
 
   @impl true
-  def mount(%{"id" => id}, _sesh, %{assigns: a} = socket) do
-    assets = Properties.get_property_assets(id)
-
+  def mount(%{"id" => id} = params, _sesh, %{assigns: a} = socket) do
+    assets = Assets.get_property_assets(id)
+    step = if params["step"] === "false" do
+      false
+    else
+      true
+    end
+    IO.inspect(params, label: "PARAMS")
     {:ok,
      assign(socket,
        asset: nil,
+       step: step,
        property_id: id,
        cover_uuid: nil,
        uploading: false,
        done: false,
-       assets: assets,
-       uploaded_files: []
+       assets: assets
      )}
+  end
+
+  def handle_info({:receive_uploads, %{upload_url: url, name: name, asset: asset}}, %{assigns: a} = socket) do
+    case Assets.update_asset(asset, %{property_id: a.property_id}) do
+      {:ok, asset} -> {:noreply, assign(socket, asset: nil, assets: [asset | a.assets])}
+      {:error, _} -> {:noreply, socket}
+    end
+  end
+
+  def handle_info({:destroy_uploads, %{name: name}}, %{assigns: a} = socket) do
+  #   destroy_url = Map.put(%{}, String.to_atom("#{name}_url"), "")
+  #   with {:ok, profile} <- Agents.update_profile(a.profile, destroy_url),
+  #        _ <- update_user_avatar?(a.current_user.id, %{upload_url: "", name: name}) do
+  #     {:noreply, assign(socket, profile: profile)}
+  #   else
+  #     {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, socket}
+  #   end
   end
 
   def handle_event("upload_and_save", params, socket) do
@@ -38,8 +63,12 @@ defmodule ExcyteWeb.Property.Gallery do
     {:noreply, socket}
   end
 
-  def handle_event("select-cover-photo", %{"photo-id" => id}, socket) do
-    {:noreply, assign(socket, cover_uuid: id)}
+  def handle_event("select-cover-photo", %{"id" => id}, %{assigns: a} = socket) do
+    IO.inspect(id, label: "ID")
+
+    asset = Enum.find(a.assets, fn asset -> asset.id == String.to_integer(id) end)
+    Properties.update_property(a.property_id, asset.uploaded_by_id, %{main_photo_url: asset.large_url})
+    {:noreply, socket}
   end
 
   def handle_event("cancel-entry", %{"ref" => ref}, socket) do

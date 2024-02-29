@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateCma do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
 
   alias Excyte.{
     Activities,

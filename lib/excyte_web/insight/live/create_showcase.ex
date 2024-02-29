@@ -1,5 +1,6 @@
 defmodule ExcyteWeb.Insight.CreateShowcase do
   use ExcyteWeb, :live_view
+  use ViewportHelpers
   alias Excyte.{Accounts, Insights, Mls.ResoApi, Mls.ProcessReso}
   alias ExcyteWeb.{InsightView, Helpers.Utilities}
 

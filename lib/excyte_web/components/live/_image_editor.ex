@@ -39,7 +39,7 @@ defmodule ExcyteWeb.Components.ImageEditor do
       size: upload["size"],
       source: "aws"
     }) do
-      {:ok, _} -> send self(), {:receive_uploads, %{upload_url: url, name: upload["name"]}}
+      {:ok, asset} -> send self(), {:receive_uploads, %{upload_url: url, name: upload["name"], asset: asset}}
       {:error, err} -> IO.inspect(err, label: "BOOMMMMMM")
     end
     {:noreply, assign(socket, show_image_panel: !a.show_image_panel)}

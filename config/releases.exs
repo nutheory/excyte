@@ -12,7 +12,14 @@ database_url =
     """
 
 config :excyte, Excyte.Repo,
-  ssl: true,
+  ssl: [
+    verify: :verify_peer,
+    cacerts: :public_key.cacerts_get(),
+    versions: [:"tlsv1.2"],
+    customize_hostname_check: [
+      match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+    ]
+  ],
   url: database_url,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
 

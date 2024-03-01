@@ -64,7 +64,7 @@ defmodule Excyte.MixProject do
       {:ueberauth, "~> 0.6"},
       {:ueberauth_google, "~> 0.10"},
       {:google_api_people, "~> 0.40"},
-      {:goth, "~> 1.2.0"},
+      {:goth, "~> 1.4"},
       {:jason, "~> 1.2", override: true},
       {:httpoison, "~> 1.8"},
       {:geocalc, "~> 0.8"},

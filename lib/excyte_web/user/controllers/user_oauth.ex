@@ -17,8 +17,6 @@ defmodule ExcyteWeb.UserOauth do
   end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, _params) do
-    IO.inspect(auth, label: "AUTH")
-
     case Accounts.get_user_by_email(auth) do
       {:ok, user} ->
         UserAuth.log_in_user(conn, user, auth)

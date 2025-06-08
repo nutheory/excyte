@@ -53,5 +53,5 @@ npm-debug.log
 /config/bootstrap-388f5f136187.json
 /config/twilio_numbers.json
 /notes.txt
-gcp.json
-contacts.scv
+/gcp.json
+/contacts.scv

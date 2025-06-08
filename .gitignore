@@ -54,4 +54,4 @@ npm-debug.log
 /config/twilio_numbers.json
 /notes.txt
 /gcp.json
-/contacts.scv
+/contacts.csv

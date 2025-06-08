@@ -17,6 +17,7 @@ defmodule ViewportHelpers do
       import ViewportHelpers
 
       def handle_event("viewport_resize", %{"width" => width}, socket) do
+
         {:noreply, Component.assign(socket, client_info: %{ width: width, media: display_size(width) })}
       end
     end
@@ -24,7 +25,7 @@ defmodule ViewportHelpers do
 
   def assign_client_info(socket) do
     width =
-      socket.private
+      socket
       |> get_in([:connect_params, "viewport", "width"])
 
     Component.assign(socket, client_info: %{ width: width, media: display_size(width) })

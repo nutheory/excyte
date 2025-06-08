@@ -31,6 +31,7 @@ npm-debug.log
 # Since we are building assets from assets/,
 # we ignore priv/static. You may want to comment
 # this depending on your deployment strategy.
+/priv/cert/
 /priv/static/assets/
 /priv/static/css/
 /priv/static/images/
@@ -45,9 +46,11 @@ npm-debug.log
 # Environment Variables
 /config/env.local.exs
 /config/prod.secret.exs
+/config/open_id_providers.exs
+/config/dev_open_id_providers.exs
 /config/gcp.json
 /config/excyte-87593aecb2fe.json
-/config/gcp.json
 /config/bootstrap-388f5f136187.json
 /config/twilio_numbers.json
 /notes.txt
+gcp.json

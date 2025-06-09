@@ -1,5 +1,5 @@
 import { getEnv } from '../utilities'
-const publishable_key = getEnv() === 'prod' ? 'pk_live_pX4jrl2SXBESnCScj7xWNQMN00ut7ma0g8' : 'pk_test_159TOu12bpPkzIhwcK3a40jO00rYMDhMVb'
+const publishable_key = getEnv() === 'prod' ? 'pk_live' : 'pk_test'
 const stripe = Stripe(publishable_key)
 
 export const InitCheckout = {

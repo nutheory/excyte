@@ -12,7 +12,6 @@ export const VideoInitialize = {
       "plugins": {
         "mux": {
           "data": {
-            "env_key": "8annq75bglotovm9k0asdh112",
             "video_title": "My Great Video"
           }
         }

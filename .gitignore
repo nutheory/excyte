@@ -37,6 +37,9 @@ npm-debug.log
 /priv/static/images/
 /priv/static/js/
 
+/lib/excyte/mls/mock_server.ex
+/test/support/fixtures/mls_fixtures.ex
+
 .DS_Store
 
 .env
